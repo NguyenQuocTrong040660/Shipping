@@ -1,8 +1,0 @@
-{
-  "/api": {
-    "target": "https://api-gatewayapi.spatronics.com",
-    "secure": false,
-    "logLevel": "debug",
-    "changeOrigin": true
-  }
-}

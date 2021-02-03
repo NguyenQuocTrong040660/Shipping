@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -47,8 +48,8 @@ namespace APIGateway
 
                 configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
-
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+            
             ConfigureAuthenticationServices(services);
 
             services.AddCors(options =>
@@ -56,30 +57,15 @@ namespace APIGateway
                 options.AddPolicy(name: "GREXSOLUTIONS",
                 builder =>
                 {
-                    builder.WithOrigins(
-                                        //MAIN PAGE
-                                        "http://shippingapp.spatronics.com/",
-                                        "https://shippingapp.spatronics.com/",
-                                        "http://www.shippingapp.spatronics.com/",
-                                        "https://www.shippingapp.spatronics.com/",
-
-                                        //USER
-                                        "http://api-user.shippingapp.spatronics.com/",
-                                        "https://api-user.shippingapp.spatronics.com/",
-                                        "http://www.api-user.shippingapp.spatronics.com/",
-                                        "https://www.api-user.shippingapp.spatronics.com/",
-
-                                         //Shipping Application
-                                        "http://api-shippingapp.shippingapp.spatronics.com/",
-                                        "https://api-shippingapp.shippingapp.spatronics.com/",
-                                        "http://www.api-shippingapp.shippingapp.spatronics.com/",
-                                        "https://www.api-shippingapp.shippingapp.spatronics.com/"
-
-                                        )
+                    builder.WithOrigins()
                                         .AllowAnyHeader()
                                         .AllowAnyMethod()
                                         .AllowAnyOrigin();
                 });
+            });
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
             });
         }
 
@@ -109,7 +95,9 @@ namespace APIGateway
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory)
         {
-            if (!env.IsProduction())
+            loggerfactory.AddSerilog();
+
+            if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
 
@@ -121,22 +109,40 @@ namespace APIGateway
                     opt.PathToSwaggerGenerator = "/swagger/docs";
                 });
             }
+            else
+            {
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+                app.UseSpaStaticFiles();
+            }
 
-            loggerfactory.AddSerilog();
             app.UseSerilogRequestLogging();
-
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
+            
             app.UseRouting();
             app.UseCors("GREXSOLUTIONS");
 
             app.UseAuthentication();
-            app.UseOcelot().Wait();
 
-            app.UseEndpoints(endpoints =>
+            app.Map("/api", HandleMapApiGateway);
+            app.UseSpa(spa =>
             {
-                endpoints.MapControllers();
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
             });
+        }
+
+        private static void HandleMapApiGateway(IApplicationBuilder app)
+        {
+            app.UseOcelot().Wait();
         }
     }
 }
