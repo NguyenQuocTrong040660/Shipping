@@ -1,0 +1,162 @@
+<p-toast></p-toast>
+
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <button
+        pButton
+        pRipple
+        label="New"
+        icon="pi pi-plus"
+        class="p-button-success p-mr-2"
+        (click)="openNew()"
+      ></button>
+      <button
+        pButton
+        pRipple
+        label="Delete"
+        icon="pi pi-trash"
+        class="p-button-danger"
+        (click)="deleteSelectedItems()"
+        [disabled]="!selectedItems || !selectedItems.length"
+      ></button>
+      <!-- <app-select-company></app-select-company> -->
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    able
+    #dt
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [value]="brand"
+    [rows]="20"
+    [paginator]="true"
+    [rowHover]="true"
+  >
+
+  <!-- <p-table
+    able
+    #dt
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [value]="brand"
+    [rows]="20"
+    [paginator]="true"
+    [rowHover]="true"
+    [(selection)]="selectedItems"
+    [showCurrentPageReport]="true"
+  > -->
+    <ng-template pTemplate="caption">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        <h5 class="p-m-0">Thương Hiệu</h5>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th>Tên Thương Hiệu</th>
+        <th>Tên Công Ty</th>
+        <th>Created Date</th>
+        <th>Last Modified Date</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="item"></p-tableCheckbox>
+        </td>
+        <td>{{ item.brandName }}</td>
+        <td>{{ item.companyName }}</td>
+        <td>{{ item.created | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ item.lastModified | date: 'dd/MM/yyyy' }}</td>
+        <td>
+          <button
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-success p-mr-2"
+            (click)="editBrand(item.id)"
+          ></button>
+          <button
+            pButton
+            pRipple
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-warning"
+            (click)="deleteBrand(item)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        In total there are {{ attachmentTypes ? attachmentTypes.length : 0 }} items.
+      </div>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [(visible)]="dialog"
+  [style]="{ width: '450px' }"
+  header="{{titleDialog}}"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <!-- <label class="control-label">Tên Công Ty</label>
+        <select formControlName="companyIndex" id="companyIndex" class="form-control" [attr.disabled] = "companyDisabled">
+          <option *ngFor="let item of company" [value]="item.companyIndex">{{ item['companyName'] }}</option>
+        </select> -->
+
+        <span
+          *ngIf="(companyIndex.touched || submitted) && companyIndex.errors?.required"
+          id="companyIndex"
+          class="error invalid-feedback"
+          style="display: block"
+          >Xin hãy chọn công ty</span
+        >
+      </div>
+      <div class="form-group">
+        <label class="control-label">Tên Thương Hiệu</label>
+        <input formControlName="brandName" id="brandName" type="text" class="form-control" />
+        <span
+          *ngIf="(brandName.touched || submitted) && brandName.errors?.required"
+          id="brandName"
+          class="error invalid-feedback"
+          style="display: block"
+          >Tên thương hiệu không được bỏ trống</span
+        >
+        <span
+          *ngIf="(brandName.touched || submitted) && brandName.errors?.maxlength"
+          id="brandName"
+          class="error invalid-feedback"
+          style="display: block"
+          >Tên thương hiệu không được trên 30 ki tự</span
+        >
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-success" [disabled]="form.invalid">Xác Nhận</button>
+      </div>
+    </form>
+  </ng-template>
+
+  <!-- <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button
+      pButton
+      pRipple
+      label="Save"
+      icon="pi pi-check"
+      class="p-button-text"
+      (click)="saveAttachmentType()"
+    ></button>
+  </ng-template> -->
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

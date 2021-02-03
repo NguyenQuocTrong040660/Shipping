@@ -1,0 +1,150 @@
+<p-toast></p-toast>
+
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <button
+        pButton
+        pRipple
+        label="Upload"
+        icon="pi pi-cloud-upload"
+        chooseLabel="Upload"
+        class="p-mr-2 p-button-primary"
+        (click)="showBulkInsert()"
+      ></button>
+
+      <button
+        pButton
+        pRipple
+        label="Delete"
+        icon="pi pi-trash"
+        class="p-mr-2 p-button-danger"
+        (click)="deleteSelectedItems()"
+        [disabled]="!selectedItems || !selectedItems.length"
+      ></button>
+
+      <button pButton pRipple label="Sync File" icon="pi pi-cloud-pi-cloud" class="p-mr-2 p-button-help"></button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #dt
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [value]="attachments"
+    [rows]="10"
+    [paginator]="true"
+    [rowHover]="true"
+    [showCurrentPageReport]="true"
+    [(selection)]="selectedItems"
+  >
+    <ng-template pTemplate="caption">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        <h5 class="p-m-0">Manage Attachments</h5>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th>File Name</th>
+        <th>File Url</th>
+        <th>File Type</th>
+        <th>File Size</th>
+        <th>Created Date</th>
+        <th>Attachment Type</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="item"></p-tableCheckbox>
+        </td>
+        <td>{{ item.fileName }}</td>
+        <td>
+          <img
+            [src]="getFileUrl(item.fileUrl)"
+            *ngIf="isPhoto()"
+            [alt]="item.fileName"
+            width="150"
+            height="150"
+            class="p-shadow-4"
+            (click)="showDetail(item)"
+          />
+
+          <video width="150" height="150" *ngIf="isVideo()" (click)="showDetail(item)">
+            <source [src]="getFileUrl(item.fileUrl)" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </td>
+        <td>{{ item.fileType }}</td>
+        <td>{{ formatBytes(item.fileSize) }}</td>
+        <td>{{ item.created | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ item.attachmentTypeName }}</td>
+        <td>
+          <button
+            pButton
+            pRipple
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-warning"
+            (click)="deleteAttachment(item)"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        In total there are {{ attachments ? attachments.length : 0 }} items.
+      </div>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="dialog" [style]="{ width: '900px' }" header="File Details" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <img
+      style="width: 100%; height: 100%"
+      [src]="getFileUrl(attachment.fileUrl)"
+      *ngIf="isPhoto()"
+      [alt]="attachment.fileName"
+      class="p-shadow-4"
+    />
+
+    <video style="width: 100%; height: 100%" controls *ngIf="isVideo()">
+      <source [src]="getFileUrl(attachment.fileUrl)" type="video/avi" />
+      <p>The video can't be played on this browser.</p>
+    </video>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="uploadDialog" [style]="{ width: '900px' }" header="File Details" [modal]="true">
+  <ng-template pTemplate="content">
+    <p-fileUpload
+      name="files"
+      [url]="getUrlBulkInsert()"
+      multiple="multiple"
+      [accept]="getAccessFile()"
+      [maxFileSize]="getMaximumFile()"
+      (onUpload)="onUpload($event)"
+      (onError)="handleUploadError()"
+    >
+      <ng-template pTemplate="content">
+        <ul *ngIf="uploadedFiles.length">
+          <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ formatBytes(file.size) }}</li>
+        </ul>
+      </ng-template>
+    </p-fileUpload>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
