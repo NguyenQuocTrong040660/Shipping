@@ -1,0 +1,34 @@
+{
+  "SwaggerEndPoints": [
+    {
+      "Key": "user",
+      "Config": [
+        {
+          "Name": "User API",
+          "Version": "v1",
+          "Url": "https://api-user.shippingapp.spatronics.com/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "album",
+      "Config": [
+        {
+          "Name": "Album API",
+          "Version": "v1",
+          "Url": "https://api-album.shippingapp.spatronics.com/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "shippingapp",
+      "Config": [
+        {
+          "Name": "Shipping Application API",
+          "Version": "v1",
+          "Url": "https://api-shippingapp.shippingapp.spatronics.com/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+<div class="wrapper">
+  <p-toast></p-toast>
+  <admin-navbar></admin-navbar>
+
+  <admin-control-sidebar></admin-control-sidebar>
+
+  <div class="content-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+
+  <admin-sidebar></admin-sidebar>
+
+  <button class="btn btn-danger btn-back-to-top" *ngIf="isShow" (click)="gotoTop()">
+    <i class="fa fa-angle-double-up" style="font-size: 28px"></i>
+  </button>
+
+  <admin-footer></admin-footer>
+</div>

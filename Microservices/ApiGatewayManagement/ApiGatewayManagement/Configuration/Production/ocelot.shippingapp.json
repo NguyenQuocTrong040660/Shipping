@@ -1,0 +1,16 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/shippingapp/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "api-shippingapp.shippingapp.spatronics.com"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/shippingapp/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "shippingapp"
+    }
+  ]
+}

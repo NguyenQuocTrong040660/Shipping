@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ShippingApp.Domain.Models
+{
+    public class CommonEmailModel
+    {
+        public string SenderEmailAddress { get; set; }
+        public string RecieverEmailAddress { get; set; }
+        public string BCCEmailAddress { get; set; }
+        public string CCEmailAddress { get; set; }
+    }
+}

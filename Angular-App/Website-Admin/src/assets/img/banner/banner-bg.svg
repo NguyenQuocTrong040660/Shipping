@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1920 900" width="1920" height="900">
+    <defs>
+        <path d="M1455 900L750 0L1425 0L1920 632.81L1920 900L1455 900Z" id="c2JhLRRBcx"></path>
+        <linearGradient id="gradientf1noHydCuV" gradientUnits="userSpaceOnUse" x1="1335" y1="0" x2="1335" y2="900">
+            <stop style="stop-color: #0037ff;stop-opacity: 0.6" offset="0%"></stop>
+            <stop style="stop-color: #00c3ff;stop-opacity: 1" offset="100%"></stop>
+        </linearGradient>
+        <path d="M1320 900L1065 562.5L1125 562.5L1380 900L1320 900Z" id="d1up2ScH3i"></path>
+        <linearGradient id="gradientb1rvTj1iEP" gradientUnits="userSpaceOnUse" x1="1222.5" y1="562.5" x2="1222.5" y2="900">
+            <stop style="stop-color: #0037ff;stop-opacity: 0.6" offset="0%"></stop>
+            <stop style="stop-color: #00c3ff;stop-opacity: 1" offset="100%"></stop>
+        </linearGradient>
+        <path d="M1200 900L975 604.69L1035 604.69L1260 900L1200 900Z" id="a14uRnsVLv"></path>
+        <linearGradient id="gradientbS5wh9iKZ" gradientUnits="userSpaceOnUse" x1="1117.5" y1="604.69" x2="1117.5" y2="900">
+            <stop style="stop-color: #0037ff;stop-opacity: 0.6" offset="0%"></stop>
+            <stop style="stop-color: #00c3ff;stop-opacity: 1" offset="100%"></stop>
+        </linearGradient>
+        <path d="M1545 0L1830 365.63L1770 365.63L1485 0L1545 0Z" id="c2y1suWrS"></path>
+        <linearGradient id="gradienta1XimSHUMx" gradientUnits="userSpaceOnUse" x1="1657.5" y1="0" x2="1657.5" y2="365.63">
+            <stop style="stop-color: #0037ff;stop-opacity: 0.6" offset="0%"></stop>
+            <stop style="stop-color: #00c3ff;stop-opacity: 1" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g>
+        <g>
+            <g>
+                <use xlink:href="#c2JhLRRBcx" opacity="1" fill="url(#gradientf1noHydCuV)"></use>
+                <g>
+                    <use xlink:href="#c2JhLRRBcx" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-opacity="0"></use>
+                </g>
+            </g>
+            <g>
+                <use xlink:href="#d1up2ScH3i" opacity="1" fill="url(#gradientb1rvTj1iEP)"></use>
+                <g>
+                    <use xlink:href="#d1up2ScH3i" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-opacity="0"></use>
+                </g>
+            </g>
+            <g>
+                <use xlink:href="#a14uRnsVLv" opacity="1" fill="url(#gradientbS5wh9iKZ)"></use>
+                <g>
+                    <use xlink:href="#a14uRnsVLv" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-opacity="0"></use>
+                </g>
+            </g>
+            <g>
+                <use xlink:href="#c2y1suWrS" opacity="1" fill="url(#gradienta1XimSHUMx)"></use>
+                <g>
+                    <use xlink:href="#c2y1suWrS" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1" stroke-opacity="0"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

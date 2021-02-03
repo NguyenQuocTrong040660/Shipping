@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAPrEDblrR7kS3HCgtixyu1QAAAAACAAAAAAAQZgAAAAEAACAAAADRySkKtXA3yTHXWB2Fd5P7MhoCxBr4/ZE2SXe4+pc05wAAAAAOgAAAAAIAACAAAAD8IaZecEZSU1LC38eAMyQFA7iKQ+GBHMp75sl/9Z9DJyAAAAAVEcnLcSBj7wlUMePrCvvjpcl3gDqLAPplJSyqK8QEmEAAAACsRYLLq5MDWVVeB2McSj9ozkXq5aJcCiO5URlDz4AannhUqngXnH6aa71hwVml4YgS2yMqSH3yzKD02iys8Tt6</EncryptedPassword>
+    <_PublishTargetUrl>C:\inetpub\wwwroot\havana\api-gatewayapi.havava.com.vn</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="ApiGatewayManagement.deps.json">
+      <publishTime>02/03/2021 09:57:30</publishTime>
+    </File>
+    <File Include="ApiGatewayManagement.dll">
+      <publishTime>02/03/2021 09:57:28</publishTime>
+    </File>
+    <File Include="ApiGatewayManagement.exe">
+      <publishTime>02/03/2021 09:57:28</publishTime>
+    </File>
+    <File Include="ApiGatewayManagement.pdb">
+      <publishTime>02/03/2021 09:57:28</publishTime>
+    </File>
+    <File Include="ApiGatewayManagement.runtimeconfig.json">
+      <publishTime>02/01/2021 13:31:17</publishTime>
+    </File>
+    <File Include="appsettings.Development.json">
+      <publishTime>01/12/2021 13:21:48</publishTime>
+    </File>
+    <File Include="appsettings.json">
+      <publishTime>01/12/2021 13:21:48</publishTime>
+    </File>
+    <File Include="appsettings.Local.json">
+      <publishTime>01/12/2021 13:21:48</publishTime>
+    </File>
+    <File Include="appsettings.Production.json">
+      <publishTime>01/12/2021 13:21:48</publishTime>
+    </File>
+    <File Include="CacheManager.Core.dll">
+      <publishTime>12/06/2018 15:18:30</publishTime>
+    </File>
+    <File Include="CacheManager.Microsoft.Extensions.Configuration.dll">
+      <publishTime>12/06/2018 15:18:38</publishTime>
+    </File>
+    <File Include="CacheManager.Microsoft.Extensions.Logging.dll">
+      <publishTime>12/06/2018 15:18:38</publishTime>
+    </File>
+    <File Include="Configuration/configuration.global.json">
+      <publishTime>12/13/2020 01:31:35</publishTime>
+    </File>
+    <File Include="Configuration/Development/configuration.global.json">
+      <publishTime>01/12/2021 13:21:48</publishTime>
+    </File>
+    <File Include="Configuration/Development/ocelot.communication.json">
+      <publishTime>12/14/2020 09:34:25</publishTime>
+    </File>
+    <File Include="Configuration/Development/ocelot.customerservice.json">
+      <publishTime>02/01/2021 13:26:53</publishTime>
+    </File>
+    <File Include="Configuration/Development/ocelot.news.json">
+      <publishTime>01/12/2021 13:21:48</publishTime>
+    </File>
+    <File Include="Configuration/Development/ocelot.product.json">
+      <publishTime>12/14/2020 09:34:25</publishTime>
+    </File>
+    <File Include="Configuration/Development/ocelot.SwaggerEndPoints.json">
+      <publishTime>02/01/2021 13:26:53</publishTime>
+    </File>
+    <File Include="Configuration/Development/ocelot.user.json">
+      <publishTime>01/12/2021 13:21:48</publishTime>
+    </File>
+    <File Include="Configuration/Local/configuration.global.json">
+      <publishTime>01/12/2021 13:21:48</publishTime>
+    </File>
+    <File Include="Configuration/Local/ocelot.communication.json">
+      <publishTime>12/14/2020 09:34:25</publishTime>
+    </File>
+    <File Include="Configuration/Local/ocelot.customerservice.json">
+      <publishTime>02/01/2021 13:26:53</publishTime>
+    </File>
+    <File Include="Configuration/Local/ocelot.news.json">
+      <publishTime>01/12/2021 13:21:48</publishTime>
+    </File>
+    <File Include="Configuration/Local/ocelot.product.json">
+      <publishTime>12/28/2020 16:00:28</publishTime>
+    </File>
+    <File Include="Configuration/Local/ocelot.SwaggerEndPoints.json">
+      <publishTime>02/01/2021 13:26:53</publishTime>
+    </File>
+    <File Include="Configuration/Local/ocelot.user.json">
+      <publishTime>01/15/2021 11:50:36</publishTime>
+    </File>
+    <File Include="Configuration/ocelot.communication.json">
+      <publishTime>12/13/2020 01:10:06</publishTime>
+    </File>
+    <File Include="Configuration/ocelot.news.json">
+      <publishTime>12/13/2020 00:10:48</publishTime>
+    </File>
+    <File Include="Configuration/ocelot.product.json">
+      <publishTime>12/13/2020 00:10:28</publishTime>
+    </File>
+    <File Include="Configuration/ocelot.SwaggerEndPoints.json">
+      <publishTime>12/13/2020 00:40:44</publishTime>
+    </File>
+    <File Include="Configuration/ocelot.user.json">
+      <publishTime>12/13/2020 00:10:41</publishTime>
+    </File>
+    <File Include="Configuration/Production/configuration.global.json">
+      <publishTime>02/01/2021 13:22:57</publishTime>
+    </File>
+    <File Include="Configuration/Production/ocelot.communication.json">
+      <publishTime>12/25/2020 13:01:52</publishTime>
+    </File>
+    <File Include="Configuration/Production/ocelot.customerservice.json">
+      <publishTime>02/01/2021 13:27:35</publishTime>
+    </File>
+    <File Include="Configuration/Production/ocelot.news.json">
+      <publishTime>02/01/2021 13:23:24</publishTime>
+    </File>
+    <File Include="Configuration/Production/ocelot.product.json">
+      <publishTime>12/29/2020 13:54:02</publishTime>
+    </File>
+    <File Include="Configuration/Production/ocelot.SwaggerEndPoints.json">
+      <publishTime>02/01/2021 13:44:39</publishTime>
+    </File>
+    <File Include="Configuration/Production/ocelot.user.json">
+      <publishTime>02/01/2021 13:22:56</publishTime>
+    </File>
+    <File Include="Configuration/prod_ocelot.communication.json">
+      <publishTime>12/12/2020 20:54:57</publishTime>
+    </File>
+    <File Include="Configuration/prod_ocelot.news.json">
+      <publishTime>12/12/2020 20:57:17</publishTime>
+    </File>
+    <File Include="Configuration/prod_ocelot.product.json">
+      <publishTime>12/12/2020 20:57:21</publishTime>
+    </File>
+    <File Include="Configuration/prod_ocelot.SwaggerEndPoints.json">
+      <publishTime>12/12/2020 20:55:44</publishTime>
+    </File>
+    <File Include="Configuration/prod_ocelot.user.json">
+      <publishTime>12/12/2020 20:57:23</publishTime>
+    </File>
+    <File Include="FluentValidation.dll">
+      <publishTime>02/29/2020 16:10:46</publishTime>
+    </File>
+    <File Include="Kros.Utils.dll">
+      <publishTime>10/23/2019 17:50:26</publishTime>
+    </File>
+    <File Include="Microsoft.AspNetCore.Authentication.JwtBearer.dll">
+      <publishTime>09/23/2020 23:12:38</publishTime>
+    </File>
+    <File Include="Microsoft.AspNetCore.JsonPatch.dll">
+      <publishTime>07/22/2020 23:05:10</publishTime>
+    </File>
+    <File Include="Microsoft.AspNetCore.MiddlewareAnalysis.dll">
+      <publishTime>03/14/2020 05:26:04</publishTime>
+    </File>
+    <File Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll">
+      <publishTime>07/22/2020 23:18:28</publishTime>
+    </File>
+    <File Include="Microsoft.DotNet.PlatformAbstractions.dll">
+      <publishTime>11/22/2017 10:48:10</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Configuration.Abstractions.dll">
+      <publishTime>01/18/2020 03:31:04</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Configuration.Binder.dll">
+      <publishTime>01/18/2020 03:31:28</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Configuration.dll">
+      <publishTime>01/18/2020 03:31:12</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.DependencyInjection.Abstractions.dll">
+      <publishTime>02/28/2020 23:29:30</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.DependencyInjection.dll">
+      <publishTime>01/18/2020 03:31:12</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.DependencyModel.dll">
+      <publishTime>11/22/2017 10:48:14</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.DiagnosticAdapter.dll">
+      <publishTime>02/28/2020 23:30:30</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Logging.Abstractions.dll">
+      <publishTime>01/18/2020 03:32:22</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Logging.dll">
+      <publishTime>01/18/2020 03:32:22</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Options.dll">
+      <publishTime>01/18/2020 03:31:12</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.PlatformAbstractions.dll">
+      <publishTime>06/22/2016 09:14:56</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.Primitives.dll">
+      <publishTime>01/18/2020 03:31:54</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.JsonWebTokens.dll">
+      <publishTime>06/24/2019 19:50:38</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.Logging.dll">
+      <publishTime>06/24/2019 19:53:26</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.Protocols.dll">
+      <publishTime>06/24/2019 19:54:24</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.Protocols.OpenIdConnect.dll">
+      <publishTime>06/24/2019 19:59:32</publishTime>
+    </File>
+    <File Include="Microsoft.IdentityModel.Tokens.dll">
+      <publishTime>06/24/2019 19:56:06</publishTime>
+    </File>
+    <File Include="Microsoft.OpenApi.dll">
+      <publishTime>09/15/2019 16:25:40</publishTime>
+    </File>
+    <File Include="MMLib.Ocelot.Provider.AppConfiguration.dll">
+      <publishTime>05/27/2020 12:05:36</publishTime>
+    </File>
+    <File Include="MMLib.SwaggerForOcelot.dll">
+      <publishTime>10/30/2020 12:33:38</publishTime>
+    </File>
+    <File Include="Namotion.Reflection.dll">
+      <publishTime>03/20/2020 14:05:10</publishTime>
+    </File>
+    <File Include="Newtonsoft.Json.Bson.dll">
+      <publishTime>11/27/2018 23:10:18</publishTime>
+    </File>
+    <File Include="Newtonsoft.Json.dll">
+      <publishTime>11/09/2019 00:56:44</publishTime>
+    </File>
+    <File Include="NJsonSchema.dll">
+      <publishTime>07/19/2020 22:40:32</publishTime>
+    </File>
+    <File Include="NSwag.Annotations.dll">
+      <publishTime>08/03/2020 16:44:02</publishTime>
+    </File>
+    <File Include="NSwag.AspNetCore.dll">
+      <publishTime>08/03/2020 16:44:30</publishTime>
+    </File>
+    <File Include="NSwag.Core.dll">
+      <publishTime>08/03/2020 16:43:54</publishTime>
+    </File>
+    <File Include="NSwag.Generation.AspNetCore.dll">
+      <publishTime>08/03/2020 16:44:16</publishTime>
+    </File>
+    <File Include="NSwag.Generation.dll">
+      <publishTime>08/03/2020 16:44:16</publishTime>
+    </File>
+    <File Include="Ocelot.Cache.CacheManager.dll">
+      <publishTime>06/01/2019 11:59:06</publishTime>
+    </File>
+    <File Include="Ocelot.dll">
+      <publishTime>05/25/2020 17:51:28</publishTime>
+    </File>
+    <File Include="ocelot.json">
+      <publishTime>02/01/2021 13:26:53</publishTime>
+    </File>
+    <File Include="runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll">
+      <publishTime>09/13/2019 02:41:04</publishTime>
+    </File>
+    <File Include="runtimes/win-arm64/native/sni.dll">
+      <publishTime>07/12/2017 11:24:24</publishTime>
+    </File>
+    <File Include="runtimes/win-x64/native/sni.dll">
+      <publishTime>07/12/2017 11:24:22</publishTime>
+    </File>
+    <File Include="runtimes/win-x86/native/sni.dll">
+      <publishTime>07/12/2017 11:24:22</publishTime>
+    </File>
+    <File Include="runtimes/win/lib/netcoreapp2.1/System.Data.SqlClient.dll">
+      <publishTime>09/13/2019 02:41:08</publishTime>
+    </File>
+    <File Include="Serilog.AspNetCore.dll">
+      <publishTime>07/24/2020 01:43:08</publishTime>
+    </File>
+    <File Include="Serilog.dll">
+      <publishTime>09/10/2020 02:20:18</publishTime>
+    </File>
+    <File Include="Serilog.Extensions.Hosting.dll">
+      <publishTime>05/27/2020 00:12:08</publishTime>
+    </File>
+    <File Include="Serilog.Extensions.Logging.dll">
+      <publishTime>08/21/2019 23:09:16</publishTime>
+    </File>
+    <File Include="Serilog.Extensions.Logging.File.dll">
+      <publishTime>02/18/2020 09:40:10</publishTime>
+    </File>
+    <File Include="Serilog.Formatting.Compact.dll">
+      <publishTime>10/17/2019 05:18:46</publishTime>
+    </File>
+    <File Include="Serilog.Settings.Configuration.dll">
+      <publishTime>06/02/2019 00:57:40</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.Async.dll">
+      <publishTime>06/26/2017 22:28:16</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.Console.dll">
+      <publishTime>10/22/2017 16:48:40</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.Debug.dll">
+      <publishTime>03/21/2018 21:19:06</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.File.dll">
+      <publishTime>10/17/2019 05:25:34</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.RollingFile.dll">
+      <publishTime>01/03/2017 03:05:26</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.Swagger.dll">
+      <publishTime>06/25/2020 21:14:40</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.SwaggerGen.dll">
+      <publishTime>06/25/2020 21:14:40</publishTime>
+    </File>
+    <File Include="Swashbuckle.AspNetCore.SwaggerUI.dll">
+      <publishTime>06/25/2020 21:14:44</publishTime>
+    </File>
+    <File Include="System.Data.SqlClient.dll">
+      <publishTime>09/13/2019 02:29:22</publishTime>
+    </File>
+    <File Include="System.IdentityModel.Tokens.Jwt.dll">
+      <publishTime>06/24/2019 19:49:50</publishTime>
+    </File>
+    <File Include="web.config">
+      <publishTime>02/03/2021 09:57:30</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
