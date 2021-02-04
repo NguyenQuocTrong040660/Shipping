@@ -35,7 +35,7 @@ namespace APIGateway
 
             services.AddOpenApiDocument(configure =>
             {
-                configure.Title = "gatewayapi API";
+                configure.Title = "GatewayApi API";
 
                 configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
                 {
@@ -57,6 +57,10 @@ namespace APIGateway
                 builder =>
                 {
                     builder.WithOrigins(
+                                         //LOCAL
+                                        "http://localhost:4200/",
+                                        "https://localhost:4200/",
+
                                         //MAIN PAGE
                                         "http://shippingapp.spatronics.com/",
                                         "https://shippingapp.spatronics.com/",
@@ -117,7 +121,7 @@ namespace APIGateway
                 app.UseOpenApi();
                 app.UseSwaggerForOcelotUI(opt =>
                 {
-                    opt.SwaggerEndpoint("/swagger/v1/swagger.json", "gatewayapi API V1");
+                    opt.SwaggerEndpoint("/swagger/v1/swagger.json", "GatewayApi API V1");
                     opt.PathToSwaggerGenerator = "/swagger/docs";
                 });
             }

@@ -23,8 +23,9 @@ namespace ShippingApp.Application.Queries
 
         public async Task<List<Brand>> Handle(GetBrandQuery request, CancellationToken cancellationToken)
         {
-            List<Brand> brands = _productRepository.GetAllBrand(request.companyIndex);
-            return await Task.FromResult(brands);
+            //List<Brand> brands = _productRepository.GetAllBrand(request.companyIndex);
+            //return await Task.FromResult(brands);
+            return null;
         }
     }
 }

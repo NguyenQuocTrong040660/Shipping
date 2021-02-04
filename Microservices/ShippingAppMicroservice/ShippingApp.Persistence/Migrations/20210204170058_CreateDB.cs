@@ -106,6 +106,21 @@ namespace ShippingApp.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Product",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    ProductName = table.Column<string>(nullable: true),
+                    ProductNumber = table.Column<string>(nullable: true),
+                    Note = table.Column<string>(nullable: true),
+                    QtyPerPackage = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Product", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductType",
                 columns: table => new
                 {
@@ -352,6 +367,9 @@ namespace ShippingApp.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Product");
 
             migrationBuilder.DropTable(
                 name: "ProductDescription");

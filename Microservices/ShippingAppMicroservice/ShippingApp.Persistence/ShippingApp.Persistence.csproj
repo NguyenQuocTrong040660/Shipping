@@ -24,4 +24,8 @@
     <ProjectReference Include="..\ShippingApp.Domain\ShippingApp.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

@@ -32,14 +32,15 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(UpdateBrandCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _repository.GetBrandByCode(request.Id);
+            //var entity = await _repository.GetBrandByCode(request.Id);
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(entity), request.Id);
-            }
+            //if (entity == null)
+            //{
+            //    throw new NotFoundException(nameof(entity), request.Id);
+            //}
 
-            return await _repository.UpdateBrand(_mapper.Map<Brand>(request.Entity));
+            //return await _repository.UpdateBrand(_mapper.Map<Brand>(request.Entity));
+            return 0;
         }
     }
 }

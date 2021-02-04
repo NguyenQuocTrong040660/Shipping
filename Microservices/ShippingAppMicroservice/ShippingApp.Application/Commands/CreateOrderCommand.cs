@@ -28,9 +28,10 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Order>(request.Order);
+            //var entity = _mapper.Map<Order>(request.Order);
 
-            return await _repository.CreatOder(entity);
+            //return await _repository.CreatOder(entity);
+            return 0;
         }
     }
 }

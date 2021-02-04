@@ -27,7 +27,8 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(DeleteProductTypeCommand request, CancellationToken cancellationToken)
         {
-            return await _repository.DeleteProductType(request.ProductTypeCode);
+            //return await _repository.DeleteProductType(request.ProductTypeCode);
+            return 0;
         }
     }
 }

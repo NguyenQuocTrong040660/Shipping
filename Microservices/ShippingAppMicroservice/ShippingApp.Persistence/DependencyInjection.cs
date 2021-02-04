@@ -31,6 +31,7 @@ namespace ShippingApp.Persistence
                 mc.AddProfile(new ReservationProfile());
                 mc.AddProfile(new MemberShipProfile());
                 mc.AddProfile(new PromotionProfile());
+                mc.AddProfile(new ProductProfile());
             });
 
             IMapper mapper = mapperConfig.CreateMapper();

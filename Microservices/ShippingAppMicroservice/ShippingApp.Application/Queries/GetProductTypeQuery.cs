@@ -24,8 +24,9 @@ namespace ShippingApp.Application.Queries
 
         public async Task<List<ProductType>> Handle(GetProductTypeQuery request, CancellationToken cancellationToken)
         {
-            List<ProductType> productTypes = _productRepository.GetAllProductType(request.companyIndex);
-            return await Task.FromResult(productTypes);
+            //List<ProductType> productTypes = _productRepository.GetAllProductType(request.companyIndex);
+            //return await Task.FromResult(productTypes);
+            return null;
 
         }
     }

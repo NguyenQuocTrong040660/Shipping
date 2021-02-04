@@ -26,7 +26,8 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(DeleteCountryCommand request, CancellationToken cancellationToken)
         {
-            return await _repository.DeleteCountry(request.CountryCode);
+            //return await _repository.DeleteCountry(request.CountryCode);
+            return 0;
         }
     }
 

@@ -27,9 +27,10 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(CreateProductTypeCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<ProductType>(request.Model);
+            //var entity = _mapper.Map<ProductType>(request.Model);
 
-            return await _repository.CreateProductType(entity);
+            //return await _repository.CreateProductType(entity);
+            return 0;
         }
     }
 

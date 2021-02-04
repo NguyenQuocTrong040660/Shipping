@@ -28,8 +28,9 @@ namespace ShippingApp.Application.Queries
 
         public async Task<Brand> Handle(GetBrandByIdQuery request, CancellationToken cancellationToken)
         {
-            var result = await _repository.GetBrandByCode(request.BrandCode);
-            return await Task.FromResult(_mapper.Map<Brand>(result));
+            //var result = await _repository.GetBrandByCode(request.BrandCode);
+            //return await Task.FromResult(_mapper.Map<Brand>(result));
+            return null;
         }
     }
 }

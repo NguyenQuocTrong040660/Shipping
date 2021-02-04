@@ -32,14 +32,15 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(UpdateProductTypeCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _repository.GetProductTypeByCode(request.ProductTypeCode);
-            
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(entity), request.ProductTypeCode);
-            }
+            //var entity = await _repository.GetProductTypeByCode(request.ProductTypeCode);
 
-            return await _repository.UpdateProductType(_mapper.Map<ProductType>(request.Entity));
+            //if (entity == null)
+            //{
+            //    throw new NotFoundException(nameof(entity), request.ProductTypeCode);
+            //}
+
+            //return await _repository.UpdateProductType(_mapper.Map<ProductType>(request.Entity));
+            return 0;
         }
     }
 }

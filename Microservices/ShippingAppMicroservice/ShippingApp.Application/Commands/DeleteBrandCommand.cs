@@ -26,7 +26,8 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(DeleteBrandCommand request, CancellationToken cancellationToken)
         {
-            return await _repository.DeleteBrand(request.Id);
+            //return await _repository.DeleteBrand(request.Id);
+            return 0;
         }
     }
 

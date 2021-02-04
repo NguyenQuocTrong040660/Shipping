@@ -30,6 +30,7 @@ namespace ShippingApp.Persistence.DBContext
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<MemberShip> MemberShips { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<ProductEntity> Product { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -59,10 +60,15 @@ namespace ShippingApp.Persistence.DBContext
 
             modelBuilder.Entity<Entities.Order>()
                 .HasKey(c => new { c.Id });
+
             modelBuilder.Entity<Entities.Customer>()
                 .HasKey(c => new { c.Id });
+
             modelBuilder.Entity<Entities.OrderDetail>()
                 .HasKey(c => new { c.OrderId });
+
+            modelBuilder.Entity<Entities.ProductEntity>()
+               .HasKey(c => new { c.Id });
         }
 
         public override int SaveChanges()
