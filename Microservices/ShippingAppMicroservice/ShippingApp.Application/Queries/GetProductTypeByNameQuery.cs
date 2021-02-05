@@ -17,18 +17,18 @@ namespace ShippingApp.Application.Queries
 
     public class GetProductTypeByNameQueryHandler : IRequestHandler<GetProductTypeByNameQuery,ProductType>
     {
-        private readonly IShippingAppRepository _repository;
+        private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
 
         public GetProductTypeByNameQueryHandler(IShippingAppRepository repository, IMapper mapper)
         {
-            _repository = repository;
+            _shippingAppRepository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<ProductType> Handle(GetProductTypeByNameQuery request, CancellationToken cancellationToken)
         {
-            //var result = await _repository.GetProductTypeByName(request.ProductTypeName);
+            //var result = await _shippingAppRepository.GetProductTypeByName(request.ProductTypeName);
             //return await Task.FromResult(_mapper.Map<ProductType>(result));
             return null;
         }

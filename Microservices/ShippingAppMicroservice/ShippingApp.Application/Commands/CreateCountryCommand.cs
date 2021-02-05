@@ -16,11 +16,11 @@ namespace ShippingApp.Application.Commands
     }
     public class CreateCountryCommandHandler : IRequestHandler<CreateCountryCommand, int>
     {
-        private readonly IShippingAppRepository _repository;
+        private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
         public CreateCountryCommandHandler(IShippingAppRepository repository, IMapper mapper)
         {
-            _repository = repository;
+            _shippingAppRepository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -28,7 +28,7 @@ namespace ShippingApp.Application.Commands
         {
             //var entity = _mapper.Map<Country>(request.Model);
 
-            //return await _repository.CreateCountry(entity);
+            //return await _shippingAppRepository.CreateCountry(entity);
             return 0;
         }
     }

@@ -16,18 +16,18 @@ namespace ShippingApp.Application.Commands
 
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, int>
     {
-        private readonly IShippingAppRepository _Repository;
+        private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
 
         public DeleteProductCommandHandler(IShippingAppRepository Repository, IMapper mapper)
         {
-            _Repository = Repository;
+            _shippingAppRepository = Repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<int> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            return await _Repository.DeleteProductByID(request.Id);
+            return await _shippingAppRepository.DeleteProductByID(request.Id);
         }
     }
 }

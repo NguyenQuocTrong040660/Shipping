@@ -63,7 +63,6 @@ namespace ShippingApp.Application.Commands
             var sendForClient = await SendEmailForClient(emailItemDTO);
 
             bool isSuccess = true;
-            string cart = "";
             string subject = "Thông Tin Đặt Lịch";
             try
             {
@@ -130,7 +129,6 @@ namespace ShippingApp.Application.Commands
         private async Task<bool> SendEmailForClient(EmailItemDTO emailItemDTO)
         {
             bool isSuccess = true;
-            string cart = "";
             string subject = "Thông Tin Đặt Lịch Havana";
 
             try
