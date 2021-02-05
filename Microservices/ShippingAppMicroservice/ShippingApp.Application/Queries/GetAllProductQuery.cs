@@ -5,34 +5,37 @@ using System.Text;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using Models = ShippingApp.Domain.Models;
 using DTO = ShippingApp.Domain.DTO;
-
+using Models = ShippingApp.Domain.Models;
 using System.Linq;
 using AutoMapper;
 
 namespace ShippingApp.Application.Queries
 {
-    public class GetProductByIDQuery : IRequest<DTO.ProductDTO>
+    public class GetAllProductQuery : IRequest<List<DTO.ProductDTO>>
     {
-        public Guid Id;
     }
-    public class GetProductByIDQueryHandler : IRequestHandler<GetProductByIDQuery, DTO.ProductDTO>
+    public class GetProductQueryHandler : IRequestHandler<GetAllProductQuery, List<DTO.ProductDTO>>
     {
         private readonly IProductRepository _productRepository;
         private readonly IMapper _mapper;
-        public GetProductByIDQueryHandler(IProductRepository productRepository, IMapper mapper)
+
+        public GetProductQueryHandler(IProductRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<DTO.ProductDTO> Handle(GetProductByIDQuery request, CancellationToken cancellationToken)
+        public async Task<List<DTO.ProductDTO>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetProductsbyID(request.Id);
-            var results = _mapper.Map<DTO.ProductDTO>(product);
+            var productOverviews = _productRepository.GetAllProducts();
+
+            var results = _mapper.Map<List<DTO.ProductDTO>>(productOverviews);
 
             return await Task.FromResult(results);
         }
+
     }
+
+    
 }

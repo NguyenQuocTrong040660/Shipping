@@ -22,7 +22,7 @@ namespace ShippingApp.Application
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 
-            services.AddMediatR(typeof(GetProductQuery).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(GetAllProductQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetProductGroupQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetCategoryQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetProductByIDQuery).GetTypeInfo().Assembly);

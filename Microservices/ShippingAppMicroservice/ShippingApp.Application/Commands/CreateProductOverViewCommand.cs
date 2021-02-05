@@ -7,12 +7,15 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Models = ShippingApp.Domain.Models;
+using DTO = ShippingApp.Domain.DTO;
+using Entities = ShippingApp.Domain.Entities;
 
 namespace ShippingApp.Application.Commands
 {
     public class CreateProductOverViewCommand : IRequest<int>
     {
-        public ProductOverview Model { get; set; }
+        public DTO.ProductDTO productDTO { get; set; }
     }
     public class CreateProductOverViewCommandHandler : IRequestHandler<CreateProductOverViewCommand, int>
     {
@@ -27,9 +30,9 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(CreateProductOverViewCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<ProductOverview>(request.Model);
+            var productModel = _mapper.Map<Models.ProductModel>(request.productDTO);
 
-            return await _Repository.CreateProductOverView(entity);
+            return await _Repository.CreateProductOverView(productModel);
         }
     }
 }

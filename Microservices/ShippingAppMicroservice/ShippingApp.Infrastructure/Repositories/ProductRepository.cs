@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using Entities = ShippingApp.Domain.Entities;
 using AutoMapper;
-using ShippingApp.Domain.Models;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.EntityFrameworkCore;
@@ -43,70 +42,15 @@ namespace ShippingApp.Infrastructure.Repositories
             return results;
         }
 
-        public List<Models.ProductOverview> GetAllProducts(int CompanyIndex)
+        public List<Models.ProductModel> GetAllProducts()
         {
-            List<Models.ProductOverview> results = new List<Models.ProductOverview>();
-
-            //var products = _productDbContext.ProductOverview
-            //    .Include(item => item.ProductType)
-            //    .Include(item => item.Country)
-            //    .Include(item => item.Brand)
-            //    .AsNoTracking()
-            //    .ToList();
-
-            if ( CompanyIndex == 0 ) {
-                 var products = _productDbContext.ProductOverview
-                    .Include(item => item.ProductType)
-                    .Include(item => item.Country)
-                    .Include(item => item.Brand)
+            var products = _productDbContext.Product
                     .AsNoTracking()
                     .ToList();
-                results = _mapper.Map<List<Models.ProductOverview>>(products);
-            }
-            else
-            {
-                var products = _productDbContext.ProductOverview
-               .Where(item => item.CompanyIndex == CompanyIndex)
-               .Include(item => item.ProductType)
-               .Include(item => item.Country)
-               .Include(item => item.Brand)
-               .AsNoTracking()
-               .ToList();
-                results = _mapper.Map<List<Models.ProductOverview>>(products);
-            }
 
-            if (results.Count > 0)
-            {
-                foreach (var item in results)
-                {
-                    if (item.CompanyIndex == 0)
-                    {
-                        item.CompanyName = "All";
-                    }
-                    else if (item.CompanyIndex == 1)
-                    {
-                        item.CompanyName = "Slinks";
-                    }
-                    else if (item.CompanyIndex == 2)
-                    {
-                        item.CompanyName = "HTS";
-                    }
-                    else if (item.CompanyIndex == 3)
-                    {
-                        item.CompanyName = "Kaizen";
-                    }
-                    else if (item.CompanyIndex == 4)
-                    {
-                        item.CompanyName = "Slinks Automation";
-                    }
-                    else
-                    {
-                        item.CompanyName = "No Name";
-                    }
-                }
-            }
+            var results = _mapper.Map<List<Models.ProductModel>>(products);
 
-            return results;
+            return results.ToList();
         }
 
 
@@ -217,7 +161,7 @@ namespace ShippingApp.Infrastructure.Repositories
             return results;
         }
 
-        public ProductGroup GetAllProductGroup()
+        public Models.ProductGroup GetAllProductGroup()
         {
             Models.ProductGroup results = new Models.ProductGroup();
             var countries = _productDbContext.Country.ToList();
@@ -238,27 +182,14 @@ namespace ShippingApp.Infrastructure.Repositories
             return results;
         }
 
-        public async Task<Entities.ProductOverview> GetProductsbyID(Guid Id)
+        public async Task<Models.ProductModel> GetProductsbyID(Guid Id)
         {
-            var result = await _productDbContext.ProductOverview.FindAsync(Id);
+            var result = await _productDbContext.Product.FindAsync(Id);
 
-            var products = _productDbContext.ProductOverview
-                .Include(item => item.ProductType)
-                .Include(item => item.Country)
-                .Include(item => item.Brand)
-                .AsNoTracking()
-                .ToList();
-            foreach (var item in products)
-            {
-                if (item.Id == Id)
-                {
-                    result.CountryCode = item.Country.CountryCode;
-                }
-            }
-            return result;
+            return _mapper.Map<Models.ProductModel>(result);
         }
 
-        public List<Country> GetProductCountry()
+        public List<Models.Country> GetProductCountry()
         {
             List<Models.Country> results = new List<Models.Country>();
             var productCountries = _productDbContext.Country.ToList();
@@ -272,7 +203,7 @@ namespace ShippingApp.Infrastructure.Repositories
             return results;
         }
 
-        public List<Brand> GetProductBrand()
+        public List<Models.Brand> GetProductBrand()
         {
             List<Models.Brand> results = new List<Models.Brand>();
             var productBrand = _productDbContext.Brand.ToList();
@@ -286,7 +217,7 @@ namespace ShippingApp.Infrastructure.Repositories
             return results;
         }
 
-        public List<ProductOverview> GetProductByCountries(string Id)
+        public List<Models.ProductOverview> GetProductByCountries(string Id)
         {
             List<Models.ProductOverview> results = new List<Models.ProductOverview>();
             var productOverview = _productDbContext.ProductOverview.Find(Id);
@@ -300,20 +231,20 @@ namespace ShippingApp.Infrastructure.Repositories
             return results;
         }
 
-        public List<ProductOverview> GetProductByBrand(string BrandCode)
+        public List<Models.ProductOverview> GetProductByBrand(string BrandCode)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> CreateProductType(ProductType entity)
+        public async Task<int> CreateProductType(Models.ProductType entity)
         {
             var result = await _productDbContext.ProductType.FindAsync(entity.Id);
             var productTypeQuery = _productDbContext.ProductType.Where(s => s.ProductTypeName.Trim().Replace(" ","") == entity.ProductTypeName.Trim().Replace(" ","")).FirstOrDefault();
 
-            if (result != null)
-            {
-                 return await UpdateProductType(entity);
-            }
+            //if (result != null)
+            //{
+            //     return await UpdateProductType(entity);
+            //}
 
             if (productTypeQuery != null)
             {
@@ -357,7 +288,7 @@ namespace ShippingApp.Infrastructure.Repositories
             return await _productDbContext.SaveChangesAsync(new CancellationToken());
         }
 
-        public async Task<int> UpdateProductType(ProductType entity)
+        public async Task<int> UpdateProductType(Models.ProductType entity)
         {
             var result = await _productDbContext.ProductType.FindAsync(entity.Id);
 
@@ -372,42 +303,31 @@ namespace ShippingApp.Infrastructure.Repositories
             return await _productDbContext.SaveChangesAsync(new CancellationToken());
         }
 
-        public async Task<int> CreateProductOverView(ProductOverview productOverview)
+        public async Task<int> CreateProductOverView(Models.ProductModel productModel)
         {
-            var result = await _productDbContext.ProductOverview.FindAsync(productOverview.Id);
+            var productEntity = _mapper.Map<Entities.ProductEntity>(productModel);
+
+            var result = await _productDbContext.Product.FindAsync(productEntity.Id);
 
             if (result != null)
             {
-                //return await UpdateNews(entity);
+                return 0;
             }
 
-            _productDbContext.ProductOverview.Add(new Entities.ProductOverview
-            {
-                ProductName = productOverview.ProductName,
-                HighLevelDesc = productOverview.HighLevelDesc,
-                MediumLevelDesc = productOverview.MediumLevelDesc,
-                NormalLevelDesc = productOverview.NormalLevelDesc,
-                ImageUrl = productOverview.ImageUrl,
-                ImageName = productOverview.ImageName,
-                CompanyIndex = productOverview.CompanyIndex,
-                HightlightProduct = productOverview.HightlightProduct,
-                ProductTypeId = productOverview.ProductTypeId,
-                BrandId = productOverview.BrandId,
-                Country = _productDbContext.Country.Find(productOverview.CountryCode)
-            });
+            _productDbContext.Product.Add(productEntity);
             return await _productDbContext.SaveChangesAsync(new CancellationToken());
         }
 
         public async Task<int> DeleteProductOverView(Guid Id)
         {
-            var entity = await _productDbContext.ProductOverview.FindAsync(Id);
+            var entity = await _productDbContext.Product.FindAsync(Id);
 
             if (entity == null)
             {
                 return default;
             }
 
-            _productDbContext.ProductOverview.Remove(entity);
+            _productDbContext.Product.Remove(entity);
 
             return await _productDbContext.SaveChangesAsync(new CancellationToken());
         }
@@ -436,7 +356,7 @@ namespace ShippingApp.Infrastructure.Repositories
         }
 
 
-        public async Task<int> CreateCountry(Country entity)
+        public async Task<int> CreateCountry(Models.Country entity)
         {
             var result = await _productDbContext.Country.FindAsync(entity.CountryCode);
             var countryQuery = _productDbContext.Country.Where(s => s.CountryName.Trim().Replace(" ", "") == entity.CountryName.Trim().Replace(" ", "")).FirstOrDefault();
@@ -497,7 +417,7 @@ namespace ShippingApp.Infrastructure.Repositories
         //    throw new NotImplementedException();
         //}
 
-        public async Task<int> UpdateCountry(string CountryCode, Country entity)
+        public async Task<int> UpdateCountry(string CountryCode, Models.Country entity)
         {
             var result = await _productDbContext.Country.FindAsync(CountryCode);
 
@@ -517,15 +437,15 @@ namespace ShippingApp.Infrastructure.Repositories
             return await result;
         }
 
-        public async Task<int> CreateBrand(Brand entity)
+        public async Task<int> CreateBrand(Models.Brand entity)
         {
             var result = await _productDbContext.Brand.FindAsync(entity.Id);
             var productTypeQuery = _productDbContext.Brand.Where(s => s.BrandName.Trim().Replace(" ", "") == entity.BrandName.Trim().Replace(" ", "")).FirstOrDefault();
 
-            if (result != null)
-            {
-                return await UpdateBrand(entity);
-            }
+            //if (result != null)
+            //{
+            //    return await UpdateBrand(entity);
+            //}
 
             if (productTypeQuery != null)
             {
@@ -543,7 +463,7 @@ namespace ShippingApp.Infrastructure.Repositories
             return await _productDbContext.SaveChangesAsync(new CancellationToken());
         }
 
-        public async Task<int> UpdateBrand(Brand entity)
+        public async Task<int> UpdateBrand(Models.Brand entity)
         {
             var result = await _productDbContext.Brand.FindAsync(entity.Id);
 
@@ -649,7 +569,7 @@ namespace ShippingApp.Infrastructure.Repositories
             return await _productDbContext.SaveChangesAsync(new CancellationToken());
         }
 
-        public async Task<Entities.Customer> CreatCustomer(Customer customer)
+        public async Task<Entities.Customer> CreatCustomer(Models.Customer customer)
         {
             //_productDbContext.Customers.Add(new Entities.Customer
             //{
@@ -680,7 +600,7 @@ namespace ShippingApp.Infrastructure.Repositories
 
         }
 
-        public void SendEmail(Order order)
+        public void SendEmail(Models.Order order)
         {
             string address = "an.th@grex-solutions.com";
             string subject = "Mail Tư Vấn Sản Phẩm";
@@ -714,7 +634,7 @@ namespace ShippingApp.Infrastructure.Repositories
         }
 
 
-        public async Task<int> CreatOder(Order order)
+        public async Task<int> CreatOder(Models.Order order)
         {
 
             //SendEmail(order);

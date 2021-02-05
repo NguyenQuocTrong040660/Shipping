@@ -29,8 +29,9 @@ namespace ShippingApp.Application.Queries
 
         public async Task<List<ProductOverview>> Handle(GetProductByCountriesQuery request, CancellationToken cancellationToken)
         {
-            List<ProductOverview> productOverviews = _productRepository.GetProductByCountries(request.CountryCode);
-            return await Task.FromResult(productOverviews);
+            //List<ProductOverview> productOverviews = _productRepository.GetProductByCountries(request.CountryCode);
+            //return await Task.FromResult(productOverviews);
+            return null;
         }
 
     }

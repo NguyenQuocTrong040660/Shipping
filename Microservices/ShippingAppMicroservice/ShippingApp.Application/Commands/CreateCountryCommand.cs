@@ -26,9 +26,10 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(CreateCountryCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Country>(request.Model);
+            //var entity = _mapper.Map<Country>(request.Model);
 
-            return await _repository.CreateCountry(entity);
+            //return await _repository.CreateCountry(entity);
+            return 0;
         }
     }
 }

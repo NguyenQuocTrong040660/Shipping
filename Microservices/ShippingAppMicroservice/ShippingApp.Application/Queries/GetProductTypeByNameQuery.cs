@@ -28,8 +28,9 @@ namespace ShippingApp.Application.Queries
 
         public async Task<ProductType> Handle(GetProductTypeByNameQuery request, CancellationToken cancellationToken)
         {
-            var result = await _repository.GetProductTypeByName(request.ProductTypeName);
-            return await Task.FromResult(_mapper.Map<ProductType>(result));
+            //var result = await _repository.GetProductTypeByName(request.ProductTypeName);
+            //return await Task.FromResult(_mapper.Map<ProductType>(result));
+            return null;
         }
     }
 }

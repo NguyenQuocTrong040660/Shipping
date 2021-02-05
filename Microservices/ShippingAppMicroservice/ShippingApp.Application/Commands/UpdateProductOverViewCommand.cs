@@ -31,14 +31,15 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(UpdateProductOverViewCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _Repository.GetProductsbyID(request.Id);
+            //var entity = await _Repository.GetProductsbyID(request.Id);
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(entity), request.Id);
-            }
+            //if (entity == null)
+            //{
+            //    throw new NotFoundException(nameof(entity), request.Id);
+            //}
 
-            return await _Repository.UpdateProductOverView(_mapper.Map<Entities.ProductOverview>(request.Entity));
+            //return await _Repository.UpdateProductOverView(_mapper.Map<Entities.ProductOverview>(request.Entity));
+            return 0;
         }
     }
 

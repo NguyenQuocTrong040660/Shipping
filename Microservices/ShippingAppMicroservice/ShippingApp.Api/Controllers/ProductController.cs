@@ -10,9 +10,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ShippingApp.Application.Commands;
-using ShippingApp.Application.Queries;
-using ShippingApp.Domain.Models;
+using Commands = ShippingApp.Application.Commands;
+using Queries = ShippingApp.Application.Queries;
+using Models = ShippingApp.Domain.Models;
+using DTO = ShippingApp.Domain.DTO;
 
 namespace ShippingApp.Api.Controllers
 {
@@ -30,14 +31,14 @@ namespace ShippingApp.Api.Controllers
         [Route("AddProducts")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProductOverview), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<bool>> AddProducts(ProductOverview model)
+        [ProducesResponseType(typeof(DTO.ProductDTO), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<bool>> AddProducts(DTO.ProductDTO productDTO)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(model);
+                return BadRequest(productDTO);
             }
-            var result = await _mediator.Send(new CreateProductOverViewCommand() { Model = model });
+            var result = await _mediator.Send(new Commands.CreateProductOverViewCommand() { productDTO = productDTO });
 
             if (result == 0)
             {
@@ -48,34 +49,19 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllProducts/{companyIndex}")]
-        public async Task<ActionResult<List<ProductOverview>>> GetAllProducts(int companyIndex)
+        [Route("GetAllProducts")]
+        public async Task<ActionResult<List<DTO.ProductDTO>>> GetAllProducts()
         {
-            //return await _mediator.Send(new GetProductQuery());
-            //var result = await _mediator.Send(new GetProductQuery() { companyIndex = companyIndex });
-
-            return await _mediator.Send(new GetProductQuery() { companyIndex = companyIndex });
+            return await _mediator.Send(new Queries.GetAllProductQuery());
         }
-
-        [HttpGet]
-        [Route("GetAllProductsHightLight")]
-        public async Task<ActionResult<List<ProductOverview>>> GetAllProductsHightLight()
-        {
-            //return await _mediator.Send(new GetProductQuery());
-            //var result = await _mediator.Send(new GetProductQuery() { companyIndex = companyIndex });
-
-            return await _mediator.Send(new GetProductHightLightQuery());
-        }
-
-
 
         [HttpGet]
         [Route("GetProductsbyID/{id}")]
-        [ProducesResponseType(typeof(ProductOverview), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProductOverview), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<ProductOverview>> GetProductByID(Guid id)
+        [ProducesResponseType(typeof(DTO.ProductDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ProductDTO), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<DTO.ProductDTO>> GetProductByID(Guid id)
         {
-            var result = await _mediator.Send(new GetProductByIDQuery() { Id = id });
+            var result = await _mediator.Send(new Queries.GetProductByIDQuery() { Id = id });
 
             if (result == null)
             {
@@ -85,41 +71,13 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("GetProductsbyCountries")]
-        public async Task<ActionResult<List<ProductOverview>>> GetProductsbyCountries(string CountryCode)
-        {
-            return await _mediator.Send(new GetProductByCountriesQuery(CountryCode));
-        }
-
-        [HttpPut]
-        [Route("UpdateProduct/{id}")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProductOverview), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> PutProductOverview(Guid id, ProductOverview entity)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(entity);
-            }
-
-            var result = await _mediator.Send(new UpdateProductOverViewCommand() { Id = id, Entity = entity });
-
-            if (result == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
-        }
         [HttpDelete]
         [Route("DeletedProduct/{id}")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<int>> DeleteProductOverview(Guid id)
         {
-            var result = await _mediator.Send(new DeleteProductOverViewCommand() { Id = id });
+            var result = await _mediator.Send(new Commands.DeleteProductOverViewCommand() { Id = id });
 
             if (result == 0)
             {
@@ -127,34 +85,6 @@ namespace ShippingApp.Api.Controllers
             }
 
             return Ok(true);
-        }
-
-        [HttpPost]
-        [Route("CheckoutProduct")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ProductOverview), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<bool>> CheckoutProduct(Order Order)
-        {
-            //_logger.LogInformation("Start Send", DateTime.Now.ToString());
-            //var result = await _mediator.Send(new SendMailCommand { CartDto = cartModel });
-            //_logger.LogInformation("End Send", DateTime.Now.ToString());
-
-            //var result = await _mediator.Send(new CreateCustomerCommand() { Customer = Order.Customer });
-
-            //if (result == 0)
-            //{
-            //    return NotFound();
-            //}
-
-            var result = await _mediator.Send(new CreateOrderCommand() { Order = Order });
-
-            if (result == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
         }
 
         [HttpPost("UploadImage"), DisableRequestSizeLimit]

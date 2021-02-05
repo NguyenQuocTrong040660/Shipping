@@ -32,14 +32,15 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(UpdateCountryCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _repository.GetCountryByCode(request.CountryCode);
+            //var entity = await _repository.GetCountryByCode(request.CountryCode);
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(entity), request.CountryCode);
-            }
+            //if (entity == null)
+            //{
+            //    throw new NotFoundException(nameof(entity), request.CountryCode);
+            //}
 
-            return await _repository.UpdateCountry(request.CountryCode, _mapper.Map<Country>(request.Entity));
+            //return await _repository.UpdateCountry(request.CountryCode, _mapper.Map<Country>(request.Entity));
+            return 0;
         }
     }
 }

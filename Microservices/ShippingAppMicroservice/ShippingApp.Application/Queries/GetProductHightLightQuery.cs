@@ -23,8 +23,9 @@ namespace ShippingApp.Application.Queries
 
         public async Task<List<ProductOverview>> Handle(GetProductHightLightQuery request, CancellationToken cancellationToken)
         {
-            List<ProductOverview> productOverviews =  _productRepository.GetAllProductsHightLight();
-            return  await Task.FromResult(productOverviews);
+            //List<ProductOverview> productOverviews =  _productRepository.GetAllProductsHightLight();
+            //return  await Task.FromResult(productOverviews);
+            return null;
         }
 
     }

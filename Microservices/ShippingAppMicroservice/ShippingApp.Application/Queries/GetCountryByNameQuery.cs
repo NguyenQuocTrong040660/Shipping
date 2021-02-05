@@ -28,8 +28,9 @@ namespace ShippingApp.Application.Queries
 
         public async Task<Country> Handle(GetCountryByNameQuery request, CancellationToken cancellationToken)
         {
-            var result = await _repository.GetCountryByName(request.CountryName);
-            return await Task.FromResult(_mapper.Map<Country>(result));
+            //var result = await _repository.GetCountryByName(request.CountryName);
+            //return await Task.FromResult(_mapper.Map<Country>(result));
+            return null;
         }
     }
 }

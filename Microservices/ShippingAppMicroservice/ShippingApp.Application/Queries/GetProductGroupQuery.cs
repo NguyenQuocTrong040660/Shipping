@@ -23,8 +23,9 @@ namespace ShippingApp.Application.Queries
 
         public async Task<ProductGroup> Handle(GetProductGroupQuery request, CancellationToken cancellationToken)
         {
-            ProductGroup productGroups = _productRepository.GetAllProductGroup();
-            return await Task.FromResult(productGroups);
+            //ProductGroup productGroups = _productRepository.GetAllProductGroup();
+            //return await Task.FromResult(productGroups);
+            return null;
         }
 
     }

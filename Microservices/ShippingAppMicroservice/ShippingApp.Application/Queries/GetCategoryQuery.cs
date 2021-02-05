@@ -30,8 +30,9 @@ namespace ShippingApp.Application.Queries
 
         public async Task<List<ProductType>> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
         {
-            List<ProductType> categories = _productRepository.GetAllCategory();
-                return await Task.FromResult(categories);
+            //List<ProductType> categories = _productRepository.GetAllCategory();
+            //    return await Task.FromResult(categories);
+            return null;
         }
     }
 }

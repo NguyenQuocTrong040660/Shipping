@@ -25,6 +25,7 @@ namespace ShippingApp.Domain.Interfaces
         DbSet<Reservation> Reservations { get; set; }
         DbSet<MemberShip> MemberShips { get; set; }
         DbSet<Promotion> Promotions { get; set; }
+        DbSet<ProductEntity> Product { get; set; }
         public int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
