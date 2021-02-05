@@ -19,19 +19,19 @@ namespace ShippingApp.Infrastructure.Repositories
 {
     public class ShippingAppRepository : IShippingAppRepository
     {
-        private readonly IShippingAppDbContext _productDbContext;
+        private readonly IShippingAppDbContext _shippingAppDbContext;
         private readonly IMapper _mapper;
 
         public ShippingAppRepository(IShippingAppDbContext productDbContext, IMapper mapper)
         {
-            _productDbContext = productDbContext ?? throw new ArgumentNullException(nameof(productDbContext));
+            _shippingAppDbContext = productDbContext ?? throw new ArgumentNullException(nameof(productDbContext));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public List<Models.ProductType> GetAllCategory()
         {
             List<Models.ProductType> results = new List<Models.ProductType>();
-            var categories = _productDbContext.ProductType.ToList();
+            var categories = _shippingAppDbContext.ProductType.ToList();
 
             foreach (var item in categories)
             {
@@ -44,7 +44,7 @@ namespace ShippingApp.Infrastructure.Repositories
 
         public List<Models.ProductModel> GetAllProducts()
         {
-            var products = _productDbContext.Product
+            var products = _shippingAppDbContext.Product
                     .AsNoTracking()
                     .ToList();
 
@@ -61,7 +61,7 @@ namespace ShippingApp.Infrastructure.Repositories
 
             if (CompanyIndex == 0)
             {
-                var productTypes = _productDbContext.ProductType.ToList();
+                var productTypes = _shippingAppDbContext.ProductType.ToList();
                 foreach (var item in productTypes)
                 {
                     var model = _mapper.Map<Models.ProductType>(item);
@@ -70,7 +70,7 @@ namespace ShippingApp.Infrastructure.Repositories
             }
             else
             {
-                var productTypes = _productDbContext.ProductType
+                var productTypes = _shippingAppDbContext.ProductType
                     .Where(item => item.CompanyIndex == CompanyIndex)
                     .ToList();
                 foreach (var item in productTypes)
@@ -115,7 +115,7 @@ namespace ShippingApp.Infrastructure.Repositories
 
         public async Task<Models.ProductModel> GetProductsbyID(Guid Id)
         {
-            var result = await _productDbContext.Product.FindAsync(Id);
+            var result = await _shippingAppDbContext.Product.FindAsync(Id);
 
             return _mapper.Map<Models.ProductModel>(result);
         }
@@ -123,7 +123,7 @@ namespace ShippingApp.Infrastructure.Repositories
         public List<Models.Country> GetProductCountry()
         {
             List<Models.Country> results = new List<Models.Country>();
-            var productCountries = _productDbContext.Country.ToList();
+            var productCountries = _shippingAppDbContext.Country.ToList();
 
             foreach (var item in productCountries)
             {
@@ -137,8 +137,8 @@ namespace ShippingApp.Infrastructure.Repositories
        
         public async Task<int> CreateProductType(Models.ProductType entity)
         {
-            var result = await _productDbContext.ProductType.FindAsync(entity.Id);
-            var productTypeQuery = _productDbContext.ProductType.Where(s => s.ProductTypeName.Trim().Replace(" ","") == entity.ProductTypeName.Trim().Replace(" ","")).FirstOrDefault();
+            var result = await _shippingAppDbContext.ProductType.FindAsync(entity.Id);
+            var productTypeQuery = _shippingAppDbContext.ProductType.Where(s => s.ProductTypeName.Trim().Replace(" ","") == entity.ProductTypeName.Trim().Replace(" ","")).FirstOrDefault();
 
             //if (result != null)
             //{
@@ -151,45 +151,45 @@ namespace ShippingApp.Infrastructure.Repositories
                
             }
 
-            _productDbContext.ProductType.Add(new Entities.ProductType
+            _shippingAppDbContext.ProductType.Add(new Entities.ProductType
             {
                 Id = entity.Id,
                 ProductTypeName = entity.ProductTypeName,
                 CompanyIndex = entity.CompanyIndex
             });
 
-            return await _productDbContext.SaveChangesAsync(new CancellationToken());
+            return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
         public async Task<Entities.ProductType> GetProductTypeByName(string ProductTypeName)
         {
-            var result =  _productDbContext.ProductType.Where(s => s.ProductTypeName == ProductTypeName).FirstOrDefault();
+            var result =  _shippingAppDbContext.ProductType.Where(s => s.ProductTypeName == ProductTypeName).FirstOrDefault();
             return result;
         }
 
         public async Task<Entities.ProductType> GetProductTypeByCode(Guid ProductTypeCode)
         {
-            var result = _productDbContext.ProductType.FindAsync(ProductTypeCode);
+            var result = _shippingAppDbContext.ProductType.FindAsync(ProductTypeCode);
             return await result;
         }
 
         public async Task<int> DeleteProductType(Guid ProductTypeCode)
         {
-            var entity = await _productDbContext.ProductType.FindAsync(ProductTypeCode);
+            var entity = await _shippingAppDbContext.ProductType.FindAsync(ProductTypeCode);
 
             if (entity == null)
             {
                 return default;
             }
 
-            _productDbContext.ProductType.Remove(entity);
+            _shippingAppDbContext.ProductType.Remove(entity);
 
-            return await _productDbContext.SaveChangesAsync(new CancellationToken());
+            return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
         public async Task<int> UpdateProductType(Models.ProductType entity)
         {
-            var result = await _productDbContext.ProductType.FindAsync(entity.Id);
+            var result = await _shippingAppDbContext.ProductType.FindAsync(entity.Id);
 
             if (result == null)
             {
@@ -199,56 +199,58 @@ namespace ShippingApp.Infrastructure.Repositories
             result.ProductTypeName = entity.ProductTypeName;
             result.CompanyIndex = entity.CompanyIndex;
 
-            return await _productDbContext.SaveChangesAsync(new CancellationToken());
+            return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
         public async Task<int> CreateNewProduct(Models.ProductModel productModel)
         {
             var productEntity = _mapper.Map<Entities.ProductEntity>(productModel);
 
-            var result = await _productDbContext.Product.FindAsync(productEntity.Id);
+            var result = await _shippingAppDbContext.Product.FindAsync(productEntity.Id);
 
             if (result != null)
             {
                 return 0;
             }
 
-            _productDbContext.Product.Add(productEntity);
-            return await _productDbContext.SaveChangesAsync(new CancellationToken());
+            _shippingAppDbContext.Product.Add(productEntity);
+            return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
         public async Task<int> DeleteProductByID(Guid Id)
         {
-            var entity = await _productDbContext.Product.FindAsync(Id);
+            var entity = await _shippingAppDbContext.Product.FindAsync(Id);
 
             if (entity == null)
             {
                 return default;
             }
 
-            _productDbContext.Product.Remove(entity);
+            _shippingAppDbContext.Product.Remove(entity);
 
-            return await _productDbContext.SaveChangesAsync(new CancellationToken());
+            return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
-        public async Task<int> UpdateProductOverView(Entities.ProductEntity entity)
+        public async Task<int> UpdateProduct(Models.ProductModel productModel)
         {
-            var result = await _productDbContext.Product.FindAsync(entity.Id);
+            var result = await _shippingAppDbContext.Product.FindAsync(productModel.Id);
+
             if (result == null)
             {
                 return default;
             }
 
-            result.ProductName = entity.ProductName;
-           
-            return await _productDbContext.SaveChangesAsync(new CancellationToken());
+            _mapper.Map(productModel, result);
+            //_shippingAppDbContext.Product.Update(productEntity);
+
+            return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
 
         public async Task<int> CreateCountry(Models.Country entity)
         {
-            var result = await _productDbContext.Country.FindAsync(entity.CountryCode);
-            var countryQuery = _productDbContext.Country.Where(s => s.CountryName.Trim().Replace(" ", "") == entity.CountryName.Trim().Replace(" ", "")).FirstOrDefault();
+            var result = await _shippingAppDbContext.Country.FindAsync(entity.CountryCode);
+            var countryQuery = _shippingAppDbContext.Country.Where(s => s.CountryName.Trim().Replace(" ", "") == entity.CountryName.Trim().Replace(" ", "")).FirstOrDefault();
 
             if (result != null)
             {
@@ -262,7 +264,7 @@ namespace ShippingApp.Infrastructure.Repositories
 
             }
 
-            _productDbContext.Country.Add(new Entities.Country
+            _shippingAppDbContext.Country.Add(new Entities.Country
             {
                 CountryCode = entity.CountryCode,
                 CountryName = entity.CountryName
@@ -270,14 +272,14 @@ namespace ShippingApp.Infrastructure.Repositories
 
 
 
-            return await _productDbContext.SaveChangesAsync(new CancellationToken());
+            return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
 
         public List<Models.Country> GetAllCountry()
         {
             List<Models.Country> results = new List<Models.Country>();
-            var countries = _productDbContext.Country.ToList();
+            var countries = _shippingAppDbContext.Country.ToList();
 
             foreach (var item in countries)
             {
@@ -291,13 +293,13 @@ namespace ShippingApp.Infrastructure.Repositories
 
         public async Task<Entities.Country> GetCountryByName(string CountryName)
         {
-            var result = _productDbContext.Country.Where(s => s.CountryName == CountryName).FirstOrDefault();
+            var result = _shippingAppDbContext.Country.Where(s => s.CountryName == CountryName).FirstOrDefault();
             return result;
         }
 
         public async Task<Entities.Country> GetCountryByCode(string countryCode)
         {
-            var result = _productDbContext.Country.FindAsync(countryCode);
+            var result = _shippingAppDbContext.Country.FindAsync(countryCode);
             return await result;
         }
 
@@ -308,7 +310,7 @@ namespace ShippingApp.Infrastructure.Repositories
 
         public async Task<int> UpdateCountry(string CountryCode, Models.Country entity)
         {
-            var result = await _productDbContext.Country.FindAsync(CountryCode);
+            var result = await _shippingAppDbContext.Country.FindAsync(CountryCode);
 
             if (result == null)
             {
@@ -317,14 +319,14 @@ namespace ShippingApp.Infrastructure.Repositories
             //result.CountryCode = entity.CountryCode;
             result.CountryName = entity.CountryName;
 
-            return await _productDbContext.SaveChangesAsync(new CancellationToken());
+            return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
         
 
         public async Task<int> DeleteCountry(string CountryCode)
         {
-            var entity = await _productDbContext.Country.FindAsync(CountryCode);
+            var entity = await _shippingAppDbContext.Country.FindAsync(CountryCode);
 
             if (entity == null)
             {
@@ -332,9 +334,9 @@ namespace ShippingApp.Infrastructure.Repositories
             }
             
 
-            _productDbContext.Country.Remove(entity);
+            _shippingAppDbContext.Country.Remove(entity);
 
-            return await _productDbContext.SaveChangesAsync(new CancellationToken());
+            return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
         //public void SendEmail(Models.Order order)

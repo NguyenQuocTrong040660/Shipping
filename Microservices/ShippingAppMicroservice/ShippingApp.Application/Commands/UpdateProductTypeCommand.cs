@@ -20,26 +20,26 @@ namespace ShippingApp.Application.Commands
 
     public class UpdateProductTypeCommanddHandler : IRequestHandler<UpdateProductTypeCommand, int>
     {
-        private readonly IShippingAppRepository _repository;
+        private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
 
         public UpdateProductTypeCommanddHandler(IShippingAppRepository repository, IMapper mapper)
         {
-            _repository = repository;
+            _shippingAppRepository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
 
         public async Task<int> Handle(UpdateProductTypeCommand request, CancellationToken cancellationToken)
         {
-            //var entity = await _repository.GetProductTypeByCode(request.ProductTypeCode);
+            //var entity = await _shippingAppRepository.GetProductTypeByCode(request.ProductTypeCode);
 
             //if (entity == null)
             //{
             //    throw new NotFoundException(nameof(entity), request.ProductTypeCode);
             //}
 
-            //return await _repository.UpdateProductType(_mapper.Map<ProductType>(request.Entity));
+            //return await _shippingAppRepository.UpdateProductType(_mapper.Map<ProductType>(request.Entity));
             return 0;
         }
     }

@@ -71,6 +71,27 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPut("UpdateProduct")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(DTO.ProductDTO), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<int>> UpdateProduct(DTO.ProductDTO productDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(productDTO);
+            }
+
+            var result = await _mediator.Send(new Commands.UpdateProductCommand() { productDTO = productDTO });
+
+            if (result == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
         [HttpDelete]
         [Route("DeletedProduct/{id}")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]

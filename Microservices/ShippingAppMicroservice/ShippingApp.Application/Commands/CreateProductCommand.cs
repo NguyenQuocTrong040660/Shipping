@@ -17,14 +17,15 @@ namespace ShippingApp.Application.Commands
     {
         public DTO.ProductDTO productDTO { get; set; }
     }
+
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
     {
-        private readonly IShippingAppRepository _Repository;
+        private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
 
         public CreateProductCommandHandler(IShippingAppRepository Repository, IMapper mapper)
         {
-            _Repository = Repository;
+            _shippingAppRepository = Repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -32,7 +33,7 @@ namespace ShippingApp.Application.Commands
         {
             var productModel = _mapper.Map<Models.ProductModel>(request.productDTO);
 
-            return await _Repository.CreateNewProduct(productModel);
+            return await _shippingAppRepository.CreateNewProduct(productModel);
         }
     }
 }

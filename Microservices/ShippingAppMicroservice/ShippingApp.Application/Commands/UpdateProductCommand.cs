@@ -10,36 +10,32 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Entities = ShippingApp.Domain.Entities;
+using Models = ShippingApp.Domain.Models;
+using DTO = ShippingApp.Domain.DTO;
 
 namespace ShippingApp.Application.Commands
 {
     public class UpdateProductCommand : IRequest<int>
     {
-        public Entities.ProductEntity Entity { get; set; }
-        public Guid Id { get; set; }
+        public DTO.ProductDTO productDTO { get; set; }
     }
+
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, int>
     {
-        private readonly IShippingAppRepository _Repository;
+        private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
 
-        public UpdateProductCommandHandler(IShippingAppRepository Repository, IMapper mapper)
+        public UpdateProductCommandHandler(IShippingAppRepository shippingAppRepository, IMapper mapper)
         {
-            _Repository = Repository;
+            _shippingAppRepository = shippingAppRepository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<int> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
-            //var entity = await _Repository.GetProductsbyID(request.Id);
+            var productModel = _mapper.Map<Models.ProductModel>(request.productDTO);
 
-            //if (entity == null)
-            //{
-            //    throw new NotFoundException(nameof(entity), request.Id);
-            //}
-
-            //return await _Repository.UpdateProductOverView(_mapper.Map<Entities.ProductOverview>(request.Entity));
-            return 0;
+            return await _shippingAppRepository.UpdateProduct(productModel);
         }
     }
 

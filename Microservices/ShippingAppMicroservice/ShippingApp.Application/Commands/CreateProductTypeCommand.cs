@@ -17,11 +17,11 @@ namespace ShippingApp.Application.Commands
 
     public class CreateProductTypeCommandHandler : IRequestHandler<CreateProductTypeCommand, int>
     {
-        private readonly IShippingAppRepository _repository;
+        private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
         public CreateProductTypeCommandHandler(IShippingAppRepository repository, IMapper mapper)
         {
-            _repository = repository;
+            _shippingAppRepository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -29,7 +29,7 @@ namespace ShippingApp.Application.Commands
         {
             //var entity = _mapper.Map<ProductType>(request.Model);
 
-            //return await _repository.CreateProductType(entity);
+            //return await _shippingAppRepository.CreateProductType(entity);
             return 0;
         }
     }

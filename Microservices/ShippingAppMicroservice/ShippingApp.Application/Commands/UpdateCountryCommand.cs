@@ -20,26 +20,26 @@ namespace ShippingApp.Application.Commands
 
     public class UpdateCountryCommanddHandler : IRequestHandler<UpdateCountryCommand, int>
     {
-        private readonly IShippingAppRepository _repository;
+        private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
 
         public UpdateCountryCommanddHandler(IShippingAppRepository repository, IMapper mapper)
         {
-            _repository = repository;
+            _shippingAppRepository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
 
         public async Task<int> Handle(UpdateCountryCommand request, CancellationToken cancellationToken)
         {
-            //var entity = await _repository.GetCountryByCode(request.CountryCode);
+            //var entity = await _shippingAppRepository.GetCountryByCode(request.CountryCode);
 
             //if (entity == null)
             //{
             //    throw new NotFoundException(nameof(entity), request.CountryCode);
             //}
 
-            //return await _repository.UpdateCountry(request.CountryCode, _mapper.Map<Country>(request.Entity));
+            //return await _shippingAppRepository.UpdateCountry(request.CountryCode, _mapper.Map<Country>(request.Entity));
             return 0;
         }
     }
