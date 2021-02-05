@@ -5,14 +5,14 @@ using AutoMapper;
 
 namespace ShippingApp.Persistence.Mapping
 {
-    public class ProductProfile : Profile
+    public class ShippingPlanProfile : Profile
     {
-        public ProductProfile()
+        public ShippingPlanProfile()
         {
-            CreateMap<Entities.Product, Models.Product>()
+            CreateMap<Entities.ShippingPlan, Models.ShippingPlan>()
                 .ReverseMap();
 
-            CreateMap<Models.Product, DTO.Product>()
+            CreateMap<Models.ShippingPlan, DTO.ShippingPlan>()
                 .ReverseMap();
 
         }

@@ -15,7 +15,7 @@ namespace ShippingApp.Application.Commands
 {
     public class CreateProductCommand : IRequest<int>
     {
-        public DTO.ProductDTO productDTO { get; set; }
+        public DTO.Product productDTO { get; set; }
     }
 
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
@@ -31,7 +31,7 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var productModel = _mapper.Map<Models.ProductModel>(request.productDTO);
+            var productModel = _mapper.Map<Models.Product>(request.productDTO);
 
             return await _shippingAppRepository.CreateNewProduct(productModel);
         }
