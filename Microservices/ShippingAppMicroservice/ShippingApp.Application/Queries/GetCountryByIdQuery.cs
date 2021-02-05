@@ -17,10 +17,10 @@ namespace ShippingApp.Application.Queries
 
     public class GetCountryByIdQueryHandler : IRequestHandler<GetCountryByIdQuery, Country>
     {
-        private readonly IProductRepository _repository;
+        private readonly IShippingAppRepository _repository;
         private readonly IMapper _mapper;
 
-        public GetCountryByIdQueryHandler(IProductRepository repository, IMapper mapper)
+        public GetCountryByIdQueryHandler(IShippingAppRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

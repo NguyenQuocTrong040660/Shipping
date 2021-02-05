@@ -38,7 +38,7 @@ namespace ShippingApp.Api.Controllers
             {
                 return BadRequest(productDTO);
             }
-            var result = await _mediator.Send(new Commands.CreateProductOverViewCommand() { productDTO = productDTO });
+            var result = await _mediator.Send(new Commands.CreateProductCommand() { productDTO = productDTO });
 
             if (result == 0)
             {
@@ -77,7 +77,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<int>> DeleteProductOverview(Guid id)
         {
-            var result = await _mediator.Send(new Commands.DeleteProductOverViewCommand() { Id = id });
+            var result = await _mediator.Send(new Commands.DeleteProductCommand() { Id = id });
 
             if (result == 0)
             {

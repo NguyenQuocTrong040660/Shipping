@@ -20,10 +20,10 @@ namespace ShippingApp.Application.Commands
 
     public class UpdateCountryCommanddHandler : IRequestHandler<UpdateCountryCommand, int>
     {
-        private readonly IProductRepository _repository;
+        private readonly IShippingAppRepository _repository;
         private readonly IMapper _mapper;
 
-        public UpdateCountryCommanddHandler(IProductRepository repository, IMapper mapper)
+        public UpdateCountryCommanddHandler(IShippingAppRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

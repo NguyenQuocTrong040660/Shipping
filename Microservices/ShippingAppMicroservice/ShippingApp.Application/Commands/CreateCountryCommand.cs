@@ -16,9 +16,9 @@ namespace ShippingApp.Application.Commands
     }
     public class CreateCountryCommandHandler : IRequestHandler<CreateCountryCommand, int>
     {
-        private readonly IProductRepository _repository;
+        private readonly IShippingAppRepository _repository;
         private readonly IMapper _mapper;
-        public CreateCountryCommandHandler(IProductRepository repository, IMapper mapper)
+        public CreateCountryCommandHandler(IShippingAppRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

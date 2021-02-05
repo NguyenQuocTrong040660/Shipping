@@ -11,13 +11,8 @@ namespace ShippingApp.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            //services.AddDbContext<ProductDbContext>(options =>
-            //    options.UseSqlServer(configuration.GetConnectionString("ShippingAppDatabase")));
             services.AddScoped<IShippingAppDbContext, ShippingAppDbContext>();
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IReservationRepository, ReservationRepository>();
-            services.AddScoped<IMemberShipRepository, MemberShipRepository>();
-            services.AddScoped<IPromotionRepository, PromotionRepository>();
+            services.AddScoped<IShippingAppRepository, ShippingAppRepository>();
 
             var emailConfiguration = configuration.GetSection("EmailConfiguration");
             services.Configure<EmailConfiguration>(emailConfiguration);

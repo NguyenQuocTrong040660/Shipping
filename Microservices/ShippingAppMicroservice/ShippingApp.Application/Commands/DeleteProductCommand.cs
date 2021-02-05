@@ -9,25 +9,25 @@ using System.Threading.Tasks;
 
 namespace ShippingApp.Application.Commands
 {
-    public class DeleteMemberShipCommand : IRequest<int>
+    public class DeleteProductCommand : IRequest<int>
     {
      public Guid Id { get; set; }
     }
 
-    public class DeleteMemberShipCommandHandler : IRequestHandler<DeleteMemberShipCommand, int>
+    public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, int>
     {
-        private readonly IMemberShipRepository _Repository;
+        private readonly IShippingAppRepository _Repository;
         private readonly IMapper _mapper;
 
-        public DeleteMemberShipCommandHandler(IMemberShipRepository Repository, IMapper mapper)
+        public DeleteProductCommandHandler(IShippingAppRepository Repository, IMapper mapper)
         {
             _Repository = Repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<int> Handle(DeleteMemberShipCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            return await _Repository.DeleteMemberShip(request.Id);
+            return await _Repository.DeleteProductByID(request.Id);
         }
     }
 }

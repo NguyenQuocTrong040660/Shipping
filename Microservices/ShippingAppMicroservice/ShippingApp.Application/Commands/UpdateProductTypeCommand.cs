@@ -20,10 +20,10 @@ namespace ShippingApp.Application.Commands
 
     public class UpdateProductTypeCommanddHandler : IRequestHandler<UpdateProductTypeCommand, int>
     {
-        private readonly IProductRepository _repository;
+        private readonly IShippingAppRepository _repository;
         private readonly IMapper _mapper;
 
-        public UpdateProductTypeCommanddHandler(IProductRepository repository, IMapper mapper)
+        public UpdateProductTypeCommanddHandler(IShippingAppRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

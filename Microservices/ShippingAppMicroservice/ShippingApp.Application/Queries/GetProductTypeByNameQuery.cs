@@ -17,10 +17,10 @@ namespace ShippingApp.Application.Queries
 
     public class GetProductTypeByNameQueryHandler : IRequestHandler<GetProductTypeByNameQuery,ProductType>
     {
-        private readonly IProductRepository _repository;
+        private readonly IShippingAppRepository _repository;
         private readonly IMapper _mapper;
 
-        public GetProductTypeByNameQueryHandler(IProductRepository repository, IMapper mapper)
+        public GetProductTypeByNameQueryHandler(IShippingAppRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

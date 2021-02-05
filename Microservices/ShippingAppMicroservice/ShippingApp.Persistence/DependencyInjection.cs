@@ -23,14 +23,8 @@ namespace ShippingApp.Persistence
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
-                //mc.AddProfile(new MappingProfile());
                 mc.AddProfile(new ProductTypeProfile());
                 mc.AddProfile(new CountryProfile());
-                mc.AddProfile(new BrandProfile());
-                mc.AddProfile(new ProductOverviewProfile());
-                mc.AddProfile(new ReservationProfile());
-                mc.AddProfile(new MemberShipProfile());
-                mc.AddProfile(new PromotionProfile());
                 mc.AddProfile(new ProductProfile());
             });
 

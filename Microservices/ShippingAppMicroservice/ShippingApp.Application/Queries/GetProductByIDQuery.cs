@@ -19,9 +19,9 @@ namespace ShippingApp.Application.Queries
     }
     public class GetProductByIDQueryHandler : IRequestHandler<GetProductByIDQuery, DTO.ProductDTO>
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IShippingAppRepository _productRepository;
         private readonly IMapper _mapper;
-        public GetProductByIDQueryHandler(IProductRepository productRepository, IMapper mapper)
+        public GetProductByIDQueryHandler(IShippingAppRepository productRepository, IMapper mapper)
         {
             _productRepository = productRepository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
