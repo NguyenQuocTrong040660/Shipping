@@ -12,7 +12,9 @@ namespace ShippingApp.Domain.Interfaces
     {
         DbSet<Entities.ProductType> ProductType { get; set; }
         DbSet<Entities.Country> Country { get; set; }
-        DbSet<Entities.ProductEntity> Product { get; set; }
+        DbSet<Entities.Product> Product { get; set; }
+        DbSet<Entities.ShippingPlan> ShippingPlan { get; set; }
+
         public int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

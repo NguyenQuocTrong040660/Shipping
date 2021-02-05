@@ -42,13 +42,13 @@ namespace ShippingApp.Infrastructure.Repositories
             return results;
         }
 
-        public List<Models.ProductModel> GetAllProducts()
+        public List<Models.Product> GetAllProducts()
         {
             var products = _shippingAppDbContext.Product
                     .AsNoTracking()
                     .ToList();
 
-            var results = _mapper.Map<List<Models.ProductModel>>(products);
+            var results = _mapper.Map<List<Models.Product>>(products);
 
             return results.ToList();
         }
@@ -113,11 +113,11 @@ namespace ShippingApp.Infrastructure.Repositories
             return results;
         }
 
-        public async Task<Models.ProductModel> GetProductsbyID(Guid Id)
+        public async Task<Models.Product> GetProductsbyID(Guid Id)
         {
             var result = await _shippingAppDbContext.Product.FindAsync(Id);
 
-            return _mapper.Map<Models.ProductModel>(result);
+            return _mapper.Map<Models.Product>(result);
         }
 
         public List<Models.Country> GetProductCountry()
@@ -202,9 +202,9 @@ namespace ShippingApp.Infrastructure.Repositories
             return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
-        public async Task<int> CreateNewProduct(Models.ProductModel productModel)
+        public async Task<int> CreateNewProduct(Models.Product productModel)
         {
-            var productEntity = _mapper.Map<Entities.ProductEntity>(productModel);
+            var productEntity = _mapper.Map<Entities.Product>(productModel);
 
             var result = await _shippingAppDbContext.Product.FindAsync(productEntity.Id);
 
@@ -231,7 +231,7 @@ namespace ShippingApp.Infrastructure.Repositories
             return await _shippingAppDbContext.SaveChangesAsync(new CancellationToken());
         }
 
-        public async Task<int> UpdateProduct(Models.ProductModel productModel)
+        public async Task<int> UpdateProduct(Models.Product productModel)
         {
             var result = await _shippingAppDbContext.Product.FindAsync(productModel.Id);
 

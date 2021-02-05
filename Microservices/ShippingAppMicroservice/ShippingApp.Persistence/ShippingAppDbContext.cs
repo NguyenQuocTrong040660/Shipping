@@ -17,7 +17,8 @@ namespace ShippingApp.Persistence.DBContext
 
         public DbSet<Entities.ProductType> ProductType { get; set; }
         public DbSet<Entities.Country> Country { get; set; }
-        public DbSet<Entities.ProductEntity> Product { get; set; }
+        public DbSet<Entities.Product> Product { get; set; }
+        public DbSet<Entities.ShippingPlan> ShippingPlan { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,7 +28,10 @@ namespace ShippingApp.Persistence.DBContext
             modelBuilder.Entity<Entities.Country>()
                 .HasKey(c => new { c.CountryCode });
 
-            modelBuilder.Entity<Entities.ProductEntity>()
+            modelBuilder.Entity<Entities.Product>()
+               .HasKey(c => new { c.Id });
+
+            modelBuilder.Entity<Entities.ShippingPlan>()
                .HasKey(c => new { c.Id });
 
             base.OnModelCreating(modelBuilder);

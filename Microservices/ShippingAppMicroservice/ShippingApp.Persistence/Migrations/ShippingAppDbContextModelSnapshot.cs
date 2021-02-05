@@ -44,13 +44,25 @@ namespace ShippingApp.Persistence.Migrations
                     b.ToTable("Country");
                 });
 
-            modelBuilder.Entity("ShippingApp.Domain.Entities.ProductEntity", b =>
+            modelBuilder.Entity("ShippingApp.Domain.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Note")
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductName")
@@ -94,6 +106,62 @@ namespace ShippingApp.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductType");
+                });
+
+            modelBuilder.Entity("ShippingApp.Domain.Entities.ShippingPlan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PurchaseOrder")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuantityOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SalesID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("SalesPrice")
+                        .HasColumnType("real");
+
+                    b.Property<int>("SemlineNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShippingDate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShippingMode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShippingPlan");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Commands = ShippingApp.Application.Commands;
 using Queries = ShippingApp.Application.Queries;
-using Models = ShippingApp.Domain.Models;
 using DTO = ShippingApp.Domain.DTO;
 
 namespace ShippingApp.Api.Controllers
@@ -31,8 +30,8 @@ namespace ShippingApp.Api.Controllers
         [Route("AddProducts")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(DTO.ProductDTO), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<bool>> AddProducts(DTO.ProductDTO productDTO)
+        [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<bool>> AddProducts(DTO.Product productDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -50,16 +49,16 @@ namespace ShippingApp.Api.Controllers
 
         [HttpGet]
         [Route("GetAllProducts")]
-        public async Task<ActionResult<List<DTO.ProductDTO>>> GetAllProducts()
+        public async Task<ActionResult<List<DTO.Product>>> GetAllProducts()
         {
             return await _mediator.Send(new Queries.GetAllProductQuery());
         }
 
         [HttpGet]
         [Route("GetProductsbyID/{id}")]
-        [ProducesResponseType(typeof(DTO.ProductDTO), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(DTO.ProductDTO), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<DTO.ProductDTO>> GetProductByID(Guid id)
+        [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<DTO.Product>> GetProductByID(Guid id)
         {
             var result = await _mediator.Send(new Queries.GetProductByIDQuery() { Id = id });
 
@@ -74,8 +73,8 @@ namespace ShippingApp.Api.Controllers
         [HttpPut("UpdateProduct")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(DTO.ProductDTO), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> UpdateProduct(DTO.ProductDTO productDTO)
+        [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<int>> UpdateProduct(DTO.Product productDTO)
         {
             if (!ModelState.IsValid)
             {

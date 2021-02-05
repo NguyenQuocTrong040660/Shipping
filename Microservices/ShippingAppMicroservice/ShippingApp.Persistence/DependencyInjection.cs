@@ -26,6 +26,7 @@ namespace ShippingApp.Persistence
                 mc.AddProfile(new ProductTypeProfile());
                 mc.AddProfile(new CountryProfile());
                 mc.AddProfile(new ProductProfile());
+                mc.AddProfile(new ShippingPlanProfile());
             });
 
             IMapper mapper = mapperConfig.CreateMapper();

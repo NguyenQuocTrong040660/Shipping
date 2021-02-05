@@ -17,7 +17,7 @@ namespace ShippingApp.Application.Commands
 {
     public class UpdateProductCommand : IRequest<int>
     {
-        public DTO.ProductDTO productDTO { get; set; }
+        public DTO.Product productDTO { get; set; }
     }
 
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, int>
@@ -33,7 +33,7 @@ namespace ShippingApp.Application.Commands
 
         public async Task<int> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
-            var productModel = _mapper.Map<Models.ProductModel>(request.productDTO);
+            var productModel = _mapper.Map<Models.Product>(request.productDTO);
 
             return await _shippingAppRepository.UpdateProduct(productModel);
         }
