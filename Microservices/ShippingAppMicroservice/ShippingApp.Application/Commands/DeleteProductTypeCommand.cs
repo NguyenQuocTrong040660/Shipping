@@ -16,10 +16,10 @@ namespace ShippingApp.Application.Commands
 
     public class DeleteProductTypeCommandHandler : IRequestHandler<DeleteProductTypeCommand, int>
     {
-        private readonly IProductRepository _repository;
+        private readonly IShippingAppRepository _repository;
         private readonly IMapper _mapper;
 
-        public DeleteProductTypeCommandHandler(IProductRepository repository, IMapper mapper)
+        public DeleteProductTypeCommandHandler(IShippingAppRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

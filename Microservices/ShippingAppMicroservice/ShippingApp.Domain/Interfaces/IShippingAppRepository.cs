@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ShippingApp.Domain.Interfaces
 {
-    public interface IProductRepository
+    public interface IShippingAppRepository
     {
         List<Models.ProductModel> GetAllProducts();
         //List<ProductOverview> GetAllProductsHightLight();
@@ -27,7 +27,7 @@ namespace ShippingApp.Domain.Interfaces
         //Task<int> DeleteProductType(Guid ProductTypeCode);
 
         //Task<int> CreateProductOverView(ProductOverview productOverview); //not completed
-        Task<int> DeleteProductOverView(Guid Id);
+        Task<int> DeleteProductByID(Guid Id);
 
         //Task<int> UpdateProductOverView(Entities.ProductOverview entity);
 
@@ -47,6 +47,6 @@ namespace ShippingApp.Domain.Interfaces
 
         //Task<Entities.Customer> CreatCustomer(Customer customer);
         //Task<int> CreatOder(Order order);
-        Task<int> CreateProductOverView(Models.ProductModel productModel);
+        Task<int> CreateNewProduct(Models.ProductModel productModel);
     }
 }

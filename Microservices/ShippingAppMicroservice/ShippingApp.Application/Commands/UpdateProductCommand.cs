@@ -13,23 +13,23 @@ using Entities = ShippingApp.Domain.Entities;
 
 namespace ShippingApp.Application.Commands
 {
-    public class UpdateProductOverViewCommand : IRequest<int>
+    public class UpdateProductCommand : IRequest<int>
     {
-        public ProductOverview Entity { get; set; }
+        public Entities.ProductEntity Entity { get; set; }
         public Guid Id { get; set; }
     }
-    public class UpdateProductOverViewCommandHandler : IRequestHandler<UpdateProductOverViewCommand, int>
+    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, int>
     {
-        private readonly IProductRepository _Repository;
+        private readonly IShippingAppRepository _Repository;
         private readonly IMapper _mapper;
 
-        public UpdateProductOverViewCommandHandler(IProductRepository Repository, IMapper mapper)
+        public UpdateProductCommandHandler(IShippingAppRepository Repository, IMapper mapper)
         {
             _Repository = Repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<int> Handle(UpdateProductOverViewCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             //var entity = await _Repository.GetProductsbyID(request.Id);
 

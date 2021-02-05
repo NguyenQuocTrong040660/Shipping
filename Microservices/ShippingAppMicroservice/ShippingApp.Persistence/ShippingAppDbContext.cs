@@ -16,59 +16,21 @@ namespace ShippingApp.Persistence.DBContext
         }
 
         public DbSet<Entities.ProductType> ProductType { get; set; }
-        public DbSet<Entities.ProductDescription> ProductDescription { get; set; }
-        public DbSet<Entities.ProductImage> ProductImage { get; set; }
-        public DbSet<Entities.ProductGeneral> ProductGeneral { get; set; }
-        public DbSet<Entities.ProductSpecification> ProductSpecification { get; set; }
-        public DbSet<Entities.ProductOverview> ProductOverview { get; set; }
         public DbSet<Entities.Country> Country { get; set; }
-        public DbSet<Entities.Brand> Brand { get; set; }
-
-        public DbSet<Entities.Order> Orders { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<OrderDetail> orderDetails { get; set; }
-        public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<MemberShip> MemberShips { get; set; }
-        public DbSet<Promotion> Promotions { get; set; }
-        public DbSet<ProductEntity> Product { get; set; }
+        public DbSet<Entities.ProductEntity> Product { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Entities.ProductDescription>()
-                .HasKey(c => new { c.ID });
-
-            modelBuilder.Entity<Entities.ProductSpecification>()
-                .HasKey(c => new { c.ID});
-
-            modelBuilder.Entity<Entities.ProductImage>()
-                .HasKey(c => new { c.ID });
-
-           modelBuilder.Entity<Entities.ProductGeneral>()
-                .HasKey(c => new { c.ID });
-
             modelBuilder.Entity<Entities.ProductType>()
-                .HasKey(c => new { c.Id });
-
-            modelBuilder.Entity<Entities.ProductOverview>()
-                .HasKey(c => new { c.Id });
-
-            modelBuilder.Entity<Entities.Brand>()
                 .HasKey(c => new { c.Id });
 
             modelBuilder.Entity<Entities.Country>()
                 .HasKey(c => new { c.CountryCode });
 
-            modelBuilder.Entity<Entities.Order>()
-                .HasKey(c => new { c.Id });
-
-            modelBuilder.Entity<Entities.Customer>()
-                .HasKey(c => new { c.Id });
-
-            modelBuilder.Entity<Entities.OrderDetail>()
-                .HasKey(c => new { c.OrderId });
-
             modelBuilder.Entity<Entities.ProductEntity>()
                .HasKey(c => new { c.Id });
+
+            base.OnModelCreating(modelBuilder);
         }
 
         public override int SaveChanges()

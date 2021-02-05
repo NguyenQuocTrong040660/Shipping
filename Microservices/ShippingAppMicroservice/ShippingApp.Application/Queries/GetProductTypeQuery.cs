@@ -16,8 +16,8 @@ namespace ShippingApp.Application.Queries
     }
     public class GetProductTypeQueryHandler : IRequestHandler<GetProductTypeQuery, List<ProductType>>
     {
-        private readonly IProductRepository _productRepository;
-        public GetProductTypeQueryHandler(IProductRepository productRepository)
+        private readonly IShippingAppRepository _productRepository;
+        public GetProductTypeQueryHandler(IShippingAppRepository productRepository)
         {
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }

@@ -13,26 +13,26 @@ using Entities = ShippingApp.Domain.Entities;
 
 namespace ShippingApp.Application.Commands
 {
-    public class CreateProductOverViewCommand : IRequest<int>
+    public class CreateProductCommand : IRequest<int>
     {
         public DTO.ProductDTO productDTO { get; set; }
     }
-    public class CreateProductOverViewCommandHandler : IRequestHandler<CreateProductOverViewCommand, int>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
     {
-        private readonly IProductRepository _Repository;
+        private readonly IShippingAppRepository _Repository;
         private readonly IMapper _mapper;
 
-        public CreateProductOverViewCommandHandler(IProductRepository Repository, IMapper mapper)
+        public CreateProductCommandHandler(IShippingAppRepository Repository, IMapper mapper)
         {
             _Repository = Repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<int> Handle(CreateProductOverViewCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             var productModel = _mapper.Map<Models.ProductModel>(request.productDTO);
 
-            return await _Repository.CreateProductOverView(productModel);
+            return await _Repository.CreateNewProduct(productModel);
         }
     }
 }

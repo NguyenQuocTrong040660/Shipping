@@ -13,9 +13,9 @@ namespace ShippingApp.Application.Queries
     }
     public class GetCountryQueryHandler : IRequestHandler<GetCountryQuery, List<Country>>
     {
-        private readonly IProductRepository _productRepository;
+        private readonly IShippingAppRepository _productRepository;
 
-        public GetCountryQueryHandler(IProductRepository productRepository)
+        public GetCountryQueryHandler(IShippingAppRepository productRepository)
         {
             _productRepository = productRepository;
         }

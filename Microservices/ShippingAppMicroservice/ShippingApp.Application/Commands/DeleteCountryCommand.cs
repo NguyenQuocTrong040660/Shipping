@@ -15,10 +15,10 @@ namespace ShippingApp.Application.Commands
     }
     public class DeleteCountryCommandHandler : IRequestHandler<DeleteCountryCommand, int>
     {
-        private readonly IProductRepository _repository;
+        private readonly IShippingAppRepository _repository;
         private readonly IMapper _mapper;
 
-        public DeleteCountryCommandHandler(IProductRepository repository, IMapper mapper)
+        public DeleteCountryCommandHandler(IShippingAppRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

@@ -17,9 +17,9 @@ namespace ShippingApp.Application.Commands
 
     public class CreateProductTypeCommandHandler : IRequestHandler<CreateProductTypeCommand, int>
     {
-        private readonly IProductRepository _repository;
+        private readonly IShippingAppRepository _repository;
         private readonly IMapper _mapper;
-        public CreateProductTypeCommandHandler(IProductRepository repository, IMapper mapper)
+        public CreateProductTypeCommandHandler(IShippingAppRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));

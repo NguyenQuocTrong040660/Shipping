@@ -23,18 +23,14 @@ namespace ShippingApp.Application
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 
             services.AddMediatR(typeof(GetAllProductQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(GetProductGroupQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(GetCategoryQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetProductByIDQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetCountryQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(GetProductBrandQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(CreateProductTypeCommand).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdateProductTypeCommand).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(DeleteProductTypeCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(GetReservationByIdQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetProductTypeByNameQuery).GetTypeInfo().Assembly);
 
-            services.AddMediatR(typeof(CreateProductOverViewCommand).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(CreateProductCommand).GetTypeInfo().Assembly);
 
             services.AddMediatR(typeof(GetCountryQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetCountryByNameQuery).GetTypeInfo().Assembly);
@@ -42,10 +38,6 @@ namespace ShippingApp.Application
             services.AddMediatR(typeof(GetCountryByNameQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(UpdateCountryCommand).GetTypeInfo().Assembly);
 
-            services.AddMediatR(typeof(GetProductBrandQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteBrandCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateBrandCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(CreateBrandCommand).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetCountryByIdQuery).GetTypeInfo().Assembly);
             return services;
         }
