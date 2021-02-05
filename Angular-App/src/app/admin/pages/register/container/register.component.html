@@ -1,0 +1,102 @@
+<section class="login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <a href="/">User Management</a>
+    </div>
+
+    <div class="card">
+      <div class="card-body login-card-body">
+        <p class="login-box-msg">Đăng ký tài khoản</p>
+
+        <form [formGroup]="registerForm" (ngSubmit)="register()">
+          <div class="input-group mb-3">
+            <input
+              formControlName="email"
+              id="email"
+              type="email"
+              class="form-control"
+              placeholder="Tài khoản (định dạng email)"
+            />
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
+            </div>
+            <span
+              *ngIf="(email.touched || submitted) && email.errors?.required"
+              id="email"
+              class="error invalid-feedback"
+              style="display: block"
+              >Vui lòng nhập tài khoản</span
+            >
+            <span
+              *ngIf="(email.touched || submitted) && email.errors?.email"
+              id="email"
+              class="error invalid-feedback"
+              style="display: block"
+              >Vui lòng nhập đúng định dạng email</span
+            >
+          </div>
+          <div class="input-group mb-3">
+            <input formControlName="password" type="password" class="form-control" placeholder="Password" />
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+            <span
+              *ngIf="(password.touched || submitted) && password.errors?.required"
+              id="password"
+              class="error invalid-feedback"
+              style="display: block"
+              >Vui lòng nhập mật khẩu</span
+            >
+            <span
+              *ngIf="(password.touched || submitted) && password.errors?.minlength"
+              id="password"
+              class="error invalid-feedback"
+              style="display: block"
+              >Mật khẩu phải dài hơn 6 ký tự</span
+            >
+          </div>
+
+          <div class="input-group mb-3">
+            <input formControlName="confirmPassword" type="password" class="form-control" placeholder="Password" />
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+            <span
+              *ngIf="
+                (confirmPassword.touched || submitted) &&
+                registerForm.value.confirmPassword !== registerForm.value.password
+              "
+              id="confirmPassword"
+              class="error invalid-feedback"
+              style="display: block"
+              >Xác nhận mật khẩu không khớp</span
+            >
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <button
+                type="submit"
+                [disabled]="registerForm.invalid && registerForm.value.confirmPassword === registerForm.value.password"
+                class="btn btn-primary btn-block"
+              >
+                Đăng ký
+              </button>
+            </div>
+          </div>
+        </form>
+        <p class="mt-2 mb-0">
+          <a (click)="goBackLogin()" class="text-center pointer"
+            >Quay lại <span style="text-decoration: underline; color: #5aaafb">trang đăng nhập</span></a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
