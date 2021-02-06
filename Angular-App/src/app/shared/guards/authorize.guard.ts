@@ -14,7 +14,7 @@ export class AuthorizeGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (this.authorizeService.isAuthenticated() || environment.production) {
+    if (this.authorizeService.isAuthenticated() || !environment.production) {
       return true;
     } else {
       this.router.navigate(['/login'], {
