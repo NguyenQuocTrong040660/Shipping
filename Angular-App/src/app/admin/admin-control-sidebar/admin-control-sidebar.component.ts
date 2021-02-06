@@ -9,61 +9,41 @@ import { MenuItem } from 'primeng/api';
 export class AdminControlSidebarComponent implements OnInit {
   items: MenuItem[];
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.items = [
       {
-        label: 'Quản lý tập tin',
+        label: 'Danh mục sản phẩm',
         icon: 'pi pi-pw pi-file',
         items: [
           {
-            label: 'Danh sách hình ảnh',
-            icon: 'pi pi-fw pi-images',
+            label: 'Danh sách Receive Mark',
+            icon: 'pi pi-fw pi-pencil',
             routerLink: '/files-management/hinh-anh',
           },
-          { separator: true },
           {
-            label: 'Danh sách video',
-            icon: 'pi pi-fw pi-video',
+            label: 'Danh sách Shipping Mark',
+            icon: 'pi pi-fw pi-pencil',
+            routerLink: '/files-management/video',
+          },
+          {
+            label: 'Danh sách Shipping Plan',
+            icon: 'pi pi-fw pi-pencil',
+            routerLink: '/files-management/video',
+          },
+          {
+            label: 'Danh sách Shipping Order',
+            icon: 'pi pi-fw pi-pencil',
+            routerLink: '/files-management/video',
+          },
+          {
+            label: 'Danh sách Move Orders',
+            icon: 'pi pi-fw pi-pencil',
             routerLink: '/files-management/video',
           },
         ],
-      },
-
-      {
-        label: 'Cấu hình',
-        icon: 'pi pi-fw pi-cog',
-        items: [
-          {
-            label: 'Loại tập tin',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: '/attachment-types-management',
-          },
-        ],
-      },
-      {
-        label: 'Quản Lý Sản Phẩm',
-        icon: 'fas fa-cubes',
-        items: [
-          {
-            label: 'Danh Mục Sản Phẩm',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: '/product',
-          },
-          {
-            label: 'Loại Sản Phẩm',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: '/product-type',
-          },
-
-          {
-            label: 'Quốc Gia',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: '/country',
-          },
-        ],
-      },
+      }
     ];
   }
 }
