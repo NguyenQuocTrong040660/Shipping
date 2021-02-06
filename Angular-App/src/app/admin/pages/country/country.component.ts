@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { Country } from 'app/shared/api-clients/shippingapp-client';
+import { Country } from 'app/shared/api-clients/shipping-app.client';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CountryService } from 'app/shared/services/country.service';
 

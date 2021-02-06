@@ -9,14 +9,6 @@
         class="p-button-success p-mr-2"
         (click)="openNew()"
       ></button>
-      <button
-        pButton
-        pRipple
-        label="Delete"
-        icon="pi pi-trash"
-        class="p-button-danger"
-        (click)="deleteSelectedItems()"
-      ></button>
     </ng-template>
   </p-toolbar>
 
@@ -25,23 +17,11 @@
     #dt
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [value]="productOverviews"
+    [value]="products"
     [rows]="20"
     [paginator]="true"
     [rowHover]="true"
   >
-    <!-- <p-table
-    able
-    #dt
-    dataKey="id"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [value]="productOverviews"
-    [rows]="20"
-    [paginator]="true"
-    [rowHover]="true"
-    [(selection)]="selectedItems"
-    [showCurrentPageReport]="true"
-  > -->
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">Danh Mục Sản Phẩm</h5>
@@ -54,12 +34,6 @@
         </th>
         <th>Hình Ảnh</th>
         <th>Tên Sản Phẩm</th>
-        <th>Loại Sản Phẩm</th>
-        <th>Tên Công Ty</th>
-        <th>Chi Nhánh</th>
-        <th>Quốc Gia</th>
-        <th>Created Date</th>
-        <th>Last Modified Date</th>
         <th></th>
       </tr>
     </ng-template>
@@ -68,20 +42,8 @@
         <td>
           <p-tableCheckbox [value]="item"></p-tableCheckbox>
         </td>
-        <td>
-          <img
-            [src]="item.imageUrl === '' ? 'assets/img/NoImg.jpg' : item.imageUrl"
-            alt=""
-            style="width: 100px; height: 100px"
-          />
-        </td>
         <td>{{ item.productName }}</td>
         <td>{{ item.productTypeString }}</td>
-        <td>{{ item.companyName }}</td>
-        <td>{{ item.brandNameString }}</td>
-        <td>{{ item.country.countryName }}</td>
-        <td>{{ item.created | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ item.lastModified | date: 'dd/MM/yyyy' }}</td>
         <td>
           <button
             pButton
@@ -113,20 +75,6 @@
   <ng-template pTemplate="content">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label class="control-label">Loại Sản Phẩm</label>
-        <select formControlName="productTypeId" id="productTypeId" class="form-control">
-          <option *ngFor="let item of productType" [value]="item.id">{{ item['productTypeName'] }}</option>
-        </select>
-
-        <span
-          *ngIf="(productTypeId.touched || submitted) && productTypeId.errors?.required"
-          id="productTypeId"
-          class="error invalid-feedback"
-          style="display: block"
-          >Xin hãy chọn loại sản phẩm</span
-        >
-      </div>
-      <div class="form-group">
         <label class="control-label">Tên Sản Phẩm</label>
         <input formControlName="productName" id="productName" type="text" class="form-control" />
         <span
@@ -144,88 +92,7 @@
           >Tên sản phẩm tối đa chỉ được 100 ký tự</span
         >
       </div>
-      <div class="form-group">
-        <input
-          formControlName="hightlightProduct"
-          id="hightlightProduct"
-          name="hightlightProduct"
-          type="checkbox"
-          style="margin-left: 0"
-        />
-        <label class="control-label" for="hightlightProduct" style="margin-left: 20px">Nổi bật</label>
-      </div>
-      <div class="form-group">
-        <label class="control-label">Hình Ảnh Sản Phẩm</label>
-        <input id="file" type="file" accept="image/*" class="form-control" (change)="onFileChange($event)" />
-      </div>
 
-      <div class="col-md-3">
-        <div class="card" style="width: 18rem">
-          <ng-container *ngIf="imageUrl.value; else noImage">
-            <img [src]="imageUrl.value" class="card-img-top" />
-          </ng-container>
-          <ng-template #noImage>
-            <img src="assets/img/NoImg.jpg" class="card-img-top" />
-          </ng-template>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="control-label">Quốc Gia</label>
-        <select formControlName="countryCode" id="countryCode" class="form-control">
-          <option *ngFor="let item of country" [value]="item.countryCode">{{ item['countryName'] }}</option>
-        </select>
-
-        <span
-          *ngIf="(countryCode.touched || submitted) && countryCode.errors?.required"
-          id="countryCode"
-          class="error invalid-feedback"
-          style="display: block"
-          >Xin hãy chọn quốc gia</span
-        >
-      </div>
-
-      <div class="form-group">
-        <label class="control-label">Mô Tả Ngắn</label>
-        <textarea
-          rows="5"
-          formControlName="highLevelDesc"
-          id="highLevelDesc"
-          type="text"
-          class="form-control"
-        ></textarea>
-        <span
-          *ngIf="(highLevelDesc.touched || submitted) && highLevelDesc.errors?.required"
-          id="highLevelDesc"
-          class="error invalid-feedback"
-          style="display: block"
-          >Xin hãy nhập tên thông tin tóm tắt bài viết
-        </span>
-        <span
-          *ngIf="(highLevelDesc.touched || submitted) && highLevelDesc.errors?.maxlength"
-          id="highLevelDesc"
-          class="error invalid-feedback"
-          style="display: block"
-          >Thông tin mô tả 1 không được hơn 300 kí tự
-        </span>
-      </div>
-      <div class="form-group">
-        <label class="control-label">Mô Tả Chi Tiết</label>
-
-        <span
-          *ngIf="(mediumLevelDesc.touched || submitted) && mediumLevelDesc.errors?.required"
-          id="mediumLevelDesc"
-          class="error invalid-feedback"
-          style="display: block"
-          >Xin hãy nhập tên thông tin tóm tắt bài viết</span
-        >
-        <span
-          *ngIf="(mediumLevelDesc.touched || submitted) && mediumLevelDesc.errors?.maxlength"
-          id="mediumLevelDesc"
-          class="error invalid-feedback"
-          style="display: block"
-          >Thông tin mô tả 2 không được hơn 1000 ký tự</span
-        >
-      </div>
       <button type="submit" class="btn btn-success" [disabled]="form.invalid">Xác Nhận</button>
     </form>
   </ng-template>

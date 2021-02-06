@@ -15,7 +15,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 @Injectable()
-export class AlbumClient {
+export class FilesClient {
   private http: HttpClient;
   private baseUrl: string;
   protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -1019,39 +1019,37 @@ export class AlbumClient {
   /**
    * @return Success
    */
-  apiVideohomepageGet(): Observable<VideoHomePageDto[]> {
-    let url_ = this.baseUrl + '/api/VideoHomePage';
+  apiImport(): Observable<void> {
+    let url_ = this.baseUrl + '/api/Import';
     url_ = url_.replace(/[?&]$/, '');
 
     let options_: any = {
       observe: 'response',
       responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: 'text/plain',
-      }),
+      headers: new HttpHeaders({}),
     };
 
     return this.http
       .request('get', url_, options_)
       .pipe(
         _observableMergeMap((response_: any) => {
-          return this.processApiVideohomepageGet(response_);
+          return this.processApiImport(response_);
         })
       )
       .pipe(
         _observableCatch((response_: any) => {
           if (response_ instanceof HttpResponseBase) {
             try {
-              return this.processApiVideohomepageGet(<any>response_);
+              return this.processApiImport(<any>response_);
             } catch (e) {
-              return <Observable<VideoHomePageDto[]>>(<any>_observableThrow(e));
+              return <Observable<void>>(<any>_observableThrow(e));
             }
-          } else return <Observable<VideoHomePageDto[]>>(<any>_observableThrow(response_));
+          } else return <Observable<void>>(<any>_observableThrow(response_));
         })
       );
   }
 
-  protected processApiVideohomepageGet(response: HttpResponseBase): Observable<VideoHomePageDto[]> {
+  protected processApiImport(response: HttpResponseBase): Observable<void> {
     const status = response.status;
     const responseBlob =
       response instanceof HttpResponse
@@ -1069,10 +1067,7 @@ export class AlbumClient {
     if (status === 200) {
       return blobToText(responseBlob).pipe(
         _observableMergeMap((_responseText) => {
-          let result200: any = null;
-          result200 =
-            _responseText === '' ? null : <VideoHomePageDto[]>JSON.parse(_responseText, this.jsonParseReviver);
-          return _observableOf(result200);
+          return _observableOf<void>(<any>null);
         })
       );
     } else if (status !== 200 && status !== 204) {
@@ -1082,343 +1077,7 @@ export class AlbumClient {
         })
       );
     }
-    return _observableOf<VideoHomePageDto[]>(<any>null);
-  }
-
-  /**
-   * @param key (optional)
-   * @param id (optional)
-   * @param width (optional)
-   * @param height (optional)
-   * @param youtubeLink (optional)
-   * @param youtubeId (optional)
-   * @param youtubeImage (optional)
-   * @param descriptions (optional)
-   * @param code (optional)
-   * @param created (optional)
-   * @param lastModified (optional)
-   * @param file (optional)
-   * @return Success
-   */
-  apiVideohomepagePut(
-    key: string | undefined,
-    id: string | undefined,
-    width: number | undefined,
-    height: number | undefined,
-    youtubeLink: string | null | undefined,
-    youtubeId: string | null | undefined,
-    youtubeImage: string | null | undefined,
-    descriptions: string | null | undefined,
-    code: string | null | undefined,
-    created: Date | undefined,
-    lastModified: Date | undefined,
-    file: FileParameter | null | undefined
-  ): Observable<Result> {
-    let url_ = this.baseUrl + '/api/VideoHomePage?';
-    if (key === null) throw new Error("The parameter 'key' cannot be null.");
-    else if (key !== undefined) url_ += 'key=' + encodeURIComponent('' + key) + '&';
-    url_ = url_.replace(/[?&]$/, '');
-
-    const content_ = new FormData();
-    if (id === null || id === undefined) throw new Error("The parameter 'id' cannot be null.");
-    else content_.append('Id', id.toString());
-    if (width === null || width === undefined) throw new Error("The parameter 'width' cannot be null.");
-    else content_.append('Width', width.toString());
-    if (height === null || height === undefined) throw new Error("The parameter 'height' cannot be null.");
-    else content_.append('Height', height.toString());
-    if (youtubeLink !== null && youtubeLink !== undefined) content_.append('YoutubeLink', youtubeLink.toString());
-    if (youtubeId !== null && youtubeId !== undefined) content_.append('YoutubeId', youtubeId.toString());
-    if (youtubeImage !== null && youtubeImage !== undefined) content_.append('YoutubeImage', youtubeImage.toString());
-    if (descriptions !== null && descriptions !== undefined) content_.append('Descriptions', descriptions.toString());
-    if (code !== null && code !== undefined) content_.append('Code', code.toString());
-    if (created === null || created === undefined) throw new Error("The parameter 'created' cannot be null.");
-    else content_.append('Created', created.toJSON());
-    if (lastModified === null || lastModified === undefined)
-      throw new Error("The parameter 'lastModified' cannot be null.");
-    else content_.append('LastModified', lastModified.toJSON());
-    if (file !== null && file !== undefined) content_.append('File', file.data, file.fileName ? file.fileName : 'File');
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: 'text/plain',
-      }),
-    };
-
-    return this.http
-      .request('put', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processApiVideohomepagePut(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processApiVideohomepagePut(<any>response_);
-            } catch (e) {
-              return <Observable<Result>>(<any>_observableThrow(e));
-            }
-          } else return <Observable<Result>>(<any>_observableThrow(response_));
-        })
-      );
-  }
-
-  protected processApiVideohomepagePut(response: HttpResponseBase): Observable<Result> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (<any>response).error instanceof Blob
-        ? (<any>response).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result200: any = null;
-          result200 = _responseText === '' ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status === 404) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result404: any = null;
-          result404 = _responseText === '' ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-          return throwException('Not Found', status, _responseText, _headers, result404);
-        })
-      );
-    } else if (status === 400) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result400: any = null;
-          result400 = _responseText === '' ? null : <VideoHomePageDto>JSON.parse(_responseText, this.jsonParseReviver);
-          return throwException('Bad Request', status, _responseText, _headers, result400);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          return throwException('An unexpected server error occurred.', status, _responseText, _headers);
-        })
-      );
-    }
-    return _observableOf<Result>(<any>null);
-  }
-
-  /**
-   * @param id (optional)
-   * @param width (optional)
-   * @param height (optional)
-   * @param youtubeLink (optional)
-   * @param youtubeId (optional)
-   * @param youtubeImage (optional)
-   * @param descriptions (optional)
-   * @param code (optional)
-   * @param created (optional)
-   * @param lastModified (optional)
-   * @param file (optional)
-   * @return Success
-   */
-  apiVideohomepagePost(
-    id: string | undefined,
-    width: number | undefined,
-    height: number | undefined,
-    youtubeLink: string | null | undefined,
-    youtubeId: string | null | undefined,
-    youtubeImage: string | null | undefined,
-    descriptions: string | null | undefined,
-    code: string | null | undefined,
-    created: Date | undefined,
-    lastModified: Date | undefined,
-    file: FileParameter | null | undefined
-  ): Observable<Result> {
-    let url_ = this.baseUrl + '/api/VideoHomePage';
-    url_ = url_.replace(/[?&]$/, '');
-
-    const content_ = new FormData();
-    if (id === null || id === undefined) throw new Error("The parameter 'id' cannot be null.");
-    else content_.append('Id', id.toString());
-    if (width === null || width === undefined) throw new Error("The parameter 'width' cannot be null.");
-    else content_.append('Width', width.toString());
-    if (height === null || height === undefined) throw new Error("The parameter 'height' cannot be null.");
-    else content_.append('Height', height.toString());
-    if (youtubeLink !== null && youtubeLink !== undefined) content_.append('YoutubeLink', youtubeLink.toString());
-    if (youtubeId !== null && youtubeId !== undefined) content_.append('YoutubeId', youtubeId.toString());
-    if (youtubeImage !== null && youtubeImage !== undefined) content_.append('YoutubeImage', youtubeImage.toString());
-    if (descriptions !== null && descriptions !== undefined) content_.append('Descriptions', descriptions.toString());
-    if (code !== null && code !== undefined) content_.append('Code', code.toString());
-    if (created === null || created === undefined) throw new Error("The parameter 'created' cannot be null.");
-    else content_.append('Created', created.toJSON());
-    if (lastModified === null || lastModified === undefined)
-      throw new Error("The parameter 'lastModified' cannot be null.");
-    else content_.append('LastModified', lastModified.toJSON());
-    if (file !== null && file !== undefined) content_.append('File', file.data, file.fileName ? file.fileName : 'File');
-
-    let options_: any = {
-      body: content_,
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: 'text/plain',
-      }),
-    };
-
-    return this.http
-      .request('post', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processApiVideohomepagePost(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processApiVideohomepagePost(<any>response_);
-            } catch (e) {
-              return <Observable<Result>>(<any>_observableThrow(e));
-            }
-          } else return <Observable<Result>>(<any>_observableThrow(response_));
-        })
-      );
-  }
-
-  protected processApiVideohomepagePost(response: HttpResponseBase): Observable<Result> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (<any>response).error instanceof Blob
-        ? (<any>response).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result200: any = null;
-          result200 = _responseText === '' ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status === 404) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result404: any = null;
-          result404 = _responseText === '' ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-          return throwException('Not Found', status, _responseText, _headers, result404);
-        })
-      );
-    } else if (status === 400) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result400: any = null;
-          result400 = _responseText === '' ? null : <VideoHomePageDto>JSON.parse(_responseText, this.jsonParseReviver);
-          return throwException('Bad Request', status, _responseText, _headers, result400);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          return throwException('An unexpected server error occurred.', status, _responseText, _headers);
-        })
-      );
-    }
-    return _observableOf<Result>(<any>null);
-  }
-
-  /**
-   * @return Success
-   */
-  apiVideohomepageDelete(id: string): Observable<Result> {
-    let url_ = this.baseUrl + '/api/VideoHomePage/{id}';
-    if (id === undefined || id === null) throw new Error("The parameter 'id' must be defined.");
-    url_ = url_.replace('{id}', encodeURIComponent('' + id));
-    url_ = url_.replace(/[?&]$/, '');
-
-    let options_: any = {
-      observe: 'response',
-      responseType: 'blob',
-      headers: new HttpHeaders({
-        Accept: 'text/plain',
-      }),
-    };
-
-    return this.http
-      .request('delete', url_, options_)
-      .pipe(
-        _observableMergeMap((response_: any) => {
-          return this.processApiVideohomepageDelete(response_);
-        })
-      )
-      .pipe(
-        _observableCatch((response_: any) => {
-          if (response_ instanceof HttpResponseBase) {
-            try {
-              return this.processApiVideohomepageDelete(<any>response_);
-            } catch (e) {
-              return <Observable<Result>>(<any>_observableThrow(e));
-            }
-          } else return <Observable<Result>>(<any>_observableThrow(response_));
-        })
-      );
-  }
-
-  protected processApiVideohomepageDelete(response: HttpResponseBase): Observable<Result> {
-    const status = response.status;
-    const responseBlob =
-      response instanceof HttpResponse
-        ? response.body
-        : (<any>response).error instanceof Blob
-        ? (<any>response).error
-        : undefined;
-
-    let _headers: any = {};
-    if (response.headers) {
-      for (let key of response.headers.keys()) {
-        _headers[key] = response.headers.get(key);
-      }
-    }
-    if (status === 200) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result200: any = null;
-          result200 = _responseText === '' ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-          return _observableOf(result200);
-        })
-      );
-    } else if (status === 404) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          let result404: any = null;
-          result404 = _responseText === '' ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-          return throwException('Not Found', status, _responseText, _headers, result404);
-        })
-      );
-    } else if (status !== 200 && status !== 204) {
-      return blobToText(responseBlob).pipe(
-        _observableMergeMap((_responseText) => {
-          return throwException('An unexpected server error occurred.', status, _responseText, _headers);
-        })
-      );
-    }
-    return _observableOf<Result>(<any>null);
+    return _observableOf<void>(<any>null);
   }
 }
 
@@ -1450,20 +1109,6 @@ export interface Result {
 export interface UploadFileRequest {
   file?: string | undefined;
   attachmentTypeId?: string | undefined;
-}
-
-export interface VideoHomePageDto {
-  id?: string;
-  width?: number;
-  height?: number;
-  youtubeLink?: string | undefined;
-  youtubeId?: string | undefined;
-  youtubeImage?: string | undefined;
-  descriptions?: string | undefined;
-  code?: string | undefined;
-  created?: Date;
-  lastModified?: Date;
-  file?: string | undefined;
 }
 
 export interface FileParameter {

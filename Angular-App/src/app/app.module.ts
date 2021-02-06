@@ -9,10 +9,9 @@ import { CommonModule } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthorizeService } from './shared/services/authorize.service';
-import { AlbumClient, API_BASE_URL } from './shared/api-clients/album-client';
-import { UserClient } from './shared/api-clients/user-client';
-import { AlbumService } from './shared/services/album.service';
-import { ShippingAppClients } from './shared/api-clients/shippingapp-client';
+import { API_BASE_URL, FilesClient } from './shared/api-clients/files.client';
+import { UserClient } from './shared/api-clients/user.client';
+import { ShippingAppClients } from './shared/api-clients/shipping-app.client';
 import { environment } from 'environments/environment';
 import { HttpConfigInterceptor } from './shared/interceptors/HttpConfigInterceptor';
 import { LoadingService } from './shared/services/loading.service';
@@ -36,12 +35,12 @@ import { appRoutes } from './routes';
     MessageService,
     ConfirmationService,
     AuthorizeService,
-    AlbumClient,
+    FilesClient,
     UserClient,
-    AlbumService,
     ShippingAppClients,
     { provide: API_BASE_URL, useValue: environment.baseUrl },
-    { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true }],
+    { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
-import { LoginRequest, UserClient } from 'app/shared/api-clients/user-client';
+import { LoginRequest, UserClient } from 'app/shared/api-clients/user.client';
 import { MessageService } from 'primeng/api';
 import { StateService } from 'app/shared/services/state.service';
 

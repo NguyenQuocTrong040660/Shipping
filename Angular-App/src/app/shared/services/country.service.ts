@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ShippingAppClients, Country } from 'app/shared/api-clients/shippingapp-client';
+import { ShippingAppClients, Country } from 'app/shared/api-clients/shipping-app.client';
 
 @Injectable({
   providedIn: 'root',
@@ -8,22 +8,22 @@ export class CountryService {
   constructor(private client: ShippingAppClients) {}
 
   getAllCountry() {
-    // return this.client.getAllCountry();
+    return this.client.apiShippingappCountryGetallcountry();
   }
 
   getCountryById(id: string) {
-    // return this.client.getCountryById(id);
+    return this.client.apiShippingappCountryGetcountrybyid(id);
   }
 
   updateCountry(id: string, country: Country) {
-    // return this.client.updateCountry(id, country);
+    return this.client.apiShippingappCountryUpdatecountry(id, country);
   }
 
   deleteCountry(id: string) {
-    // return this.client.deleteCountry(id);
+    return this.client.apiShippingappCountryDeletecountry(id);
   }
 
   addCountry(country: Country) {
-    // return this.client.addCountry(country);
+    return this.client.apiShippingappCountryAddcountry(country);
   }
 }

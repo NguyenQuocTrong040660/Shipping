@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AttachmentTypeDto } from 'app/shared/api-clients/album-client';
-import { AlbumService } from 'app/shared/services/album.service';
+import { AttachmentTypeDto, FilesClient } from 'app/shared/api-clients/files.client';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
@@ -16,13 +15,13 @@ export class AttachmentTypesManagementComponent implements OnInit {
   selectedItems: AttachmentTypeDto[];
 
   constructor(
-    private services: AlbumService,
+    private filesClient: FilesClient,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit() {
-    this.services.getAllAttachmentTypes().subscribe((data) => {
+    this.filesClient.apiAttachmenttypeGet().subscribe((data) => {
       this.attachmentTypes = data;
     });
 
@@ -30,7 +29,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
   }
 
   reloadData() {
-    this.services.getAllAttachmentTypes().subscribe((data) => (this.attachmentTypes = data));
+    this.filesClient.apiAttachmenttypeGet().subscribe((data) => (this.attachmentTypes = data));
   }
 
   initCols() {
@@ -72,7 +71,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
   }
 
   updateAttachmentType(id: string, attachmentType) {
-    this.services.updateAttachmentType(id, attachmentType).subscribe((result) => {
+    this.filesClient.apiAttachmenttypePut(id, attachmentType).subscribe((result) => {
       if (result && result.succeeded) {
         this.reloadData();
         this.showMessage('success', 'Successful', 'Attachment Type Updated Successful');
@@ -83,7 +82,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
   }
 
   addAttachmentType(attachmentType: AttachmentTypeDto) {
-    this.services.addAttachmentType(attachmentType).subscribe((result) => {
+    this.filesClient.apiAttachmenttypePost(attachmentType).subscribe((result) => {
       if (result && result.succeeded) {
         this.showMessage('success', 'Successful', 'Attachment Type Created Successful');
         this.reloadData();
@@ -100,8 +99,8 @@ export class AttachmentTypesManagementComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.attachmentTypes = this.attachmentTypes.filter((val) => val.id !== attachmentType.id);
-        this.services
-          .deleteAttachmentType(attachmentType.id)
+        this.filesClient
+          .apiAttachmenttypeDelete(attachmentType.id)
           .subscribe((result) =>
             result && result.succeeded
               ? this.showMessage('success', 'Successful', 'Attachment Type Successful')
