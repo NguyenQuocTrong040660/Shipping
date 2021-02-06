@@ -12,6 +12,7 @@ using UserManagement.Application.User.Commands;
 using UserManagement.Application.User.Queries;
 using System.Security.Claims;
 using System.Linq;
+using System;
 
 namespace UserManagement.Api.Controllers
 {
@@ -19,28 +20,28 @@ namespace UserManagement.Api.Controllers
     public class UserController : ApiController
     {
         private readonly ILogger<UserController> _logger;
-        private readonly ICurrentUserService _userService;
+        private readonly ICurrentUserService _currentUserService;
 
         public UserController(ILogger<UserController> logger, 
-            ICurrentUserService userService)
+            ICurrentUserService currentUserService)
         {
-            _logger = logger;
-            _userService = userService;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(typeof(LoginRequest), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(LoginResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<LoginResult>> Login([FromBody] LoginRequest request)
+        public async Task<ActionResult<IdentityResult>> Login([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(request);
             }
 
-            LoginResult result = await Mediator.Send(new GetUserLoginResultQuery
+            IdentityResult result = await Mediator.Send(new GetUserLoginResultQuery
             {
                 UserName = request.UserName,
                 Password = request.Password,
@@ -101,9 +102,9 @@ namespace UserManagement.Api.Controllers
         }
 
         [HttpPost("refresh-token")]
-        [ProducesResponseType(typeof(LoginResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<LoginResult>> RefreshToken([FromBody] RefreshTokenRequest request)
+        public async Task<ActionResult<IdentityResult>> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             try
             {
@@ -118,7 +119,7 @@ namespace UserManagement.Api.Controllers
 
                 string accessToken = await HttpContext.GetTokenAsync("Bearer", "access_token");
 
-                LoginResult result = await Mediator.Send(new GetNewTokenByRefreshTokenQuery
+                IdentityResult result = await Mediator.Send(new GetNewTokenByRefreshTokenQuery
                 {
                     AccessToken = accessToken,
                     RefreshToken = request.RefreshToken,
@@ -134,7 +135,7 @@ namespace UserManagement.Api.Controllers
         }
 
         [HttpGet("info")]
-        [ProducesResponseType(typeof(LoginResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         public ActionResult GetUserInfo()
         {
@@ -143,7 +144,7 @@ namespace UserManagement.Api.Controllers
                 .Select(c => c.Value)
                 .ToList();
 
-            return Ok(new LoginResult
+            return Ok(new IdentityResult
             {
                 UserName = User.Identity.Name,
                 Roles = roles,

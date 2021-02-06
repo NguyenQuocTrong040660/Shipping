@@ -7,25 +7,24 @@ using UserManagement.Application.Common.Results;
 
 namespace UserManagement.Application.ManageUser.Commands
 {
-    public class LockUserCommand : IRequest<Result>
+    public class CreateUserCommand : IRequest<Result>
     {
-        public string UserId { get; set; }
+        public string Email { get; set; }
     }
 
-    public class LockUserCommandHandler : IRequestHandler<LockUserCommand, Result>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result>
     {
         private readonly IIdentityService _identityService;
 
-        public LockUserCommandHandler(
+        public CreateUserCommandHandler(
              IIdentityService identityService)
         {
             _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
-        public async Task<Result> Handle(LockUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            await _identityService.LockUserAsync(request.UserId);
-            return Result.Success();
+            return await _identityService.CreateUserWithTemporaryPasswordAsync(request.Email);
         }
     }
 }

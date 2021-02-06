@@ -26,27 +26,26 @@ namespace UserManagement.Infrastructure
                     options.UseSqlServer(
                         configuration.GetConnectionString("DefaultConnection"),
                         b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-
-                services.AddHealthChecks()
-                    .AddDbContextCheck<ApplicationDbContext>();
-
-                services.AddDefaultIdentity<ApplicationUser>(options =>
-                {
-                    options.Password.RequireDigit = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequiredLength = 6;
-                    options.Password.RequiredUniqueChars = 0;
-
-                    options.SignIn.RequireConfirmedAccount = false;
-
-                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(36500);
-                    options.Lockout.MaxFailedAccessAttempts = 2;
-
-                }).AddRoles<IdentityRole>()
-                  .AddEntityFrameworkStores<ApplicationDbContext>();
             }
+
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+            services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 0;
+
+                options.SignIn.RequireConfirmedAccount = false;
+
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(36500);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+
+            }).AddRoles<IdentityRole>()
+              .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();

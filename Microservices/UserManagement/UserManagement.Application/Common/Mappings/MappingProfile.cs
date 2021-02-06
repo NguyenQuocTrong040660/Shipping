@@ -1,4 +1,5 @@
-﻿using UserManagement.Application.Common.Results;
+﻿using Microsoft.AspNetCore.Identity;
+using UserManagement.Application.Common.Results;
 using UserManagement.Domain.Common;
 
 namespace UserManagement.Application.Common.Mappings
@@ -8,6 +9,7 @@ namespace UserManagement.Application.Common.Mappings
         public MappingProfile()
         {
             CreateMap<ApplicationUser, UserResult>().ReverseMap();
+            CreateMap<IdentityRole, RoleModel>().ReverseMap();
         }
     }
 }

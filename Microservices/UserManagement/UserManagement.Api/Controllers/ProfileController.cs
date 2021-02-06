@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +21,8 @@ namespace UserManagement.Api.Controllers
         public ProfileController(ILogger<ProfileController> logger,
             ICurrentUserService currentUserService)
         {
-            _logger = logger;
-            _currentUserService = currentUserService;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
         [HttpPost("change-password")]
@@ -67,13 +68,8 @@ namespace UserManagement.Api.Controllers
                 Email = request.Email
             });
 
-            if (result.Succeeded)
-            {
-                _logger.LogInformation("User reset their password successfully.");
-                return Ok(Result.Success());
-            }
-
-            return BadRequest(result);
+            _logger.LogInformation("User reset their password successfully.");
+            return Ok(result);
         }
 
         [HttpGet("info")]

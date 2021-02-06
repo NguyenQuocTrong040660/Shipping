@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,6 @@ namespace UserManagement.Application.ManageUser.Queries
 {
     public class GetAllUserQuery : IRequest<List<UserResult>>
     {
-        public string CurrentUserId { get; set; }
     }
 
     public class GetAllUserQueryHandler : IRequestHandler<GetAllUserQuery, List<UserResult>>
@@ -24,21 +24,14 @@ namespace UserManagement.Application.ManageUser.Queries
             ILogger<GetAllUserQueryHandler> logger,
             IIdentityService identityService)
         {
-            _identityService = identityService;
-            _logger = logger;
-            _mapper = mapper;
+            _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<List<UserResult>> Handle(GetAllUserQuery request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.CurrentUserId))
-            {
-                return new List<UserResult>();
-            }
-
-            var users = await _identityService.GetUsersAsync();
-
-            return _mapper.Map<List<UserResult>>(users);
+            return _mapper.Map<List<UserResult>>(await _identityService.GetUsersAsync());
         }
     }
 }

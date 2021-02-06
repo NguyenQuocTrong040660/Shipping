@@ -9,14 +9,14 @@ using UserManagement.Application.Common.Results;
 
 namespace UserManagement.Application.User.Queries
 {
-    public class GetNewTokenByRefreshTokenQuery : IRequest<LoginResult>
+    public class GetNewTokenByRefreshTokenQuery : IRequest<IdentityResult>
     {
         public string RefreshToken { get; set; }
         public string AccessToken { get; set; }
         public string UserName { get; set; }
     }
 
-    public class GetNewTokenByRefreshTokenQueryHandler : IRequestHandler<GetNewTokenByRefreshTokenQuery, LoginResult>
+    public class GetNewTokenByRefreshTokenQueryHandler : IRequestHandler<GetNewTokenByRefreshTokenQuery, IdentityResult>
     {
         private readonly IIdentityService _identityService;
         private readonly ILogger<GetUserLoginResultQueryHandler> _logger;
@@ -27,12 +27,12 @@ namespace UserManagement.Application.User.Queries
              IIdentityService identityService,
              IJwtAuthManager jwtAuthManager)
         {
-            _identityService = identityService;
-            _logger = logger;
-            _jwtAuthManager = jwtAuthManager;
+            _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(identityService));
+            _jwtAuthManager = jwtAuthManager ?? throw new ArgumentNullException(nameof(identityService));
         }
 
-        public async Task<LoginResult> Handle(GetNewTokenByRefreshTokenQuery request, CancellationToken cancellationToken)
+        public async Task<IdentityResult> Handle(GetNewTokenByRefreshTokenQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace UserManagement.Application.User.Queries
 
                 _logger.LogInformation($"User [{request.UserName}] has refreshed JWT token.");
 
-                return LoginResult.Success(request.UserName, roles, request.UserName, jwtResult.AccessToken, jwtResult.RefreshToken.TokenString);
+                return IdentityResult.Success(request.UserName, roles, request.UserName, jwtResult.AccessToken, jwtResult.RefreshToken.TokenString);
             }
             catch (SecurityTokenException e)
             {

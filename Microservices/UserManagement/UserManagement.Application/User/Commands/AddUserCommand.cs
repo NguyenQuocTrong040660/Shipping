@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UserManagement.Application.Common.Interfaces;
@@ -11,7 +12,6 @@ namespace UserManagement.Application.User.Commands
     {
         public string Email { get;set; }
         public string Password { get; set; }
-        
     }
 
     public class AddUserCommandHandler : IRequestHandler<AddUserCommand, Result>
@@ -23,14 +23,14 @@ namespace UserManagement.Application.User.Commands
              ILogger<AddUserCommandHandler> logger,
              IIdentityService identityService)
         {
-            _identityService = identityService;
-            _logger = logger;
+            _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Result> Handle(AddUserCommand request, CancellationToken cancellationToken)
         {
             (Result result, string userId) = await _identityService.CreateUserAsync(request.Email, request.Password);
-
+            _logger.LogInformation("Create User done with userId {0}", userId);
             return result;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UserManagement.Application.Common.Interfaces;
@@ -20,8 +21,8 @@ namespace UserManagement.Application.User.Commands
              ILogger<DeleteRefreshTokenCommandHandler> logger,
              IJwtAuthManager jwtAuthManager)
         {
-            _jwtAuthManager = jwtAuthManager;
-            _logger = logger;
+            _jwtAuthManager = jwtAuthManager ?? throw new ArgumentNullException(nameof(jwtAuthManager));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Unit> Handle(DeleteRefreshTokenCommand request, CancellationToken cancellationToken)

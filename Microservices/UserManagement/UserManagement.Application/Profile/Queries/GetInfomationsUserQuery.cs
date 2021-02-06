@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UserManagement.Application.Common.Interfaces;
@@ -24,9 +25,9 @@ namespace UserManagement.Application.Profile.Queries
             ILogger<GetInfomationsUserQueryHandler> logger,
             IIdentityService identityService)
         {
-            _identityService = identityService;
-            _logger = logger;
-            _mapper = mapper;
+            _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<UserResult> Handle(GetInfomationsUserQuery request, CancellationToken cancellationToken)
@@ -36,7 +37,7 @@ namespace UserManagement.Application.Profile.Queries
                 return null;
             }
 
-            var user = await _identityService.GetUserByIdAsync(request.UserId);
+            var user = await _identityService.GetUserByIdentifierAsync(request.UserId);
 
             return _mapper.Map<UserResult>(user);
         }

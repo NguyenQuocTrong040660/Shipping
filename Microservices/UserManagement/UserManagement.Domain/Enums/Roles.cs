@@ -2,7 +2,11 @@
 {
     public struct Roles
     {
-        public const string Administrator = nameof(Administrator);
-        public const string Customer = nameof(Customer);
+        public const string ITAdministrator = nameof(ITAdministrator);
+        public const string ShippingDepartment = nameof(ShippingDepartment);
+        public const string LogisticsDepartment = nameof(LogisticsDepartment);
+        public const string PlanningDepartment = nameof(PlanningDepartment);
+        public const string FAQDepartment = nameof(FAQDepartment);
+        public const string Employee = nameof(Employee);
     }
 }

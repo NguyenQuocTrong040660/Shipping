@@ -21,7 +21,7 @@ namespace UserManagement.Application.Profile.Commands
         public CreateNewPasswordCommandHandler(
              IIdentityService identityService)
         {
-            _identityService = identityService;
+            _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
         public async Task<Result> Handle(CreateNewPasswordCommand request, CancellationToken cancellationToken)

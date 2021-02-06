@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UserManagement.Application.Common.Interfaces;
@@ -18,7 +19,7 @@ namespace UserManagement.Application.ManageUser.Commands
         public UnlockUserCommandHandler(
              IIdentityService identityService)
         {
-            _identityService = identityService;
+            _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
         }
 
         public async Task<Result> Handle(UnlockUserCommand request, CancellationToken cancellationToken)
