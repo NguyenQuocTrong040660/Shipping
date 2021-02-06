@@ -9,10 +9,10 @@ namespace ShippingApp.Domain.Interfaces
     public interface IShippingAppRepository
     {
         List<Models.Product> GetAllProducts();
-        Task<Models.Product> GetProductsbyID(Guid id);
+        Task<Models.Product> GetProductsByID(Guid id);
         Task<int> DeleteProductByID(Guid Id);
-        Task<int> UpdateProduct(Models.Product productModel);
-        Task<int> CreateNewProduct(Models.Product productModel);
+        Task<int> UpdateProduct(Models.Product product);
+        Task<int> CreateNewProduct(Models.Product product);
 
         //List<ProductType> GetAllProductType(int CompanyIndex);
         //Task<Entities.ProductType> GetProductTypeByName(string ProductTypeName);
@@ -27,6 +27,11 @@ namespace ShippingApp.Domain.Interfaces
         //Task<int> UpdateCountry(string CountryCode, Country entity);
         //List<Country> GetAllCountry();
         //Task<int> DeleteCountry(string Id);
+        Task<int> CreateNewShippingPlan(Models.ShippingPlan shippingPlan);
+        List<Models.ShippingPlan> GetAllShippingPlan();
+        Task<Models.ShippingPlan> GetShippingPlanByID(Guid id);
+        Task<int> UpdateShippingPlan(Models.ShippingPlan shippingPlan);
+        Task<int> DeleteShippingPlanByID(Guid Id);
 
     }
 }
