@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { CountryService } from 'app/core/services/country.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { Country } from 'app/api-clients/shippingapp-client';
+import { Country } from 'app/shared/api-clients/shippingapp-client';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CountryService } from 'app/shared/services/country.service';
 
 @Component({
   selector: 'app-country',
@@ -66,17 +66,17 @@ export class CountryComponent implements OnInit, OnDestroy {
   }
 
   getAllCountry() {
-    this.service
-      .getAllCountry()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (data) => (this.countries = data),
-        (_) => (this.countries = [])
-      );
+    // this.service
+    //   .getAllCountry()
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe(
+    //     (data) => (this.countries = data),
+    //     (_) => (this.countries = [])
+    //   );
   }
 
   reloadData() {
-    this.service.getAllCountry().subscribe((data) => (this.countries = data));
+    // this.service.getAllCountry().subscribe((data) => (this.countries = data));
   }
 
   initCols() {
@@ -112,49 +112,49 @@ export class CountryComponent implements OnInit, OnDestroy {
   }
 
   editCountry() {
-    this.service.updateCountry(this.countryCodeToEdit, this.form.value).subscribe((result) => {
-      if (result && result === 1) {
-        this.showMessage('success', 'Successful', 'Attachment Type Updated Successful');
-        this.reloadData();
-        this.hideDialog();
-      } else {
-        this.showMessage('error', 'Failed', 'Lỗi gì đó');
-      }
-    });
+    // this.service.updateCountry(this.countryCodeToEdit, this.form.value).subscribe((result) => {
+    //   if (result && result === 1) {
+    //     this.showMessage('success', 'Successful', 'Attachment Type Updated Successful');
+    //     this.reloadData();
+    //     this.hideDialog();
+    //   } else {
+    //     this.showMessage('error', 'Failed', 'Lỗi gì đó');
+    //   }
+    // });
   }
 
   addCountry() {
-    if (this.editMode) {
-      this.editCountry();
-    } else {
-      this.service.addCountry(this.form.value).subscribe((result) => {
-        if (result && result === 1) {
-          this.showMessage('success', 'Successful', 'Attachment Type Created Successful');
-          this.reloadData();
-          this.hideDialog();
-        } else {
-          this.showMessage('error', 'Failed', 'Thất bại');
-        }
-      });
-    }
+    // if (this.editMode) {
+    //   this.editCountry();
+    // } else {
+    //   this.service.addCountry(this.form.value).subscribe((result) => {
+    //     if (result && result === 1) {
+    //       this.showMessage('success', 'Successful', 'Attachment Type Created Successful');
+    //       this.reloadData();
+    //       this.hideDialog();
+    //     } else {
+    //       this.showMessage('error', 'Failed', 'Thất bại');
+    //     }
+    //   });
+    // }
   }
 
   deleteCountry(item) {
-    this.confirmationService.confirm({
-      message: 'Xác nhận xóa ' + item.countryName + '?',
-      header: 'Xóa?',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.service.deleteCountry(item.countryCode).subscribe((result) => {
-          if (result && result === 1) {
-            this.showMessage('success', 'Thành công', 'Đã xóa thành công');
-            this.reloadData();
-          } else {
-            this.showMessage('error', 'Thất bại', 'Xóa thất bại');
-          }
-        });
-      },
-    });
+    // this.confirmationService.confirm({
+    //   message: 'Xác nhận xóa ' + item.countryName + '?',
+    //   header: 'Xóa?',
+    //   icon: 'pi pi-exclamation-triangle',
+    //   accept: () => {
+    //     this.service.deleteCountry(item.countryCode).subscribe((result) => {
+    //       if (result && result === 1) {
+    //         this.showMessage('success', 'Thành công', 'Đã xóa thành công');
+    //         this.reloadData();
+    //       } else {
+    //         this.showMessage('error', 'Thất bại', 'Xóa thất bại');
+    //       }
+    //     });
+    //   },
+    // });
   }
 
   handleValueCkChange(value) {

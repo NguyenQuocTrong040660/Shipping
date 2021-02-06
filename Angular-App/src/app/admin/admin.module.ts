@@ -2,15 +2,23 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
-import { AdminFooterComponent } from './components/admin-footer/admin-footer.component';
-import { AdminNavbarComponent } from './components/admin-navbar/admin-navbar.component';
-import { AdminRoutingModule } from './admin-routing.module';
-import { AdminControlSidebarComponent } from './components/admin-control-sidebar/admin-control-sidebar.component';
-import { AdminComponent } from './container/admin.component';
+import { AdminControlSidebarComponent } from './admin-control-sidebar/admin-control-sidebar.component';
+import { AdminComponent } from './admin.component';
+import { AdminFooterComponent } from './admin-footer/admin-footer.component';
+import { AdminNavbarComponent } from './admin-navbar/admin-navbar.component';
+import { adminRoutes } from './admin.routes';
 
 @NgModule({
-  imports: [CommonModule, RouterModule, AdminRoutingModule, SharedModule],
-  declarations: [AdminComponent, AdminControlSidebarComponent, AdminFooterComponent, AdminNavbarComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    SharedModule,
+    RouterModule.forChild(adminRoutes)],
+  declarations: [
+    AdminComponent,
+    AdminControlSidebarComponent,
+    AdminFooterComponent,
+    AdminNavbarComponent],
   providers: [],
 })
 export class AdminModule {}

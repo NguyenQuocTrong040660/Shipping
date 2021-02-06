@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AttachmentDto, AttachmentTypeDto } from 'app/api-clients/album-client';
-import { AlbumService } from 'app/core/services/album.service';
+import { AttachmentDto, AttachmentTypeDto } from 'app/shared/api-clients/album-client';
+import { AlbumService } from 'app/shared/services/album.service';
 import { environment } from 'environments/environment';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
@@ -15,8 +15,8 @@ export class FilesManagementComponent implements OnInit {
   attachmentTypes: AttachmentTypeDto[] = [];
   attachmentType: AttachmentDto = {};
 
-  dialog: boolean = false;
-  uploadDialog: boolean = false;
+  dialog: boolean;
+  uploadDialog: boolean;
   uploadedFiles: any[] = [];
 
   attachment: AttachmentDto;
@@ -37,12 +37,12 @@ export class FilesManagementComponent implements OnInit {
 
   initType() {
     if (this.isPhoto()) {
-      const attachmentTypeFind = this.attachmentTypes.find((i) => i.name == 'Photo');
+      const attachmentTypeFind = this.attachmentTypes.find((i) => i.name === 'Photo');
       this.attachmentType = attachmentTypeFind === null ? this.attachmentTypes[0] : attachmentTypeFind;
     }
 
     if (this.isVideo()) {
-      const attachmentTypeFind = this.attachmentTypes.find((i) => i.name == 'Video');
+      const attachmentTypeFind = this.attachmentTypes.find((i) => i.name === 'Video');
       this.attachmentType = attachmentTypeFind === null ? this.attachmentTypes[0] : attachmentTypeFind;
     }
   }
@@ -170,7 +170,7 @@ export class FilesManagementComponent implements OnInit {
   }
 
   formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) { return '0 Bytes'; }
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -214,7 +214,7 @@ export class FilesManagementComponent implements OnInit {
   }
 
   onUpload(event) {
-    for (let file of event.files) {
+    for (const file of event.files) {
       this.uploadedFiles = [...this.uploadedFiles, file];
     }
 

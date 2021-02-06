@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { StateService } from 'app/core/services/state.service';
+import { StateService } from 'app/shared/services/state.service';
 @Component({
   selector: 'admin-navbar',
   templateUrl: './admin-navbar.component.html',

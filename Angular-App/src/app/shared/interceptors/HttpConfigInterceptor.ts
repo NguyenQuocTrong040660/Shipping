@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'environments/environment';
 import { LoadingService } from '../services/loading.service';
 import { finalize } from 'rxjs/operators';
-import { StateService, States } from 'app/core/services/state.service';
+import { StateService, States } from '../services/state.service';
 
 @Injectable()
 export class HttpConfigInterceptor implements HttpInterceptor {

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AttachmentTypesManagementComponent } from './container/attachment-types-management.component';
+import { AttachmentTypesManagementComponent } from './attachment-types-management.component';
 
 const routes: Routes = [
   {

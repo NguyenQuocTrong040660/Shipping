@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AttachmentTypeDto } from 'app/api-clients/album-client';
-import { AlbumService } from 'app/core/services/album.service';
+import { AttachmentTypeDto } from 'app/shared/api-clients/album-client';
+import { AlbumService } from 'app/shared/services/album.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
@@ -10,9 +10,9 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 export class AttachmentTypesManagementComponent implements OnInit {
   attachmentTypes: AttachmentTypeDto[] = [];
   cols: any[];
-  dialog: boolean = false;
+  dialog: boolean;
   attachmentType: AttachmentTypeDto;
-  submitted: boolean = false;
+  submitted: boolean;
   selectedItems: AttachmentTypeDto[];
 
   constructor(

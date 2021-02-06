@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { FilesManagementComponent } from './container/files-management.component';
+import { FilesManagementComponent } from './files-management.component';
 
 const routes: Routes = [
   {

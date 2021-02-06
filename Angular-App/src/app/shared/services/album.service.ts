@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlbumClient, AttachmentTypeDto, FileParameter } from 'app/api-clients/album-client';
+import { AlbumClient, AttachmentTypeDto, FileParameter } from 'app/shared/api-clients/album-client';
 
 @Injectable({
   providedIn: 'root',
