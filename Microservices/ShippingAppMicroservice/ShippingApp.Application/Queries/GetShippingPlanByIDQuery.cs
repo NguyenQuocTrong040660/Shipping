@@ -13,24 +13,25 @@ using AutoMapper;
 
 namespace ShippingApp.Application.Queries
 {
-    public class GetProductByIDQuery : IRequest<DTO.Product>
+    public class GetShippingPlanByIDQuery : IRequest<DTO.ShippingPlan>
     {
         public Guid Id;
     }
-    public class GetProductByIDQueryHandler : IRequestHandler<GetProductByIDQuery, DTO.Product>
+
+    public class GetShippingPlanByIDQueryHandler : IRequestHandler<GetShippingPlanByIDQuery, DTO.ShippingPlan>
     {
         private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
-        public GetProductByIDQueryHandler(IShippingAppRepository productRepository, IMapper mapper)
+        public GetShippingPlanByIDQueryHandler(IShippingAppRepository productRepository, IMapper mapper)
         {
             _shippingAppRepository = productRepository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<DTO.Product> Handle(GetProductByIDQuery request, CancellationToken cancellationToken)
+        public async Task<DTO.ShippingPlan> Handle(GetShippingPlanByIDQuery request, CancellationToken cancellationToken)
         {
-            var product = await _shippingAppRepository.GetProductsByID(request.Id);
-            var results = _mapper.Map<DTO.Product>(product);
+            var shippingPlan = await _shippingAppRepository.GetShippingPlanByID(request.Id);
+            var results = _mapper.Map<DTO.ShippingPlan>(shippingPlan);
 
             return await Task.FromResult(results);
         }

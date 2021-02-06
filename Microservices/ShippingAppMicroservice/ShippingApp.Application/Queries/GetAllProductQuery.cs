@@ -17,20 +17,20 @@ namespace ShippingApp.Application.Queries
     }
     public class GetProductQueryHandler : IRequestHandler<GetAllProductQuery, List<DTO.Product>>
     {
-        private readonly IShippingAppRepository _productRepository;
+        private readonly IShippingAppRepository _shippingAppRepository;
         private readonly IMapper _mapper;
 
         public GetProductQueryHandler(IShippingAppRepository productRepository, IMapper mapper)
         {
-            _productRepository = productRepository;
+            _shippingAppRepository = productRepository;
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<List<DTO.Product>> Handle(GetAllProductQuery request, CancellationToken cancellationToken)
         {
-            var productOverviews = _productRepository.GetAllProducts();
+            var products = _shippingAppRepository.GetAllProducts();
 
-            var results = _mapper.Map<List<DTO.Product>>(productOverviews);
+            var results = _mapper.Map<List<DTO.Product>>(products);
 
             return await Task.FromResult(results);
         }

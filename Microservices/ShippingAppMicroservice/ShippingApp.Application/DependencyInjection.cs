@@ -25,20 +25,21 @@ namespace ShippingApp.Application
             services.AddMediatR(typeof(GetAllProductQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetProductByIDQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetCountryQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(CreateProductTypeCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateProductTypeCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteProductTypeCommand).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(GetProductTypeByNameQuery).GetTypeInfo().Assembly);
-
-            services.AddMediatR(typeof(CreateProductCommand).GetTypeInfo().Assembly);
-
+            services.AddMediatR(typeof(GetAllShippingPlanQuery).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(GetShippingPlanByIDQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetCountryQuery).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetCountryByNameQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(CreateCountryCommand).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(GetCountryByNameQuery).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(UpdateCountryCommand).GetTypeInfo().Assembly);
-
             services.AddMediatR(typeof(GetCountryByIdQuery).GetTypeInfo().Assembly);
+
+            services.AddMediatR(typeof(CreateProductCommand).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(CreateCountryCommand).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(CreateNewShippingPLanCommand).GetTypeInfo().Assembly);
+
+            services.AddMediatR(typeof(UpdateCountryCommand).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(UpdateShippingPlanCommand).GetTypeInfo().Assembly);
+
+
             return services;
         }
     }

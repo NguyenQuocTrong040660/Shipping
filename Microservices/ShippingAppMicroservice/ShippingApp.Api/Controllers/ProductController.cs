@@ -55,7 +55,7 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetProductsbyID/{id}")]
+        [Route("GetProductsbyID")]
         [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<DTO.Product>> GetProductByID(Guid id)
@@ -92,7 +92,7 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("DeletedProduct/{id}")]
+        [Route("DeletedProduct")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<int>> DeleteProductOverview(Guid id)
