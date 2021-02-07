@@ -51,16 +51,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
-  goToRegister() {
-    this.router.navigate(['/register'], {
-      queryParams: { returnUrl: this.router.routerState.snapshot.url },
-    });
-  }
-
-  goToForgetPassword() {
-    this.router.navigate(['/forget-password']);
-  }
-
   login() {
     this.submitted = true;
 

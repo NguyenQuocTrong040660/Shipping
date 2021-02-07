@@ -15,7 +15,6 @@ export class AdminControlSidebarComponent implements OnInit {
     this.items = [
       {
         label: 'Danh mục sản phẩm',
-        icon: 'pi pi-pw pi-file',
         items: [
           {
             label: 'Danh sách Receive Mark',
@@ -43,7 +42,18 @@ export class AdminControlSidebarComponent implements OnInit {
             routerLink: '/files-management/video',
           },
         ],
-      }
+      },
+      { separator: true },
+      {
+        label: 'User Management',
+        items: [
+          {
+            label: 'Users',
+            icon: 'pi pi-fw pi-pencil',
+            routerLink: '/user',
+          }
+        ]
+      },
     ];
   }
 }

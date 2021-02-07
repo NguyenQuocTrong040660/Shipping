@@ -13,10 +13,6 @@ export const appRoutes: Routes = [
     loadChildren: () => import('./login/login.module').then((m) => m.LoginModule),
   },
   {
-    path: 'forget-password',
-    loadChildren: () => import('./forget-password/forget-password.module').then((m) => m.ForgetPasswordModule),
-  },
-  {
     path: '**',
     component: NotFoundComponent,
   },

@@ -39,14 +39,15 @@ export const adminRoutes: Routes = [
                 canActivate: [AuthorizeGuard],
             },
             {
+                path: 'user',
+                loadChildren: () => import('./pages/user/user.module').then((m) => m.UserModule),
+                canActivate: [AuthorizeGuard],
+            },
+            {
                 path: '',
                 pathMatch: 'full',
                 redirectTo: '/',
             },
         ],
-    },
-    {
-        path: 'register',
-        loadChildren: () => import('./pages/register/register.module').then((m) => m.RegisterModule),
-    },
+    }
 ];
