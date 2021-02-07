@@ -51,7 +51,7 @@ export class AdminControlSidebarComponent implements OnInit {
           {
             label: 'Users',
             icon: 'pi pi-users',
-            routerLink: '',
+            routerLink: '/user-management',
           },
           {
             label: 'Product',

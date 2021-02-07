@@ -28,6 +28,25 @@ export const adminRoutes: Routes = [
         canActivate: [AuthenticationGuard],
       },
       {
+        path: 'files-management',
+        loadChildren: () =>
+          import('./pages/files-management/files-management.module').then((m) => m.FilesManagementModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'attachment-types-management',
+        loadChildren: () =>
+          import('./pages/attachment-types-management/attachment-types-management.module').then(
+            (m) => m.AttachmentTypesManagementModule
+          ),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'product',
+        loadChildren: () => import('./pages/product/product.module').then((m) => m.ProductModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
         path: 'product-type',
         loadChildren: () => import('./pages/product-type/product-type.module').then((m) => m.ProductTypeModule),
         canActivate: [AuthenticationGuard],
@@ -35,6 +54,11 @@ export const adminRoutes: Routes = [
       {
         path: 'country',
         loadChildren: () => import('./pages/country/country.module').then((m) => m.CountryModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'user-management',
+        loadChildren: () => import('./pages/user-management/user-management.module').then((m) => m.UserManagementModule),
         canActivate: [AuthenticationGuard],
       },
       {
@@ -48,9 +72,5 @@ export const adminRoutes: Routes = [
         canActivate: [AuthenticationGuard],
       },
     ],
-  },
-  {
-    path: 'register',
-    loadChildren: () => import('./pages/register/register.module').then((m) => m.RegisterModule),
   },
 ];

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, delay, finalize, tap } from 'rxjs/operators';
@@ -9,7 +9,8 @@ import { States, StateService } from './state.service';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthenticationService {
+
+export class AuthenticationService implements OnDestroy {
   private timer: Subscription;
   private _user = new BehaviorSubject<ApplicationUser>(null);
   user$: Observable<ApplicationUser> = this._user.asObservable();
@@ -20,7 +21,7 @@ export class AuthenticationService {
   }
 
   handleError(error) {
-    let errorMessage =
+    const errorMessage =
       error.error instanceof ErrorEvent
         ? `Error: ${error.error.message}`
         : `Error Code: ${error.status}\n Message: ${error.message}`;

@@ -1,11 +1,11 @@
-:host ::ng-deep {
+app-files-management ::ng-deep {
   .p-datatable-responsive-demo .p-datatable-tbody > tr > td .p-column-title {
     display: none;
   }
 }
 
 @media screen and (max-width: 40rem) {
-  :host ::ng-deep {
+  app-files-management ::ng-deep {
     .p-datatable {
       &.p-datatable-responsive-demo {
         .p-datatable-thead > tr > th,
