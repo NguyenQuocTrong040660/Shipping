@@ -2,6 +2,8 @@
 {
     public enum Template
     {
-        Product
+        Product,
+        ShippingPlan,
+        WorkOrder
     }
 }
