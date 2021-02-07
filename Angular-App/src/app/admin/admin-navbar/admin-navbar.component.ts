@@ -1,17 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { StateService } from 'app/shared/services/state.service';
+import { AuthenticationService } from 'app/shared/services/authentication.service';
 @Component({
   selector: 'admin-navbar',
   templateUrl: './admin-navbar.component.html',
 })
 export class AdminNavbarComponent implements OnInit {
-  constructor(private router: Router, private stateService: StateService) {}
+  constructor(private authenticationService: AuthenticationService) {}
 
   ngOnInit(): void {}
 
   logout() {
-    this.stateService.resetToken();
-    this.router.navigateByUrl('/login');
+    this.authenticationService.logout();
   }
 }

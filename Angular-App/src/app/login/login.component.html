@@ -1,16 +1,14 @@
 <section class="login-page">
   <div class="login-box">
     <div class="login-logo">
-      <a href="/">ĐĂNG NHẬP</a>
+      <a href="/">Login</a>
     </div>
 
     <div class="card">
       <div class="card-body login-card-body">
-        <p class="login-box-msg"></p>
-
         <form [formGroup]="loginForm" (ngSubmit)="login()">
           <div class="input-group mb-3">
-            <input formControlName="userName" id="userName" type="email" class="form-control" placeholder="Tài khoản" />
+            <input [formControl]="userName" type="email" class="form-control" placeholder="Username" />
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>
@@ -22,18 +20,18 @@
               class="error invalid-feedback"
               style="display: block"
             >
-              Vui lòng nhập tài khoản
+              Please specify a username
             </span>
             <span
               *ngIf="(userName.touched || submitted) && userName.errors?.email"
               id="userName"
               class="error invalid-feedback"
               style="display: block"
-              >Vui lòng nhập đúng định dạng email</span
+              >Please enter a valid email</span
             >
           </div>
           <div class="input-group mb-3">
-            <input formControlName="password" type="password" class="form-control" placeholder="Mật khẩu" />
+            <input [formControl]="password" type="password" class="form-control" placeholder="Password" />
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
@@ -44,33 +42,22 @@
               id="password"
               class="error invalid-feedback"
               style="display: block"
-              >Vui lòng nhập mật khẩu</span
+              >Please specify a password</span
             >
             <span
               *ngIf="(password.touched || submitted) && password.errors?.minlength"
               id="password"
               class="error invalid-feedback"
               style="display: block"
-              >Mật khẩu phải dài hơn 6 ký tự</span
+              >The password lenght should be more than six characters</span
             >
           </div>
           <div class="row">
             <div class="col-12">
-              <button type="submit" [disabled]="loginForm.invalid" class="btn btn-primary btn-block">Đăng nhập</button>
+              <button type="submit" [disabled]="loginForm.invalid" class="btn btn-primary btn-block">Submit</button>
             </div>
           </div>
         </form>
-
-        <p class="mt-2 mb-0">
-          <a (click)="goToRegister()" class="text-center pointer"
-            ><span style="text-decoration: underline; color: #5aaafb">Đăng ký</span> tài khoản</a
-          >
-        </p>
-        <p class="mt-2 mb-0">
-          <a (click)="goToForgetPassword()" class="text-center pointer"
-            >Bạn <span style="text-decoration: underline; color: #5aaafb">quên mật khẩu</span></a
-          >
-        </p>
       </div>
     </div>
   </div>
