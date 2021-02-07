@@ -1,0 +1,132 @@
+<div class="card">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button
+                pButton
+                pRipple
+                label="Create Users"
+                icon="pi pi-plus"
+                class="p-button-primary p-mr-2"
+                (click)="openCreateDialog()"></button>
+            <button
+                pButton
+                pRipple
+                label="Set New Password"
+                icon="pi pi-pencil"
+                class="p-button-success p-mr-2"
+                (click)="openSetNewPasswordDialog()"></button>
+            <button
+                pButton
+                pRipple
+                label="Delete"
+                icon="pi pi-trash"
+                class="p-button-danger p-mr-2"
+                (click)="openDeleteDialog()"></button>
+            <!-- [disabled]="!selectedItems || !selectedItems.length" -->
+        </ng-template>
+    </p-toolbar>
+
+    <p-table
+        #userDataTable
+        dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rows]="20"
+        [value]="users"
+        [rowHover]="true"
+        [paginator]="true"
+        [showCurrentPageReport]="true"
+        [globalFilterFields]="['email','userName']"
+        [(selection)]="selectedUsers">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">Users</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="userDataTable.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="email">Email<p-sortIcon field="email"></p-sortIcon>
+                </th>
+                <th pSortableColumn="userName">User Name<p-sortIcon field="userName"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="user"></p-tableCheckbox>
+                </td>
+                <td>{{user.email}}</td>
+                <td>{{user.userName}}</td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                In total there are {{users ? users.length : 0 }} users.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+
+<p-dialog header="Create Users" styleClass="p-fluid"
+    [modal]="true" [(visible)]="isShowCreateDialog" (onHide)="hideDialog()">
+    <ng-template pTemplate="content">
+        <form [formGroup]="createUserForm">
+            <div formArrayName="userForms">
+                <button class="p-button-primary create-user-form__button-create"
+                    label="New User" pButton pRipple icon="pi pi-plus" (click)="addUser()"></button>
+                <div *ngFor="let user of createUserForm.get('userForms')['controls']; let i = index;">
+                    <div [formGroupName]="i">
+                        <div class="create-user-form__group-inline">
+                            <div class="p-field">
+                                <div class="create-user-form__label">
+                                    <label for="email">Email</label>&nbsp;
+                                    <ng-container *ngIf="userForms.controls[i].get('email').invalid &&
+                                        (userForms.controls[i].get('email').dirty || userForms.controls[i].get('email').touched)">
+                                        <small id="email-error" class="p-invalid create-user-form__error">Invalid Email.</small>
+                                    </ng-container>
+                                </div>
+                                <input id="email" type="email" pInputText formControlName="email" aria-describedby="email-error" (keyup)="setUserName(i)"/>
+                            </div>
+                            <div class="p-field">
+                                <div class="create-user-form__label">
+                                    <label for="userName">User Name</label>&nbsp;
+                                    <ng-container *ngIf="userForms.controls[i].get('userName').invalid
+                                        && (userForms.controls[i].get('userName').dirty || userForms.controls[i].get('userName').touched)">
+                                        <small id="email-error" class="p-invalid create-user-form__error">Invalid User Name.</small>
+                                    </ng-container>
+                                    <ng-container *ngIf="userForms.controls[i].errors && userForms.controls[i].errors.matchContent
+                                        && (userForms.controls[i].get('userName').dirty || userForms.controls[i].get('userName').touched)">
+                                        <small id="email-error" class="p-invalid create-user-form__error">User name not match.</small>
+                                    </ng-container>
+                                </div>
+                                <input id="userName" type="text" pInputText disabled formControlName="userName" [value]="userForms.value[i].email"/>
+                            </div>
+                            <ng-container *ngIf="i !== 0">
+                                <button class="p-button-danger create-user-form__button-remove"
+                                    pButton pRipple icon="pi pi-times" (click)="removeUser(i)"></button>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="createUserForm.invalid" (click)="onCreate()"></button>
+    </ng-template>
+</p-dialog>

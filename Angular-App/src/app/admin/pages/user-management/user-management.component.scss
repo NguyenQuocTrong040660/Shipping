@@ -1,0 +1,35 @@
+.create-user-form {
+    &__group-inline {
+        display: flex;
+        align-items: flex-end;
+
+        & > * {
+            margin: 10px;
+        }
+
+        .p-field:first-child {
+            margin-left: 0px;
+        }
+
+        button:last-child {
+            margin-right: 0px;
+        }
+    }
+
+    &__button-create {
+        height: 40px;
+        width: 150px;
+    }
+
+    &__button-remove {
+        height: 40px;
+    }
+
+    &__label {
+        display: flex;
+    }
+
+    &__error {
+        padding-top: 3px;
+    }
+}

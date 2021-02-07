@@ -57,8 +57,8 @@ export const adminRoutes: Routes = [
         canActivate: [AuthenticationGuard],
       },
       {
-        path: 'user',
-        loadChildren: () => import('./pages/user/user.module').then((m) => m.UserModule),
+        path: 'user-management',
+        loadChildren: () => import('./pages/user-management/user-management.module').then((m) => m.UserManagementModule),
         canActivate: [AuthenticationGuard],
       },
       {
