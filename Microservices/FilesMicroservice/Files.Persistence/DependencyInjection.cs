@@ -20,7 +20,7 @@ namespace Files.Persistence
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
-                mc.AddProfile(new NewMappingProfile());
+                mc.AddProfile(new MappingProfile());
             });
 
             IMapper mapper = mapperConfig.CreateMapper();

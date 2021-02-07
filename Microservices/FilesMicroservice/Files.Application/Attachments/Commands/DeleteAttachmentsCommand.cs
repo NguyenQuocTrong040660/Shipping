@@ -13,7 +13,6 @@ namespace Files.Application.Attachments.Commands
     public class DeleteAttachmentsCommand : IRequest<Result>
     {
         public List<string> Items { get; set; }
-        public string WebRootPath { get; set; }
     }
 
     public class DeleteAttachmentsCommandHandler : IRequestHandler<DeleteAttachmentsCommand, Result>
@@ -45,7 +44,7 @@ namespace Files.Application.Attachments.Commands
 
             foreach (var item in entites)
             {
-                _fileService.DeleteFile(request.WebRootPath, item.AttachmentTypeId.ToString(), item.FileName);
+                _fileService.DeleteFile(item.AttachmentTypeId.ToString(), item.FileName);
             }
 
             return await _context.SaveChangesAsync() > 0 

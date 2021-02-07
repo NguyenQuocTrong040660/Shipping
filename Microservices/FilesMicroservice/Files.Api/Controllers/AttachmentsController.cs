@@ -17,16 +17,13 @@ namespace Files.Api.Controllers
 {
     public class AttachmentsController : BaseController
     {
-        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<AttachmentsController> _logger;
         private readonly IUploadFileService _uploadService;
 
         public AttachmentsController(IMediator mediator,
             IUploadFileService uploadService,
-            IWebHostEnvironment environment, 
             ILogger<AttachmentsController> logger) : base(mediator)
         {
-            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _uploadService = uploadService ?? throw new ArgumentNullException(nameof(uploadService));
         }
@@ -52,7 +49,7 @@ namespace Files.Api.Controllers
         [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Result>> DeleteAttachments(Guid id)
         {
-            var result = await _mediator.Send(new DeleteAttachmentCommand() { Id = id, WebRootPath = _environment.WebRootPath });
+            var result = await _mediator.Send(new DeleteAttachmentCommand() { Id = id });
 
             if (!result.Succeeded)
             {
@@ -67,7 +64,7 @@ namespace Files.Api.Controllers
         [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Result>> BulkDelete([FromBody]List<string> items)
         {
-            var result = await _mediator.Send(new DeleteAttachmentsCommand() { Items = items, WebRootPath = _environment.WebRootPath });
+            var result = await _mediator.Send(new DeleteAttachmentsCommand() { Items = items });
 
             if (!result.Succeeded)
             {
@@ -95,7 +92,6 @@ namespace Files.Api.Controllers
             (Result resultUpload, string fileUrl, string fileName) = _uploadService
                     .UploadFileWithAttachmentTypeId(request.File,
                                 GetDomain(),
-                                _environment.WebRootPath,
                                 request.AttachmentTypeId);
 
             if (!resultUpload.Succeeded)
@@ -105,7 +101,7 @@ namespace Files.Api.Controllers
 
             AttachmentDto attachment = InitAttachment(request.File, fileUrl, fileName);
             _logger.LogInformation("Upload result", resultUpload);
-            Result result = await _mediator.Send(new AddAttachmentCommand() { Model = attachment });
+            Result result = await Mediator.Send(new AddAttachmentCommand() { Model = attachment });
 
             return Ok(result);
         }
@@ -118,13 +114,13 @@ namespace Files.Api.Controllers
             {
 
                 (Result resultUpload, string fileUrl, string fileName) = _uploadService
-                        .UploadFile(item, GetDomain(), _environment.WebRootPath, AttachmentTypes.Photo);
+                        .UploadFile(item, GetDomain(), AttachmentTypes.Photo);
 
                 if (resultUpload.Succeeded)
                 {
                     AttachmentDto attachment = InitAttachment(item, fileUrl, fileName);
                     _logger.LogInformation("Upload result", resultUpload);
-                    await _mediator.Send(new AddAttachmentCommand() { Model = attachment, AttachmentType = AttachmentTypes.Photo });
+                    await Mediator.Send(new AddAttachmentCommand() { Model = attachment, AttachmentType = AttachmentTypes.Photo });
                 }
             }
 
@@ -141,21 +137,20 @@ namespace Files.Api.Controllers
                 (Result resultUpload, string fileUrl, string fileName) = _uploadService
                         .UploadFile(item,
                                     GetDomain(),
-                                    _environment.WebRootPath,
                                     AttachmentTypes.Video);
 
                 if (resultUpload.Succeeded)
                 {
                     AttachmentDto attachment = InitAttachment(item, fileUrl, fileName);
                     _logger.LogInformation("Upload result", resultUpload);
-                    await _mediator.Send(new AddAttachmentCommand() { Model = attachment, AttachmentType = AttachmentTypes.Video });
+                    await Mediator.Send(new AddAttachmentCommand() { Model = attachment, AttachmentType = AttachmentTypes.Video });
                 }
             }
 
             return Ok();
         }
 
-        private AttachmentDto InitAttachment(IFormFile file, string fileUrl, string fileName)
+        private static AttachmentDto InitAttachment(IFormFile file, string fileUrl, string fileName)
         {
             return new AttachmentDto
             {

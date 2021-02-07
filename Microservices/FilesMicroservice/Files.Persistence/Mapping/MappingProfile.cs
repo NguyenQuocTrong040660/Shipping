@@ -4,9 +4,9 @@ using AutoMapper;
 
 namespace Files.Persistence.Mapping
 {
-    public class NewMappingProfile: Profile
+    public class MappingProfile: Profile
     {
-        public NewMappingProfile()
+        public MappingProfile()
         {
             CreateMap<Entities.Attachment, Models.AttachmentDto>()
               .ReverseMap();

@@ -39,6 +39,8 @@
 
   <ItemGroup>
     <Folder Include="logs\" />
+    <Folder Include="wwwroot\files\" />
+    <Folder Include="wwwroot\templates\" />
     <Folder Include="wwwroot\videos\" />
     <Folder Include="wwwroot\photos\" />
   </ItemGroup>

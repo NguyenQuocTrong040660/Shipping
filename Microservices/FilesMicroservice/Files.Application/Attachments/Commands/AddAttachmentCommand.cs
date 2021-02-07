@@ -32,21 +32,13 @@ namespace Files.Application.Attachments.Commands
         public async Task<Result> Handle(AddAttachmentCommand request, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<Entities.Attachment>(request.Model);
-
             entity.AttachmentType = null;
 
-            Entities.AttachmentType attachmentType = null;
+            Entities.AttachmentType attachmentType = attachmentType = _context.AttachmentTypes.FirstOrDefault(x => x.Name == request.AttachmentType);
 
-            switch (request.AttachmentType)
+            if (attachmentType == null)
             {
-                case AttachmentTypes.Video:
-                    attachmentType = _context.AttachmentTypes.FirstOrDefault(x => x.Name == AttachmentTypes.Video);
-                    break;
-                case AttachmentTypes.Photo:
-                    attachmentType = _context.AttachmentTypes.FirstOrDefault(x => x.Name == AttachmentTypes.Photo);
-                    break;
-                default:
-                    throw new ArgumentNullException(nameof(attachmentType));
+                throw new ArgumentNullException(nameof(attachmentType));
             }
 
             entity.AttachmentTypeId = attachmentType.Id;

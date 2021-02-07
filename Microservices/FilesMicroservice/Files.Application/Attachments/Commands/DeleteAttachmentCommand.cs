@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,22 +10,18 @@ namespace Files.Application.Attachments.Commands
     public class DeleteAttachmentCommand : IRequest<Result>
     {
         public Guid Id { get; set; }
-        public string WebRootPath { get; set; }
     }
 
     public class DeleteAttachmentCommandHandler : IRequestHandler<DeleteAttachmentCommand, Result>
     {
         private readonly IFilesDbContext _context;
         private readonly IUploadFileService _fileService;
-        private readonly IMapper _mapper;
 
         public DeleteAttachmentCommandHandler(IFilesDbContext context,
-            IUploadFileService fileService,
-            IMapper mapper)
+            IUploadFileService fileService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _fileService = fileService;
+            _fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
         }
 
         public async Task<Result> Handle(DeleteAttachmentCommand request, CancellationToken cancellationToken)
@@ -40,7 +35,7 @@ namespace Files.Application.Attachments.Commands
 
             _context.Attachments.Remove(entiy);
 
-            _fileService.DeleteFile(request.WebRootPath, entiy.AttachmentTypeId.ToString(), entiy.FileName);
+            _fileService.DeleteFile(entiy.AttachmentTypeId.ToString(), entiy.FileName);
 
             return await _context.SaveChangesAsync() > 0 
                 ? Result.Success()

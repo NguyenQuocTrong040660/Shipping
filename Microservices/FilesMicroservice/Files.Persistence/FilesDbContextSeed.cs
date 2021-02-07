@@ -18,11 +18,14 @@ namespace Files.Persistence.DBContext
                     new AttachmentType
                     {
                         Name = AttachmentTypes.Photo,
-                        
                     },
                     new AttachmentType
                     {
                        Name = AttachmentTypes.Video,
+                    },
+                    new AttachmentType
+                    {
+                       Name = AttachmentTypes.Excel,
                     },
                 };
 

@@ -12,6 +12,8 @@ using Files.Application;
 using Files.Infrastructure;
 using Files.Persistence;
 using Serilog;
+using Files.Api.Configs;
+using Files.Application.Common.Interfaces;
 
 namespace Files.Api
 {
@@ -80,6 +82,7 @@ namespace Files.Api
                 o.MemoryBufferThreshold = int.MaxValue;
             });
 
+            services.AddSingleton<IEnvironmentApplication, EnvironmentApplication>();
             services.AddPersistence(Configuration);
             services.AddApplication();
             services.AddInfrastructure(Configuration);
