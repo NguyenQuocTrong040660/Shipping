@@ -42,6 +42,11 @@ export const adminRoutes: Routes = [
         pathMatch: 'full',
         redirectTo: '/',
       },
+      {
+        path: 'user-profile',
+        loadChildren: () => import('./pages/user-profile/user-profile.module').then((m) => m.UserProfileModule),
+        canActivate: [AuthenticationGuard],
+      },
     ],
   },
   {
