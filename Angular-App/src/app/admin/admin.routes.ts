@@ -1,19 +1,37 @@
 import { Routes } from '@angular/router';
 import { AuthenticationGuard } from 'app/shared/guards/authentication.guard';
-import { AuthorizeGuard } from 'app/shared/guards/authorize.guard';
 import { AdminComponent } from './admin.component';
 
 export const adminRoutes: Routes = [
-    {
-        path: '',
-        component: AdminComponent,
+  {
+    path: '',
+    component: AdminComponent,
+    canActivate: [AuthenticationGuard],
+    children: [
+      {
+        path: 'files-management',
+        loadChildren: () =>
+          import('./pages/files-management/files-management.module').then((m) => m.FilesManagementModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'attachment-types-management',
+        loadChildren: () =>
+          import('./pages/attachment-types-management/attachment-types-management.module').then(
+            (m) => m.AttachmentTypesManagementModule
+          ),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'product',
+        loadChildren: () => import('./pages/product/product.module').then((m) => m.ProductModule),
         canActivate: [AuthenticationGuard],
         children: [
             {
                 path: 'files-management',
                 loadChildren: () =>
                     import('./pages/files-management/files-management.module').then((m) => m.FilesManagementModule),
-                canActivate: [AuthorizeGuard],
+                canActivate: [AuthenticationGuard],
             },
             {
                 path: 'attachment-types-management',
@@ -21,27 +39,27 @@ export const adminRoutes: Routes = [
                     import('./pages/attachment-types-management/attachment-types-management.module').then(
                         (m) => m.AttachmentTypesManagementModule
                     ),
-                canActivate: [AuthorizeGuard],
+                canActivate: [AuthenticationGuard],
             },
             {
                 path: 'product',
                 loadChildren: () => import('./pages/product/product.module').then((m) => m.ProductModule),
-                canActivate: [AuthorizeGuard],
+                canActivate: [AuthenticationGuard],
             },
             {
                 path: 'product-type',
                 loadChildren: () => import('./pages/product-type/product-type.module').then((m) => m.ProductTypeModule),
-                canActivate: [AuthorizeGuard],
+                canActivate: [AuthenticationGuard],
             },
             {
                 path: 'country',
                 loadChildren: () => import('./pages/country/country.module').then((m) => m.CountryModule),
-                canActivate: [AuthorizeGuard],
+                canActivate: [AuthenticationGuard],
             },
             {
                 path: 'user',
                 loadChildren: () => import('./pages/user/user.module').then((m) => m.UserModule),
-                canActivate: [AuthorizeGuard],
+                canActivate: [AuthenticationGuard],
             },
             {
                 path: '',

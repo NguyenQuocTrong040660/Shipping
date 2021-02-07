@@ -1,6 +1,6 @@
 import { SharedModule } from 'app/shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -8,15 +8,19 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { AuthorizeService } from './shared/services/authorize.service';
+import { AuthenticationService } from './shared/services/authentication.service';
 import { API_BASE_URL, FilesClient } from './shared/api-clients/files.client';
 import { UserClient } from './shared/api-clients/user.client';
 import { ShippingAppClients } from './shared/api-clients/shipping-app.client';
 import { environment } from 'environments/environment';
-import { HttpConfigInterceptor } from './shared/interceptors/HttpConfigInterceptor';
+import { HttpConfigInterceptor } from './shared/interceptors/http-config.interceptor';
 import { LoadingService } from './shared/services/loading.service';
 import { QuicklinkModule, QuicklinkStrategy } from 'ngx-quicklink';
 import { appRoutes } from './routes';
+import { NotificationService } from './shared/services/notification.service';
+import { appInitializer } from 'app-initializer';
+import { UnAuthorizedInterceptor } from './shared/interceptors/unauthorize.interceptor';
+import { AuthorizeInterceptor } from './shared/interceptors/authorize.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,13 +37,26 @@ import { appRoutes } from './routes';
   providers: [
     LoadingService,
     MessageService,
+    NotificationService,
     ConfirmationService,
-    AuthorizeService,
+    AuthenticationService,
     FilesClient,
     UserClient,
     ShippingAppClients,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializer,
+      multi: true,
+      deps: [AuthenticationService],
+    },
     { provide: API_BASE_URL, useValue: environment.baseUrl },
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: UnAuthorizedInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

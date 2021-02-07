@@ -3,18 +3,21 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
 export enum States {
-  logged = 'logged',
-  accessToken = 'accessToken',
+  AccessToken = 'accessToken',
+  RefreshToken = 'refreshToken',
+  LoginEvent = 'loginEvent',
 }
 
 export interface AppState {
-  logged: boolean;
+  refreshToken: string;
   accessToken: string;
+  loginEvent: string;
 }
 
 export const InitialState: AppState = {
-  logged: false,
   accessToken: '',
+  refreshToken: '',
+  loginEvent: '',
 };
 
 @Injectable({
@@ -25,11 +28,14 @@ export class StateService {
   private stateSubject: BehaviorSubject<AppState>;
 
   constructor() {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem(States.AccessToken);
+    const refreshToken = localStorage.getItem(States.RefreshToken);
+    const loginEvent = localStorage.getItem(States.LoginEvent);
 
     this.state = {
-      accessToken: accessToken,
-      logged: false,
+      accessToken,
+      refreshToken,
+      loginEvent,
     };
 
     this.stateSubject = new BehaviorSubject<AppState>(this.state);
@@ -38,6 +44,12 @@ export class StateService {
   setState<T extends keyof AppState>(key: T, value: AppState[T], local = true) {
     this.saveState(key, value, local);
     this.state[key] = value;
+    this.stateSubject.next(this.state);
+  }
+
+  resetState<T extends keyof AppState>(key: T, local = true) {
+    this.removeState(key, local);
+    this.state[key] = InitialState[key];
     this.stateSubject.next(this.state);
   }
 
@@ -54,7 +66,7 @@ export class StateService {
     this.stateSubject.next(InitialState);
   }
 
-  saveState(key, value, local) {
+  saveState(key: string, value, local: boolean) {
     if (typeof value === 'boolean') {
       return;
     }
@@ -66,6 +78,14 @@ export class StateService {
       localStorage.setItem(key, value);
     } else {
       sessionStorage.setItem(key, value);
+    }
+  }
+
+  removeState(key: string, local: boolean) {
+    if (local) {
+      localStorage.removeItem(key);
+    } else {
+      sessionStorage.removeItem(key);
     }
   }
 }

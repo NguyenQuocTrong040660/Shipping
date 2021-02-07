@@ -26,6 +26,7 @@ namespace UserManagement.Api
             {
                 var services = scope.ServiceProvider;
                 var hostingEnvironment = services.GetService<IWebHostEnvironment>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
@@ -52,7 +53,6 @@ namespace UserManagement.Api
                 }
                 catch (Exception ex)
                 {
-                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred while migrating or seeding the database.");
                     throw;
                 }

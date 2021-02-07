@@ -35,11 +35,11 @@ namespace Files.Infrastructure.Services
             try
             {
                 using ExcelPackage package = new ExcelPackage(new FileInfo(Path.Combine(path, fileName)));
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Products");
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(typeof(T).Name);
 
                 var types = typeof(T).GetProperties();
 
-                for (int i = 1; i < types.Length; i++)
+                for (int i = 1; i <= types.Length; i++)
                 {
                     worksheet.Cells[1, i].Value = types[i - 1].Name;
                 }

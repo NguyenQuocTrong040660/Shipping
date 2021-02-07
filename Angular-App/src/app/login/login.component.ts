@@ -1,20 +1,23 @@
+import { takeUntil } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { LoginResult } from 'app/shared/api-clients/user.client';
+import { NotificationService } from 'app/shared/services/notification.service';
+import { AuthenticationService } from 'app/shared/services/authentication.service';
+import { ApplicationUser } from 'app/shared/models/application-user';
 import { Subject } from 'rxjs';
-
-import { LoginRequest, UserClient } from 'app/shared/api-clients/user.client';
-import { MessageService } from 'primeng/api';
-import { StateService } from 'app/shared/services/state.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  providers: [MessageService],
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  private destroyed$ = new Subject<void>();
+
   loginForm: FormGroup;
   submitted = false;
+  returnUrl = '';
 
   get userName() {
     return this.loginForm.get('userName');
@@ -23,31 +26,38 @@ export class LoginComponent implements OnInit, OnDestroy {
     return this.loginForm.get('password');
   }
 
-  private destroyed$ = new Subject<void>();
-
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute,
-    private userClient: UserClient,
-    private messageService: MessageService,
-    private stateService: StateService
+    private authenticationService: AuthenticationService,
+    private notificationService: NotificationService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      if (params.id === 'register') {
-        this.showMessage('success', 'Đăng ký thành công');
-      }
-    });
-
+    this.route.queryParams.subscribe((params) => (this.returnUrl = params['returnUrl'] || ''));
     this.initForm();
+    this.initLogin();
   }
 
   initForm() {
     this.loginForm = this.fb.group({
-      userName: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      userName: ['admin@gmail.com', [Validators.required, Validators.email]],
+      password: ['ad@123456', [Validators.required, Validators.minLength(6)]],
+    });
+  }
+
+  initLogin() {
+    this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => {
+      if (this.router.url.includes('login')) {
+        const accessToken = this.authenticationService.getAccessToken();
+        const refreshToken = this.authenticationService.getRefreshToken();
+
+        if (user && accessToken && refreshToken) {
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '';
+          this.router.navigate([returnUrl]);
+        }
+      }
     });
   }
 
@@ -58,25 +68,19 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const data: LoginRequest = Object.assign({}, this.loginForm.value, {
-      rememberMe: false,
-    });
+    const { userName, password } = this.loginForm.value;
 
-    this.userClient.apiUserUserLogin(data).subscribe((result) => {
-      this.stateService.resetToken();
-
-      if (result && result.succeeded) {
-        this.stateService.setState('accessToken', result.accessToken);
-        this.stateService.setState('logged', true);
-        this.router.navigateByUrl('/');
-      } else {
-        this.showMessage('error', 'Đăng nhập thất bại', result?.errorMessage);
-      }
-    });
-  }
-
-  showMessage(type: string, summary: string, detail: string = '', timeLife: number = 3000) {
-    this.messageService.add({ severity: type, summary: summary, detail: detail, life: timeLife });
+    this.authenticationService.login(userName, password, true).subscribe(
+      (result: LoginResult) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Login successfully');
+          this.router.navigateByUrl(this.returnUrl);
+        } else {
+          this.notificationService.error(result.errorMessage);
+        }
+      },
+      (_) => this.notificationService.error('Please try again')
+    );
   }
 
   ngOnDestroy(): void {
