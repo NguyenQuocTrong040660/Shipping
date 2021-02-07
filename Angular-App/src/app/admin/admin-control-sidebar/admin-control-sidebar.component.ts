@@ -9,41 +9,88 @@ import { MenuItem } from 'primeng/api';
 export class AdminControlSidebarComponent implements OnInit {
   items: MenuItem[];
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.items = [
       {
-        label: 'Danh mục sản phẩm',
+        label: 'Business',
         icon: 'pi pi-pw pi-file',
         items: [
           {
-            label: 'Danh sách Receive Mark',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: '/files-management/hinh-anh',
+            label: 'Shipping Plan',
+            icon: 'pi pi-calendar-times',
+            routerLink: '',
           },
           {
-            label: 'Danh sách Shipping Mark',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: '/files-management/video',
+            label: 'Shipping Request',
+            icon: 'pi pi-envelope',
+            routerLink: '',
           },
           {
-            label: 'Danh sách Shipping Plan',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: '/files-management/video',
+            label: 'Movement Request',
+            icon: 'pi pi-envelope',
+            routerLink: '',
           },
           {
-            label: 'Danh sách Shipping Order',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: '/files-management/video',
+            label: 'Received Mark',
+            icon: 'pi pi-tags',
+            routerLink: '',
           },
           {
-            label: 'Danh sách Move Orders',
-            icon: 'pi pi-fw pi-pencil',
-            routerLink: '/files-management/video',
+            label: 'Shipping Mark',
+            icon: 'pi pi-tags',
+            routerLink: '',
           },
         ],
-      }
+      },
+      {
+        label: 'Management',
+        icon: 'pi pi-pw pi-file',
+        items: [
+          {
+            label: 'Users',
+            icon: 'pi pi-users',
+            routerLink: '',
+          },
+          {
+            label: 'Product',
+            icon: 'pi pi-list',
+            routerLink: '',
+          },
+          {
+            label: 'Product Category',
+            icon: 'pi pi-list',
+            routerLink: '',
+          },
+          {
+            label: 'Work Order',
+            icon: 'pi pi-file-o',
+            routerLink: '',
+          },
+        ],
+      },
+      {
+        label: 'Settings',
+        icon: 'pi pi-pw pi-file',
+        items: [
+          {
+            label: 'Imports Data',
+            icon: 'pi pi-cloud-upload',
+            routerLink: '',
+          },
+          {
+            label: 'Export Templates',
+            icon: 'pi pi-folder-open',
+            routerLink: '',
+          },
+          {
+            label: 'Configuration',
+            icon: 'pi pi-cog',
+            routerLink: '',
+          },
+        ],
+      },
     ];
   }
 }
