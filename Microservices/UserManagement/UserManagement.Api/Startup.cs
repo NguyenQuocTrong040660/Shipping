@@ -119,8 +119,8 @@ namespace UserManagement.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory)
         {
-            if (!env.IsProduction())
-            {
+            //if (!env.IsProduction())
+            //{
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
 
@@ -134,7 +134,7 @@ namespace UserManagement.Api
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserManagement API V1");
                 });
-            }
+            //}
 
             loggerfactory.AddSerilog();
 

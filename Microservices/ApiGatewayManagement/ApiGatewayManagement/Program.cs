@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MMLib.SwaggerForOcelot.DependencyInjection;
 using Serilog;
 using Serilog.Events;
@@ -9,7 +10,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace APIGateway
+namespace ApiGatewayManagement
 {
     public class Program
     {
@@ -21,6 +22,8 @@ namespace APIGateway
             {
                 var services = scope.ServiceProvider;
                 var hostingEnvironment = services.GetService<IWebHostEnvironment>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("start");
 
                 Log.Logger = new LoggerConfiguration()
                         .MinimumLevel.Debug()

@@ -7,7 +7,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAPrEDblrR7kS3HCgtixyu1QAAAAACAAAAAAAQZgAAAAEAACAAAADRySkKtXA3yTHXWB2Fd5P7MhoCxBr4/ZE2SXe4+pc05wAAAAAOgAAAAAIAACAAAAD8IaZecEZSU1LC38eAMyQFA7iKQ+GBHMp75sl/9Z9DJyAAAAAVEcnLcSBj7wlUMePrCvvjpcl3gDqLAPplJSyqK8QEmEAAAACsRYLLq5MDWVVeB2McSj9ozkXq5aJcCiO5URlDz4AannhUqngXnH6aa71hwVml4YgS2yMqSH3yzKD02iys8Tt6</EncryptedPassword>
-    <_PublishTargetUrl>C:\inetpub\wwwroot\havana\api-gatewayapi.havava.com.vn</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\Deployment\IIS_Server\Spartronics\ShippingApplication\Api-Gatwayapi</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="ApiGatewayManagement.deps.json">

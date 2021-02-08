@@ -5,7 +5,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "api-album.shippingapp.spatronics.com"
+          "Host": "api-album.spartronics.com.vn:8080"
         }
       ],
       "UpstreamPathTemplate": "/api/album/{everything}",

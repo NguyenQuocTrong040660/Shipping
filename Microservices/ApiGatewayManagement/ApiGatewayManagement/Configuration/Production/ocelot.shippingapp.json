@@ -5,7 +5,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "api-shippingapp.shippingapp.spatronics.com"
+          "Host": "api-shippingapp.spartronics.com.vn:8080"
         }
       ],
       "UpstreamPathTemplate": "/api/shippingapp/{everything}",

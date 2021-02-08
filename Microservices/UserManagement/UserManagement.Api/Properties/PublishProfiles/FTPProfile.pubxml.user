@@ -7,7 +7,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAPrEDblrR7kS3HCgtixyu1QAAAAACAAAAAAAQZgAAAAEAACAAAAA4ESGMBDIKvYVl51Q11z5lgKPRDAJo/M3e4idhaVdTGAAAAAAOgAAAAAIAACAAAADZuRkOrkfsJ9ZnwFvwxUQYuUJq9i+LSA8jYGnecYwPiCAAAADltQhwmYWwjdXsRe5OCfvruGzZ+/AJgwMeezoeAT94f0AAAAAb6dd/C+DqDvG8bGE5ziYaXdEhEq7V5FVGAtYYYWLfOn37iKIxQs1A/ALr/k3VYTq3N4HnGCsHvYc6lpH5pi8T</EncryptedPassword>
-    <_PublishTargetUrl>ftp://103.24.244.43/havana.com.vn/api-user.havana.com.vn</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\inetpub\wwwroot\spartronics\Api-User</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">

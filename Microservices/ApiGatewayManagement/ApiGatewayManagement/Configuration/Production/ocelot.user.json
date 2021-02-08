@@ -5,7 +5,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "api-user.shippingapp.spatronics.com"
+          "Host": "api-user.spartronics.com.vn:8080"
         }
       ],
       "UpstreamPathTemplate": "/api/user/{everything}",

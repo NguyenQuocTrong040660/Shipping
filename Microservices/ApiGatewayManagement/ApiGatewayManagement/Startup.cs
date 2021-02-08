@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,7 +16,7 @@ using Serilog;
 using System.Linq;
 using System.Text;
 
-namespace APIGateway
+namespace ApiGatewayManagement
 {
     public class Startup
     {
@@ -30,8 +31,56 @@ namespace APIGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddHealthChecks();
+            services.AddMvc().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
             services.AddOcelot().AddAppConfiguration();
             services.AddSwaggerForOcelot(Configuration);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "GREXSOLUTIONS",
+                builder =>
+                {
+                    builder.WithOrigins(
+                                        //LOCAL
+                                        "http://localhost:4200/",
+                                        "https://localhost:4200/",
+
+                                        //MAIN PAGE
+                                        "http://shippingapp.spartronics.com/",
+                                        "https://shippingapp.spartronics.com/",
+                                        "http://www.spartronics.com.vn/",
+                                        "https://www.spartronics.com.vn/",
+
+                                        //USER
+                                        "http://api-user.spartronics.com.vn/",
+                                        "https://api-user.spartronics.com.vn/",
+                                        "http://www.api-user.spartronics.com.vn/",
+                                        "https://www.api-user.spartronics.com.vn/",
+
+                                        //Shipping Application
+                                        "http://api-shippingapp.spartronics.com.vn/",
+                                        "https://api-shippingapp.spartronics.com.vn/",
+                                        "http://www.api-shippingapp.spartronics.com.vn/",
+                                        "https://www.api-shippingapp.spartronics.com.vn/"
+
+                                        )
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowAnyOrigin();
+                });
+
+            });
+
+            // Customise default API behaviour
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             services.AddOpenApiDocument(configure =>
             {
@@ -50,41 +99,6 @@ namespace APIGateway
 
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             ConfigureAuthenticationServices(services);
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: "GREXSOLUTIONS",
-                builder =>
-                {
-                    builder.WithOrigins(
-                                         //LOCAL
-                                        "http://localhost:4200/",
-                                        "https://localhost:4200/",
-
-                                        //MAIN PAGE
-                                        "http://shippingapp.spatronics.com/",
-                                        "https://shippingapp.spatronics.com/",
-                                        "http://www.shippingapp.spatronics.com/",
-                                        "https://www.shippingapp.spatronics.com/",
-
-                                        //USER
-                                        "http://api-user.shippingapp.spatronics.com/",
-                                        "https://api-user.shippingapp.spatronics.com/",
-                                        "http://www.api-user.shippingapp.spatronics.com/",
-                                        "https://www.api-user.shippingapp.spatronics.com/",
-
-                                         //Shipping Application
-                                        "http://api-shippingapp.shippingapp.spatronics.com/",
-                                        "https://api-shippingapp.shippingapp.spatronics.com/",
-                                        "http://www.api-shippingapp.shippingapp.spatronics.com/",
-                                        "https://www.api-shippingapp.shippingapp.spatronics.com/"
-
-                                        )
-                                        .AllowAnyHeader()
-                                        .AllowAnyMethod()
-                                        .AllowAnyOrigin();
-                });
-            });
         }
 
         private void ConfigureAuthenticationServices(IServiceCollection services)
@@ -113,8 +127,8 @@ namespace APIGateway
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory)
         {
-            if (!env.IsProduction())
-            {
+            //if (!env.IsProduction())
+            //{
                 app.UseDeveloperExceptionPage();
 
                 // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -124,10 +138,11 @@ namespace APIGateway
                     opt.SwaggerEndpoint("/swagger/v1/swagger.json", "GatewayApi API V1");
                     opt.PathToSwaggerGenerator = "/swagger/docs";
                 });
-            }
+            //}
 
             loggerfactory.AddSerilog();
             app.UseSerilogRequestLogging();
+            app.UseHealthChecks("/health");
 
             app.UseHttpsRedirection();
 
@@ -135,6 +150,8 @@ namespace APIGateway
             app.UseCors("GREXSOLUTIONS");
 
             app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseOcelot().Wait();
 
             app.UseEndpoints(endpoints =>

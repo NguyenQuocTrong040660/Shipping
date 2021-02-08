@@ -60,8 +60,8 @@ namespace Files.Api
             });
 
             //Disabled in PROD
-            if (!Environment.IsProduction())
-            {
+            //if (!Environment.IsProduction())
+            //{
                 services.AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Files API", Version = "v1" });
@@ -72,7 +72,7 @@ namespace Files.Api
                         Type = "file"
                     });
                 });
-            }
+            //}
 
             services.AddControllers();
 
@@ -92,8 +92,8 @@ namespace Files.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory)
         {
-            if (!env.IsProduction())
-            {
+            //if (!env.IsProduction())
+            //{
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
 
@@ -101,7 +101,7 @@ namespace Files.Api
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Files API V1");
                 });
-            }
+            //}
 
             loggerfactory.AddSerilog();
             app.UseSerilogRequestLogging();

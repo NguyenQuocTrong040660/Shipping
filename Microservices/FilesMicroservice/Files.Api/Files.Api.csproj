@@ -45,5 +45,20 @@
     <Folder Include="wwwroot\photos\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Configs\EnvironmentApplication.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\files\7_2_202146_190554403ProductTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\templates\ProductTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 
 </Project>
