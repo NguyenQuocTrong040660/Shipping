@@ -40,25 +40,39 @@ namespace UserManagement.Api.Controllers
         public async Task<ActionResult<List<UserResult>>> RetriveAllUsersAsync()
         {
             var users = await Mediator.Send(new GetAllUserQuery { });
+            users.RemoveAll(i => i.Id == _currentUserService.UserId);
             return Ok(users);
         }
 
         [HttpPost("users")]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(List<CreateUserResult>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<CreateUserResult>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> CreateUserAsync([FromBody] string email)
+        public async Task<ActionResult<List<CreateUserResult>>> CreateUserAsync([FromBody] List<CreateUserRequest> createUsersRequest)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(email);
+                return BadRequest(createUsersRequest);
             }
 
-            Result result = await Mediator.Send(new CreateUserCommand { Email = email });
-            return Ok(result);
+            return Ok(await Mediator.Send(new CreateUsersCommand { Users = createUsersRequest }));
         }
 
-        [HttpPost("lock")]
+        [HttpPost("users/lock")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<CreateUserResult>>> CreateUserAsync([FromBody] List<string> users)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(users);
+            }
+
+            return Ok(await Mediator.Send(new LockUsersCommand { Users = users }));
+        }
+
+        [HttpPost("user/lock")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -76,7 +90,7 @@ namespace UserManagement.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("unlock")]
+        [HttpPost("user/unlock")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -101,6 +115,7 @@ namespace UserManagement.Api.Controllers
         public async Task<ActionResult<List<RoleModel>>> GetRolesAsync()
         {
             var roles = await Mediator.Send(new GetRolesQuery { });
+            roles.RemoveAll(i => i.Name.Equals(Roles.ITAdministrator));
             return Ok(roles);
         }
     }

@@ -18,17 +18,20 @@ namespace UserManagement.Infrastructure.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
         
         public IdentityService(
             ApplicationDbContext context,
             SignInManager<ApplicationUser> signInManager,
-            UserManager<ApplicationUser> userManager
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager
             )
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
         }
 
         public async Task<string> GetUserNameAsync(string userId)
@@ -43,12 +46,12 @@ namespace UserManagement.Infrastructure.Services
             return user.Id;
         }
 
-        public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password, bool mustChangePassword = false)
+        public async Task<(Result, string)> CreateUserAsync(string userName, string password, bool mustChangePassword = false, string email = null)
         {
             var user = new ApplicationUser
             {
                 UserName = userName,
-                Email = userName,
+                Email = email ?? userName,
                 LockoutEnabled = true,
                 RequireChangePassword = mustChangePassword
             };
@@ -141,24 +144,32 @@ namespace UserManagement.Infrastructure.Services
             return Result.Success();
         }
 
-        public async Task<Result> CreateUserWithTemporaryPasswordAsync(string email)
+        public async Task<(Result, string)> CreateUserWithTemporaryPasswordAsync(string email, string userName, string roleId)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-                return Result.Failure("User has been existed in system");
+                return (Result.Failure("User has been existed in system"), string.Empty);
             }
 
             var temporaryPassword = CreatePassword(10);
-            (Result result, string userId) = await CreateUserAsync(email, temporaryPassword, true);
+            (Result result, string userId) = await CreateUserAsync(userName, temporaryPassword, true, email);
 
             if (result.Succeeded)
             {
                 user = await _userManager.FindByIdAsync(userId);
-                await AssignUserToRole(user, Roles.Employee);
+
+                var roleName = await _roleManager.GetRoleNameAsync(new IdentityRole { Id = roleId });
+
+                if (string.IsNullOrEmpty(roleName))
+                {
+                    throw new ArgumentNullException(nameof(roleName));
+                }
+
+                await AssignUserToRole(user, roleName);
             }
 
-            return result;
+            return (result, temporaryPassword);
         }
 
         public async Task<ApplicationUser> GetUserByIdentifierAsync(string identifier)

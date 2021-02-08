@@ -61,7 +61,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     );
   }
 
-  changePassword(formDirective: FormGroupDirective) {
+  changePassword() {
     this.submitted = true;
 
     if (this.changePasswordForm.invalid) {

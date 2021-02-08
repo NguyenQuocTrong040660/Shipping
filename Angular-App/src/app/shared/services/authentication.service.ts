@@ -2,14 +2,13 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, delay, finalize, tap } from 'rxjs/operators';
-import { LoginRequest, LoginResult, RefreshTokenRequest, UserClient } from '../api-clients/user.client';
+import { LoginRequest, IdentityResult, RefreshTokenRequest, UserClient } from '../api-clients/user.client';
 import { ApplicationUser } from '../models/application-user';
 import { States, StateService } from './state.service';
 
 @Injectable({
   providedIn: 'root',
 })
-
 export class AuthenticationService implements OnDestroy {
   private timer: Subscription;
   private _user = new BehaviorSubject<ApplicationUser>(null);
@@ -37,7 +36,7 @@ export class AuthenticationService implements OnDestroy {
     };
 
     return this.usersClient.apiUserUserLogin(loginRequest).pipe(
-      tap((data: LoginResult) => {
+      tap((data: IdentityResult) => {
         if (data && data.succeeded) {
           this._user.next({
             userName: data.userName,
@@ -74,7 +73,7 @@ export class AuthenticationService implements OnDestroy {
 
   initUserLoggedIn() {
     return this.usersClient.apiUserUserInfo().subscribe(
-      (x: LoginResult) =>
+      (x: IdentityResult) =>
         this._user.next({
           userName: x.userName,
           roles: x.roles,
@@ -96,7 +95,7 @@ export class AuthenticationService implements OnDestroy {
     };
 
     return this.usersClient.apiUserUserRefreshToken(request).pipe(
-      tap((data: LoginResult) => {
+      tap((data: IdentityResult) => {
         this._user.next({
           userName: data.userName,
           roles: data.roles,
@@ -110,7 +109,7 @@ export class AuthenticationService implements OnDestroy {
     );
   }
 
-  setLocalStorage(result: LoginResult) {
+  setLocalStorage(result: IdentityResult) {
     this.stateService.setState(States.AccessToken, result.accessToken);
     this.stateService.setState(States.RefreshToken, result.refreshToken);
     this.stateService.setState(States.LoginEvent, 'login' + Math.random());
@@ -160,7 +159,7 @@ export class AuthenticationService implements OnDestroy {
 
       if (event.key === States.LoginEvent) {
         this.stopTokenTimer();
-        this.usersClient.apiUserUserInfo().subscribe((x: LoginResult) =>
+        this.usersClient.apiUserUserInfo().subscribe((x: IdentityResult) =>
           this._user.next({
             userName: x.userName,
             roles: x.roles,

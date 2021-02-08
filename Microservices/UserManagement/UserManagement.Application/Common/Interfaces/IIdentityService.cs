@@ -10,7 +10,7 @@ namespace UserManagement.Application.Common.Interfaces
     {
         Task<string> GetUserNameAsync(string userId);
         Task<string> GetUserIdAsync(string userName);
-        Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password, bool mustChangePassword = false);
+        Task<(Result, string)> CreateUserAsync(string userName, string password, bool mustChangePassword = false, string email = null);
         Task<Result> DeleteUserAsync(string userId);
         Task<SignInResult> SignInAsync(string userName, string password, bool rememberMe);
         Task<IList<string>> GetRolesUserAsync(string userName);
@@ -22,6 +22,6 @@ namespace UserManagement.Application.Common.Interfaces
         Task ResetAccessFailedCountAsync(string userId);
         Task LockUserAsync(string userId);
         Task UnlockUserAsync(string userId);
-        Task<Result> CreateUserWithTemporaryPasswordAsync(string email);
+        Task<(Result, string)> CreateUserWithTemporaryPasswordAsync(string email, string userName, string roleId);
     }
 }

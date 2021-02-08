@@ -1,8 +1,8 @@
+import { IdentityResult } from './../shared/api-clients/user.client';
 import { takeUntil } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { LoginResult } from 'app/shared/api-clients/user.client';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { AuthenticationService } from 'app/shared/services/authentication.service';
 import { ApplicationUser } from 'app/shared/models/application-user';
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const { userName, password } = this.loginForm.value;
 
     this.authenticationService.login(userName, password, true).subscribe(
-      (result: LoginResult) => {
+      (result: IdentityResult) => {
         if (result && result.succeeded) {
           this.notificationService.success('Login successfully');
           this.router.navigateByUrl(this.returnUrl);
