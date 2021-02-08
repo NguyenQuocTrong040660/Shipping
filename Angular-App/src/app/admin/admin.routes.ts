@@ -8,47 +8,80 @@ export const adminRoutes: Routes = [
     component: AdminComponent,
     canActivate: [AuthenticationGuard],
     children: [
+      // Business
       {
-        path: 'files-management',
+        path: 'shipping-plan',
         loadChildren: () =>
-          import('./pages/files-management/files-management.module').then((m) => m.FilesManagementModule),
+          import('./business/shipping-plan/shipping-plan.module').then((m) => m.ShippingPlanModule),
         canActivate: [AuthenticationGuard],
       },
       {
-        path: 'attachment-types-management',
+        path: 'shipping-request',
         loadChildren: () =>
-          import('./pages/attachment-types-management/attachment-types-management.module').then(
-            (m) => m.AttachmentTypesManagementModule
-          ),
+          import('./business/shiping-request/shiping-request.module').then((m) => m.ShippingRequestModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'movement-request',
+        loadChildren: () =>
+          import('./business/movement-request/movement-request.module').then((m) => m.MovementRequestModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'received-mark',
+        loadChildren: () =>
+          import('./business/received-mark/received-mark.module').then((m) => m.ReceivedMarkModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'shipping-mark',
+        loadChildren: () =>
+          import('./business/shipping-mark/shipping-mark.module').then((m) => m.ShippingMarkModule),
+        canActivate: [AuthenticationGuard],
+      },
+      // Management
+      {
+        path: 'user-management',
+        loadChildren: () => import('./management/user-management/user-management.module').then((m) => m.UserManagementModule),
         canActivate: [AuthenticationGuard],
       },
       {
         path: 'product',
-        loadChildren: () => import('./pages/product/product.module').then((m) => m.ProductModule),
-        canActivate: [AuthenticationGuard],
-      },
-      {
-        path: 'files-management',
-        loadChildren: () =>
-          import('./pages/files-management/files-management.module').then((m) => m.FilesManagementModule),
-        canActivate: [AuthenticationGuard],
-      },
-      {
-        path: 'attachment-types-management',
-        loadChildren: () =>
-          import('./pages/attachment-types-management/attachment-types-management.module').then(
-            (m) => m.AttachmentTypesManagementModule
-          ),
-        canActivate: [AuthenticationGuard],
-      },
-      {
-        path: 'product',
-        loadChildren: () => import('./pages/product/product.module').then((m) => m.ProductModule),
+        loadChildren: () => import('./management/product/product.module').then((m) => m.ProductModule),
         canActivate: [AuthenticationGuard],
       },
       {
         path: 'product-type',
-        loadChildren: () => import('./pages/product-type/product-type.module').then((m) => m.ProductTypeModule),
+        loadChildren: () => import('./management/product-type/product-type.module').then((m) => m.ProductTypeModule),
+        canActivate: [AuthenticationGuard],
+      },
+      // Settings
+      {
+        path: 'files-management',
+        loadChildren: () =>
+          import('./pages/files-management/files-management.module').then((m) => m.FilesManagementModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'attachment-types-management',
+        loadChildren: () =>
+          import('./pages/attachment-types-management/attachment-types-management.module').then(
+            (m) => m.AttachmentTypesManagementModule
+          ),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'files-management',
+        loadChildren: () =>
+          import('./pages/files-management/files-management.module').then((m) => m.FilesManagementModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'attachment-types-management',
+        loadChildren: () =>
+          import('./pages/attachment-types-management/attachment-types-management.module').then(
+            (m) => m.AttachmentTypesManagementModule
+          ),
         canActivate: [AuthenticationGuard],
       },
       {
@@ -57,20 +90,15 @@ export const adminRoutes: Routes = [
         canActivate: [AuthenticationGuard],
       },
       {
-        path: 'user-management',
-        loadChildren: () => import('./pages/user-management/user-management.module').then((m) => m.UserManagementModule),
+        path: 'user-profile',
+        loadChildren: () => import('./pages/user-profile/user-profile.module').then((m) => m.UserProfileModule),
         canActivate: [AuthenticationGuard],
       },
       {
         path: '',
         pathMatch: 'full',
         redirectTo: '/',
-      },
-      {
-        path: 'user-profile',
-        loadChildren: () => import('./pages/user-profile/user-profile.module').then((m) => m.UserProfileModule),
-        canActivate: [AuthenticationGuard],
-      },
+      }
     ],
   },
 ];

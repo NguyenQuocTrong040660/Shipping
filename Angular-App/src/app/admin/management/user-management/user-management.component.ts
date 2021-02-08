@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-user',
   templateUrl: './user-management.component.html',
   styleUrls: ['./user-management.component.scss']
 })

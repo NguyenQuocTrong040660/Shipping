@@ -20,27 +20,27 @@ export class AdminControlSidebarComponent implements OnInit {
           {
             label: 'Shipping Plan',
             icon: 'pi pi-calendar-times',
-            routerLink: '',
+            routerLink: '/shipping-plan',
           },
           {
             label: 'Shipping Request',
             icon: 'pi pi-envelope',
-            routerLink: '',
+            routerLink: '/shipping-request',
           },
           {
             label: 'Movement Request',
             icon: 'pi pi-envelope',
-            routerLink: '',
+            routerLink: '/movement-request',
           },
           {
             label: 'Received Mark',
             icon: 'pi pi-tags',
-            routerLink: '',
+            routerLink: '/received-mark',
           },
           {
             label: 'Shipping Mark',
             icon: 'pi pi-tags',
-            routerLink: '',
+            routerLink: '/shipping-mark',
           },
         ],
       },
@@ -56,12 +56,12 @@ export class AdminControlSidebarComponent implements OnInit {
           {
             label: 'Product',
             icon: 'pi pi-list',
-            routerLink: '',
+            routerLink: '/product',
           },
           {
             label: 'Product Category',
             icon: 'pi pi-list',
-            routerLink: '',
+            routerLink: '/product-type',
           },
           {
             label: 'Work Order',
