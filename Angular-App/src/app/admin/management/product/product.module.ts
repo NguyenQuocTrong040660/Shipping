@@ -1,13 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { ProductRoutingModule } from './product-routing.module';
 import { SharedModule } from 'app/shared/shared.module';
 import { ProductComponent } from './product.component';
+import { RouterModule } from '@angular/router';
+import { productRoutes } from './product.routes';
 
 @NgModule({
+  imports: [
+    CommonModule,
+    SharedModule,
+    RouterModule.forChild(productRoutes)
+  ],
   declarations: [ProductComponent],
-  imports: [CommonModule, ProductRoutingModule, SharedModule],
-  exports: [ProductComponent],
+  exports: [],
 })
 export class ProductModule {}
