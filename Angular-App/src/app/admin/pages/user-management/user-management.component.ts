@@ -2,104 +2,159 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-    selector: 'app-user',
-    templateUrl: './user-management.component.html',
-    styleUrls: ['./user-management.component.scss']
+  selector: 'app-user',
+  templateUrl: './user-management.component.html',
+  styleUrls: ['./user-management.component.scss']
 })
 export class UserManagementComponent implements OnInit {
-	users: {id: string, userName: string, email: string}[] = [];
-	selectedUsers: {id: string, userName: string, email: string}[] = [];
-	isShowCreateDialog: boolean;
-	createUserForm: FormGroup;
-	emailRegex: string = '[a-z0-9!#$%&\'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*';
+  users: { id: string, userName: string, email: string }[] = [];
+  selectedUsers: { id: string, userName: string, email: string }[] = [];
+  isShowCreateDialog: boolean;
+  isShowSetNewPassworDialog: boolean;
+  isShowDeleteDialog: boolean;
+  createUserForm: FormGroup;
+  setNewPasswordForm: FormGroup;
 
-	get userForms() {
+  get userForms() {
     return this.createUserForm.get('userForms') as FormArray;
-	}
+  }
 
-	ngOnInit() {
+  get newPasswordForms() {
+    return this.setNewPasswordForm.get('newPasswordForms') as FormArray;
+  }
+
+  ngOnInit() {
     this.users = [
-        {
-            id: '1',
-            userName: 'UserA@gmail.com',
-            email: 'UserA@gmail.com'
-        },
-        {
-            id: '2',
-            userName: 'UserB@gmail.com',
-            email: 'UserB@gmail.com'
-        },
-        {
-            id: '3',
-            userName: 'UserC@gmail.com',
-            email: 'UserC@gmail.com'
-        },
-        {
-            id: '4',
-            userName: 'UserD@gmail.com',
-            email: 'UserD@gmail.com'
-        },
-        {
-            id: '5',
-            userName: 'UserE@gmail.com',
-            email: 'UserE@gmail.com'
-        },
-        {
-            id: '6',
-            userName: 'UserF@gmail.com',
-            email: 'UserF@gmail.com'
-        }
+      {
+        id: '1',
+        userName: 'user.a@gmail.com',
+        email: 'user.a@gmail.com'
+      },
+      {
+        id: '2',
+        userName: 'user.b@gmail.com',
+        email: 'user.b@gmail.com'
+      },
+      {
+        id: '3',
+        userName: 'user.c@gmail.com',
+        email: 'user.c@gmail.com'
+      },
+      {
+        id: '4',
+        userName: 'user.d@gmail.com',
+        email: 'user.d@gmail.com'
+      },
+      {
+        id: '5',
+        userName: 'user.e@gmail.com',
+        email: 'user.e@gmail.com'
+      },
+      {
+        id: '6',
+        userName: 'user.f@gmail.com',
+        email: 'user.f@gmail.com'
+      }
     ];
 
     this.createUserForm = new FormGroup({
-        userForms: new FormArray([
-            this.userFormsInit()
-        ])
+      userForms: new FormArray([
+        this.userFormsInit()
+      ])
     });
-	}
 
-	openCreateDialog() {
+    this.setNewPasswordForm = new FormGroup({
+      newPasswordForms: new FormArray([])
+    });
+  }
+
+  // Create Users
+  openCreateDialog() {
     this.isShowCreateDialog = true;
-	}
-	openSetNewPasswordDialog() {}
-	openDeleteDialog() {}
+  }
 
-	hideDialog() {
+  hideCreateDialog() {
     this.isShowCreateDialog = false;
     this.resetCreateUserForm();
-	}
+  }
 
-	onCreate() {
-    // this.isShowCreateDialog = false;
+  addUser() {
+    this.userForms.push(this.userFormsInit());
+  }
 
-    console.log('this.userForms: ', this.createUserForm.value);
-	}
-	onSetNewPassword() {}
-	onDelete() {}
-
-	addUser() {
-		this.userForms.push(this.userFormsInit());
-	}
-
-	removeUser(index: number) {
-		this.userForms.removeAt(index);
-	}
-
-	userFormsInit(): FormGroup {
+  userFormsInit(): FormGroup {
     return new FormGroup({
-        email: new FormControl('', [Validators.required, Validators.pattern(this.emailRegex)]),
-        userName: new FormControl('', Validators.required)
+      email: new FormControl('', [Validators.required, Validators.email]),
+      userName: new FormControl('', Validators.required)
     }, this.matchContent('email', 'userName'));
-	}
+  }
 
-	setUserName(index: number) {
-		this.userForms.controls[index].get('userName').setValue(this.userForms.controls[index].value.email);
-	}
+  setUserName(index: number) {
+    this.userForms.controls[index].get('userName').setValue(this.userForms.controls[index].value.email);
+  }
 
-	resetCreateUserForm() {
-		this.userForms.clear();
-		this.addUser();
-	}
+  resetCreateUserForm() {
+    this.userForms.clear();
+    this.addUser();
+  }
+
+  onCreate() {
+    console.log('this.userForms: ', this.createUserForm.value);
+
+    // this.hideCreateDialog();
+  }
+
+  // Set New Password
+  openSetNewPasswordDialog() {
+    this.isShowSetNewPassworDialog = true;
+
+    this.selectedUsers.forEach(u => {
+      this.newPasswordForms.push(this.newPasswordFormsInit(u.email));
+    });
+
+  }
+
+  hideSetNewPasswordDialog() {
+    this.isShowSetNewPassworDialog = false;
+    this.resetSetNewPasswordForm();
+  }
+
+  newPasswordFormsInit(email: string): FormGroup {
+    return new FormGroup({
+      email: new FormControl(email, [Validators.required, Validators.email]),
+      confirmEmail: new FormControl('', [Validators.required, Validators.email])
+    }, this.matchContent('email', 'confirmEmail'));
+  }
+
+  resetSetNewPasswordForm() {
+    this.newPasswordForms.clear();
+  }
+
+  onSetNewPassword() {
+    console.log('this.setNewPasswordForm: ', this.setNewPasswordForm.value);
+
+    // this.hideSetNewPasswordDialog();
+  }
+
+  // Delete Users
+  openDeleteDialog() {
+    this.isShowDeleteDialog = true;
+  }
+
+  hideDeleteUsersDialog() {
+    this.isShowDeleteDialog = false;
+  }
+
+  onDelete() {
+    console.log('this.selectedUsers: ', this.selectedUsers);
+
+    // this.hideSetNewPasswordDialog();
+  }
+
+  // General
+  removeUser(index: number, formArray: FormArray) {
+    formArray.removeAt(index);
+  }
 
   private matchContent(controlName: string, matchingControlName: string) {
     return (formGroup: FormGroup) => {
@@ -107,10 +162,10 @@ export class UserManagementComponent implements OnInit {
       const matchingControl = formGroup.controls[matchingControlName];
 
       if (control.value !== matchingControl.value) {
-        return { matchContent: true }
+        return { matchContent: true };
       } else {
-        return null
+        return null;
       }
-    }
+    };
   }
 }

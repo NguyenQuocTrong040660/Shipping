@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { ChangePasswordRequest } from './../../../shared/api-clients/user.client';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { UserClient } from 'app/shared/api-clients/user.client';
 import { ApplicationUser } from 'app/shared/models/application-user';
@@ -14,7 +14,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss'],
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy {
   private destroyed$ = new Subject<void>();
   user: ApplicationUser;
 
