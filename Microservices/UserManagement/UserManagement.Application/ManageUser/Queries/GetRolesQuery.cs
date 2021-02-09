@@ -37,7 +37,6 @@ namespace UserManagement.Application.ManageUser.Queries
         public async Task<List<RoleModel>> Handle(GetRolesQuery request, CancellationToken cancellationToken = new CancellationToken())
         {
             _logger.LogInformation("Get roles successfully");
-
             return _mapper.Map<List<RoleModel>>(await _context.Roles.AsNoTracking().ToListAsync());
         }
     }

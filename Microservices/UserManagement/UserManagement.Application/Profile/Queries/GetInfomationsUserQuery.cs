@@ -37,9 +37,9 @@ namespace UserManagement.Application.Profile.Queries
                 return null;
             }
 
-            var user = await _identityService.GetUserByIdentifierAsync(request.UserId);
-
-            return _mapper.Map<UserResult>(user);
+            var user = _mapper.Map<UserResult>(await _identityService.GetUserByIdentifierAsync(request.UserId));
+            user.RoleName = await _identityService.GetRoleUserAsync(user.UserName);
+            return user;
         }
     }
 }

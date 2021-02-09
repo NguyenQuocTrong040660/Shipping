@@ -31,7 +31,14 @@ namespace UserManagement.Application.ManageUser.Queries
 
         public async Task<List<UserResult>> Handle(GetAllUserQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<List<UserResult>>(await _identityService.GetUsersAsync());
+            var users = _mapper.Map<List<UserResult>>(await _identityService.GetUsersAsync());
+
+            users.ForEach(i =>
+            {
+                i.RoleName = _identityService.GetRoleUserAsync(i.UserName).Result;
+            });
+
+            return users;
         }
     }
 }

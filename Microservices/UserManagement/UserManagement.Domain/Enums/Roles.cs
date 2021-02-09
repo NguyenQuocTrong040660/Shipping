@@ -2,11 +2,12 @@
 {
     public struct Roles
     {
+        public const string SystemAdministrator = nameof(SystemAdministrator);
         public const string ITAdministrator = nameof(ITAdministrator);
-        public const string ShippingDepartment = nameof(ShippingDepartment);
-        public const string LogisticsDepartment = nameof(LogisticsDepartment);
-        public const string PlanningDepartment = nameof(PlanningDepartment);
-        public const string FAQDepartment = nameof(FAQDepartment);
-        public const string Employee = nameof(Employee);
+        public const string ShippingDept = nameof(ShippingDept);
+        public const string Manager = nameof(Manager);
+        public const string LogisticsDept = nameof(LogisticsDept);
+        public const string PlanningDept = nameof(PlanningDept);
+        public const string FAQDept = nameof(FAQDept);
     }
 }

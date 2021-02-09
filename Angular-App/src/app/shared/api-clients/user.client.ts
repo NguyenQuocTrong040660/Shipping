@@ -922,6 +922,7 @@ export interface UserResult {
     phoneNumber?: string | undefined;
     email?: string | undefined;
     userName?: string | undefined;
+    roleName?: string | undefined;
 }
 
 export interface ProblemDetails {

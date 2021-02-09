@@ -1,5 +1,21 @@
 .menu-full-width {
   width: 100%;
+
+  .p-menuitem-link-active {
+    background-color: #343a40;
+    .p-menuitem-icon,
+    .p-menuitem-text {
+      color: #fff !important;
+    }
+  }
+
+  .p-menuitem-link:not(.p-disabled):hover {
+    background-color: #343a40;
+    .p-menuitem-icon,
+    .p-menuitem-text {
+      color: #fff !important;
+    }
+  }
 }
 
 .p-w-500 {

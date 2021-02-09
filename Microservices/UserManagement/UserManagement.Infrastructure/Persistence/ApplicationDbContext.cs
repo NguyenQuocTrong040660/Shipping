@@ -15,7 +15,8 @@ namespace UserManagement.Infrastructure.Persistence
         private readonly IDateTime _dateTime;
         private readonly ICurrentUserService _currentUserService;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, 
+        public ApplicationDbContext(
+            DbContextOptions<ApplicationDbContext> options, 
             ICurrentUserService currentUserService,
             IDateTime dateTime)
             : base(options)

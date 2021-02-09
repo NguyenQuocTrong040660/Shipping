@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using UserManagement.Application.Common.Interfaces;
 using UserManagement.Application.Common.Results;
 using UserManagement.Domain.Common;
-using UserManagement.Domain.Enums;
 using UserManagement.Infrastructure.Extensions;
 using UserManagement.Infrastructure.Persistence;
 
@@ -34,12 +33,6 @@ namespace UserManagement.Infrastructure.Services
             _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
         }
 
-        public async Task<string> GetUserNameAsync(string userId)
-        {
-            var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
-            return user.UserName;
-        }
-
         public async Task<string> GetUserIdAsync(string userName)
         {
             var user = await _userManager.Users.FirstAsync(u => string.Equals(userName, u.UserName));
@@ -57,34 +50,12 @@ namespace UserManagement.Infrastructure.Services
             };
 
             var result = await _userManager.CreateAsync(user, password);
-
-            await AssignUserToRole(user, Roles.ITAdministrator);
-
             return (result.ToApplicationResult(), user.Id);
         }
 
         public async Task<Microsoft.AspNetCore.Identity.IdentityResult> AssignUserToRole(ApplicationUser user, string role)
         {
             return await _userManager.AddToRoleAsync(user, role);
-        }
-
-        public async Task<Result> DeleteUserAsync(string userId)
-        {
-            var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
-
-            if (user != null)
-            {
-                return await DeleteUserAsync(user);
-            }
-
-            return Result.Success();
-        }
-
-        public async Task<Result> DeleteUserAsync(ApplicationUser user)
-        {
-            var result = await _userManager.DeleteAsync(user);
-
-            return result.ToApplicationResult();
         }
 
         public async Task<SignInResult> SignInAsync(string userName, string password, bool rememberMe)
@@ -96,7 +67,6 @@ namespace UserManagement.Infrastructure.Services
         {
             var user = await _userManager.FindByNameAsync(userName);
             var roles = await _userManager.GetRolesAsync(user);
-
             return roles;
         }
 
@@ -153,20 +123,21 @@ namespace UserManagement.Infrastructure.Services
             }
 
             var temporaryPassword = CreatePassword(10);
+
             (Result result, string userId) = await CreateUserAsync(userName, temporaryPassword, true, email);
 
             if (result.Succeeded)
             {
                 user = await _userManager.FindByIdAsync(userId);
 
-                var roleName = await _roleManager.GetRoleNameAsync(new IdentityRole { Id = roleId });
+                var role = await _roleManager.Roles.FirstOrDefaultAsync(x => x.Id.Equals(roleId));
 
-                if (string.IsNullOrEmpty(roleName))
+                if (role == null)
                 {
-                    throw new ArgumentNullException(nameof(roleName));
+                    throw new ArgumentNullException(nameof(role));
                 }
 
-                await AssignUserToRole(user, roleName);
+                await AssignUserToRole(user, role.Name);
             }
 
             return (result, temporaryPassword);
@@ -231,6 +202,12 @@ namespace UserManagement.Infrastructure.Services
                 res.Append(valid[rnd.Next(valid.Length)]);
             }
             return res.ToString();
+        }
+
+        public async Task<string> GetRoleUserAsync(string userName)
+        {
+            var roles = await GetRolesUserAsync(userName);
+            return roles.FirstOrDefault();
         }
     }
 }

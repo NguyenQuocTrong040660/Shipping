@@ -1,4 +1,6 @@
-﻿namespace UserManagement.Application.Common.Results
+﻿using AutoMapper;
+
+namespace UserManagement.Application.Common.Results
 {
     public class UserResult
     {
@@ -6,5 +8,7 @@
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
+        [IgnoreMap]
+        public string RoleName { get; set; }
     }
 }

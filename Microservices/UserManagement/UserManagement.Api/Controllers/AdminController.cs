@@ -14,7 +14,7 @@ using UserManagement.Domain.Enums;
 
 namespace UserManagement.Api.Controllers
 {
-    [Authorize(Roles = Roles.ITAdministrator)]
+    [Authorize(Roles = Roles.SystemAdministrator)]
     public class AdminController : ApiController
     {
         private readonly ILogger<AdminController> _logger;
@@ -115,7 +115,7 @@ namespace UserManagement.Api.Controllers
         public async Task<ActionResult<List<RoleModel>>> GetRolesAsync()
         {
             var roles = await Mediator.Send(new GetRolesQuery { });
-            roles.RemoveAll(i => i.Name.Equals(Roles.ITAdministrator));
+            roles.RemoveAll(i => i.Name.Equals(Roles.SystemAdministrator));
             return Ok(roles);
         }
     }

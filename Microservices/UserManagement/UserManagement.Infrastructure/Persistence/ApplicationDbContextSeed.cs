@@ -22,7 +22,7 @@ namespace UserManagement.Infrastructure.Persistence
 
             if (user != null)
             {
-                await userManager.AddToRoleAsync(user, Roles.ITAdministrator);
+                await userManager.AddToRoleAsync(user, Roles.SystemAdministrator);
             }
         }
 
@@ -34,27 +34,31 @@ namespace UserManagement.Infrastructure.Persistence
                 {
                     new IdentityRole
                     {
-                        Name = Roles.ShippingDepartment
-                    },
-                    new IdentityRole
-                    {
-                        Name = Roles.PlanningDepartment
-                    },
-                    new IdentityRole
-                    {
-                        Name = Roles.LogisticsDepartment
-                    },
-                    new IdentityRole
-                    {
                         Name = Roles.ITAdministrator
                     },
                     new IdentityRole
                     {
-                        Name = Roles.FAQDepartment
+                        Name = Roles.Manager
                     },
                     new IdentityRole
                     {
-                        Name = Roles.Employee
+                        Name = Roles.ShippingDept
+                    },
+                    new IdentityRole
+                    {
+                        Name = Roles.SystemAdministrator
+                    },
+                    new IdentityRole
+                    {
+                        Name = Roles.FAQDept
+                    },
+                    new IdentityRole
+                    {
+                        Name = Roles.PlanningDept
+                    },
+                    new IdentityRole
+                    {
+                        Name = Roles.LogisticsDept
                     }
                 };
 

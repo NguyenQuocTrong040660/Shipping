@@ -51,7 +51,8 @@
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
         <th pSortableColumn="email">Email<p-sortIcon field="email"></p-sortIcon></th>
-        <th pSortableColumn="userName">User Name<p-sortIcon field="userName"></p-sortIcon></th>
+        <th pSortableColumn="userName">UserName<p-sortIcon field="userName"></p-sortIcon></th>
+        <th pSortableColumn="roleName">Role<p-sortIcon field="roleName"></p-sortIcon></th>
       </tr>
     </ng-template>
 
@@ -62,6 +63,7 @@
         </td>
         <td>{{ user.email }}</td>
         <td>{{ user.userName }}</td>
+        <td>{{ user.roleName }}</td>
       </tr>
     </ng-template>
 
@@ -81,26 +83,16 @@
           <div [formGroupName]="i">
             <div class="create-user-form__group-inline p-grid">
               <div class="p-field p-col-4">
-                <div class="create-user-form__label"><label for="email">Email</label>&nbsp;</div>
-                <input id="email" type="email" pInputText formControlName="email" aria-describedby="email-error" (keyup)="setUserName(i)" />
+                <div class="create-user-form__label"><label for="email">Email</label></div>
+                <input id="email" type="email" pInputText formControlName="email" aria-describedby="email-error" />
 
                 <div *ngIf="getControlByNameAndIndex('email', i).invalid && (getControlByNameAndIndex('email', i).dirty || getControlByNameAndIndex('email', i).touched)">
                   <small id="email-error" class="p-invalid create-user-form__error">Please specify a valid email</small>
                 </div>
               </div>
               <div class="p-field p-col-3">
-                <div class="create-user-form__label">
-                  <label for="userName">User Name</label>&nbsp;
-                  <div
-                    *ngIf="getControlByNameAndIndex('userName', i).invalid && (getControlByNameAndIndex('userName', i).dirty || getControlByNameAndIndex('userName', i).touched)"
-                  >
-                    <small *ngIf="getControlByNameAndIndex('userName', i).errors?.email" id="email-error" class="p-invalid create-user-form__error">User Name is not valid</small>
-                    <small *ngIf="getControlByNameAndIndex('userName', i).errors?.matchContent" id="email-error" class="p-invalid create-user-form__error"
-                      >User name not match.</small
-                    >
-                  </div>
-                </div>
-                <input id="userName" type="text" pInputText disabled formControlName="userName" [value]="userForms.value[i].email" />
+                <div class="create-user-form__label"><label for="userName">User Name</label></div>
+                <input id="userName" type="text" pInputText disabled [value]="userForms.value[i].email" />
               </div>
               <div class="p-field p-col-4">
                 <div class="create-user-form__label"><label for="role">Role</label></div>

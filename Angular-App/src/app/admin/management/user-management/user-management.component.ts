@@ -1,3 +1,4 @@
+import { NotificationService } from 'app/shared/services/notification.service';
 import { CreateUserRequest, CreateUserResult } from './../../../shared/api-clients/user.client';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -29,7 +30,7 @@ export class UserManagementComponent implements OnInit {
     return this.setNewPasswordForm.get('newPasswordForms') as FormArray;
   }
 
-  constructor(private userClient: UserClient) {}
+  constructor(private userClient: UserClient, private notificationService: NotificationService) {}
 
   ngOnInit() {
     this.initUsers();
@@ -65,8 +66,6 @@ export class UserManagementComponent implements OnInit {
     this.createUserForm = new FormGroup({
       userForms: new FormArray([this.userFormsInit()]),
     });
-
-    this.userForms.valueChanges.subscribe((i) => console.log(i));
   }
 
   _mapRoleModelToSelectItem(roles: RoleModel[]): SelectItem[] {
@@ -78,12 +77,6 @@ export class UserManagementComponent implements OnInit {
 
   getControlByNameAndIndex(name: string, index: number) {
     return this.userForms.controls[index].get(name);
-  }
-
-  handleOnChangeDropdown(selectedValue: any, name: string, index: number) {
-    const roleControl = this.userForms.controls[index].get(name);
-    const { value } = selectedValue;
-    roleControl.setValue(value.id);
   }
 
   // Create Users
@@ -101,14 +94,10 @@ export class UserManagementComponent implements OnInit {
   }
 
   userFormsInit(): FormGroup {
-    return new FormGroup(
-      {
-        email: new FormControl('', [Validators.required, Validators.email]),
-        userName: new FormControl('', [Validators.required]),
-        roleId: new FormControl('', [Validators.required]),
-      },
-      this.matchContent('email', 'userName')
-    );
+    return new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      roleId: new FormControl('', [Validators.required]),
+    });
   }
 
   setUserName(index: number) {
@@ -122,36 +111,39 @@ export class UserManagementComponent implements OnInit {
   }
 
   onCreate() {
-    if (this.createUserForm.valid) {
-      const { userForms } = this.createUserForm.value;
-
-      const createUserRequets: CreateUserResult[] = [];
-
-      userForms.forEach((item) => {
-        const { userName, email, roleId } = item;
-
-        const request: CreateUserRequest = {
-          userName,
-          email,
-          roleId,
-        };
-
-        createUserRequets.push(request);
-      });
-
-      this.createUserForm.disable();
-      this.userClient.apiUserAdminUsersPost(createUserRequets).subscribe(
-        (i) => {
-          console.log(i);
-
-          this.hideCreateDialog();
-          this.initUsers();
-        },
-        (_) => this.hideCreateDialog()
-      );
+    if (this.createUserForm.invalid) {
+      return;
     }
 
-    // this.hideCreateDialog();
+    const { userForms } = this.createUserForm.value;
+
+    const createUserRequets: CreateUserResult[] = [];
+
+    userForms.forEach((item: { email: string; roleId: string }) => {
+      const { email, roleId } = item;
+
+      const request: CreateUserRequest = {
+        userName: email,
+        email,
+        roleId,
+      };
+
+      createUserRequets.push(request);
+    });
+
+    this.createUserForm.disable();
+    this.userClient.apiUserAdminUsersPost(createUserRequets).subscribe(
+      (i: CreateUserResult[]) => {
+        console.log(i);
+
+        this.hideCreateDialog();
+        this.initUsers();
+      },
+      (_) => {
+        this.hideCreateDialog();
+        this.notificationService.error('Create Users failed. Please try again');
+      }
+    );
   }
 
   openSetNewPasswordDialog() {
@@ -198,8 +190,6 @@ export class UserManagementComponent implements OnInit {
 
   onDelete() {
     console.log('this.selectedUsers: ', this.selectedUsers);
-
-    // this.hideSetNewPasswordDialog();
   }
 
   removeUser(index: number, formArray: FormArray) {
