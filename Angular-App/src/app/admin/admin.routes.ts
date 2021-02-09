@@ -8,35 +8,29 @@ export const adminRoutes: Routes = [
     component: AdminComponent,
     canActivate: [AuthenticationGuard],
     children: [
-      // Business
-      {
-        path: 'shipping-plan',
-        loadChildren: () =>
-          import('./business/shipping-plan/shipping-plan.module').then((m) => m.ShippingPlanModule),
-        canActivate: [AuthenticationGuard],
-      },
+      // Process
       {
         path: 'shipping-request',
         loadChildren: () =>
-          import('./business/shiping-request/shiping-request.module').then((m) => m.ShippingRequestModule),
+          import('./process/shiping-request/shiping-request.module').then((m) => m.ShippingRequestModule),
         canActivate: [AuthenticationGuard],
       },
       {
         path: 'movement-request',
         loadChildren: () =>
-          import('./business/movement-request/movement-request.module').then((m) => m.MovementRequestModule),
+          import('./process/movement-request/movement-request.module').then((m) => m.MovementRequestModule),
         canActivate: [AuthenticationGuard],
       },
       {
         path: 'received-mark',
         loadChildren: () =>
-          import('./business/received-mark/received-mark.module').then((m) => m.ReceivedMarkModule),
+          import('./process/received-mark/received-mark.module').then((m) => m.ReceivedMarkModule),
         canActivate: [AuthenticationGuard],
       },
       {
         path: 'shipping-mark',
         loadChildren: () =>
-          import('./business/shipping-mark/shipping-mark.module').then((m) => m.ShippingMarkModule),
+          import('./process/shipping-mark/shipping-mark.module').then((m) => m.ShippingMarkModule),
         canActivate: [AuthenticationGuard],
       },
       // Management
@@ -53,6 +47,12 @@ export const adminRoutes: Routes = [
       {
         path: 'product-type',
         loadChildren: () => import('./management/product-type/product-type.module').then((m) => m.ProductTypeModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
+        path: 'shipping-plan',
+        loadChildren: () =>
+          import('./management/shipping-plan/shipping-plan.module').then((m) => m.ShippingPlanModule),
         canActivate: [AuthenticationGuard],
       },
       // Settings
@@ -93,11 +93,6 @@ export const adminRoutes: Routes = [
         path: 'user-profile',
         loadChildren: () => import('./pages/user-profile/user-profile.module').then((m) => m.UserProfileModule),
         canActivate: [AuthenticationGuard],
-      },
-      {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: '/',
       }
     ],
   },
