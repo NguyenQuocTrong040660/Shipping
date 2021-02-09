@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { SharedModule } from 'primeng/api';
+import { SharedModule } from 'app/shared/shared.module';
 import { MovementRequestComponent } from './movement-request.component';
 import { movementRequestRoutes } from './movement-request.routes';
 
@@ -14,4 +14,4 @@ import { movementRequestRoutes } from './movement-request.routes';
   ],
   exports: [],
 })
-export class MovementRequestModule {}
+export class MovementRequestModule { }
