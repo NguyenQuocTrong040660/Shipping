@@ -14,19 +14,10 @@
                 <span class="fas fa-envelope"></span>
               </div>
             </div>
-            <span
-              *ngIf="(userName.touched || submitted) && userName.errors?.required"
-              id="userName"
-              class="error invalid-feedback"
-              style="display: block"
-            >
+            <span *ngIf="(userName.touched || submitted) && userName.errors?.required" id="userName" class="error invalid-feedback" style="display: block">
               Please specify a username
             </span>
-            <span
-              *ngIf="(userName.touched || submitted) && userName.errors?.email"
-              id="userName"
-              class="error invalid-feedback"
-              style="display: block"
+            <span *ngIf="(userName.touched || submitted) && userName.errors?.email" id="userName" class="error invalid-feedback" style="display: block"
               >Please enter a valid email</span
             >
           </div>
@@ -37,18 +28,10 @@
                 <span class="fas fa-lock"></span>
               </div>
             </div>
-            <span
-              *ngIf="(password.touched || submitted) && password.errors?.required"
-              id="password"
-              class="error invalid-feedback"
-              style="display: block"
+            <span *ngIf="(password.touched || submitted) && password.errors?.required" id="password" class="error invalid-feedback" style="display: block"
               >Please specify a password</span
             >
-            <span
-              *ngIf="(password.touched || submitted) && password.errors?.minlength"
-              id="password"
-              class="error invalid-feedback"
-              style="display: block"
+            <span *ngIf="(password.touched || submitted) && password.errors?.minlength" id="password" class="error invalid-feedback" style="display: block"
               >Password must be at least 6 characters</span
             >
           </div>
