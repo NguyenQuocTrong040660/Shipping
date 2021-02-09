@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using ShippingApp.Application.Commands;
-using ShippingApp.Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mail;
 using ShippingApp.Domain.DTO;
 using Microsoft.Extensions.Logging;
+using ShippingApp.Application.Email.Commands;
 
 namespace ShippingApp.Api.Controllers
 {
@@ -24,13 +19,15 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpPost]
-        [Route("SendEmail")]
-        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         public async Task<ActionResult<bool>> SendEmail([FromBody] EmailItemDTO emailInformationDto)
         {
             _logger.LogInformation("Start Send", DateTime.Now.ToString());
-            var result = await _mediator.Send(new SendMailCommand { EmailInfoDto = emailInformationDto });
+
+            var result = await Mediator.Send(new SendMailCommand { EmailInfoDto = emailInformationDto });
+
             _logger.LogInformation("End Send", DateTime.Now.ToString());
+
             return Ok(result);
         }
     }

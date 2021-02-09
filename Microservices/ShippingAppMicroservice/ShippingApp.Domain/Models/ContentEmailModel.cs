@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShippingApp.Domain.Models
+﻿namespace ShippingApp.Domain.Models
 {
     public class ContentEmailModel: CommonEmailModel
     {
@@ -13,6 +9,5 @@ namespace ShippingApp.Domain.Models
         public string MsgRemark { get; set; }
         public string MsgRegards { get; set; }
         public string MsgSignature { get; set; }
-
     }
 }

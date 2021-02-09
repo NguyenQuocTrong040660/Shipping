@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Entities = ShippingApp.Domain.Entities;
-using ShippingApp.Domain.Interfaces;
+using ShippingApp.Application.Interfaces;
 using ShippingApp.Domain.CommonEntities;
 using System;
 using System.Threading.Tasks;
@@ -9,29 +8,34 @@ using ShippingApp.Domain.Entities;
 
 namespace ShippingApp.Persistence.DBContext
 {
-    public class ShippingAppDbContext : DbContext, IShippingAppDbContext
+    public class ShippingAppDbContext : DbContext, IShippingAppDbContext  
     {
         public ShippingAppDbContext(DbContextOptions<ShippingAppDbContext> options): base(options)
-        { 
+        {
         }
 
-        public DbSet<Entities.ProductType> ProductType { get; set; }
-        public DbSet<Entities.Country> Country { get; set; }
-        public DbSet<Entities.Product> Product { get; set; }
-        public DbSet<Entities.ShippingPlan> ShippingPlan { get; set; }
+        public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ShippingPlan> ShippingPlans { get; set; }
+
+        public DbSet<TEntity> SetEntity<TEntity>() where TEntity : class
+        {
+            return Set<TEntity>();
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Entities.ProductType>()
+            modelBuilder.Entity<ProductType>()
                 .HasKey(c => new { c.Id });
 
-            modelBuilder.Entity<Entities.Country>()
+            modelBuilder.Entity<Country>()
                 .HasKey(c => new { c.CountryCode });
 
-            modelBuilder.Entity<Entities.Product>()
+            modelBuilder.Entity<Product>()
                .HasKey(c => new { c.Id });
 
-            modelBuilder.Entity<Entities.ShippingPlan>()
+            modelBuilder.Entity<ShippingPlan>()
                .HasKey(c => new { c.Id });
 
             base.OnModelCreating(modelBuilder);

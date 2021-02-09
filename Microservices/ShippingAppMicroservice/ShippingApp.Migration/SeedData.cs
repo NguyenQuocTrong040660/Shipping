@@ -1,10 +1,8 @@
 ﻿using ShippingApp.Domain.Entities;
-using ShippingApp.Domain.Interfaces;
-using ShippingApp.Persistence.DBContext;
+using ShippingApp.Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ShippingApp.Migration
 {
@@ -24,13 +22,11 @@ namespace ShippingApp.Migration
         {
             Seed_ProductType();
             Seed_Country();
-            Seed_Brand();
-            Seed_ProductOverview();
         }
 
         private void Seed_ProductType()
         {
-            if (!_ShippingAppDbContext.ProductType.Any())
+            if (!_ShippingAppDbContext.ProductTypes.Any())
             {
                 List<ProductType> productTypes = new List<ProductType>()
                 {
@@ -90,20 +86,13 @@ namespace ShippingApp.Migration
                         ProductTypeName = "Thiệt Bị Đo Renishaw"
                     }
                 };
-                _ShippingAppDbContext.ProductType.AddRange(productTypes);
+                _ShippingAppDbContext.ProductTypes.AddRange(productTypes);
             }
             _ShippingAppDbContext.SaveChanges();
         }
-
-        private void Seed_ProductOverview()
-        {
-            
-            _ShippingAppDbContext.SaveChanges();
-        }
-
         private void Seed_Country()
         {
-            if (!_ShippingAppDbContext.Country.Any())
+            if (!_ShippingAppDbContext.Countries.Any())
             {
                 List<Country> countries = new List<Country>()
                 {
@@ -1354,13 +1343,8 @@ namespace ShippingApp.Migration
                     }
 
                 };
-                _ShippingAppDbContext.Country.AddRange(countries);
+                _ShippingAppDbContext.Countries.AddRange(countries);
             }
-            _ShippingAppDbContext.SaveChanges();
-        }
-
-        private void Seed_Brand()
-        {
             _ShippingAppDbContext.SaveChanges();
         }
     }

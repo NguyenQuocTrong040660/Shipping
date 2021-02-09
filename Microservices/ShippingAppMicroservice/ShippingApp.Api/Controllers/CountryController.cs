@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ShippingApp.Application.Commands;
-using ShippingApp.Application.Queries;
-using ShippingApp.Domain.Interfaces;
+using ShippingApp.Application.Country.Commands;
+using ShippingApp.Application.Country.Queries;
 using ShippingApp.Domain.Models;
 
 namespace ShippingApp.Api.Controllers
@@ -15,89 +13,65 @@ namespace ShippingApp.Api.Controllers
     {
         public CountryController(IMediator mediator) : base(mediator)
         {
-
         }
 
         [HttpGet]
-        [Route("GetAllCountry")]
-        public async Task<ActionResult<List<Country>>> GetAllCountry()
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<CountryModel>>> GetCoutriesAsync()
         {
-            return await _mediator.Send(new GetCountryQuery());
+            return await Mediator.Send(new GetCountryQuery());
         }
-
+        
         [HttpPost]
-        [Route("AddCountry")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Country), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> InsertCountry(Country model)
+        [ProducesResponseType(typeof(CountryModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<int>> AddCountryAsync([FromBody] CountryModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(model);
             }
 
-            var result = await _mediator.Send(new CreateCountryCommand() { Model = model });
-
-            if (result == 0)
-            {
-                return NotFound();
-            }
-
+            var result = await Mediator.Send(new CreateCountryCommand() { Country = model });
             return Ok(result);
         }
 
-        [HttpPut("UpdateCountry/{countryCode}")]
+        [HttpPut("{countryCode}")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(Country), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> PutCountry(string countryCode, Country entity)
+        [ProducesResponseType(typeof(CountryModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<int>> UpdateCountryAsync(string countryCode, CountryModel entity)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(entity);
             }
 
-            var result = await _mediator.Send(new UpdateCountryCommand() { CountryCode = countryCode, Entity = entity });
-
-            if (result == 0)
-            {
-                return NotFound();
-            }
-
+            var result = await Mediator.Send(new UpdateCountryCommand() { CountryCode = countryCode, Entity = entity });
             return Ok(result);
         }
 
-
-        [HttpGet]
-        [Route("GetCountryById/{id}")]
-        [ProducesResponseType(typeof(Country), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Country), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Country>> GetCountryById(string id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(CountryModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CountryModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<CountryModel>> GetCountryByIdAsync(string countryCode)
         {
-            var result = await _mediator.Send(new GetCountryByIdQuery() { CountryCode = id });
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
+            var result = await Mediator.Send(new GetCountryByIdQuery() { CountryCode = countryCode });
             return Ok(result);
         }
 
-
-        [HttpDelete("DeleteCountry/{countryCode}")]
+        [HttpDelete("{countryCode}")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<int>> DeleteCountry(string countryCode)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<int>> DeleteCountryAsync(string countryCode)
         {
-            var result = await _mediator.Send(new DeleteCountryCommand() { CountryCode = countryCode });
-
-            if (result == 0)
-            {
-                return NotFound();
-            }
-
+            var result = await Mediator.Send(new DeleteCountryCommand() { CountryCode = countryCode });
             return Ok(result);
         }
     }

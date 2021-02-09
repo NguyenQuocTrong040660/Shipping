@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShippingApp.Domain.AppSetting;
-using ShippingApp.Domain.Interfaces;
+using ShippingApp.Application.Interfaces;
 using ShippingApp.Infrastructure.Repositories;
-using ShippingApp.Persistence.DBContext;
 
 namespace ShippingApp.Infrastructure
 {
@@ -11,8 +10,7 @@ namespace ShippingApp.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IShippingAppDbContext, ShippingAppDbContext>();
-            services.AddScoped<IShippingAppRepository, ShippingAppRepository>();
+            services.AddScoped(typeof(IShippingAppRepository<>), typeof(ShippingAppRepository<>));
 
             var emailConfiguration = configuration.GetSection("EmailConfiguration");
             services.Configure<EmailConfiguration>(emailConfiguration);

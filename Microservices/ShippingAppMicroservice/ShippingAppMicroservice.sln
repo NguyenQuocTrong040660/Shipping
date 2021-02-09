@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{A09CCF25-C3EC-4D34-8101-70EF93F3D8B8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{D071527F-1693-44B1-97D8-46AE963E7455}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DevOps", "DevOps", "{13A1056D-6798-41C2-8DAE-F75CE9DDEF55}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShippingApp.Api", "ShippingApp.Api\ShippingApp.Api.csproj", "{8A9EAA9A-F06F-443F-BC74-3502BDC63E9D}"

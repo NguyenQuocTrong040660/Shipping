@@ -1,173 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Commands = ShippingApp.Application.Commands;
-using Queries = ShippingApp.Application.Queries;
-using DTO = ShippingApp.Domain.DTO;
+using ShippingApp.Application.Product.Commands;
+using ShippingApp.Application.Product.Queries;
+using ShippingApp.Domain.Models;
 
 namespace ShippingApp.Api.Controllers
 {
     public class ProductController : BaseController
     {
-        private readonly IWebHostEnvironment _environment;
         readonly ILogger<ProductController> _logger;
-        public ProductController(IMediator mediator, IWebHostEnvironment environment, ILogger<ProductController> logger) : base(mediator)
+        public ProductController(IMediator mediator, ILogger<ProductController> logger) : base(mediator)
         {
-            _environment = environment;
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost]
-        [Route("AddProducts")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<bool>> AddProducts(DTO.Product productDTO)
+        [ProducesResponseType(typeof(ProductModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<bool>> AddProducts(ProductModel product)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(productDTO);
-            }
-            var result = await _mediator.Send(new Commands.CreateProductCommand() { productDTO = productDTO });
-
-            if (result == 0)
-            {
-                return NotFound();
+                return BadRequest(product);
             }
 
+            var result = await Mediator.Send(new CreateProductCommand { Product = product });
             return Ok(result);
         }
 
         [HttpGet]
-        [Route("GetAllProducts")]
-        public async Task<ActionResult<List<DTO.Product>>> GetAllProducts()
+        [ProducesResponseType(typeof(List<ProductModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ProductModel>>> GetProducts()
         {
-            return await _mediator.Send(new Queries.GetAllProductQuery());
+            return await Mediator.Send(new GetAllProductQuery());
         }
 
-        [HttpGet]
-        [Route("GetProductsbyID")]
-        [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<DTO.Product>> GetProductByID(Guid id)
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ProductModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProductModel), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ProductModel>> GetProductByIdAsync(Guid id)
         {
-            var result = await _mediator.Send(new Queries.GetProductByIDQuery() { Id = id });
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
+            var result = await Mediator.Send(new GetProductByIdQuery { Id = id });
             return Ok(result);
         }
 
-        [HttpPut("UpdateProduct")]
+        [HttpPut("{id}")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(DTO.Product), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<int>> UpdateProduct(DTO.Product productDTO)
+        [ProducesResponseType(typeof(ProductModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<int>> UpdateProductAsync(Guid id, [FromBody] ProductModel productDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(productDTO);
             }
 
-            var result = await _mediator.Send(new Commands.UpdateProductCommand() { productDTO = productDTO });
-
-            if (result == 0)
-            {
-                return NotFound();
-            }
-
+            var result = await Mediator.Send(new UpdateProductCommand { Id = id, Product = productDTO });
             return Ok(result);
         }
 
-        [HttpDelete]
-        [Route("DeletedProduct")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<int>> DeleteProductOverview(Guid id)
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<int>> DeleteProductAysnc(Guid id)
         {
-            var result = await _mediator.Send(new Commands.DeleteProductCommand() { Id = id });
-
-            if (result == 0)
-            {
-                return NotFound();
-            }
-
-            return Ok(true);
-        }
-
-        [HttpPost("UploadImage"), DisableRequestSizeLimit]
-        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public IActionResult UploadImage(IFormFile file)
-        {
-            const string folderToUploads = "images";
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(file);
-            }
-
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest("File can not be null or empty");
-            }
-
-            if (file.Length > 2097152)
-            {
-                return BadRequest("File size is too much. Please choice another image");
-            }
-
-            try
-            {
-                var folderName = Path.Combine(_environment.WebRootPath, folderToUploads);
-
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-
-                Random random = new Random();
-
-                string randomString = DateTime.Now.Day.ToString()
-                    + "_" + DateTime.Now.Month.ToString()
-                    + "_" + DateTime.Now.Year.ToString()
-                    + DateTime.Now.Second.ToString()
-                    + "_" + random.Next();
-
-                string fileName = randomString + ContentDispositionHeaderValue.Parse(file.ContentDisposition)
-                                .FileName
-                                .Trim('"');
-
-                string fullPath = Path.Combine(pathToSave, fileName);
-                string dbPath = Path.Combine(folderName, fileName);
-
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    file.CopyTo(stream);
-                }
-
-                string domain = $"{HttpContext.Request.Scheme}{Uri.SchemeDelimiter}{Request.Host.ToUriComponent()}";
-
-                return Ok(new
-                {
-                    imageName = fileName,
-                    imageUrl = $"{domain}/{folderToUploads}/{fileName}",
-                    folderName = folderName
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Internal server error: {ex.Message}");
-            }
+            var result = await Mediator.Send(new DeleteProductCommand { Id = id });
+            return Ok(result);
         }
     }
 }

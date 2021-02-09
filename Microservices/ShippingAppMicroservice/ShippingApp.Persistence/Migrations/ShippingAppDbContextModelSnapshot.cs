@@ -15,7 +15,7 @@ namespace ShippingApp.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -41,7 +41,7 @@ namespace ShippingApp.Persistence.Migrations
 
                     b.HasKey("CountryCode");
 
-                    b.ToTable("Country");
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("ShippingApp.Domain.Entities.Product", b =>
@@ -71,12 +71,12 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("ProductNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("QtyPerPackage")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("QtyPerPackage")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("ShippingApp.Domain.Entities.ProductType", b =>
@@ -102,7 +102,7 @@ namespace ShippingApp.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductType");
+                    b.ToTable("ProductTypes");
                 });
 
             modelBuilder.Entity("ShippingApp.Domain.Entities.ShippingPlan", b =>
@@ -158,7 +158,7 @@ namespace ShippingApp.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShippingPlan");
+                    b.ToTable("ShippingPlans");
                 });
 #pragma warning restore 612, 618
         }

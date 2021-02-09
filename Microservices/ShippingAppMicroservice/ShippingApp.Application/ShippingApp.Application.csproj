@@ -23,4 +23,12 @@
     <ProjectReference Include="..\ShippingApp.Domain\ShippingApp.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ReceivedMark\" />
+    <Folder Include="MovementRequest\" />
+    <Folder Include="ShippingMark\" />
+    <Folder Include="WorkOrder\" />
+    <Folder Include="ShippingRequest\" />
+  </ItemGroup>
+
 </Project>

@@ -1,13 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ShippingApp.Domain.Interfaces;
+using ShippingApp.Application.Interfaces;
 using ShippingApp.Persistence.DBContext;
-using ShippingApp.Persistence.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ShippingApp.Persistence
 {
@@ -20,18 +15,6 @@ namespace ShippingApp.Persistence
                 b => b.MigrationsAssembly(typeof(ShippingAppDbContext).Assembly.FullName)));
 
             services.AddScoped<IShippingAppDbContext>(provider => provider.GetService<ShippingAppDbContext>());
-
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new ProductTypeProfile());
-                mc.AddProfile(new CountryProfile());
-                mc.AddProfile(new ProductProfile());
-                mc.AddProfile(new ShippingPlanProfile());
-            });
-
-            IMapper mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
-
             return services;
         }
     }

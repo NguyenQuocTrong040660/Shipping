@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using Serilog;
+using ShippingApp.Api.Filters;
 using ShippingApp.Application;
 using ShippingApp.Infrastructure;
 using ShippingApp.Migration;
@@ -27,11 +29,6 @@ namespace ShippingApp.Api
     {
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            //var builder = new ConfigurationBuilder()
-            //    .SetBasePath(env.ContentRootPath)
-            //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            //    .AddEnvironmentVariables();
-
             Configuration = configuration;
         }
 
@@ -44,16 +41,13 @@ namespace ShippingApp.Api
             services.AddApplication();
             services.AddInfrastructure(Configuration);
 
+            services.AddControllers(options =>
+              options.Filters.Add(new ApiExceptionFilterAttribute())).AddFluentValidation();
+
             //Should be disabled in PROD
             services.AddMigrationServices();
 
-            services.AddAutoMapper(typeof(Startup));
             services.AddHealthChecks();
-            services.AddMvc().AddNewtonsoftJson(options =>
-            {
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            });
-
             services.AddOpenApiDocument(configure =>
             {
                 configure.Title = "Shipping Application API";
@@ -68,7 +62,6 @@ namespace ShippingApp.Api
 
                 configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
-
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             ConfigureAuthenticationServices(services);
 
@@ -77,16 +70,7 @@ namespace ShippingApp.Api
                 options.AddPolicy(name: "GREXSOLUTIONS",
                                   builder =>
                                   {
-                                      builder.WithOrigins(
-                                                //LOCAL
-                                                "http://localhost:4000/",
-                                                "https://localhost:4000/",
-
-                                                "http://api-gatewayapi.havana.com.vn/",
-                                                "https://api-gatewayapi.havana.com.vn/",
-                                                "http://www.api-gatewayapi.havana.com.vn/",
-                                                "https://www.api-gatewayapi.havana.com.vn/"
-                                            )
+                                      builder.WithOrigins()
                                             .AllowAnyHeader()
                                             .AllowAnyMethod()
                                             .AllowAnyOrigin();
@@ -98,7 +82,10 @@ namespace ShippingApp.Api
                 options.AllowSynchronousIO = true;
             });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             services.AddRouting(options => options.LowercaseUrls = true);
         }
@@ -109,7 +96,6 @@ namespace ShippingApp.Api
             string issuer = Configuration["JWTTokenConfig:Issuer"];
             string audience = Configuration["JWTTokenConfig:Audience"];
 
-            //services.AddSingleton(jwtTokenConfig);
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

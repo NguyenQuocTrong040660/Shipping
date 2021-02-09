@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShippingApp.Domain.AppSetting
+﻿namespace ShippingApp.Domain.AppSetting
 {
     public class EmailConfiguration
     {
