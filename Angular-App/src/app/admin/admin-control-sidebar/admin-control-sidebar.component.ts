@@ -9,7 +9,7 @@ import { MenuItem } from 'primeng/api';
 export class AdminControlSidebarComponent implements OnInit {
   items: MenuItem[];
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.items = [
@@ -51,7 +51,7 @@ export class AdminControlSidebarComponent implements OnInit {
           {
             label: 'Product',
             icon: 'pi pi-list',
-            routerLink: '/product-type',
+            routerLink: '/product',
           },
           {
             label: 'Work Order',

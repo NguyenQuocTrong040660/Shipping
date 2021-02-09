@@ -7,8 +7,7 @@
         label="New"
         icon="pi pi-plus"
         class="p-button-primary p-mr-2"
-        (click)="openNew()"
-      ></button>
+        (click)="openNew()"></button>
       <button
         pButton
         pRipple
@@ -16,8 +15,7 @@
         icon="pi pi-trash"
         class="p-button-danger"
         (click)="deleteSelectedItems()"
-        [disabled]="!selectedItems || !selectedItems.length"
-      ></button>
+        [disabled]="!selectedItems || !selectedItems.length"></button>
     </ng-template>
   </p-toolbar>
 
@@ -29,8 +27,7 @@
     [paginator]="true"
     [rowHover]="true"
     [(selection)]="selectedItems"
-    [showCurrentPageReport]="true"
-  >
+    [showCurrentPageReport]="true">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">Loại Sản Phẩm</h5>
@@ -47,6 +44,7 @@
         <th></th>
       </tr>
     </ng-template>
+
     <ng-template pTemplate="body" let-item>
       <tr>
         <td>
@@ -61,15 +59,13 @@
             pRipple
             icon="pi pi-pencil"
             class="p-button-rounded p-button-success p-mr-2"
-            (click)="editProductType(item.id)"
-          ></button>
+            (click)="editProductType(item.id)"></button>
           <button
             pButton
             pRipple
             icon="pi pi-trash"
             class="p-button-rounded p-button-danger"
-            (click)="deleteProductType(item)"
-          ></button>
+            (click)="deleteProductType(item)"></button>
         </td>
       </tr>
     </ng-template>
@@ -86,8 +82,7 @@
   [style]="{ width: '450px' }"
   header="{{ titleDialog }}"
   [modal]="true"
-  styleClass="p-fluid"
->
+  styleClass="p-fluid">
   <ng-template pTemplate="content">
     <form [formGroup]="form">
       <div class="form-group"></div>
@@ -98,16 +93,12 @@
           *ngIf="(productTypeName.touched || submitted) && productTypeName.errors?.required"
           id="productTypeName"
           class="error invalid-feedback"
-          style="display: block"
-          >Tên loại sản phẩm không được bỏ trống</span
-        >
+          style="display: block">Tên loại sản phẩm không được bỏ trống</span>
         <span
           *ngIf="(productTypeName.touched || submitted) && productTypeName.errors?.maxlength"
           id="productTypeName"
           class="error invalid-feedback"
-          style="display: block"
-          >Tên loại sản phẩm không được trên 30 ki tự</span
-        >
+          style="display: block">Tên loại sản phẩm không được trên 30 ki tự</span>
       </div>
     </form>
   </ng-template>
@@ -121,7 +112,6 @@
       icon="pi pi-check"
       class="p-button-text"
       [disabled]="form.invalid"
-      (click)="onSubmit()"
-    ></button>
+      (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>
