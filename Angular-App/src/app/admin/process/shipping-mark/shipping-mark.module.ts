@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { SharedModule } from 'primeng/api';
+import { SharedModule } from 'app/shared/shared.module';
 import { ShippingMarkComponent } from './shipping-mark.component';
 import { shippingMarkRoutes } from './shipping-mark.routes';
 
@@ -14,4 +14,4 @@ import { shippingMarkRoutes } from './shipping-mark.routes';
   ],
   exports: [],
 })
-export class ShippingMarkModule {}
+export class ShippingMarkModule { }

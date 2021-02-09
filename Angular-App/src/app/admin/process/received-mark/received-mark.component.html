@@ -1,1 +1,203 @@
-<div>This is Received Mark</div>
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <button
+        class="p-button-primary p-mr-2"
+        pButton
+        pRipple
+        icon="pi pi-plus"
+        label="Create Received Marks"
+        (click)="openCreateDialog()"></button>
+      <button
+        class="p-button-danger p-mr-2"
+        pButton
+        pRipple
+        icon="pi pi-trash"
+        [disabled]="!selectedReceivedMarks || !selectedReceivedMarks.length"
+        label="Delete Received Marks"
+        (click)="openDeleteDialog()"></button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #shippingRequestDataTable
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rows]="20"
+    [value]="receivedMarks"
+    [rowHover]="true"
+    [paginator]="true"
+    [showCurrentPageReport]="true"
+    [globalFilterFields]="['name', 'note']"
+    [(selection)]="selectedReceivedMarks">
+    <ng-template pTemplate="caption">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        <h5 class="p-m-0">Users</h5>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
+        </span>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="note">Note<p-sortIcon field="note"></p-sortIcon>
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-receivedMark>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="receivedMark"></p-tableCheckbox>
+        </td>
+        <td>{{ receivedMark.name }}</td>
+        <td>{{ receivedMark.note }}</td>
+        <td>
+          <button
+            class="p-button-rounded p-button-success p-mr-2"
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            (click)="openEditDialog(receivedMark)"></button>
+          <button
+            class="p-button-rounded p-button-danger"
+            pButton
+            pRipple
+            icon="pi pi-trash"
+            (click)="openDeleteDialog(receivedMark)"></button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ receivedMarks ? receivedMarks.length :
+        0 }}
+        users.</div>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Create Received Marks Dialog -->
+<p-dialog
+  header="Create Received Marks"
+  styleClass="p-fluid p-w-500"
+  [modal]="true"
+  [(visible)]="isShowCreateDialog"
+  (onHide)="hideCreateDialog()">
+  <ng-template pTemplate="content">
+    <form [formGroup]="receivedMarkForm">
+      <div class="form-group">
+        <label for="name" class="control-label">Name</label>
+        <input id="name" formControlName="name" type="text" class="form-control" />
+        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
+          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
+        </ng-container>
+      </div>
+      <div class="form-group">
+        <label for="note" class="control-label">Note</label>
+        <input id="note" formControlName="note" type="text" class="form-control" />
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideCreateDialog()"></button>
+    <button
+      pButton
+      pRipple
+      label="Save"
+      icon="pi pi-check"
+      class="p-button-text"
+      [disabled]="receivedMarkForm.invalid"
+      (click)="onCreate()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Edit Received Mark Dialog -->
+<p-dialog
+  header="Edit Received Mark"
+  styleClass="p-fluid p-w-500"
+  [modal]="true"
+  [(visible)]="isShowEditDialog"
+  (onHide)="hideEditDialog()">
+  <ng-template pTemplate="content">
+    <form [formGroup]="receivedMarkForm">
+      <div class="form-group">
+        <label for="name" class="control-label">Name</label>
+        <input id="name" formControlName="name" type="text" class="form-control" />
+        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
+          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
+        </ng-container>
+      </div>
+      <div class="form-group">
+        <label for="note" class="control-label">Note</label>
+        <input id="note" formControlName="note" type="text" class="form-control" />
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideEditDialog()"></button>
+    <button
+      pButton
+      pRipple
+      label="Save"
+      icon="pi pi-check"
+      class="p-button-text"
+      [disabled]="receivedMarkForm.invalid"
+      (click)="onEdit()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Delete Received Marks Dialog -->
+<p-dialog
+  header="Delete Received Marks"
+  styleClass="p-fluid"
+  [modal]="true"
+  [(visible)]="isShowDeleteDialog"
+  (onHide)="hideDeleteDialog()">
+  <ng-template pTemplate="content">
+    <ng-container *ngIf="currentSelectedReceivedMark && currentSelectedReceivedMark.length; else deleteMany">
+      <div>Are you sure you want to delete {{ currentSelectedReceivedMark[0].name }} ?</div>
+    </ng-container>
+  </ng-template>
+
+  <ng-template #deleteMany>
+    <div>Are you sure you want to delete {{ selectedReceivedMarks && selectedReceivedMarks.length }} items ?</div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideDeleteDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onDelete()"></button>
+  </ng-template>
+</p-dialog>
