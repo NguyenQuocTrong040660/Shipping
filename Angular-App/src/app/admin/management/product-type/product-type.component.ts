@@ -43,6 +43,13 @@ export class ProductTypeComponent implements OnInit {
       productTypeName: ['', [Validators.required, Validators.maxLength(30)]],
       id: ['00000000-0000-0000-0000-000000000000'],
     });
+
+    this.productType = [
+      {
+        id: '11111',
+        productTypeName: 'productTypeName',
+      },
+    ];
   }
 
   reloadData() {

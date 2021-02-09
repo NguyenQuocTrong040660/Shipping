@@ -6,7 +6,7 @@
         pRipple
         label="New"
         icon="pi pi-plus"
-        class="p-button-success p-mr-2"
+        class="p-button-primary p-mr-2"
         (click)="openNew()"
       ></button>
       <button
@@ -67,7 +67,7 @@
             pButton
             pRipple
             icon="pi pi-trash"
-            class="p-button-rounded p-button-warning"
+            class="p-button-rounded p-button-danger"
             (click)="deleteProductType(item)"
           ></button>
         </td>
@@ -89,7 +89,7 @@
   styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="form">
       <div class="form-group"></div>
       <div class="form-group">
         <label class="control-label">Tên loại sản phẩm</label>
@@ -109,9 +109,19 @@
           >Tên loại sản phẩm không được trên 30 ki tự</span
         >
       </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-success" [disabled]="form.invalid">Xác nhận</button>
-      </div>
     </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"></button>
+    <button
+      pButton
+      pRipple
+      label="Save"
+      icon="pi pi-check"
+      class="p-button-text"
+      [disabled]="form.invalid"
+      (click)="onSubmit()"
+    ></button>
   </ng-template>
 </p-dialog>

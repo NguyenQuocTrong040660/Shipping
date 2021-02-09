@@ -2,7 +2,6 @@ import { CreateUserRequest, CreateUserResult } from './../../../shared/api-clien
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
-import { tap } from 'rxjs/operators';
 import { SelectItem } from 'primeng/api';
 
 @Component({
