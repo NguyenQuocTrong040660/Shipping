@@ -14,14 +14,9 @@ export class AdminControlSidebarComponent implements OnInit {
   ngOnInit(): void {
     this.items = [
       {
-        label: 'Business',
+        label: 'Process',
         icon: 'pi pi-pw pi-file',
         items: [
-          {
-            label: 'Shipping Plan',
-            icon: 'pi pi-calendar-times',
-            routerLink: '/shipping-plan',
-          },
           {
             label: 'Shipping Request',
             icon: 'pi pi-envelope',
@@ -56,11 +51,6 @@ export class AdminControlSidebarComponent implements OnInit {
           {
             label: 'Product',
             icon: 'pi pi-list',
-            routerLink: '/product',
-          },
-          {
-            label: 'Product Category',
-            icon: 'pi pi-list',
             routerLink: '/product-type',
           },
           {
@@ -68,22 +58,17 @@ export class AdminControlSidebarComponent implements OnInit {
             icon: 'pi pi-file-o',
             routerLink: '',
           },
+          {
+            label: 'Shipping Plan',
+            icon: 'pi pi-calendar-times',
+            routerLink: '/shipping-plan',
+          },
         ],
       },
       {
         label: 'Settings',
         icon: 'pi pi-pw pi-file',
         items: [
-          {
-            label: 'Imports Data',
-            icon: 'pi pi-cloud-upload',
-            routerLink: '',
-          },
-          {
-            label: 'Export Templates',
-            icon: 'pi pi-folder-open',
-            routerLink: '',
-          },
           {
             label: 'Configuration',
             icon: 'pi pi-cog',
