@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  templateUrl: './shiping-request.component.html',
-  styleUrls: ['./shiping-request.component.scss']
+  templateUrl: './shipping-request.component.html',
+  styleUrls: ['./shipping-request.component.scss']
 })
 export class ShippingRequestComponent implements OnInit {
-  shippingRequests: { id: string, name: string, note: string }[] = [];
-  selectedShippingRequests: { id: string; name: string; note: string }[] = [];
+  shippingRequests: ShippingRequest[] = [];
+  selectedShippingRequests: ShippingRequest[] = [];
   isShowCreateDialog: boolean;
   isShowEditDialog: boolean;
   isShowDeleteDialog: boolean;
-  currentSelectedShippingRequest: { id: string; name: string; note: string }[] = [];
+  currentSelectedShippingRequest: ShippingRequest[] = [];
   isDeleteMany: boolean;
   shippingRequestForm: FormGroup;
 
@@ -24,32 +24,56 @@ export class ShippingRequestComponent implements OnInit {
       {
         id: '1',
         name: 'Shipping Request A',
-        note: 'This is Shipping Request A note'
+        note: 'This is Shipping Request A note',
+        created: new Date(),
+        createBy: 'Mr.A',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.A 1'
       },
       {
         id: '2',
         name: 'Shipping Request B',
-        note: 'This is Shipping Request B note'
+        note: 'This is Shipping Request B note',
+        created: new Date(),
+        createBy: 'Mr.B',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.B 1'
       },
       {
         id: '3',
         name: 'Shipping Request C',
-        note: 'This is Shipping Request C note'
+        note: 'This is Shipping Request C note',
+        created: new Date(),
+        createBy: 'Mr.C',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.C 1'
       },
       {
         id: '4',
         name: 'Shipping Request D',
-        note: 'This is Shipping Request D note'
+        note: 'This is Shipping Request D note',
+        created: new Date(),
+        createBy: 'Mr.D',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.D 1'
       },
       {
         id: '5',
         name: 'Shipping Request E',
-        note: 'This is Shipping Request E note'
+        note: 'This is Shipping Request E note',
+        created: new Date(),
+        createBy: 'Mr.E',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.E 1'
       },
       {
         id: '6',
         name: 'Shipping Request F',
-        note: 'This is Shipping Request F note'
+        note: 'This is Shipping Request F note',
+        created: new Date(),
+        createBy: 'Mr.F',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.F 1'
       }
     ];
 
@@ -76,7 +100,7 @@ export class ShippingRequestComponent implements OnInit {
   }
 
   // Edit Shipping Request
-  openEditDialog(shippingPlan: { id: string; name: string; note: string }) {
+  openEditDialog(shippingPlan: ShippingRequest) {
     this.isShowEditDialog = true;
 
     this.shippingRequestForm.get('name').setValue(shippingPlan && shippingPlan.name);
@@ -95,7 +119,7 @@ export class ShippingRequestComponent implements OnInit {
   }
 
   // Delete Shipping Request
-  openDeleteDialog(singleShippingRequest?: { id: string; name: string; note: string }) {
+  openDeleteDialog(singleShippingRequest?: ShippingRequest) {
     this.isShowDeleteDialog = true;
     this.currentSelectedShippingRequest = [];
 
@@ -120,4 +144,14 @@ export class ShippingRequestComponent implements OnInit {
 
     this.hideDeleteDialog();
   }
+}
+
+interface ShippingRequest {
+  id: string;
+  name: string;
+  note: string;
+  created: Date;
+  createBy: string;
+  lastModified: Date;
+  lastModifiedBy: string;
 }

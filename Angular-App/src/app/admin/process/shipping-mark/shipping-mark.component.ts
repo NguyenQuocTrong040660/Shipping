@@ -6,12 +6,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./shipping-mark.component.scss']
 })
 export class ShippingMarkComponent implements OnInit {
-  shippingMarks: { id: string, name: string, note: string }[] = [];
-  selectedShippingMarks: { id: string; name: string; note: string }[] = [];
+  shippingMarks: ShippingMark[] = [];
+  selectedShippingMarks: ShippingMark[] = [];
   isShowCreateDialog: boolean;
   isShowEditDialog: boolean;
   isShowDeleteDialog: boolean;
-  currentSelectedShippingMark: { id: string; name: string; note: string }[] = [];
+  currentSelectedShippingMark: ShippingMark[] = [];
   isDeleteMany: boolean;
   shippingMarkForm: FormGroup;
 
@@ -24,32 +24,56 @@ export class ShippingMarkComponent implements OnInit {
       {
         id: '1',
         name: 'Shipping Mark A',
-        note: 'This is Shipping Mark A note'
+        note: 'This is Shipping Mark A note',
+        created: new Date(),
+        createBy: 'Mr.A',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.A 1'
       },
       {
         id: '2',
         name: 'Shipping Mark B',
-        note: 'This is Shipping Mark B note'
+        note: 'This is Shipping Mark B note',
+        created: new Date(),
+        createBy: 'Mr.B',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.B 1'
       },
       {
         id: '3',
         name: 'Shipping Mark C',
-        note: 'This is Shipping Mark C note'
+        note: 'This is Shipping Mark C note',
+        created: new Date(),
+        createBy: 'Mr.C',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.C 1'
       },
       {
         id: '4',
         name: 'Shipping Mark D',
-        note: 'This is Shipping Mark D note'
+        note: 'This is Shipping Mark D note',
+        created: new Date(),
+        createBy: 'Mr.D',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.D 1'
       },
       {
         id: '5',
         name: 'Shipping Mark E',
-        note: 'This is Shipping Mark E note'
+        note: 'This is Shipping Mark E note',
+        created: new Date(),
+        createBy: 'Mr.E',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.E 1'
       },
       {
         id: '6',
         name: 'Shipping Mark F',
-        note: 'This is Shipping Mark F note'
+        note: 'This is Shipping Mark F note',
+        created: new Date(),
+        createBy: 'Mr.F',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.F 1'
       }
     ];
 
@@ -76,7 +100,7 @@ export class ShippingMarkComponent implements OnInit {
   }
 
   // Edit Shipping Mark
-  openEditDialog(shippingPlan: { id: string; name: string; note: string }) {
+  openEditDialog(shippingPlan: ShippingMark) {
     this.isShowEditDialog = true;
 
     this.shippingMarkForm.get('name').setValue(shippingPlan && shippingPlan.name);
@@ -95,7 +119,7 @@ export class ShippingMarkComponent implements OnInit {
   }
 
   // Delete Shipping Marks
-  openDeleteDialog(singleMovementRequest?: { id: string; name: string; note: string }) {
+  openDeleteDialog(singleMovementRequest?: ShippingMark) {
     this.isShowDeleteDialog = true;
     this.currentSelectedShippingMark = [];
 
@@ -120,4 +144,14 @@ export class ShippingMarkComponent implements OnInit {
 
     this.hideDeleteDialog();
   }
+}
+
+interface ShippingMark {
+  id: string;
+  name: string;
+  note: string;
+  created: Date;
+  createBy: string;
+  lastModified: Date;
+  lastModifiedBy: string;
 }

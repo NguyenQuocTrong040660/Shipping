@@ -1,36 +1,36 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Received Marks"
+      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Work Orders"
         (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
         pRipple
         icon="pi pi-trash"
-        [disabled]="!selectedReceivedMarks || !selectedReceivedMarks.length"
-        label="Delete Received Marks"
+        [disabled]="!selectedWorkOrders || !selectedWorkOrders.length"
+        label="Delete Work Orders"
         (click)="openDeleteDialog()"></button>
     </ng-template>
   </p-toolbar>
 
   <p-table
-    #shippingRequestDataTable
+    #workOrderDataTable
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="20"
-    [value]="receivedMarks"
+    [value]="workOrders"
     [rowHover]="true"
     [paginator]="true"
     [showCurrentPageReport]="true"
     [globalFilterFields]="['name', 'note', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
-    [(selection)]="selectedReceivedMarks">
+    [(selection)]="selectedWorkOrders">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Received Mark</h5>
+        <h5 class="p-m-0">Work Order</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')"
+          <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')"
             placeholder="Search..." />
         </span>
       </div>
@@ -57,38 +57,38 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-receivedMark>
+    <ng-template pTemplate="body" let-workOrder>
       <tr>
         <td>
-          <p-tableCheckbox [value]="receivedMark"></p-tableCheckbox>
+          <p-tableCheckbox [value]="workOrder"></p-tableCheckbox>
         </td>
-        <td>{{ receivedMark.name }}</td>
-        <td>{{ receivedMark.note }}</td>
-        <td>{{ receivedMark.created }}</td>
-        <td>{{ receivedMark.createBy }}</td>
-        <td>{{ receivedMark.lastModified }}</td>
-        <td>{{ receivedMark.lastModifiedBy }}</td>
+        <td>{{ workOrder.name }}</td>
+        <td>{{ workOrder.note }}</td>
+        <td>{{ workOrder.created }}</td>
+        <td>{{ workOrder.createBy }}</td>
+        <td>{{ workOrder.lastModified }}</td>
+        <td>{{ workOrder.lastModifiedBy }}</td>
         <td>
           <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil"
-            (click)="openEditDialog(receivedMark)"></button>
+            (click)="openEditDialog(workOrder)"></button>
           <button class="p-button-rounded p-button-danger" pButton pRipple icon="pi pi-trash"
-            (click)="openDeleteDialog(receivedMark)"></button>
+            (click)="openDeleteDialog(workOrder)"></button>
         </td>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="summary">
-      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ receivedMarks ? receivedMarks.length : 0 }}
+      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ workOrders ? workOrders.length : 0 }}
         users.</div>
     </ng-template>
   </p-table>
 </div>
 
-<!-- Create Received Marks Dialog -->
-<p-dialog header="Create Received Marks" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowCreateDialog"
+<!-- Create Work Orders Dialog -->
+<p-dialog header="Create Work Orders" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowCreateDialog"
   (onHide)="hideCreateDialog()">
   <ng-template pTemplate="content">
-    <form [formGroup]="receivedMarkForm">
+    <form [formGroup]="workOrderForm">
       <div class="form-group">
         <label for="name" class="control-label">Name</label>
         <input id="name" formControlName="name" type="text" class="form-control" />
@@ -106,16 +106,16 @@
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
       (click)="hideCreateDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="receivedMarkForm.invalid"
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="workOrderForm.invalid"
       (click)="onCreate()"></button>
   </ng-template>
 </p-dialog>
 
-<!-- Edit Received Mark Dialog -->
-<p-dialog header="Edit Received Mark" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
+<!-- Edit Work Order Dialog -->
+<p-dialog header="Edit Work Order" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
   (onHide)="hideEditDialog()">
   <ng-template pTemplate="content">
-    <form [formGroup]="receivedMarkForm">
+    <form [formGroup]="workOrderForm">
       <div class="form-group">
         <label for="name" class="control-label">Name</label>
         <input id="name" formControlName="name" type="text" class="form-control" />
@@ -132,22 +132,22 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="receivedMarkForm.invalid"
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="workOrderForm.invalid"
       (click)="onEdit()"></button>
   </ng-template>
 </p-dialog>
 
-<!-- Delete Received Marks Dialog -->
-<p-dialog header="Delete Received Marks" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog"
+<!-- Delete Work Order Dialog -->
+<p-dialog header="Delete Work Orders" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog"
   (onHide)="hideDeleteDialog()">
   <ng-template pTemplate="content">
-    <ng-container *ngIf="currentSelectedReceivedMark && currentSelectedReceivedMark.length; else deleteMany">
-      <div>Are you sure you want to delete {{ currentSelectedReceivedMark[0].name }} ?</div>
+    <ng-container *ngIf="currentSelectedWorkOrder && currentSelectedWorkOrder.length; else deleteMany">
+      <div>Are you sure you want to delete {{ currentSelectedWorkOrder[0].name }} ?</div>
     </ng-container>
   </ng-template>
 
   <ng-template #deleteMany>
-    <div>Are you sure you want to delete {{ selectedReceivedMarks && selectedReceivedMarks.length }} items ?</div>
+    <div>Are you sure you want to delete {{ selectedWorkOrders && selectedWorkOrders.length }} items ?</div>
   </ng-template>
 
   <ng-template pTemplate="footer">

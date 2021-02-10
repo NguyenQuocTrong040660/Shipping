@@ -1,30 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
-  templateUrl: './movement-request.component.html',
-  styleUrls: ['./movement-request.component.scss']
+  templateUrl: './work-order.component.html',
+  styleUrls: ['./work-order.component.scss'],
 })
-export class MovementRequestComponent implements OnInit {
-  movementRequests: MovementRequest[] = [];
-  selectedMovementRequests: MovementRequest[] = [];
+export class WorkOrderComponent implements OnInit {
+  workOrders: WorkOrder[] = [];
+  selectedWorkOrders: WorkOrder[] = [];
   isShowCreateDialog: boolean;
   isShowEditDialog: boolean;
   isShowDeleteDialog: boolean;
-  currentSelectedMovementRequest: MovementRequest[] = [];
+  currentSelectedWorkOrder: WorkOrder[] = [];
   isDeleteMany: boolean;
-  movementRequestForm: FormGroup;
+  workOrderForm: FormGroup;
 
   get name() {
-    return this.movementRequestForm.get('name');
+    return this.workOrderForm.get('name');
   }
 
   ngOnInit() {
-    this.movementRequests = [
+    this.workOrders = [
       {
         id: '1',
-        name: 'Movement Request A',
-        note: 'This is Movement Request A note',
+        name: 'Work Order A',
+        note: 'This is Work Order A note',
         created: new Date(),
         createBy: 'Mr.A',
         lastModified: new Date(),
@@ -32,8 +32,8 @@ export class MovementRequestComponent implements OnInit {
       },
       {
         id: '2',
-        name: 'Movement Request B',
-        note: 'This is Movement Request B note',
+        name: 'Work Order B',
+        note: 'This is Work Order B note',
         created: new Date(),
         createBy: 'Mr.B',
         lastModified: new Date(),
@@ -41,8 +41,8 @@ export class MovementRequestComponent implements OnInit {
       },
       {
         id: '3',
-        name: 'Movement Request C',
-        note: 'This is Movement Request C note',
+        name: 'Work Order C',
+        note: 'This is Work Order C note',
         created: new Date(),
         createBy: 'Mr.C',
         lastModified: new Date(),
@@ -50,8 +50,8 @@ export class MovementRequestComponent implements OnInit {
       },
       {
         id: '4',
-        name: 'Movement Request D',
-        note: 'This is Movement Request D note',
+        name: 'Work Order D',
+        note: 'This is Work Order D note',
         created: new Date(),
         createBy: 'Mr.D',
         lastModified: new Date(),
@@ -59,8 +59,8 @@ export class MovementRequestComponent implements OnInit {
       },
       {
         id: '5',
-        name: 'Movement Request E',
-        note: 'This is Movement Request E note',
+        name: 'Work Order E',
+        note: 'This is Work Order E note',
         created: new Date(),
         createBy: 'Mr.E',
         lastModified: new Date(),
@@ -68,64 +68,68 @@ export class MovementRequestComponent implements OnInit {
       },
       {
         id: '6',
-        name: 'Movement Request F',
-        note: 'This is Movement Request F note',
+        name: 'Work Order F',
+        note: 'This is Work Order F note',
         created: new Date(),
         createBy: 'Mr.F',
         lastModified: new Date(),
         lastModifiedBy: 'Mr.F 1'
-      }
+      },
     ];
 
-    this.movementRequestForm = new FormGroup({
+    this.workOrderForm = new FormGroup({
       name: new FormControl('', Validators.required),
       note: new FormControl(''),
+      created: new FormControl(new Date()),
+      createBy: new FormControl(''),
+      lastModified: new FormControl(new Date()),
+      lastModifiedBy: new FormControl(''),
     });
   }
 
-  // Create Movement Request
+  // Create Work Order
   openCreateDialog() {
     this.isShowCreateDialog = true;
   }
 
   hideCreateDialog() {
     this.isShowCreateDialog = false;
-    this.movementRequestForm.reset();
+    this.workOrderForm.reset();
   }
 
   onCreate() {
-    console.log(this.movementRequestForm.value);
+    console.log(this.workOrderForm.value);
 
     // this.hideCreateDialog();
   }
 
-  // Edit Movement Request
-  openEditDialog(shippingPlan: MovementRequest) {
+  // Edit Work Order
+  openEditDialog(workOrder: WorkOrder) {
     this.isShowEditDialog = true;
 
-    this.movementRequestForm.get('name').setValue(shippingPlan && shippingPlan.name);
-    this.movementRequestForm.get('note').setValue(shippingPlan && shippingPlan.note);
+    this.workOrderForm.get('name').setValue(workOrder && workOrder.name);
+    this.workOrderForm.get('note').setValue(workOrder && workOrder.note);
   }
 
   hideEditDialog() {
     this.isShowEditDialog = false;
-    this.movementRequestForm.reset();
+    this.workOrderForm.reset();
   }
 
   onEdit() {
-    console.log(this.movementRequestForm.value);
+    console.log(this.workOrderForm.value);
 
     this.hideEditDialog();
   }
 
-  // Delete Movement Request
-  openDeleteDialog(singleMovementRequest?: MovementRequest) {
+  // Delete Work Order
+  openDeleteDialog(singleWorkOrder?: WorkOrder) {
     this.isShowDeleteDialog = true;
-    this.currentSelectedMovementRequest = [];
+    this.currentSelectedWorkOrder = [];
 
-    if (singleMovementRequest) {
+    if (singleWorkOrder) {
       this.isDeleteMany = false;
-      this.currentSelectedMovementRequest.push(singleMovementRequest);
+      this.currentSelectedWorkOrder.push(singleWorkOrder);
     } else {
       this.isDeleteMany = true;
     }
@@ -137,16 +141,16 @@ export class MovementRequestComponent implements OnInit {
 
   onDelete() {
     if (this.isDeleteMany) {
-      console.log('this.selectedShippingRequests: ' + this.selectedMovementRequests);
+      console.log('this.selectedWorkOrders: ' + this.selectedWorkOrders);
     } else {
-      console.log('this.currentSelectedMovementRequest: ' + this.currentSelectedMovementRequest);
+      console.log('this.currentSelectedWorkOrder: ' + this.currentSelectedWorkOrder);
     }
 
     this.hideDeleteDialog();
   }
 }
 
-interface MovementRequest {
+interface WorkOrder {
   id: string;
   name: string;
   note: string;
