@@ -6,12 +6,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./received-mark.component.scss']
 })
 export class ReceivedMarkComponent implements OnInit {
-  receivedMarks: { id: string, name: string, note: string }[] = [];
-  selectedReceivedMarks: { id: string; name: string; note: string }[] = [];
+  receivedMarks: ReceivedMark[] = [];
+  selectedReceivedMarks: ReceivedMark[] = [];
   isShowCreateDialog: boolean;
   isShowEditDialog: boolean;
   isShowDeleteDialog: boolean;
-  currentSelectedReceivedMark: { id: string; name: string; note: string }[] = [];
+  currentSelectedReceivedMark: ReceivedMark[] = [];
   isDeleteMany: boolean;
   receivedMarkForm: FormGroup;
 
@@ -24,32 +24,56 @@ export class ReceivedMarkComponent implements OnInit {
       {
         id: '1',
         name: 'Received Mark A',
-        note: 'This is Received Mark A note'
+        note: 'This is Received Mark A note',
+        created: new Date(),
+        createBy: 'Mr.A',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.A 1'
       },
       {
         id: '2',
         name: 'Received Mark B',
-        note: 'This is Received Mark B note'
+        note: 'This is Received Mark B note',
+        created: new Date(),
+        createBy: 'Mr.B',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.B 1'
       },
       {
         id: '3',
         name: 'Received Mark C',
-        note: 'This is Received Mark C note'
+        note: 'This is Received Mark C note',
+        created: new Date(),
+        createBy: 'Mr.C',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.C 1'
       },
       {
         id: '4',
         name: 'Received Mark D',
-        note: 'This is Received Mark D note'
+        note: 'This is Received Mark D note',
+        created: new Date(),
+        createBy: 'Mr.D',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.D 1'
       },
       {
         id: '5',
         name: 'Received Mark E',
-        note: 'This is Received Mark E note'
+        note: 'This is Received Mark E note',
+        created: new Date(),
+        createBy: 'Mr.E',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.E 1'
       },
       {
         id: '6',
         name: 'Received Mark F',
-        note: 'This is Received Mark F note'
+        note: 'This is Received Mark F note',
+        created: new Date(),
+        createBy: 'Mr.F',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.F 1'
       }
     ];
 
@@ -76,7 +100,7 @@ export class ReceivedMarkComponent implements OnInit {
   }
 
   // Edit Received Mark
-  openEditDialog(shippingPlan: { id: string; name: string; note: string }) {
+  openEditDialog(shippingPlan: ReceivedMark) {
     this.isShowEditDialog = true;
 
     this.receivedMarkForm.get('name').setValue(shippingPlan && shippingPlan.name);
@@ -95,7 +119,7 @@ export class ReceivedMarkComponent implements OnInit {
   }
 
   // Delete Received Marks
-  openDeleteDialog(singleMovementRequest?: { id: string; name: string; note: string }) {
+  openDeleteDialog(singleMovementRequest?: ReceivedMark) {
     this.isShowDeleteDialog = true;
     this.currentSelectedReceivedMark = [];
 
@@ -120,4 +144,14 @@ export class ReceivedMarkComponent implements OnInit {
 
     this.hideDeleteDialog();
   }
+}
+
+interface ReceivedMark {
+  id: string;
+  name: string;
+  note: string;
+  created: Date;
+  createBy: string;
+  lastModified: Date;
+  lastModifiedBy: string;
 }

@@ -12,7 +12,7 @@ export const adminRoutes: Routes = [
       {
         path: 'shipping-request',
         loadChildren: () =>
-          import('./process/shiping-request/shiping-request.module').then((m) => m.ShippingRequestModule),
+          import('./process/shipping-request/shipping-request.module').then((m) => m.ShippingRequestModule),
         canActivate: [AuthenticationGuard],
       },
       {
@@ -50,12 +50,23 @@ export const adminRoutes: Routes = [
         canActivate: [AuthenticationGuard],
       },
       {
+        path: 'work-order',
+        loadChildren: () => import('./management/work-order/work-order.module').then((m) => m.WorkOrderModule),
+        canActivate: [AuthenticationGuard],
+      },
+      {
         path: 'shipping-plan',
         loadChildren: () =>
           import('./management/shipping-plan/shipping-plan.module').then((m) => m.ShippingPlanModule),
         canActivate: [AuthenticationGuard],
       },
       // Settings
+      {
+        path: 'configuration',
+        loadChildren: () =>
+          import('./settings/configuration/configuration.module').then((m) => m.ConfigurationModule),
+        canActivate: [AuthenticationGuard],
+      },
       {
         path: 'files-management',
         loadChildren: () =>

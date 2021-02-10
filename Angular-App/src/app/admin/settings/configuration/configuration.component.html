@@ -1,0 +1,87 @@
+<div class="card">
+  <p-table
+    #configurationDataTable
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [rows]="20"
+    [value]="configurations"
+    [rowHover]="true"
+    [paginator]="true"
+    [showCurrentPageReport]="true"
+    [globalFilterFields]="['key', 'value', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
+    [(selection)]="selectedConfigurations">
+    <ng-template pTemplate="caption">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        <h5 class="p-m-0">Configuration</h5>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" (input)="configurationDataTable.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
+        </span>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="key">Key<p-sortIcon field="key"></p-sortIcon>
+        </th>
+        <th pSortableColumn="value">Value<p-sortIcon field="value"></p-sortIcon>
+        <th pSortableColumn="created">Created<p-sortIcon field="created"></p-sortIcon>
+        </th>
+        <th pSortableColumn="createBy">Create By<p-sortIcon field="createBy"></p-sortIcon>
+        </th>
+        <th pSortableColumn="lastModified">Last Modified<p-sortIcon field="nolastModifiedte"></p-sortIcon>
+        </th>
+        <th pSortableColumn="lastModifiedBy">Last Modified By<p-sortIcon field="lastModifiedBy"></p-sortIcon>
+        </th>
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-configuration>
+      <tr>
+        <td>{{ configuration.key }}</td>
+        <td>{{ configuration.value }}</td>
+        <td>{{ configuration.created }}</td>
+        <td>{{ configuration.createBy }}</td>
+        <td>{{ configuration.lastModified }}</td>
+        <td>{{ configuration.lastModifiedBy }}</td>
+        <td>
+          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil"
+            (click)="openEditDialog(configuration)"></button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ configurations ? configurations.length :
+        0 }} configurations.</div>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Edit Configuration Dialog -->
+<p-dialog header="Edit Configuration" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
+  (onHide)="hideEditDialog()">
+  <ng-template pTemplate="content">
+    <form [formGroup]="configurationForm">
+      <div class="form-group">
+        <label for="key" class="control-label">Key</label>
+        <input id="key" formControlName="key" type="text" disabled class="form-control" />
+        <ng-container *ngIf="key.invalid && (key.dirty || key.touched)">
+          <small id="email-error" class="p-invalid create-user-form__error">Key is required.</small>
+        </ng-container>
+      </div>
+      <div class="form-group">
+        <label for="value" class="control-label">Value</label>
+        <input id="value" formControlName="value" type="text" class="form-control" />
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+      [disabled]="configurationForm.invalid" (click)="onEdit()"></button>
+  </ng-template>
+</p-dialog>

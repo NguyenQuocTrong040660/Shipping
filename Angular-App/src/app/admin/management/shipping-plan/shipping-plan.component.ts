@@ -6,12 +6,12 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./shipping-plan.component.scss'],
 })
 export class ShippingPlanComponent implements OnInit {
-  shippingPlans: { id: string; name: string; note: string }[] = [];
-  selectedShippingPlans: { id: string; name: string; note: string }[] = [];
+  shippingPlans: ShippingPlan[] = [];
+  selectedShippingPlans: ShippingPlan[] = [];
   isShowCreateDialog: boolean;
   isShowEditDialog: boolean;
   isShowDeleteDialog: boolean;
-  currentSelectedShippingPlan: { id: string; name: string; note: string }[] = [];
+  currentSelectedShippingPlan: ShippingPlan[] = [];
   isDeleteMany: boolean;
   shippingPlanForm: FormGroup;
 
@@ -25,37 +25,65 @@ export class ShippingPlanComponent implements OnInit {
         id: '1',
         name: 'Shipping Plan A',
         note: 'This is Shipping Plan A note',
+        created: new Date(),
+        createBy: 'Mr.A',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.A 1'
       },
       {
         id: '2',
         name: 'Shipping Plan B',
         note: 'This is Shipping Plan B note',
+        created: new Date(),
+        createBy: 'Mr.B',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.B 1'
       },
       {
         id: '3',
         name: 'Shipping Plan C',
         note: 'This is Shipping Plan C note',
+        created: new Date(),
+        createBy: 'Mr.C',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.C 1'
       },
       {
         id: '4',
         name: 'Shipping Plan D',
         note: 'This is Shipping Plan D note',
+        created: new Date(),
+        createBy: 'Mr.D',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.D 1'
       },
       {
         id: '5',
         name: 'Shipping Plan E',
         note: 'This is Shipping Plan E note',
+        created: new Date(),
+        createBy: 'Mr.E',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.E 1'
       },
       {
         id: '6',
         name: 'Shipping Plan F',
         note: 'This is Shipping Plan F note',
+        created: new Date(),
+        createBy: 'Mr.F',
+        lastModified: new Date(),
+        lastModifiedBy: 'Mr.F 1'
       },
     ];
 
     this.shippingPlanForm = new FormGroup({
       name: new FormControl('', Validators.required),
       note: new FormControl(''),
+      created: new FormControl(new Date()),
+      createBy: new FormControl(''),
+      lastModified: new FormControl(new Date()),
+      lastModifiedBy: new FormControl(''),
     });
   }
 
@@ -76,7 +104,7 @@ export class ShippingPlanComponent implements OnInit {
   }
 
   // Edit Shipping Plan
-  openEditDialog(shippingPlan: { id: string; name: string; note: string }) {
+  openEditDialog(shippingPlan: ShippingPlan) {
     this.isShowEditDialog = true;
 
     this.shippingPlanForm.get('name').setValue(shippingPlan && shippingPlan.name);
@@ -95,7 +123,7 @@ export class ShippingPlanComponent implements OnInit {
   }
 
   // Delete Shipping Plan
-  openDeleteDialog(singleShippingPlan?: { id: string; name: string; note: string }) {
+  openDeleteDialog(singleShippingPlan?: ShippingPlan) {
     this.isShowDeleteDialog = true;
     this.currentSelectedShippingPlan = [];
 
@@ -120,4 +148,14 @@ export class ShippingPlanComponent implements OnInit {
 
     this.hideDeleteDialog();
   }
+}
+
+interface ShippingPlan {
+  id: string;
+  name: string;
+  note: string;
+  created: Date;
+  createBy: string;
+  lastModified: Date;
+  lastModifiedBy: string;
 }

@@ -56,7 +56,7 @@ export class AdminControlSidebarComponent implements OnInit {
           {
             label: 'Work Order',
             icon: 'pi pi-file-o',
-            routerLink: '',
+            routerLink: '/work-order',
           },
           {
             label: 'Shipping Plan',
@@ -72,7 +72,7 @@ export class AdminControlSidebarComponent implements OnInit {
           {
             label: 'Configuration',
             icon: 'pi pi-cog',
-            routerLink: '',
+            routerLink: '/configuration',
           },
         ],
       },
