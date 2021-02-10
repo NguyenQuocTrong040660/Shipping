@@ -19,6 +19,7 @@
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="20"
+    [columns]="cols"
     [value]="receivedMarks"
     [rowHover]="true"
     [paginator]="true"
@@ -36,38 +37,26 @@
       </div>
     </ng-template>
 
-    <ng-template pTemplate="header">
+    <ng-template pTemplate="header" let-columns>
       <tr>
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon>
-        </th>
-        <th pSortableColumn="note">Note<p-sortIcon field="note"></p-sortIcon>
-        </th>
-        <th pSortableColumn="created">Created<p-sortIcon field="created"></p-sortIcon>
-        </th>
-        <th pSortableColumn="createBy">Create By<p-sortIcon field="createBy"></p-sortIcon>
-        </th>
-        <th pSortableColumn="lastModified">Last Modified<p-sortIcon field="nolastModifiedte"></p-sortIcon>
-        </th>
-        <th pSortableColumn="lastModifiedBy">Last Modified By<p-sortIcon field="lastModifiedBy"></p-sortIcon>
+        <th *ngFor="let col of columns" pSortableColumn="{{col.field}}">
+          {{col.header}}<p-sortIcon field="{{col.field}}"></p-sortIcon>
         </th>
         <th></th>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-receivedMark>
+    <ng-template pTemplate="body" let-receivedMark let-columns="columns">
       <tr>
         <td>
           <p-tableCheckbox [value]="receivedMark"></p-tableCheckbox>
         </td>
-        <td>{{ receivedMark.name }}</td>
-        <td>{{ receivedMark.note }}</td>
-        <td>{{ receivedMark.created }}</td>
-        <td>{{ receivedMark.createBy }}</td>
-        <td>{{ receivedMark.lastModified }}</td>
-        <td>{{ receivedMark.lastModifiedBy }}</td>
+        <td *ngFor="let col of columns">
+          {{ receivedMark[col.field] }}
+        </td>
         <td>
           <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil"
             (click)="openEditDialog(receivedMark)"></button>

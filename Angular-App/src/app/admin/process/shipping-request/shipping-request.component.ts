@@ -14,12 +14,22 @@ export class ShippingRequestComponent implements OnInit {
   currentSelectedShippingRequest: ShippingRequest[] = [];
   isDeleteMany: boolean;
   shippingRequestForm: FormGroup;
+  cols: { header: string, field: string }[] = [];
 
   get name() {
     return this.shippingRequestForm.get('name');
   }
 
   ngOnInit() {
+    this.cols = [
+      { header: 'Name', field: 'name' },
+      { header: 'Note', field: 'note' },
+      { header: 'Created', field: 'created' },
+      { header: 'Create By', field: 'createBy' },
+      { header: 'Last Modified', field: 'lastModified' },
+      { header: 'Last Modified By', field: 'lastModifiedBy' },
+    ];
+
     this.shippingRequests = [
       {
         id: '1',

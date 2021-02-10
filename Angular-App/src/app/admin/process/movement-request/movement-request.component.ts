@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   templateUrl: './movement-request.component.html',
@@ -14,12 +15,30 @@ export class MovementRequestComponent implements OnInit {
   currentSelectedMovementRequest: MovementRequest[] = [];
   isDeleteMany: boolean;
   movementRequestForm: FormGroup;
+  stepItems: MenuItem[] = [];
+  activeIndex = 0;
+  workOrderList: WorkOrder[] = [];
+  workOrderItems: WorkOrderItems[] = [];
+  cols: { header: string, field: string }[] = [];
 
   get name() {
     return this.movementRequestForm.get('name');
   }
 
+  get workOrders() {
+    return this.movementRequestForm.get('workOrders');
+  }
+
   ngOnInit() {
+    this.cols = [
+      { header: 'Name', field: 'name' },
+      { header: 'Note', field: 'note' },
+      { header: 'Created', field: 'created' },
+      { header: 'Create By', field: 'createBy' },
+      { header: 'Last Modified', field: 'lastModified' },
+      { header: 'Last Modified By', field: 'lastModifiedBy' },
+    ];
+
     this.movementRequests = [
       {
         id: '1',
@@ -77,9 +96,76 @@ export class MovementRequestComponent implements OnInit {
       }
     ];
 
+    this.workOrderList = [
+      {
+        id: '1',
+        name: 'Work Order 1'
+      },
+      {
+        id: '2',
+        name: 'Work Order 2'
+      },
+      {
+        id: '3',
+        name: 'Work Order 3'
+      },
+      {
+        id: '4',
+        name: 'Work Order 4'
+      },
+      {
+        id: '5',
+        name: 'Work Order 5'
+      },
+      {
+        id: '6',
+        name: 'Work Order 6'
+      }
+    ];
+
+    this.workOrderItems = [
+      {
+        id: '1',
+        name: 'Work Order Item 1',
+        workOrderId: '1'
+      },
+      {
+        id: '2',
+        name: 'Work Order Item 1.1',
+        workOrderId: '1'
+      },
+      {
+        id: '3',
+        name: 'Work Order Item 1.2',
+        workOrderId: '1'
+      },
+      {
+        id: '4',
+        name: 'Work Order Item 2',
+        workOrderId: '2'
+      },
+      {
+        id: '3',
+        name: 'Work Order Item 3',
+        workOrderId: '3'
+      },
+      {
+        id: '3',
+        name: 'Work Order Item 3.1',
+        workOrderId: '3'
+      }
+    ];
+
+    this.stepItems = [
+      { label: 'Work Order' },
+      { label: 'Move Quantity' },
+      { label: 'Confirm' }
+    ];
+
     this.movementRequestForm = new FormGroup({
       name: new FormControl('', Validators.required),
       note: new FormControl(''),
+      workOrders: new FormControl([], Validators.required)
     });
   }
 
@@ -90,13 +176,14 @@ export class MovementRequestComponent implements OnInit {
 
   hideCreateDialog() {
     this.isShowCreateDialog = false;
+    this.activeIndex = 0;
     this.movementRequestForm.reset();
   }
 
   onCreate() {
     console.log(this.movementRequestForm.value);
 
-    // this.hideCreateDialog();
+    this.hideCreateDialog();
   }
 
   // Edit Movement Request
@@ -144,6 +231,14 @@ export class MovementRequestComponent implements OnInit {
 
     this.hideDeleteDialog();
   }
+
+  nextPage() {
+    this.activeIndex += 1;
+  }
+
+  prevPage() {
+    this.activeIndex -= 1;
+  }
 }
 
 interface MovementRequest {
@@ -154,4 +249,15 @@ interface MovementRequest {
   createBy: string;
   lastModified: Date;
   lastModifiedBy: string;
+}
+
+interface WorkOrder {
+  id: string;
+  name: string;
+}
+
+interface WorkOrderItems {
+  id: string;
+  name: string;
+  workOrderId: string;
 }

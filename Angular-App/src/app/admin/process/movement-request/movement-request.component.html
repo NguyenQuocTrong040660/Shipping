@@ -19,6 +19,7 @@
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="20"
+    [columns]="cols"
     [value]="movementRequests"
     [rowHover]="true"
     [paginator]="true"
@@ -36,38 +37,26 @@
       </div>
     </ng-template>
 
-    <ng-template pTemplate="header">
+    <ng-template pTemplate="header" let-columns>
       <tr>
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon>
-        </th>
-        <th pSortableColumn="note">Note<p-sortIcon field="note"></p-sortIcon>
-        </th>
-        <th pSortableColumn="created">Created<p-sortIcon field="created"></p-sortIcon>
-        </th>
-        <th pSortableColumn="createBy">Create By<p-sortIcon field="createBy"></p-sortIcon>
-        </th>
-        <th pSortableColumn="lastModified">Last Modified<p-sortIcon field="nolastModifiedte"></p-sortIcon>
-        </th>
-        <th pSortableColumn="lastModifiedBy">Last Modified By<p-sortIcon field="lastModifiedBy"></p-sortIcon>
+        <th *ngFor="let col of columns" pSortableColumn="{{col.field}}">
+          {{col.header}}<p-sortIcon field="{{col.field}}"></p-sortIcon>
         </th>
         <th></th>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-movementRequest>
+    <ng-template pTemplate="body" let-movementRequest let-columns="columns">
       <tr>
         <td>
           <p-tableCheckbox [value]="movementRequest"></p-tableCheckbox>
         </td>
-        <td>{{ movementRequest.name }}</td>
-        <td>{{ movementRequest.note }}</td>
-        <td>{{ movementRequest.created }}</td>
-        <td>{{ movementRequest.createBy }}</td>
-        <td>{{ movementRequest.lastModified }}</td>
-        <td>{{ movementRequest.lastModifiedBy }}</td>
+        <td *ngFor="let col of columns">
+          {{ movementRequest[col.field] }}
+        </td>
         <td>
           <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil"
             (click)="openEditDialog(movementRequest)"></button>
@@ -86,10 +75,105 @@
 </div>
 
 <!-- Create Movement Requests Dialog -->
-<p-dialog header="Create Movement Requests" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowCreateDialog"
+<p-dialog header="Create Movement Requests" styleClass="p-fluid p-w-600" [modal]="true" [(visible)]="isShowCreateDialog"
   (onHide)="hideCreateDialog()">
   <ng-template pTemplate="content">
-    <form [formGroup]="movementRequestForm">
+    <div class="card">
+      <p-steps [model]="stepItems" [activeIndex]="activeIndex"></p-steps>
+    </div>
+
+    <!-- Step 1 -->
+    <ng-container *ngIf="activeIndex === 0">
+      <p-card>
+        <ng-template pTemplate="title">
+          Movement Request
+        </ng-template>
+        <ng-template pTemplate="content">
+          <div class="p-fluid">
+            <form [formGroup]="movementRequestForm">
+              <div class="form-group">
+                <label for="workOrders" class="control-label">Work Orders</label><span class="p-invalid">*</span>
+                <p-multiSelect [options]="workOrderList" formControlName="workOrders" defaultLabel="Select Work Orders"
+                  optionLabel="name" appendTo="body"></p-multiSelect>
+                <ng-container *ngIf="workOrders.invalid && (workOrders.dirty || workOrders.touched)">
+                  <small id="email-error" class="p-invalid create-user-form__error">Work Order is required.</small>
+                </ng-container>
+              </div>
+              <div class="form-group">
+                <label for="name" class="control-label">Name</label><span class="p-invalid">*</span>
+                <input id="name" formControlName="name" type="text" class="form-control" />
+                <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
+                  <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
+                </ng-container>
+              </div>
+              <div class="form-group">
+                <label for="note" class="control-label">Note</label>
+                <input id="note" formControlName="note" type="text" class="form-control" />
+              </div>
+            </form>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-end">
+            <p-button label="Next" [disabled]="movementRequestForm.invalid" (onClick)="nextPage()"
+              icon="pi pi-angle-right" iconPos="right"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+
+    <!-- Step 2 -->
+    <ng-container *ngIf="activeIndex === 1">
+      <p-card>
+        <ng-template pTemplate="title">
+          Work Orders
+        </ng-template>
+        <ng-template pTemplate="content">
+          <div class="p-fluid">
+            step 2
+          </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+            <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"
+              styleClass="p-button-success"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+
+    <!-- Step 3 -->
+    <ng-container *ngIf="activeIndex === 2">
+      <p-card>
+        <ng-template pTemplate="title">
+          Confirmation
+        </ng-template>
+        <ng-template pTemplate="content">
+          <div class="p-fluid">
+            <div class="p-field p-col-12">
+              <label for="name"><b>Name</b></label>
+              <p>{{ movementRequestForm.value.name }}</p>
+            </div>
+            <div class="p-field p-col-12">
+              <label for="note"><b>Note</b></label>
+              <p>{{ movementRequestForm.value.note }}</p>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-success" label="Complete"
+              [disabled]="movementRequestForm.invalid"
+              (onClick)="onCreate()"
+              icon="pi pi-angle-right" iconPos="right"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+
+    <!-- <form [formGroup]="movementRequestForm">
       <div class="form-group">
         <label for="name" class="control-label">Name</label>
         <input id="name" formControlName="name" type="text" class="form-control" />
@@ -101,15 +185,15 @@
         <label for="note" class="control-label">Note</label>
         <input id="note" formControlName="note" type="text" class="form-control" />
       </div>
-    </form>
+    </form> -->
   </ng-template>
 
-  <ng-template pTemplate="footer">
+  <!-- <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
       (click)="hideCreateDialog()"></button>
     <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
       [disabled]="movementRequestForm.invalid" (click)="onCreate()"></button>
-  </ng-template>
+  </ng-template> -->
 </p-dialog>
 
 <!-- Edit Movement Request Dialog -->

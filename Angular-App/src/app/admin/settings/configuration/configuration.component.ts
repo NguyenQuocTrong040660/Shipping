@@ -12,12 +12,22 @@ export class ConfigurationComponent implements OnInit {
   currentSelectedConfiguration: Configuration[] = [];
   isDeleteMany: boolean;
   configurationForm: FormGroup;
+  cols: { header: string, field: string }[] = [];
 
   get key() {
     return this.configurationForm.get('key');
   }
 
   ngOnInit() {
+    this.cols = [
+      { header: 'Key', field: 'key' },
+      { header: 'Value', field: 'value' },
+      { header: 'Created', field: 'created' },
+      { header: 'Create By', field: 'createBy' },
+      { header: 'Last Modified', field: 'lastModified' },
+      { header: 'Last Modified By', field: 'lastModifiedBy' },
+    ];
+
     this.configurations = [
       {
         id: '1',

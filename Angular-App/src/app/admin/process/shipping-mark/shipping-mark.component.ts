@@ -14,12 +14,22 @@ export class ShippingMarkComponent implements OnInit {
   currentSelectedShippingMark: ShippingMark[] = [];
   isDeleteMany: boolean;
   shippingMarkForm: FormGroup;
+  cols: { header: string, field: string }[] = [];
 
   get name() {
     return this.shippingMarkForm.get('name');
   }
 
   ngOnInit() {
+    this.cols = [
+      { header: 'Name', field: 'name' },
+      { header: 'Note', field: 'note' },
+      { header: 'Created', field: 'created' },
+      { header: 'Create By', field: 'createBy' },
+      { header: 'Last Modified', field: 'lastModified' },
+      { header: 'Last Modified By', field: 'lastModifiedBy' },
+    ];
+
     this.shippingMarks = [
       {
         id: '1',

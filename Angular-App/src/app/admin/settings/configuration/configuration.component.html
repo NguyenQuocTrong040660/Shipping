@@ -4,6 +4,7 @@
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="20"
+    [columns]="cols"
     [value]="configurations"
     [rowHover]="true"
     [paginator]="true"
@@ -21,31 +22,20 @@
       </div>
     </ng-template>
 
-    <ng-template pTemplate="header">
+    <ng-template pTemplate="header" let-columns>
       <tr>
-        <th pSortableColumn="key">Key<p-sortIcon field="key"></p-sortIcon>
-        </th>
-        <th pSortableColumn="value">Value<p-sortIcon field="value"></p-sortIcon>
-        <th pSortableColumn="created">Created<p-sortIcon field="created"></p-sortIcon>
-        </th>
-        <th pSortableColumn="createBy">Create By<p-sortIcon field="createBy"></p-sortIcon>
-        </th>
-        <th pSortableColumn="lastModified">Last Modified<p-sortIcon field="nolastModifiedte"></p-sortIcon>
-        </th>
-        <th pSortableColumn="lastModifiedBy">Last Modified By<p-sortIcon field="lastModifiedBy"></p-sortIcon>
+        <th *ngFor="let col of columns" pSortableColumn="{{col.field}}">
+          {{col.header}}<p-sortIcon field="{{col.field}}"></p-sortIcon>
         </th>
         <th></th>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-configuration>
+    <ng-template pTemplate="body" let-configuration let-columns="columns">
       <tr>
-        <td>{{ configuration.key }}</td>
-        <td>{{ configuration.value }}</td>
-        <td>{{ configuration.created }}</td>
-        <td>{{ configuration.createBy }}</td>
-        <td>{{ configuration.lastModified }}</td>
-        <td>{{ configuration.lastModifiedBy }}</td>
+        <td *ngFor="let col of columns">
+          {{ configuration[col.field] }}
+        </td>
         <td>
           <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil"
             (click)="openEditDialog(configuration)"></button>
