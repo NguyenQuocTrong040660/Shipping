@@ -4,7 +4,7 @@ import { MenuItem } from 'primeng/api';
 
 @Component({
   templateUrl: './movement-request.component.html',
-  styleUrls: ['./movement-request.component.scss']
+  styleUrls: ['./movement-request.component.scss'],
 })
 export class MovementRequestComponent implements OnInit {
   movementRequests: MovementRequest[] = [];
@@ -19,7 +19,7 @@ export class MovementRequestComponent implements OnInit {
   activeIndex = 0;
   workOrderList: WorkOrder[] = [];
   workOrderItems: WorkOrderItems[] = [];
-  cols: { header: string, field: string }[] = [];
+  cols: { header: string; field: string }[] = [];
 
   get name() {
     return this.movementRequestForm.get('name');
@@ -47,7 +47,7 @@ export class MovementRequestComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.A',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1'
+        lastModifiedBy: 'Mr.A 1',
       },
       {
         id: '2',
@@ -56,7 +56,7 @@ export class MovementRequestComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.B',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.B 1'
+        lastModifiedBy: 'Mr.B 1',
       },
       {
         id: '3',
@@ -65,7 +65,7 @@ export class MovementRequestComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.C',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.C 1'
+        lastModifiedBy: 'Mr.C 1',
       },
       {
         id: '4',
@@ -74,7 +74,7 @@ export class MovementRequestComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.D',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.D 1'
+        lastModifiedBy: 'Mr.D 1',
       },
       {
         id: '5',
@@ -83,7 +83,7 @@ export class MovementRequestComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.E',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.E 1'
+        lastModifiedBy: 'Mr.E 1',
       },
       {
         id: '6',
@@ -92,80 +92,76 @@ export class MovementRequestComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.F',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.F 1'
-      }
+        lastModifiedBy: 'Mr.F 1',
+      },
     ];
 
     this.workOrderList = [
       {
         id: '1',
-        name: 'Work Order 1'
+        name: 'Work Order 1',
       },
       {
         id: '2',
-        name: 'Work Order 2'
+        name: 'Work Order 2',
       },
       {
         id: '3',
-        name: 'Work Order 3'
+        name: 'Work Order 3',
       },
       {
         id: '4',
-        name: 'Work Order 4'
+        name: 'Work Order 4',
       },
       {
         id: '5',
-        name: 'Work Order 5'
+        name: 'Work Order 5',
       },
       {
         id: '6',
-        name: 'Work Order 6'
-      }
+        name: 'Work Order 6',
+      },
     ];
 
     this.workOrderItems = [
       {
         id: '1',
         name: 'Work Order Item 1',
-        workOrderId: '1'
+        workOrderId: '1',
       },
       {
         id: '2',
         name: 'Work Order Item 1.1',
-        workOrderId: '1'
+        workOrderId: '1',
       },
       {
         id: '3',
         name: 'Work Order Item 1.2',
-        workOrderId: '1'
+        workOrderId: '1',
       },
       {
         id: '4',
         name: 'Work Order Item 2',
-        workOrderId: '2'
+        workOrderId: '2',
       },
       {
         id: '3',
         name: 'Work Order Item 3',
-        workOrderId: '3'
+        workOrderId: '3',
       },
       {
         id: '3',
         name: 'Work Order Item 3.1',
-        workOrderId: '3'
-      }
+        workOrderId: '3',
+      },
     ];
 
-    this.stepItems = [
-      { label: 'Work Order' },
-      { label: 'Move Quantity' },
-      { label: 'Confirm' }
-    ];
+    this.stepItems = [{ label: 'Work Order' }, { label: 'Move Quantity' }, { label: 'Confirm' }];
 
     this.movementRequestForm = new FormGroup({
       name: new FormControl('', Validators.required),
       note: new FormControl(''),
-      workOrders: new FormControl([], Validators.required)
+      workOrders: new FormControl([], Validators.required),
     });
   }
 

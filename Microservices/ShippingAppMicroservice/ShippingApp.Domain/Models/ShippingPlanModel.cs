@@ -7,7 +7,7 @@ namespace ShippingApp.Domain.Models
 {
     public class ShippingPlanModel
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string ProductNumber { get; set; }
         public string ProductName { get; set; }
         public int SemlineNumber { get; set; }

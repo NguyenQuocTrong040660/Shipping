@@ -7,11 +7,7 @@ import { configurationRoutes } from './configuration.routes';
 
 @NgModule({
   declarations: [ConfigurationComponent],
-  imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule.forChild(configurationRoutes)
-  ],
+  imports: [CommonModule, SharedModule, RouterModule.forChild(configurationRoutes)],
   exports: [],
 })
-export class ConfigurationModule { }
+export class ConfigurationModule {}

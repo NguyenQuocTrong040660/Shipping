@@ -5,19 +5,29 @@ using System;
 using System.Threading.Tasks;
 using System.Threading;
 using ShippingApp.Domain.Entities;
+using System.Reflection;
 
 namespace ShippingApp.Persistence.DBContext
 {
     public class ShippingAppDbContext : DbContext, IShippingAppDbContext  
     {
-        public ShippingAppDbContext(DbContextOptions<ShippingAppDbContext> options): base(options)
+        private readonly ICurrentUserService _currentUserService;
+
+        public ShippingAppDbContext(DbContextOptions<ShippingAppDbContext> options, ICurrentUserService currentUserServic) : base(options)
         {
+            _currentUserService = currentUserServic ?? throw new ArgumentNullException(nameof(currentUserServic));
         }
 
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ShippingPlan> ShippingPlans { get; set; }
+        public DbSet<MovementRequest> MovementRequests { get; set; }
+        public DbSet<WorkOrder> WorkOrders { get; set; }
+        public DbSet<Config> Configs { get; set; }
+        public DbSet<ReceivedMark> ReceivedMarks { get; set; }
+        public DbSet<ShippingMark> ShippingMarks { get; set; }
+        public DbSet<ShippingRequest> ShippingRequests { get; set; }
 
         public DbSet<TEntity> SetEntity<TEntity>() where TEntity : class
         {
@@ -26,18 +36,7 @@ namespace ShippingApp.Persistence.DBContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ProductType>()
-                .HasKey(c => new { c.Id });
-
-            modelBuilder.Entity<Country>()
-                .HasKey(c => new { c.CountryCode });
-
-            modelBuilder.Entity<Product>()
-               .HasKey(c => new { c.Id });
-
-            modelBuilder.Entity<ShippingPlan>()
-               .HasKey(c => new { c.Id });
-
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
         }
 
@@ -49,9 +48,11 @@ namespace ShippingApp.Persistence.DBContext
                 {
                     case EntityState.Added:
                         entry.Entity.Created = DateTime.Now;
+                        entry.Entity.CreatedBy = _currentUserService.UserName;
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModified = DateTime.Now;
+                        entry.Entity.LastModifiedBy = _currentUserService.UserName;
                         break;
                 }
             }
@@ -67,9 +68,11 @@ namespace ShippingApp.Persistence.DBContext
                 {
                     case EntityState.Added:
                         entry.Entity.Created = DateTime.Now;
+                        entry.Entity.CreatedBy = _currentUserService.UserName;
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModified = DateTime.Now;
+                        entry.Entity.LastModifiedBy = _currentUserService.UserName;
                         break;
                 }
             }

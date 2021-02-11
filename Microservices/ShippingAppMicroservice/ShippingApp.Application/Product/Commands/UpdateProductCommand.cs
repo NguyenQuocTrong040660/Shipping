@@ -12,7 +12,7 @@ namespace ShippingApp.Application.Product.Commands
 {
     public class UpdateProductCommand : IRequest<Result>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public ProductModel Product { get; set; }
     }
 

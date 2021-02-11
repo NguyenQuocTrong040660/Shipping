@@ -23,13 +23,7 @@ export class RegisterComponent implements OnInit {
     return this.registerForm.get('confirmPassword');
   }
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private userClient: UserClient,
-    private messageService: MessageService
-  ) {}
+  constructor(private fb: FormBuilder, private router: Router, private route: ActivatedRoute, private userClient: UserClient, private messageService: MessageService) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => (this.return = params['returnUrl']));

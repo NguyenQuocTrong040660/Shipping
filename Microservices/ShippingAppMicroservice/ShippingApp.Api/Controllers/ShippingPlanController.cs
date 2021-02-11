@@ -21,7 +21,7 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ShippingPlanModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<bool>> AddShippingPlanAsync([FromBody] ShippingPlanModel shippingPlan)
@@ -46,9 +46,9 @@ namespace ShippingApp.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ShippingPlanModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<ShippingPlanModel>> GetShippingPlanByIdAsync(Guid id)
+        public async Task<ActionResult<ShippingPlanModel>> GetShippingPlanByIdAsync(int id)
         {
-            var result = await Mediator.Send(new GetShippingPlanByIDQuery() { Id = id });
+            var result = await Mediator.Send(new GetShippingPlanByIDQuery { Id = id });
             return Ok(result);
         }
 
@@ -56,24 +56,24 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ShippingPlanModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> UpdateShippingPlanAsync(Guid id, [FromBody] ShippingPlanModel shippingPlan)
+        public async Task<ActionResult<Result>> UpdateShippingPlanAsync(int id, [FromBody] ShippingPlanModel shippingPlan)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(shippingPlan);
             }
 
-            var result = await Mediator.Send(new UpdateShippingPlanCommand() { Id = id, ShippingPlan = shippingPlan });
+            var result = await Mediator.Send(new UpdateShippingPlanCommand { Id = id, ShippingPlan = shippingPlan });
             return Ok(result);
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<int>> DeletedShippingPlanAsync(Guid id)
+        public async Task<ActionResult<int>> DeletedShippingPlanAsync(int id)
         {
-            var result = await Mediator.Send(new DeleteShippingPlanCommand() { Id = id });
-            return Ok(true);
+            var result = await Mediator.Send(new DeleteShippingPlanCommand { Id = id });
+            return Ok(result);
         }
     }
 }

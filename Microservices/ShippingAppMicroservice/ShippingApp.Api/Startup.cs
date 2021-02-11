@@ -1,21 +1,19 @@
-using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using Serilog;
 using ShippingApp.Api.Filters;
 using ShippingApp.Application;
+using ShippingApp.Application.Interfaces;
 using ShippingApp.Infrastructure;
+using ShippingApp.Infrastructure.Services;
 using ShippingApp.Migration;
 using ShippingApp.Persistence;
 using System;
@@ -46,6 +44,8 @@ namespace ShippingApp.Api
 
             //Should be disabled in PROD
             services.AddMigrationServices();
+
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
             services.AddHealthChecks();
             services.AddOpenApiDocument(configure =>

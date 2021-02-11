@@ -7,11 +7,7 @@ import { receivedMarkRoutes } from './received-mark.routes';
 
 @NgModule({
   declarations: [ReceivedMarkComponent],
-  imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule.forChild(receivedMarkRoutes)
-  ],
+  imports: [CommonModule, SharedModule, RouterModule.forChild(receivedMarkRoutes)],
   exports: [],
 })
-export class ReceivedMarkModule { }
+export class ReceivedMarkModule {}

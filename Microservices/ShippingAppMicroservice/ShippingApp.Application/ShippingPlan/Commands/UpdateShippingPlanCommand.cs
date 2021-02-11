@@ -12,7 +12,7 @@ namespace ShippingApp.Application.ShippingPlan.Commands
 {
     public class UpdateShippingPlanCommand : IRequest<Result>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public ShippingPlanModel ShippingPlan { get; set; }
     }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ProductType, Country, ShippingAppClients, Product } from 'app/shared/api-clients/shipping-app.client';
+import { CountryClients, CountryModel, ProductClients, ProductModel } from 'app/shared/api-clients/shipping-app.client';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -13,9 +13,8 @@ export class ProductComponent implements OnInit {
   editMode = false;
   submitted = false;
   form: FormGroup;
-  products: Product[] = [];
-  productType: ProductType[] = [];
-  country: Country[] = [];
+  products: ProductModel[] = [];
+  country: CountryModel[] = [];
 
   titleDialog: string;
   dialog = false;
@@ -42,12 +41,12 @@ export class ProductComponent implements OnInit {
     private fb: FormBuilder,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private shippingClient: ShippingAppClients
+    private productClients: ProductClients,
+    private countryClients: CountryClients
   ) {}
 
   ngOnInit() {
-    this.getProductType();
-    this.getCountry();
+    //this.getCountry();
     this.initForm();
   }
 
@@ -61,22 +60,15 @@ export class ProductComponent implements OnInit {
     });
   }
 
-  getProductType() {
-    this.shippingClient
-      .apiShippingappProducttypeGetallproducttype(0)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((data) => (this.productType = data));
-  }
-
   getCountry() {
-    this.shippingClient
-      .apiShippingappCountryGetallcountry()
+    this.countryClients
+      .getCoutries()
       .pipe(takeUntil(this.destroyed$))
       .subscribe((data) => (this.country = data));
   }
 
   reloadData() {
-    this.shippingClient.apiShippingappProductGetallproducts().subscribe((data) => (this.products = data));
+    this.productClients.getProducts().subscribe((data) => (this.products = data));
   }
 
   openNew() {
@@ -101,10 +93,10 @@ export class ProductComponent implements OnInit {
   }
 
   getProductById(productId) {
-    this.shippingClient
-      .apiShippingappProductGetproductsbyid(productId)
+    this.productClients
+      .getProductById(productId)
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((result: Product) => {
+      .subscribe((result: ProductModel) => {
         if (result) {
           const { id, productName } = result;
 
@@ -118,15 +110,13 @@ export class ProductComponent implements OnInit {
       });
   }
 
-  deleteProduct(product: Product) {
+  deleteProduct(product: ProductModel) {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete ' + product.productName + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.shippingClient
-          .apiShippingappProductDeletedproduct(product.id)
-          .subscribe((_) => this.showMessage('success', 'Successful', 'Xóa Sản Phẩm Thành Công!!!'));
+        this.productClients.deleteProductAysnc(product.id).subscribe((_) => this.showMessage('success', 'Successful', 'Xóa Sản Phẩm Thành Công!!!'));
         this.reloadData();
       },
     });
@@ -147,8 +137,8 @@ export class ProductComponent implements OnInit {
   }
 
   handleAddProduct() {
-    this.shippingClient
-      .apiShippingappProductAddproducts(this.form.value)
+    this.productClients
+      .addProducts(this.form.value)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (result) => {
@@ -165,8 +155,8 @@ export class ProductComponent implements OnInit {
   }
 
   handleUpdateProduct() {
-    this.shippingClient
-      .apiShippingappProductUpdateproduct(this.form.value)
+    this.productClients
+      .updateProduct(this.form.value.id, this.form.value)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (result) => {

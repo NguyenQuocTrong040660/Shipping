@@ -8,9 +8,9 @@ namespace ShippingApp.Application.Interfaces
     public interface IShippingAppRepository<T> where T : class
     {
         Task<Result> AddAsync(T entity);
-        Task<Result> DeleteAsync(Guid id);
-        Task<T> GetAsync(Guid id);
+        Task<Result> DeleteAsync(int id);
+        Task<T> GetAsync(int id);
         Task<List<T>> GetAllAsync();
-        Task<Result> Update(Guid id, T model);
+        Task<Result> Update(int id, T model);
     }
 }

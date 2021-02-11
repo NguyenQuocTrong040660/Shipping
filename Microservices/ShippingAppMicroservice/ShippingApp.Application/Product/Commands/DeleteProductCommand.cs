@@ -10,7 +10,7 @@ namespace ShippingApp.Application.Product.Commands
 {
     public class DeleteProductCommand : IRequest<Result>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Result>

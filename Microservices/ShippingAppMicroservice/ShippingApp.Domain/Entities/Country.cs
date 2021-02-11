@@ -1,5 +1,5 @@
 ﻿using ShippingApp.Domain.CommonEntities;
-using System;
+
 namespace ShippingApp.Domain.Entities
 {
     public class Country : AuditableEntity

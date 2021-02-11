@@ -14,12 +14,12 @@ namespace ShippingApp.Application.Product.Queries
     {
     }
 
-    public class GetProductQueryHandler : IRequestHandler<GetAllProductQuery, List<ProductModel>>
+    public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQuery, List<ProductModel>>
     {
         private readonly IMapper _mapper;
         private readonly IShippingAppRepository<Entities.Product> _shippingAppRepository;
 
-        public GetProductQueryHandler(IMapper mapper, IShippingAppRepository<Entities.Product> shippingAppRepository)
+        public GetAllProductQueryHandler(IMapper mapper, IShippingAppRepository<Entities.Product> shippingAppRepository)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));

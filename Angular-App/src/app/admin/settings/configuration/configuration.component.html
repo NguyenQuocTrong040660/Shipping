@@ -10,23 +10,21 @@
     [paginator]="true"
     [showCurrentPageReport]="true"
     [globalFilterFields]="['key', 'value', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
-    [(selection)]="selectedConfigurations">
+    [(selection)]="selectedConfigurations"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">Configuration</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="configurationDataTable.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search..." />
+          <input pInputText type="text" (input)="configurationDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
     </ng-template>
 
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" pSortableColumn="{{col.field}}">
-          {{col.header}}<p-sortIcon field="{{col.field}}"></p-sortIcon>
-        </th>
+        <th *ngFor="let col of columns" pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
         <th></th>
       </tr>
     </ng-template>
@@ -37,22 +35,19 @@
           {{ configuration[col.field] }}
         </td>
         <td>
-          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil"
-            (click)="openEditDialog(configuration)"></button>
+          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(configuration)"></button>
         </td>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="summary">
-      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ configurations ? configurations.length :
-        0 }} configurations.</div>
+      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ configurations ? configurations.length : 0 }} configurations.</div>
     </ng-template>
   </p-table>
 </div>
 
 <!-- Edit Configuration Dialog -->
-<p-dialog header="Edit Configuration" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
-  (onHide)="hideEditDialog()">
+<p-dialog header="Edit Configuration" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="configurationForm">
       <div class="form-group">
@@ -71,7 +66,6 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-      [disabled]="configurationForm.invalid" (click)="onEdit()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="configurationForm.invalid" (click)="onEdit()"></button>
   </ng-template>
 </p-dialog>

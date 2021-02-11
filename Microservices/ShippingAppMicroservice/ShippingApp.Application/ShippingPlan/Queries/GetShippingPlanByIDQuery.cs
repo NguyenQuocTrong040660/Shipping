@@ -11,7 +11,7 @@ namespace ShippingApp.Application.ShippingPlan.Queries
 {
     public class GetShippingPlanByIDQuery : IRequest<ShippingPlanModel>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
     }
 
     public class GetShippingPlanByIDQueryHandler : IRequestHandler<GetShippingPlanByIDQuery, ShippingPlanModel>

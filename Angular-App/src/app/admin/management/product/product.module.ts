@@ -7,11 +7,7 @@ import { RouterModule } from '@angular/router';
 import { productRoutes } from './product.routes';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule.forChild(productRoutes)
-  ],
+  imports: [CommonModule, SharedModule, RouterModule.forChild(productRoutes)],
   declarations: [ProductComponent],
   exports: [],
 })

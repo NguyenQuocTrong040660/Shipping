@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   templateUrl: './configuration.component.html',
-  styleUrls: ['./configuration.component.scss']
+  styleUrls: ['./configuration.component.scss'],
 })
 export class ConfigurationComponent implements OnInit {
   configurations: Configuration[] = [];
@@ -12,7 +12,7 @@ export class ConfigurationComponent implements OnInit {
   currentSelectedConfiguration: Configuration[] = [];
   isDeleteMany: boolean;
   configurationForm: FormGroup;
-  cols: { header: string, field: string }[] = [];
+  cols: { header: string; field: string }[] = [];
 
   get key() {
     return this.configurationForm.get('key');
@@ -36,7 +36,7 @@ export class ConfigurationComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.A',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1'
+        lastModifiedBy: 'Mr.A 1',
       },
       {
         id: '2',
@@ -45,7 +45,7 @@ export class ConfigurationComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.A',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1'
+        lastModifiedBy: 'Mr.A 1',
       },
       {
         id: '3',
@@ -54,8 +54,8 @@ export class ConfigurationComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.A',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1'
-      }
+        lastModifiedBy: 'Mr.A 1',
+      },
     ];
 
     this.configurationForm = new FormGroup({

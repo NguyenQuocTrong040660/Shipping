@@ -7,11 +7,7 @@ import { shippingMarkRoutes } from './shipping-mark.routes';
 
 @NgModule({
   declarations: [ShippingMarkComponent],
-  imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule.forChild(shippingMarkRoutes)
-  ],
+  imports: [CommonModule, SharedModule, RouterModule.forChild(shippingMarkRoutes)],
   exports: [],
 })
-export class ShippingMarkModule { }
+export class ShippingMarkModule {}

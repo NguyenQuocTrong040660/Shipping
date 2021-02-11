@@ -32,57 +32,46 @@ namespace ShippingApp.Migration
                 {
                     new ProductType()
                     {
-                        Id = Guid.NewGuid(),
                         ProductTypeName = "Dao - Chip - Mũi Khoan"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Thiệt Bị Đo WENZEL"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Thiệt Bị Giám Sát Lực Kistler"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Thiệt Bị Khí Nén CKD"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Thiệt Bị Đo OHM"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Fanuc"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Hệ Thống Đồ Gá System 3R"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Lò Tôi Nabertherm"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Máy Hàn Khuôn"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Máy Rửa Khuôn"
                     },
                     new ProductType()
                     {
-                        Id =  Guid.NewGuid(),
                         ProductTypeName = "Thiệt Bị Đo Renishaw"
                     }
                 };

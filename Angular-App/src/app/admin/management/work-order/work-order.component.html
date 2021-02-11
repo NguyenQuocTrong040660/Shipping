@@ -1,8 +1,7 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Work Orders"
-        (click)="openCreateDialog()"></button>
+      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Work Orders" (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
@@ -10,7 +9,8 @@
         icon="pi pi-trash"
         [disabled]="!selectedWorkOrders || !selectedWorkOrders.length"
         label="Delete Work Orders"
-        (click)="openDeleteDialog()"></button>
+        (click)="openDeleteDialog()"
+      ></button>
     </ng-template>
   </p-toolbar>
 
@@ -24,14 +24,14 @@
     [paginator]="true"
     [showCurrentPageReport]="true"
     [globalFilterFields]="['name', 'note', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
-    [(selection)]="selectedWorkOrders">
+    [(selection)]="selectedWorkOrders"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">Work Order</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search..." />
+          <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -41,18 +41,12 @@
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon>
-        </th>
-        <th pSortableColumn="note">Note<p-sortIcon field="note"></p-sortIcon>
-        </th>
-        <th pSortableColumn="created">Created<p-sortIcon field="created"></p-sortIcon>
-        </th>
-        <th pSortableColumn="createBy">Create By<p-sortIcon field="createBy"></p-sortIcon>
-        </th>
-        <th pSortableColumn="lastModified">Last Modified<p-sortIcon field="nolastModifiedte"></p-sortIcon>
-        </th>
-        <th pSortableColumn="lastModifiedBy">Last Modified By<p-sortIcon field="lastModifiedBy"></p-sortIcon>
-        </th>
+        <th pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>
+        <th pSortableColumn="note">Note<p-sortIcon field="note"></p-sortIcon></th>
+        <th pSortableColumn="created">Created<p-sortIcon field="created"></p-sortIcon></th>
+        <th pSortableColumn="createBy">Create By<p-sortIcon field="createBy"></p-sortIcon></th>
+        <th pSortableColumn="lastModified">Last Modified<p-sortIcon field="nolastModifiedte"></p-sortIcon></th>
+        <th pSortableColumn="lastModifiedBy">Last Modified By<p-sortIcon field="lastModifiedBy"></p-sortIcon></th>
         <th></th>
       </tr>
     </ng-template>
@@ -69,24 +63,20 @@
         <td>{{ workOrder.lastModified }}</td>
         <td>{{ workOrder.lastModifiedBy }}</td>
         <td>
-          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil"
-            (click)="openEditDialog(workOrder)"></button>
-          <button class="p-button-rounded p-button-danger" pButton pRipple icon="pi pi-trash"
-            (click)="openDeleteDialog(workOrder)"></button>
+          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(workOrder)"></button>
+          <button class="p-button-rounded p-button-danger" pButton pRipple icon="pi pi-trash" (click)="openDeleteDialog(workOrder)"></button>
         </td>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="summary">
-      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ workOrders ? workOrders.length : 0 }}
-        users.</div>
+      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ workOrders ? workOrders.length : 0 }} users.</div>
     </ng-template>
   </p-table>
 </div>
 
 <!-- Create Work Orders Dialog -->
-<p-dialog header="Create Work Orders" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowCreateDialog"
-  (onHide)="hideCreateDialog()">
+<p-dialog header="Create Work Orders" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowCreateDialog" (onHide)="hideCreateDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="workOrderForm">
       <div class="form-group">
@@ -104,16 +94,13 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-      (click)="hideCreateDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="workOrderForm.invalid"
-      (click)="onCreate()"></button>
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideCreateDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="workOrderForm.invalid" (click)="onCreate()"></button>
   </ng-template>
 </p-dialog>
 
 <!-- Edit Work Order Dialog -->
-<p-dialog header="Edit Work Order" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
-  (onHide)="hideEditDialog()">
+<p-dialog header="Edit Work Order" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="workOrderForm">
       <div class="form-group">
@@ -132,14 +119,12 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="workOrderForm.invalid"
-      (click)="onEdit()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="workOrderForm.invalid" (click)="onEdit()"></button>
   </ng-template>
 </p-dialog>
 
 <!-- Delete Work Order Dialog -->
-<p-dialog header="Delete Work Orders" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog"
-  (onHide)="hideDeleteDialog()">
+<p-dialog header="Delete Work Orders" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
   <ng-template pTemplate="content">
     <ng-container *ngIf="currentSelectedWorkOrder && currentSelectedWorkOrder.length; else deleteMany">
       <div>Are you sure you want to delete {{ currentSelectedWorkOrder[0].name }} ?</div>
@@ -151,8 +136,7 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-      (click)="hideDeleteDialog()"></button>
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDeleteDialog()"></button>
     <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onDelete()"></button>
   </ng-template>
 </p-dialog>

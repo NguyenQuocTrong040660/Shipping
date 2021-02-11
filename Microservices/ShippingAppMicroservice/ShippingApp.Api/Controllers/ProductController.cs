@@ -47,7 +47,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(typeof(ProductModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProductModel), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<ProductModel>> GetProductByIdAsync(Guid id)
+        public async Task<ActionResult<ProductModel>> GetProductByIdAsync(int id)
         {
             var result = await Mediator.Send(new GetProductByIdQuery { Id = id });
             return Ok(result);
@@ -58,7 +58,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProductModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<int>> UpdateProductAsync(Guid id, [FromBody] ProductModel productDTO)
+        public async Task<ActionResult<int>> UpdateProductAsync(int id, [FromBody] ProductModel productDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<int>> DeleteProductAysnc(Guid id)
+        public async Task<ActionResult<int>> DeleteProductAysnc(int id)
         {
             var result = await Mediator.Send(new DeleteProductCommand { Id = id });
             return Ok(result);

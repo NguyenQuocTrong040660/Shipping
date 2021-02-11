@@ -11,7 +11,7 @@ namespace ShippingApp.Application.ShippingPlan.Commands
 {
     public class DeleteShippingPlanCommand : IRequest<Result>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteShippingPlanCommandHandler : IRequestHandler<DeleteShippingPlanCommand, Result>

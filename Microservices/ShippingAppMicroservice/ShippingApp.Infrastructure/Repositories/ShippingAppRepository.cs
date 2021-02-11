@@ -1,5 +1,4 @@
 ﻿using ShippingApp.Application.Interfaces;
-using Models = ShippingApp.Domain.Models;
 using System;
 using System.Collections.Generic;
 using AutoMapper;
@@ -30,7 +29,7 @@ namespace ShippingApp.Infrastructure.Repositories
                 : Result.Failure($"Failed to add {typeof(T).Name} entity to database");
         }
 
-        public async Task<Result> DeleteAsync(Guid id)
+        public async Task<Result> DeleteAsync(int id)
         {
             var entity = await _dbset.FindAsync(id);
 
@@ -45,7 +44,7 @@ namespace ShippingApp.Infrastructure.Repositories
                 : Result.Failure($"Failed to delete {typeof(T).Name} entity");
         }
 
-        public async Task<T> GetAsync(Guid id)
+        public async Task<T> GetAsync(int id)
         {
             return await _dbset.FindAsync(id);
         }
@@ -55,7 +54,7 @@ namespace ShippingApp.Infrastructure.Repositories
             return await _dbset.AsNoTracking().ToListAsync();
         }
 
-        public async Task<Result> Update(Guid id, T model)
+        public async Task<Result> Update(int id, T model)
         {
             var entity = await _dbset.FindAsync(id);
             

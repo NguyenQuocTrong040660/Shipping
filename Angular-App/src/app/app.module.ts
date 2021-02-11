@@ -9,9 +9,7 @@ import { CommonModule } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthenticationService } from './shared/services/authentication.service';
-import { API_BASE_URL, FilesClient } from './shared/api-clients/files.client';
-import { UserClient } from './shared/api-clients/user.client';
-import { ShippingAppClients } from './shared/api-clients/shipping-app.client';
+import { API_BASE_URL } from './shared/api-clients/files.client';
 import { environment } from 'environments/environment';
 import { HttpConfigInterceptor } from './shared/interceptors/http-config.interceptor';
 import { LoadingService } from './shared/services/loading.service';
@@ -21,6 +19,7 @@ import { NotificationService } from './shared/services/notification.service';
 import { appInitializer } from 'app-initializer';
 import { UnAuthorizedInterceptor } from './shared/interceptors/unauthorize.interceptor';
 import { AuthorizeInterceptor } from './shared/interceptors/authorize.interceptor';
+import { ApiClientModule } from './shared/api-clients/api-client.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +31,7 @@ import { AuthorizeInterceptor } from './shared/interceptors/authorize.intercepto
     ProgressBarModule,
     SharedModule,
     QuicklinkModule,
+    ApiClientModule,
     RouterModule.forRoot(appRoutes, { preloadingStrategy: QuicklinkStrategy }),
   ],
   providers: [
@@ -40,9 +40,6 @@ import { AuthorizeInterceptor } from './shared/interceptors/authorize.intercepto
     NotificationService,
     ConfirmationService,
     AuthenticationService,
-    FilesClient,
-    UserClient,
-    ShippingAppClients,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,

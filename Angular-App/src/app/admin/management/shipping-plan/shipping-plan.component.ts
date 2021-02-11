@@ -14,7 +14,7 @@ export class ShippingPlanComponent implements OnInit {
   currentSelectedShippingPlan: ShippingPlan[] = [];
   isDeleteMany: boolean;
   shippingPlanForm: FormGroup;
-  cols: { header: string, field: string }[] = [];
+  cols: { header: string; field: string }[] = [];
 
   get name() {
     return this.shippingPlanForm.get('name');
@@ -38,7 +38,7 @@ export class ShippingPlanComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.A',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1'
+        lastModifiedBy: 'Mr.A 1',
       },
       {
         id: '2',
@@ -47,7 +47,7 @@ export class ShippingPlanComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.B',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.B 1'
+        lastModifiedBy: 'Mr.B 1',
       },
       {
         id: '3',
@@ -56,7 +56,7 @@ export class ShippingPlanComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.C',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.C 1'
+        lastModifiedBy: 'Mr.C 1',
       },
       {
         id: '4',
@@ -65,7 +65,7 @@ export class ShippingPlanComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.D',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.D 1'
+        lastModifiedBy: 'Mr.D 1',
       },
       {
         id: '5',
@@ -74,7 +74,7 @@ export class ShippingPlanComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.E',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.E 1'
+        lastModifiedBy: 'Mr.E 1',
       },
       {
         id: '6',
@@ -83,7 +83,7 @@ export class ShippingPlanComponent implements OnInit {
         created: new Date(),
         createBy: 'Mr.F',
         lastModified: new Date(),
-        lastModifiedBy: 'Mr.F 1'
+        lastModifiedBy: 'Mr.F 1',
       },
     ];
 

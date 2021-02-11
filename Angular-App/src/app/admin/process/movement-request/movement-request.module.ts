@@ -7,11 +7,7 @@ import { movementRequestRoutes } from './movement-request.routes';
 
 @NgModule({
   declarations: [MovementRequestComponent],
-  imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule.forChild(movementRequestRoutes)
-  ],
+  imports: [CommonModule, SharedModule, RouterModule.forChild(movementRequestRoutes)],
   exports: [],
 })
-export class MovementRequestModule { }
+export class MovementRequestModule {}

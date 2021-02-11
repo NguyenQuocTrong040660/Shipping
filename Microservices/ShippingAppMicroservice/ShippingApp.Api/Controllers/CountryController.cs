@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ShippingApp.Application.Common.Results;
 using ShippingApp.Application.Country.Commands;
 using ShippingApp.Application.Country.Queries;
 using ShippingApp.Domain.Models;
@@ -16,7 +17,7 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<CountryModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<CountryModel>>> GetCoutriesAsync()
         {
@@ -24,11 +25,11 @@ namespace ShippingApp.Api.Controllers
         }
         
         [HttpPost]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(CountryModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<int>> AddCountryAsync([FromBody] CountryModel model)
+        public async Task<ActionResult<Result>> AddCountryAsync([FromBody] CountryModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -40,11 +41,11 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpPut("{countryCode}")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(CountryModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<int>> UpdateCountryAsync(string countryCode, CountryModel entity)
+        public async Task<ActionResult<Result>> UpdateCountryAsync(string countryCode, CountryModel entity)
         {
             if (!ModelState.IsValid)
             {

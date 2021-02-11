@@ -7,11 +7,7 @@ import { shippingRequestRoutes } from './shipping-request.routes';
 
 @NgModule({
   declarations: [ShippingRequestComponent],
-  imports: [
-    CommonModule,
-    SharedModule,
-    RouterModule.forChild(shippingRequestRoutes)
-  ],
+  imports: [CommonModule, SharedModule, RouterModule.forChild(shippingRequestRoutes)],
   exports: [],
 })
-export class ShippingRequestModule { }
+export class ShippingRequestModule {}

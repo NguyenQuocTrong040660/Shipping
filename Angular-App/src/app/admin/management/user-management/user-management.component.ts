@@ -22,7 +22,7 @@ export class UserManagementComponent implements OnInit {
   createUserForm: FormGroup;
   setNewPasswordForm: FormGroup;
 
-  cols: { header: string, field: string }[] = [];
+  cols: { header: string; field: string }[] = [];
 
   get userForms() {
     return this.createUserForm.get('userForms') as FormArray;
@@ -32,7 +32,7 @@ export class UserManagementComponent implements OnInit {
     return this.setNewPasswordForm.get('newPasswordForms') as FormArray;
   }
 
-  constructor(private userClient: UserClient, private notificationService: NotificationService) { }
+  constructor(private userClient: UserClient, private notificationService: NotificationService) {}
 
   ngOnInit() {
     this.cols = [

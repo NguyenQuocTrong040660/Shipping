@@ -10,4 +10,4 @@ import { workOrderRoutes } from './work-order.routes';
   imports: [CommonModule, SharedModule, RouterModule.forChild(workOrderRoutes)],
   exports: [],
 })
-export class WorkOrderModule { }
+export class WorkOrderModule {}
