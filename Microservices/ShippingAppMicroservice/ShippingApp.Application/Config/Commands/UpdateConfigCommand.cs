@@ -12,25 +12,33 @@ namespace ShippingApp.Application.Config.Commands
 {
     public class UpdateConfigCommand : IRequest<Result>
     {
-        public int Id { get; set; }
+        public string Key { get; set; }
         public ConfigModel Config { get; set; }
     }
 
     public class UpdateConfigCommandHandler : IRequestHandler<UpdateConfigCommand, Result>
     {
         private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.Config> _shippingAppRepository;
+        private readonly IShippingAppDbContext _context;
 
-        public UpdateConfigCommandHandler(IMapper mapper, IShippingAppRepository<Entities.Config> shippingAppRepository)
+        public UpdateConfigCommandHandler(IMapper mapper, IShippingAppDbContext context)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<Result> Handle(UpdateConfigCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Entities.Config>(request.Config);
-            return await _shippingAppRepository.Update(request.Id, entity);
+            var entity = await _context.Configs.FindAsync(request.Key);
+
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            entity.Value = request.Config.Value;
+            
+            return await _context.SaveChangesAsync() > 0 ? Result.Success() : Result.Failure("Failed to update config");
         }
     }
 }

@@ -8,6 +8,6 @@ import { shippingPlanRoutes } from './shipping-plan.routes';
 @NgModule({
   declarations: [ShippingPlanComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(shippingPlanRoutes)],
-  exports: [],
+  exports: [ShippingPlanComponent],
 })
 export class ShippingPlanModule {}

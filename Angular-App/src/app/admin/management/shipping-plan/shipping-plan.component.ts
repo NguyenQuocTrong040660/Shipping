@@ -1,139 +1,171 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
+import { SelectItem } from 'primeng/api';
+import { NotificationService } from 'app/shared/services/notification.service';
 
 @Component({
   templateUrl: './shipping-plan.component.html',
   styleUrls: ['./shipping-plan.component.scss'],
 })
 export class ShippingPlanComponent implements OnInit {
-  shippingPlans: ShippingPlan[] = [];
-  selectedShippingPlans: ShippingPlan[] = [];
-  isShowCreateDialog: boolean;
-  isShowEditDialog: boolean;
+  shippingPlans: ShippingPlanModel[] = [];
+  selectedShippingPlans: ShippingPlanModel[] = [];
+  selectItems: SelectItem[] = [];
+  products: ProductModel[] = [];
+
   isShowDeleteDialog: boolean;
-  currentSelectedShippingPlan: ShippingPlan[] = [];
+  currentSelectedShippingPlan: ShippingPlanModel[] = [];
   isDeleteMany: boolean;
   shippingPlanForm: FormGroup;
-  cols: { header: string; field: string }[] = [];
+
+  cols: any[] = [];
+  fields: any[] = [];
+
+  isEdit = false;
+  isShowDialog = false;
+  titleDialog = '';
 
   get name() {
     return this.shippingPlanForm.get('name');
   }
 
+  constructor(private shippingPlanClients: ShippingPlanClients, private productClients: ProductClients, private notificationService: NotificationService) {}
+
   ngOnInit() {
     this.cols = [
       { header: 'Name', field: 'name' },
-      { header: 'Note', field: 'note' },
+      { header: 'Notes', field: 'notes' },
       { header: 'Created', field: 'created' },
       { header: 'Create By', field: 'createBy' },
       { header: 'Last Modified', field: 'lastModified' },
       { header: 'Last Modified By', field: 'lastModifiedBy' },
     ];
 
-    this.shippingPlans = [
-      {
-        id: '1',
-        name: 'Shipping Plan A',
-        note: 'This is Shipping Plan A note',
-        created: new Date(),
-        createBy: 'Mr.A',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1',
-      },
-      {
-        id: '2',
-        name: 'Shipping Plan B',
-        note: 'This is Shipping Plan B note',
-        created: new Date(),
-        createBy: 'Mr.B',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.B 1',
-      },
-      {
-        id: '3',
-        name: 'Shipping Plan C',
-        note: 'This is Shipping Plan C note',
-        created: new Date(),
-        createBy: 'Mr.C',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.C 1',
-      },
-      {
-        id: '4',
-        name: 'Shipping Plan D',
-        note: 'This is Shipping Plan D note',
-        created: new Date(),
-        createBy: 'Mr.D',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.D 1',
-      },
-      {
-        id: '5',
-        name: 'Shipping Plan E',
-        note: 'This is Shipping Plan E note',
-        created: new Date(),
-        createBy: 'Mr.E',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.E 1',
-      },
-      {
-        id: '6',
-        name: 'Shipping Plan F',
-        note: 'This is Shipping Plan F note',
-        created: new Date(),
-        createBy: 'Mr.F',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.F 1',
-      },
-    ];
+    this.fields = this.cols.map((i) => i.field);
 
+    this.initForm();
+    this.initDataSource();
+    this.initProducts();
+  }
+
+  initForm() {
     this.shippingPlanForm = new FormGroup({
-      name: new FormControl('', Validators.required),
-      note: new FormControl(''),
-      created: new FormControl(new Date()),
+      id: new FormControl(0),
+      purchaseOrder: new FormControl('', Validators.required),
+      customerName: new FormControl('', Validators.required),
+      quantityOrder: new FormControl(0, Validators.required),
+      salesPrice: new FormControl(0, Validators.required),
+      salesID: new FormControl(0, Validators.required),
+      semlineNumber: new FormControl(0, Validators.required),
+      shippingMode: new FormControl('', Validators.required),
+      shippingDate: new FormControl(null),
+      notes: new FormControl(''),
+      productId: new FormControl(0, Validators.required),
+      created: new FormControl(null),
       createBy: new FormControl(''),
-      lastModified: new FormControl(new Date()),
+      lastModified: new FormControl(null),
       lastModifiedBy: new FormControl(''),
     });
   }
 
-  // Create Shipping Plan
-  openCreateDialog() {
-    this.isShowCreateDialog = true;
+  initDataSource() {
+    this.shippingPlanClients.getAllShippingPlan().subscribe(
+      (i) => (this.shippingPlans = i),
+      (_) => (this.shippingPlans = [])
+    );
   }
 
-  hideCreateDialog() {
-    this.isShowCreateDialog = false;
+  initProducts() {
+    this.productClients.getProducts().subscribe(
+      (i) => {
+        this.products = i;
+        this.selectItems = this._mapToSelectItem(i);
+      },
+      (_) => (this.products = [])
+    );
+  }
+
+  _mapToSelectItem(products: ProductModel[]): SelectItem[] {
+    return products.map((p) => ({
+      value: p.id,
+      label: `${p.productNumber}-${p.productName}`,
+    }));
+  }
+
+  // Create Shipping Plan
+  openCreateDialog() {
     this.shippingPlanForm.reset();
+    this.titleDialog = 'Create Shipping Plan';
+    this.isShowDialog = true;
+    this.isEdit = false;
   }
 
   onCreate() {
-    console.log(this.shippingPlanForm.value);
+    const model = this.shippingPlanForm.value as ShippingPlanModel;
+    model.id = 0;
 
-    // this.hideCreateDialog();
+    this.shippingPlanClients.addShippingPlan(model).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Create Shipping Plan Successfully');
+          this.initDataSource();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialog();
+      },
+      (_) => {
+        this.notificationService.error('Create Shipping Plan Failed. Please try again');
+        this.hideDialog();
+      }
+    );
   }
 
-  // Edit Shipping Plan
-  openEditDialog(shippingPlan: ShippingPlan) {
-    this.isShowEditDialog = true;
+  onSubmit() {
+    if (this.shippingPlanForm.invalid) {
+      return;
+    }
 
-    this.shippingPlanForm.get('name').setValue(shippingPlan && shippingPlan.name);
-    this.shippingPlanForm.get('note').setValue(shippingPlan && shippingPlan.note);
+    this.isEdit ? this.onEdit() : this.onCreate();
   }
 
-  hideEditDialog() {
-    this.isShowEditDialog = false;
-    this.shippingPlanForm.reset();
+  // Edit Shipping Mark
+  openEditDialog(shippingPlan: ShippingPlanModel) {
+    this.isShowDialog = true;
+    this.titleDialog = 'Create Shipping Mark';
+    this.isEdit = true;
+    this.shippingPlanForm.patchValue(shippingPlan);
+  }
+
+  hideDialog() {
+    this.isShowDialog = false;
   }
 
   onEdit() {
-    console.log(this.shippingPlanForm.value);
+    const { id } = this.shippingPlanForm.value;
 
-    this.hideEditDialog();
+    this.shippingPlanClients.updateShippingPlan(id, this.shippingPlanForm.value).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Edit Shipping Plan Successfully');
+          this.initDataSource();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialog();
+      },
+      (_) => {
+        this.notificationService.error('Edit Shipping Plan Failed. Please try again');
+        this.hideDialog();
+      }
+    );
   }
 
   // Delete Shipping Plan
-  openDeleteDialog(singleShippingPlan?: ShippingPlan) {
+  openDeleteDialog(singleShippingPlan?: ShippingPlanModel) {
     this.isShowDeleteDialog = true;
     this.currentSelectedShippingPlan = [];
 
@@ -153,19 +185,23 @@ export class ShippingPlanComponent implements OnInit {
     if (this.isDeleteMany) {
       console.log('this.selectedShippingPlans: ' + this.selectedShippingPlans);
     } else {
-      console.log('this.currentSelectedShippingPlan: ' + this.currentSelectedShippingPlan);
+      const shippingPlan = this.currentSelectedShippingPlan[0];
+      this.shippingPlanClients.deletedShippingPlan(shippingPlan.id).subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Delete Shipping Plan Successfully');
+            this.initDataSource();
+          } else {
+            this.notificationService.error(result?.error);
+          }
+
+          this.hideDeleteDialog();
+        },
+        (_) => {
+          this.notificationService.error('Delete  Shipping Plan Failed. Please try again');
+          this.hideDialog();
+        }
+      );
     }
-
-    this.hideDeleteDialog();
   }
-}
-
-interface ShippingPlan {
-  id: string;
-  name: string;
-  note: string;
-  created: Date;
-  createBy: string;
-  lastModified: Date;
-  lastModifiedBy: string;
 }

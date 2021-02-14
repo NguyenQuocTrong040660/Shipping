@@ -20,22 +20,6 @@ namespace ShippingApp.Api.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ConfigModel), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> AddConfigAsync(ConfigModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(model);
-            }
-
-            var result = await Mediator.Send(new CreateConfigCommand { Config = model });
-            return Ok(result);
-        }
-
         [HttpGet]
         [ProducesResponseType(typeof(List<ConfigModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -53,27 +37,18 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{key}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ConfigModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> UpdateConfigAsync(int id, [FromBody]ConfigModel model)
+        public async Task<ActionResult<Result>> UpdateConfigAsync(string key, [FromBody]ConfigModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(model);
             }
 
-            var result = await Mediator.Send(new UpdateConfigCommand { Id = id, Config = model });
-            return Ok(result);
-        }
-
-        [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> DeleteConfigAysnc(int id)
-        {
-            var result = await Mediator.Send(new DeleteConfigCommand { Id = id });
+            var result = await Mediator.Send(new UpdateConfigCommand { Key = key, Config = model });
             return Ok(result);
         }
     }

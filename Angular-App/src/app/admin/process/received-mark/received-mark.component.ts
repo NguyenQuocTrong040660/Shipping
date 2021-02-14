@@ -49,7 +49,7 @@ export class ReceivedMarkComponent implements OnInit {
     this.fields = this.cols.map((i) => i.field);
 
     this.initForm();
-    this.initDateSource();
+    this.initDataSource();
     this.initWorkOrders();
   }
 
@@ -82,7 +82,7 @@ export class ReceivedMarkComponent implements OnInit {
     }));
   }
 
-  initDateSource() {
+  initDataSource() {
     this.receivedMarkClients.getReceivedMarks().subscribe(
       (i) => (this.receivedMarks = i),
       (_) => (this.receivedMarks = [])
@@ -108,7 +108,7 @@ export class ReceivedMarkComponent implements OnInit {
       (result) => {
         if (result && result.succeeded) {
           this.notificationService.success('Edit Received Mark Successfully');
-          this.initDateSource();
+          this.initDataSource();
         } else {
           this.notificationService.error(result?.error);
         }
@@ -130,7 +130,7 @@ export class ReceivedMarkComponent implements OnInit {
       (result) => {
         if (result && result.succeeded) {
           this.notificationService.success('Create Received Mark Successfully');
-          this.initDateSource();
+          this.initDataSource();
         } else {
           this.notificationService.error(result?.error);
         }
@@ -186,7 +186,7 @@ export class ReceivedMarkComponent implements OnInit {
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Delete Received Mark Successfully');
-            this.initDateSource();
+            this.initDataSource();
           } else {
             this.notificationService.error(result?.error);
           }

@@ -31,7 +31,12 @@
     <ng-template pTemplate="body" let-configuration let-columns="columns">
       <tr>
         <td *ngFor="let col of columns">
-          {{ configuration[col.field] }}
+          <ng-container *ngIf="col.isDate; else elseTemplate">
+            {{ configuration[col.field] | date: 'dd/MM/yyyy' }}
+          </ng-container>
+          <ng-template #elseTemplate>
+            {{ configuration[col.field] }}
+          </ng-template>
         </td>
         <td>
           <button

@@ -69,7 +69,7 @@ export class ShippingMarkComponent implements OnInit {
     this.fields = this.cols.map((i) => i.field);
 
     this.initForm();
-    this.initDateSource();
+    this.initDataSource();
     this.initProducts();
   }
 
@@ -106,7 +106,7 @@ export class ShippingMarkComponent implements OnInit {
     }));
   }
 
-  initDateSource() {
+  initDataSource() {
     this.shippingMarkClients.getShippingMarks().subscribe(
       (i) => (this.shippingMarks = i),
       (_) => (this.shippingMarks = [])
@@ -129,7 +129,7 @@ export class ShippingMarkComponent implements OnInit {
       (result) => {
         if (result && result.succeeded) {
           this.notificationService.success('Create Shipping Mark Successfully');
-          this.initDateSource();
+          this.initDataSource();
         } else {
           this.notificationService.error(result?.error);
         }
@@ -170,7 +170,7 @@ export class ShippingMarkComponent implements OnInit {
       (result) => {
         if (result && result.succeeded) {
           this.notificationService.success('Edit Shipping Mark Successfully');
-          this.initDateSource();
+          this.initDataSource();
         } else {
           this.notificationService.error(result?.error);
         }
@@ -214,7 +214,7 @@ export class ShippingMarkComponent implements OnInit {
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Delete Shipping Mark Successfully');
-            this.initDateSource();
+            this.initDataSource();
           } else {
             this.notificationService.error(result?.error);
           }

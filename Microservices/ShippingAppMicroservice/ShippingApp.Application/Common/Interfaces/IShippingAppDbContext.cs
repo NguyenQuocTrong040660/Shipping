@@ -12,6 +12,12 @@ namespace ShippingApp.Application.Interfaces
         DbSet<Entities.Country> Countries { get; }
         DbSet<Entities.Product> Products { get; }
         DbSet<Entities.ShippingPlan> ShippingPlans { get; }
+        DbSet<Entities.MovementRequest> MovementRequests { get; }
+        DbSet<Entities.WorkOrder> WorkOrders { get; }
+        DbSet<Entities.Config> Configs { get; }
+        DbSet<Entities.ReceivedMark> ReceivedMarks { get; }
+        DbSet<Entities.ShippingMark> ShippingMarks { get; }
+        DbSet<Entities.ShippingRequest> ShippingRequests { get; }
         DbSet<TEntity> SetEntity<TEntity>() where TEntity : class;
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken =  new CancellationToken());

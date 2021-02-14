@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using ShippingApp.Persistence;
 using ShippingApp.Persistence.DBContext;
 
 namespace ShippingApp.Api
@@ -41,6 +42,8 @@ namespace ShippingApp.Api
                     {
                         context.Database.Migrate();
                     }
+
+                    await ShippingAppDbContextSeed.SeedConfiguration(context);
                 }
                 catch (Exception ex)
                 {

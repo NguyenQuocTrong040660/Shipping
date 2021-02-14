@@ -25,75 +25,6 @@ export class ConfigClients {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5003";
     }
 
-    addConfig(model: ConfigModel): Observable<Result> {
-        let url_ = this.baseUrl + "/api/shippingapp/config";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(model);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAddConfig(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAddConfig(<any>response_);
-                } catch (e) {
-                    return <Observable<Result>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<Result>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processAddConfig(response: HttpResponseBase): Observable<Result> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-            return _observableOf(result200);
-            }));
-        } else if (status === 404) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result404: any = null;
-            result404 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ConfigModel>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            }));
-        } else if (status === 401) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result401: any = null;
-            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<Result>(<any>null);
-    }
-
     getConfigs(): Observable<ConfigModel[]> {
         let url_ = this.baseUrl + "/api/shippingapp/config";
         url_ = url_.replace(/[?&]$/, "");
@@ -203,11 +134,11 @@ export class ConfigClients {
         return _observableOf<ConfigModel>(<any>null);
     }
 
-    updateConfig(id: number, model: ConfigModel): Observable<Result> {
-        let url_ = this.baseUrl + "/api/shippingapp/config/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    updateConfig(key: string | null, model: ConfigModel): Observable<Result> {
+        let url_ = this.baseUrl + "/api/shippingapp/config/{key}";
+        if (key === undefined || key === null)
+            throw new Error("The parameter 'key' must be defined.");
+        url_ = url_.replace("{key}", encodeURIComponent("" + key));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(model);
@@ -254,62 +185,6 @@ export class ConfigClients {
             let result400: any = null;
             result400 = _responseText === "" ? null : <ConfigModel>JSON.parse(_responseText, this.jsonParseReviver);
             return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            }));
-        } else if (status === 401) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result401: any = null;
-            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<Result>(<any>null);
-    }
-
-    deleteConfigAysnc(id: number): Observable<Result> {
-        let url_ = this.baseUrl + "/api/shippingapp/config/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDeleteConfigAysnc(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processDeleteConfigAysnc(<any>response_);
-                } catch (e) {
-                    return <Observable<Result>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<Result>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processDeleteConfigAysnc(response: HttpResponseBase): Observable<Result> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-            return _observableOf(result200);
             }));
         } else if (status === 401) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -2119,7 +1994,7 @@ export class ShippingPlanClients {
         return _observableOf<Result>(<any>null);
     }
 
-    getAllShippingPlan(): Observable<void> {
+    getAllShippingPlan(): Observable<ShippingPlanModel[]> {
         let url_ = this.baseUrl + "/api/shippingapp/shippingplan";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2127,6 +2002,7 @@ export class ShippingPlanClients {
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Accept": "application/json"
             })
         };
 
@@ -2137,25 +2013,25 @@ export class ShippingPlanClients {
                 try {
                     return this.processGetAllShippingPlan(<any>response_);
                 } catch (e) {
-                    return <Observable<void>><any>_observableThrow(e);
+                    return <Observable<ShippingPlanModel[]>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<void>><any>_observableThrow(response_);
+                return <Observable<ShippingPlanModel[]>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetAllShippingPlan(response: HttpResponseBase): Observable<void> {
+    protected processGetAllShippingPlan(response: HttpResponseBase): Observable<ShippingPlanModel[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (<any>response).error instanceof Blob ? (<any>response).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 400) {
+        if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ShippingPlanModel[]>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ShippingPlanModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
             }));
         } else if (status === 401) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -2168,7 +2044,7 @@ export class ShippingPlanClients {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<void>(<any>null);
+        return _observableOf<ShippingPlanModel[]>(<any>null);
     }
 
     getShippingPlanById(id: number): Observable<ShippingPlanModel> {
@@ -2974,16 +2850,11 @@ export class WorkOrderClients {
     }
 }
 
-export interface Result {
-    succeeded?: boolean;
-    error?: string | undefined;
-}
-
 export interface ConfigModel {
     key?: string | undefined;
     value?: string | undefined;
     createdBy?: string | undefined;
-    created?: Date;
+    created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
 }
@@ -2997,11 +2868,16 @@ export interface ProblemDetails {
     extensions?: { [key: string]: any; } | undefined;
 }
 
+export interface Result {
+    succeeded?: boolean;
+    error?: string | undefined;
+}
+
 export interface CountryModel {
     countryCode?: string | undefined;
     countryName?: string | undefined;
     createdBy?: string | undefined;
-    created?: Date;
+    created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
 }
@@ -3025,7 +2901,7 @@ export interface MovementRequestModel {
     notes?: string | undefined;
     workOrders?: WorkOrderModel[] | undefined;
     createdBy?: string | undefined;
-    created?: Date;
+    created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
 }
@@ -3039,10 +2915,10 @@ export interface WorkOrderModel {
     notes?: string | undefined;
     productId?: number;
     product?: ProductModel | undefined;
-    movementRequestId?: number;
+    movementRequestId?: number | undefined;
     movementRequest?: MovementRequestModel | undefined;
     createdBy?: string | undefined;
-    created?: Date;
+    created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
 }
@@ -3054,7 +2930,7 @@ export interface ProductModel {
     notes?: string | undefined;
     qtyPerPackage?: string | undefined;
     createdBy?: string | undefined;
-    created?: Date;
+    created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
     workOrders?: WorkOrderModel[] | undefined;
@@ -3073,7 +2949,7 @@ export interface ShippingMarkModel {
     productId?: number;
     product?: ProductModel | undefined;
     createdBy?: string | undefined;
-    created?: Date;
+    created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
 }
@@ -3092,7 +2968,7 @@ export interface ShippingRequestModel {
     productId?: number;
     product?: ProductModel | undefined;
     createdBy?: string | undefined;
-    created?: Date;
+    created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
 }
@@ -3103,15 +2979,13 @@ export interface ReceivedMarkModel {
     workOrderId?: number;
     workOrder?: WorkOrderModel | undefined;
     createdBy?: string | undefined;
-    created?: Date;
+    created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
 }
 
 export interface ShippingPlanModel {
     id?: number;
-    productNumber?: string | undefined;
-    productName?: string | undefined;
     semlineNumber?: number;
     purchaseOrder?: string | undefined;
     quantityOrder?: number;
@@ -3119,8 +2993,14 @@ export interface ShippingPlanModel {
     customerName?: string | undefined;
     salesID?: string | undefined;
     shippingMode?: string | undefined;
-    shippingDate?: string | undefined;
+    shippingDate?: Date;
     notes?: string | undefined;
+    productId?: number;
+    product?: ProductModel | undefined;
+    createdBy?: string | undefined;
+    created?: Date | undefined;
+    lastModifiedBy?: string | undefined;
+    lastModified?: Date | undefined;
 }
 
 export interface FileResponse {

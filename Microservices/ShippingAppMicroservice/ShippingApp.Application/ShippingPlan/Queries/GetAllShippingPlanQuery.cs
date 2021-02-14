@@ -27,8 +27,8 @@ namespace ShippingApp.Application.ShippingPlan.Queries
 
         public async Task<List<ShippingPlanModel>> Handle(GetAllShippingPlanQuery request, CancellationToken cancellationToken)
         {
-            var products = await _shippingAppRepository.GetAllAsync();
-            return _mapper.Map<List<ShippingPlanModel>>(products);
+            var shippingPlans = await _shippingAppRepository.GetAllAsync();
+            return _mapper.Map<List<ShippingPlanModel>>(shippingPlans);
         }
     }
 }

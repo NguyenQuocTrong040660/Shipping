@@ -24,7 +24,7 @@
     [rowHover]="true"
     [paginator]="true"
     [showCurrentPageReport]="true"
-    [globalFilterFields]="['name', 'note', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
+    [globalFilterFields]="fields"
     [(selection)]="selectedShippingPlans"
   >
     <ng-template pTemplate="caption">
@@ -69,7 +69,7 @@
 </div>
 
 <!-- Create Shipping Plans Dialog -->
-<p-dialog header="Create Shipping Plans" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowCreateDialog" (onHide)="hideCreateDialog()">
+<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="shippingPlanForm">
       <div class="form-group">
@@ -87,32 +87,8 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideCreateDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingPlanForm.invalid" (click)="onCreate()"></button>
-  </ng-template>
-</p-dialog>
-
-<!-- Edit Shipping Plan Dialog -->
-<p-dialog header="Edit Shipping Plan" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
-  <ng-template pTemplate="content">
-    <form [formGroup]="shippingPlanForm">
-      <div class="form-group">
-        <label for="name" class="control-label">Name</label>
-        <input id="name" formControlName="name" type="text" class="form-control" />
-        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
-        </ng-container>
-      </div>
-      <div class="form-group">
-        <label for="note" class="control-label">Note</label>
-        <input id="note" formControlName="note" type="text" class="form-control" />
-      </div>
-    </form>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingPlanForm.invalid" (click)="onEdit()"></button>
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingPlanForm.invalid" (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>
 
@@ -120,7 +96,7 @@
 <p-dialog header="Delete Shipping Plans" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
   <ng-template pTemplate="content">
     <ng-container *ngIf="currentSelectedShippingPlan && currentSelectedShippingPlan.length; else deleteMany">
-      <div>Are you sure you want to delete {{ currentSelectedShippingPlan[0].name }} ?</div>
+      <div>Are you sure you want to delete {{ currentSelectedShippingPlan[0].id }} ?</div>
     </ng-container>
   </ng-template>
 

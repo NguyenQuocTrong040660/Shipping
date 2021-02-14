@@ -8,5 +8,6 @@ import { UserManagementComponent } from './user-management.component';
 @NgModule({
   imports: [CommonModule, SharedModule, RouterModule.forChild(userRoutes)],
   declarations: [UserManagementComponent],
+  exports: [UserManagementComponent],
 })
 export class UserManagementModule {}

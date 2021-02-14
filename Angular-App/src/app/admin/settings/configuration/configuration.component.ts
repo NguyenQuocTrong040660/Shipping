@@ -12,7 +12,7 @@ export class ConfigurationComponent implements OnInit {
   isShowEditDialog: boolean;
   configurationForm: FormGroup;
 
-  cols: { header: string; field: string }[] = [];
+  cols: any[] = [];
   colFields = [];
 
   get keyControl() {
@@ -31,9 +31,9 @@ export class ConfigurationComponent implements OnInit {
     this.cols = [
       { header: 'Key', field: 'key' },
       { header: 'Value', field: 'value' },
-      { header: 'Created', field: 'created' },
+      { header: 'Created', field: 'created', isDate: true },
       { header: 'Create By', field: 'createBy' },
-      { header: 'Last Modified', field: 'lastModified' },
+      { header: 'Last Modified', field: 'lastModified', isDate: true },
       { header: 'Last Modified By', field: 'lastModifiedBy' },
     ];
 
@@ -83,7 +83,7 @@ export class ConfigurationComponent implements OnInit {
         this.hideEditDialog();
       },
       (_) => {
-        this.notifiactionService.success('Edit Config Falied. Please try again');
+        this.notifiactionService.error('Edit Config Falied. Please try again');
         this.hideEditDialog();
       }
     );
