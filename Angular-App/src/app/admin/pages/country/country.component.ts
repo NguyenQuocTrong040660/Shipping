@@ -1,9 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CountryService } from 'app/shared/services/country.service';
 import { CountryModel } from 'app/shared/api-clients/shipping-app.client';
 
 @Component({
@@ -30,7 +28,7 @@ export class CountryComponent implements OnInit, OnDestroy {
   }
 
   private destroyed$ = new Subject<void>();
-  constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private service: CountryService, private fb: FormBuilder) {}
+  constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private fb: FormBuilder) {}
 
   ngOnInit() {
     this.initCols();

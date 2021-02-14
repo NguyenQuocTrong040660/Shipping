@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { CountryClients, CountryModel, ProductClients, ProductModel } from 'app/shared/api-clients/shipping-app.client';
+import { ConfirmationService } from 'primeng/api';
+import { ProductClients, ProductModel } from 'app/shared/api-clients/shipping-app.client';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { NotificationService } from 'app/shared/services/notification.service';
 
 @Component({
   selector: 'app-product',
@@ -12,69 +13,72 @@ import { Subject } from 'rxjs';
 export class ProductComponent implements OnInit {
   editMode = false;
   submitted = false;
-  form: FormGroup;
+  productForm: FormGroup;
   products: ProductModel[] = [];
-  country: CountryModel[] = [];
 
   titleDialog: string;
   dialog = false;
 
-  get productName() {
-    return this.form.get('productName');
+  selectedItems: ProductModel[];
+
+  get productNameControl() {
+    return this.productForm.get('productName');
   }
 
-  get productNumber() {
-    return this.form.get('productNumber');
+  get productNumberControl() {
+    return this.productForm.get('productNumber');
   }
 
-  get notes() {
-    return this.form.get('notes');
+  get notesControl() {
+    return this.productForm.get('notes');
   }
 
-  get qtyPerPackage() {
-    return this.form.get('qtyPerPackage');
+  get qtyPerPackageControl() {
+    return this.productForm.get('qtyPerPackage');
   }
 
   private destroyed$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
-    private messageService: MessageService,
+    private notificationService: NotificationService,
     private confirmationService: ConfirmationService,
-    private productClients: ProductClients,
-    private countryClients: CountryClients
+    private productClients: ProductClients
   ) {}
 
   ngOnInit() {
-    //this.getCountry();
     this.initForm();
+    this.initProducts();
   }
 
   initForm() {
-    this.form = this.fb.group({
-      id: ['00000000-0000-0000-0000-000000000000'],
-      productName: ['', [Validators.required, Validators.maxLength(100)]],
-      productNumber: ['', [Validators.required, Validators.maxLength(100)]],
-      notes: ['', [Validators.required, Validators.maxLength(100)]],
-      qtyPerPackage: ['', [Validators.required, Validators.maxLength(100)]],
+    this.productForm = this.fb.group({
+      id: [0],
+      productName: ['', [Validators.required]],
+      productNumber: ['', [Validators.required]],
+      notes: [''],
+      qtyPerPackage: ['', [Validators.required, Validators.min(0)]],
+      createdBy: [''],
+      created: [null],
+      lastModifiedBy: [''],
+      lastModified: [null],
     });
   }
 
-  getCountry() {
-    this.countryClients
-      .getCoutries()
+  initProducts() {
+    this.productClients
+      .getProducts()
       .pipe(takeUntil(this.destroyed$))
-      .subscribe((data) => (this.country = data));
-  }
-
-  reloadData() {
-    this.productClients.getProducts().subscribe((data) => (this.products = data));
+      .subscribe(
+        (data) => (this.products = data),
+        (_) => (this.products = [])
+      );
   }
 
   openNew() {
-    this.form.reset();
+    this.productForm.reset();
     this.submitted = false;
-    this.titleDialog = 'Thêm Sản Phẩm';
+    this.titleDialog = 'Add Product';
     this.editMode = false;
     this.dialog = true;
   }
@@ -82,32 +86,14 @@ export class ProductComponent implements OnInit {
   hideDialog() {
     this.dialog = false;
     this.submitted = false;
-    this.form.reset();
+    this.productForm.reset();
   }
 
-  editProduct(id: string) {
-    this.titleDialog = 'Cập Nhật Sản Phẩm';
-    this.getProductById(id);
+  editProduct(product: ProductModel) {
+    this.titleDialog = 'Edit Product';
+    this.productForm.patchValue(product);
     this.editMode = true;
     this.dialog = true;
-  }
-
-  getProductById(productId) {
-    this.productClients
-      .getProductById(productId)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((result: ProductModel) => {
-        if (result) {
-          const { id, productName } = result;
-
-          this.form.patchValue({
-            id: id,
-            productName,
-          });
-        } else {
-          this.editMode = false;
-        }
-      });
   }
 
   deleteProduct(product: ProductModel) {
@@ -116,20 +102,30 @@ export class ProductComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.productClients.deleteProductAysnc(product.id).subscribe((_) => this.showMessage('success', 'Successful', 'Xóa Sản Phẩm Thành Công!!!'));
-        this.reloadData();
+        this.productClients
+          .deleteProductAysnc(product.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.notificationService.success('Delete Product Successfully');
+                this.initProducts();
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => {
+              this.notificationService.error('Delete Product Failed. Please try again');
+            }
+          );
       },
     });
-  }
-
-  showMessage(type: string, summary: string, detail: string = '', timeLife: number = 3000) {
-    this.messageService.add({ severity: type, summary: summary, detail: detail, life: timeLife });
   }
 
   onSubmit() {
     this.submitted = true;
 
-    if (this.form.invalid) {
+    if (this.productForm.invalid) {
       return;
     }
 
@@ -137,38 +133,61 @@ export class ProductComponent implements OnInit {
   }
 
   handleAddProduct() {
+    const model = this.productForm.value as ProductModel;
+    model.id = 0;
+
     this.productClients
-      .addProducts(this.form.value)
+      .addProducts(model)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (result) => {
-          if (result > 0) {
-            this.showMessage('success', 'Successful', 'Thêm mới sản phẩm thành công!!!');
-            this.hideDialog();
-            this.reloadData();
+          if (result && result.succeeded) {
+            this.notificationService.success('Add Product Successfully');
+            this.initProducts();
           } else {
-            this.showMessage('error', 'Failed', 'Thêm mới sản phẩm thất bại, Vui lòng kiểm tra lại!!!');
+            this.notificationService.error(result?.error);
           }
+
+          this.hideDialog();
         },
-        (_) => this.showMessage('error', 'Failed', 'Đã có lỗi xảy ra vui lòng thêm lại sau !!!')
+        (_) => {
+          this.notificationService.error('Add Product Failed. Please try again');
+          this.hideDialog();
+        }
       );
   }
 
   handleUpdateProduct() {
     this.productClients
-      .updateProduct(this.form.value.id, this.form.value)
+      .updateProduct(this.productForm.value.id, this.productForm.value)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (result) => {
-          if (result > 0) {
-            this.showMessage('success', 'Successful', 'Cập nhật sản phẩm thành công!!!');
-            this.hideDialog();
-            this.reloadData();
+          if (result && result.succeeded) {
+            this.notificationService.success('Update Product Successfully');
+            this.initProducts();
           } else {
-            this.showMessage('success', 'Successful', 'Cập nhật sản phẩm thất bại!!!');
+            this.notificationService.error(result?.error);
           }
+          this.hideDialog();
         },
-        (_) => this.showMessage('error', 'Failed', 'Đã có lỗi xảy ra vui lòng thêm lại sau !!!')
+        (_) => {
+          this.notificationService.error('Update Product Failed. Please try again');
+          this.hideDialog();
+        }
       );
+  }
+
+  deleteSelectedItems() {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the selected items?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        // this.attachmentTypes = this.products.filter(val => !this.selectedProducts.includes(val));
+        // this.selectedProducts = null;
+        // this.messageService.add({severity:'success', summary: 'Successful', detail: 'Products Deleted', life: 3000});
+      },
+    });
   }
 }

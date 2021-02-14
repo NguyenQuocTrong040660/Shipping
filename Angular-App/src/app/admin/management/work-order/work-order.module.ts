@@ -8,6 +8,6 @@ import { workOrderRoutes } from './work-order.routes';
 @NgModule({
   declarations: [WorkOrderComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(workOrderRoutes)],
-  exports: [],
+  exports: [WorkOrderComponent],
 })
 export class WorkOrderModule {}

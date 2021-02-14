@@ -24,7 +24,7 @@
     [rowHover]="true"
     [paginator]="true"
     [showCurrentPageReport]="true"
-    [globalFilterFields]="['name', 'note', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
+    [globalFilterFields]="colFields"
     [(selection)]="selectedMovementRequests"
   >
     <ng-template pTemplate="caption">
@@ -56,9 +56,23 @@
           {{ movementRequest[col.field] }}
         </td>
         <td>
-          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(movementRequest)"></button>
-          <button class="p-button-rounded p-button-danger p-mr-2" pButton pRipple icon="pi pi-trash" (click)="openDeleteDialog(movementRequest)"></button>
-          <button class="p-button-rounded p-button-warning" pButton pRipple icon="pi pi-search"></button>
+          <button
+            class="p-button-rounded p-button-success p-mr-2"
+            pTooltip="Edit Movement Request"
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            (click)="openEditDialog(movementRequest)"
+          ></button>
+          <button
+            class="p-button-rounded p-button-danger p-mr-2"
+            pTooltip="Delete Movement Request"
+            pButton
+            pRipple
+            icon="pi pi-trash"
+            (click)="openDeleteDialog(movementRequest)"
+          ></button>
+          <button class="p-button-rounded p-button-warning" pTooltip="History Changes" pButton pRipple icon="pi pi-search"></button>
         </td>
       </tr>
     </ng-template>
@@ -207,11 +221,11 @@
   </ng-template>
 </p-dialog>
 
-<!-- Delete Shipping Requests Dialog -->
-<p-dialog header="Delete Shipping Requests" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
+<!-- Delete Movement Requests Dialog -->
+<p-dialog header="Delete Movement Requests" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
   <ng-template pTemplate="content">
     <ng-container *ngIf="currentSelectedMovementRequest && currentSelectedMovementRequest.length; else deleteMany">
-      <div>Are you sure you want to delete {{ currentSelectedMovementRequest[0].name }} ?</div>
+      <div>Are you sure you want to delete {{ currentSelectedMovementRequest[0].id }} ?</div>
     </ng-container>
   </ng-template>
 

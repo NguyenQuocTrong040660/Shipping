@@ -1,25 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
+import { MovementRequestClients, MovementRequestModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { NotificationService } from 'app/shared/services/notification.service';
 
 @Component({
   templateUrl: './movement-request.component.html',
   styleUrls: ['./movement-request.component.scss'],
 })
 export class MovementRequestComponent implements OnInit {
-  movementRequests: MovementRequest[] = [];
-  selectedMovementRequests: MovementRequest[] = [];
+  movementRequests: MovementRequestModel[] = [];
+  selectedMovementRequests: MovementRequestModel[] = [];
   isShowCreateDialog: boolean;
   isShowEditDialog: boolean;
   isShowDeleteDialog: boolean;
-  currentSelectedMovementRequest: MovementRequest[] = [];
+  currentSelectedMovementRequest: MovementRequestModel[] = [];
   isDeleteMany: boolean;
   movementRequestForm: FormGroup;
   stepItems: MenuItem[] = [];
   activeIndex = 0;
-  workOrderList: WorkOrder[] = [];
+  workOrderList: WorkOrderModel[] = [];
   workOrderItems: WorkOrderItems[] = [];
   cols: { header: string; field: string }[] = [];
+  colFields = [];
 
   get name() {
     return this.movementRequestForm.get('name');
@@ -28,6 +31,8 @@ export class MovementRequestComponent implements OnInit {
   get workOrders() {
     return this.movementRequestForm.get('workOrders');
   }
+
+  constructor(private workOrderClients: WorkOrderClients, private notificationService: NotificationService, private movementRequestClients: MovementRequestClients) {}
 
   ngOnInit() {
     this.cols = [
@@ -38,90 +43,11 @@ export class MovementRequestComponent implements OnInit {
       { header: 'Last Modified', field: 'lastModified' },
       { header: 'Last Modified By', field: 'lastModifiedBy' },
     ];
+    this.stepItems = [{ label: 'Work Order' }, { label: 'Move Quantity' }, { label: 'Confirm' }];
+    this.colFields = this.cols.map((i) => i.field);
 
-    this.movementRequests = [
-      {
-        id: '1',
-        name: 'Movement Request A',
-        note: 'This is Movement Request A note',
-        created: new Date(),
-        createBy: 'Mr.A',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1',
-      },
-      {
-        id: '2',
-        name: 'Movement Request B',
-        note: 'This is Movement Request B note',
-        created: new Date(),
-        createBy: 'Mr.B',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.B 1',
-      },
-      {
-        id: '3',
-        name: 'Movement Request C',
-        note: 'This is Movement Request C note',
-        created: new Date(),
-        createBy: 'Mr.C',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.C 1',
-      },
-      {
-        id: '4',
-        name: 'Movement Request D',
-        note: 'This is Movement Request D note',
-        created: new Date(),
-        createBy: 'Mr.D',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.D 1',
-      },
-      {
-        id: '5',
-        name: 'Movement Request E',
-        note: 'This is Movement Request E note',
-        created: new Date(),
-        createBy: 'Mr.E',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.E 1',
-      },
-      {
-        id: '6',
-        name: 'Movement Request F',
-        note: 'This is Movement Request F note',
-        created: new Date(),
-        createBy: 'Mr.F',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.F 1',
-      },
-    ];
-
-    this.workOrderList = [
-      {
-        id: '1',
-        name: 'Work Order 1',
-      },
-      {
-        id: '2',
-        name: 'Work Order 2',
-      },
-      {
-        id: '3',
-        name: 'Work Order 3',
-      },
-      {
-        id: '4',
-        name: 'Work Order 4',
-      },
-      {
-        id: '5',
-        name: 'Work Order 5',
-      },
-      {
-        id: '6',
-        name: 'Work Order 6',
-      },
-    ];
+    this.initMovementRequests();
+    this.initWorkOrders();
 
     this.workOrderItems = [
       {
@@ -156,8 +82,24 @@ export class MovementRequestComponent implements OnInit {
       },
     ];
 
-    this.stepItems = [{ label: 'Work Order' }, { label: 'Move Quantity' }, { label: 'Confirm' }];
+    this.initForm();
+  }
 
+  initWorkOrders() {
+    this.workOrderClients.getWorkOrders().subscribe(
+      (i) => (this.workOrderList = i),
+      (_) => (this.workOrderList = [])
+    );
+  }
+
+  initMovementRequests() {
+    this.movementRequestClients.getMovementRequests().subscribe(
+      (i) => (this.movementRequests = i),
+      (_) => (this.movementRequests = [])
+    );
+  }
+
+  initForm() {
     this.movementRequestForm = new FormGroup({
       name: new FormControl('', Validators.required),
       note: new FormControl(''),
@@ -183,11 +125,10 @@ export class MovementRequestComponent implements OnInit {
   }
 
   // Edit Movement Request
-  openEditDialog(shippingPlan: MovementRequest) {
+  openEditDialog(request: MovementRequestModel) {
     this.isShowEditDialog = true;
 
-    this.movementRequestForm.get('name').setValue(shippingPlan && shippingPlan.name);
-    this.movementRequestForm.get('note').setValue(shippingPlan && shippingPlan.note);
+    this.movementRequestForm.setValue(request);
   }
 
   hideEditDialog() {
@@ -202,7 +143,7 @@ export class MovementRequestComponent implements OnInit {
   }
 
   // Delete Movement Request
-  openDeleteDialog(singleMovementRequest?: MovementRequest) {
+  openDeleteDialog(singleMovementRequest?: MovementRequestModel) {
     this.isShowDeleteDialog = true;
     this.currentSelectedMovementRequest = [];
 
@@ -235,21 +176,6 @@ export class MovementRequestComponent implements OnInit {
   prevPage() {
     this.activeIndex -= 1;
   }
-}
-
-interface MovementRequest {
-  id: string;
-  name: string;
-  note: string;
-  created: Date;
-  createBy: string;
-  lastModified: Date;
-  lastModifiedBy: string;
-}
-
-interface WorkOrder {
-  id: string;
-  name: string;
 }
 
 interface WorkOrderItems {

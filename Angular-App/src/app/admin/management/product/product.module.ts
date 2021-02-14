@@ -9,6 +9,6 @@ import { productRoutes } from './product.routes';
 @NgModule({
   imports: [CommonModule, SharedModule, RouterModule.forChild(productRoutes)],
   declarations: [ProductComponent],
-  exports: [],
+  exports: [ProductComponent],
 })
 export class ProductModule {}

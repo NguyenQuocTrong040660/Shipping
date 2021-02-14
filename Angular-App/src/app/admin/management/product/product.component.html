@@ -1,23 +1,55 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
+      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Product" (click)="openNew()"></button>
+      <button
+        class="p-button-danger p-mr-2"
+        pButton
+        pRipple
+        icon="pi pi-trash"
+        [disabled]="!selectedItems || !selectedItems.length"
+        label="Delete Products"
+        (click)="deleteSelectedItems()"
+      ></button>
     </ng-template>
   </p-toolbar>
 
-  <p-table dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [value]="products" [rows]="20" [paginator]="true" [rowHover]="true">
+  <p-table
+    #productsDataTable
+    dataKey="id"
+    styleClass="p-datatable-responsive"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+    [globalFilterFields]="['id', 'productName', 'productNumber', 'qtyPerPackage', 'notes', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
+    [value]="products"
+    [rows]="20"
+    [paginator]="true"
+    [rowHover]="true"
+    [(selection)]="selectedItems"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Danh Mục Sản Phẩm</h5>
+        <h5 class="p-m-0">Products</h5>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input pInputText type="text" (input)="productsDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+        </span>
       </div>
     </ng-template>
+
     <ng-template pTemplate="header">
       <tr>
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th>Hình Ảnh</th>
-        <th>Tên Sản Phẩm</th>
+        <th>Product Name</th>
+        <th>Product Nunmber</th>
+        <th>Quantity Package</th>
+        <th>Notes</th>
+        <th>Created</th>
+        <th>Created By</th>
+        <th>Last Modified</th>
+        <th>Last Modified By</th>
         <th></th>
       </tr>
     </ng-template>
@@ -27,31 +59,59 @@
           <p-tableCheckbox [value]="item"></p-tableCheckbox>
         </td>
         <td>{{ item.productName }}</td>
-        <td>{{ item.productTypeString }}</td>
+        <td>{{ item.productNumber }}</td>
+        <td>{{ item.qtyPerPackage }}</td>
+        <td>{{ item.notes }}</td>
+        <td>{{ item.created | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ item.createdBy }}</td>
+        <td>{{ item.lastModified | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ item.lastModifiedBy }}</td>
         <td>
-          <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(item.id)"></button>
-          <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(item)"></button>
+          <button pButton pTooltip="Edit Product" pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(item)"></button>
+          <button pButton pTooltip="Delete Product" pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger p-mr-2" (click)="deleteProduct(item)"></button>
+          <button pButton pTooltip="History Changes" pRipple icon="pi pi-search" class="p-button-rounded p-button-warning"></button>
         </td>
       </tr>
     </ng-template>
   </p-table>
 </div>
 
-<p-dialog [(visible)]="dialog" [style]="{ width: '800px' }" header="{{ titleDialog }}" [modal]="true" styleClass="p-fluid">
+<p-dialog [(visible)]="dialog" header="{{ titleDialog }}" [modal]="true" styleClass="p-fluid p-w-800">
   <ng-template pTemplate="content">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="productForm">
       <div class="form-group">
-        <label class="control-label">Tên Sản Phẩm</label>
-        <input formControlName="productName" id="productName" type="text" class="form-control" />
-        <span *ngIf="(productName.touched || submitted) && productName.errors?.required" id="productName" class="error invalid-feedback" style="display: block"
-          >Xin hãy nhập tên sản phẩm</span
-        >
-        <span *ngIf="(productName.touched || submitted) && productName.errors?.maxlength" id="productName" class="error invalid-feedback" style="display: block"
-          >Tên sản phẩm tối đa chỉ được 100 ký tự</span
-        >
+        <label for="productName" class="control-label">Product Name</label>
+        <input id="productName" [formControl]="productNameControl" type="text" class="form-control" />
+        <ng-container *ngIf="productNameControl.invalid && (productNameControl.dirty || productNameControl.touched)">
+          <small class="p-invalid create-user-form__error">Please enter a valid product name</small>
+        </ng-container>
       </div>
 
-      <button type="submit" class="btn btn-success" [disabled]="form.invalid">Xác Nhận</button>
+      <div class="form-group">
+        <label for="productNumber" class="control-label">Product Number</label>
+        <input id="productNumber" [formControl]="productNumberControl" type="text" class="form-control" />
+        <ng-container *ngIf="productNumberControl.invalid && (productNumberControl.dirty || productNumberControl.touched)">
+          <small class="p-invalid create-user-form__error">Please enter a valid product number</small>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="qtyPerPackage" class="control-label">Quantity Package</label>
+        <p-inputNumber inputId="qtyPerPackage" [formControl]="qtyPerPackageControl"> </p-inputNumber>
+        <ng-container *ngIf="qtyPerPackageControl.invalid && (qtyPerPackageControl.dirty || qtyPerPackageControl.touched)">
+          <small class="p-invalid create-user-form__error">Please enter a valid number</small>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="notes" class="control-label">Notes</label>
+        <input id="notes" [formControl]="notesControl" type="text" class="form-control" />
+      </div>
     </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="productForm.invalid" (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>

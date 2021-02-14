@@ -46,7 +46,6 @@ import { ApiClientModule } from './shared/api-clients/api-client.module';
       multi: true,
       deps: [AuthenticationService],
     },
-    { provide: API_BASE_URL, useValue: environment.baseUrl },
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
     {

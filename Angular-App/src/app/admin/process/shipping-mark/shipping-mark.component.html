@@ -24,7 +24,7 @@
     [rowHover]="true"
     [paginator]="true"
     [showCurrentPageReport]="true"
-    [globalFilterFields]="['name', 'note', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
+    [globalFilterFields]="fields"
     [(selection)]="selectedShippingMarks"
   >
     <ng-template pTemplate="caption">
@@ -53,11 +53,36 @@
           <p-tableCheckbox [value]="shippingMark"></p-tableCheckbox>
         </td>
         <td *ngFor="let col of columns">
-          {{ shippingMark[col.field] }}
+          <ng-container *ngIf="col.isDate; else normalField">
+            {{ shippingMark[col.field] | date: 'dd/MM/yyyy' }}
+          </ng-container>
+          <ng-template #normalField>
+            <ng-container *ngIf="col.subField; else elseTemplate">
+              {{ shippingMark[col.field][col.subField] }}
+            </ng-container>
+            <ng-template #elseTemplate>
+              {{ shippingMark[col.field] }}
+            </ng-template>
+          </ng-template>
         </td>
         <td>
-          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(shippingMark)"></button>
-          <button class="p-button-rounded p-button-danger" pButton pRipple icon="pi pi-trash" (click)="openDeleteDialog(shippingMark)"></button>
+          <button
+            class="p-button-rounded p-button-success p-mr-2"
+            pTooltip="Edit Shipping Mark"
+            pButton
+            pRipple
+            icon="pi pi-pencil"
+            (click)="openEditDialog(shippingMark)"
+          ></button>
+          <button
+            class="p-button-rounded p-button-danger p-mr-2"
+            pTooltip="Delete Shipping Mark"
+            pButton
+            pRipple
+            icon="pi pi-trash"
+            (click)="openDeleteDialog(shippingMark)"
+          ></button>
+          <button class="p-button-rounded p-button-warning" pTooltip="History Changes" pButton pRipple icon="pi pi-search"></button>
         </td>
       </tr>
     </ng-template>
@@ -69,50 +94,59 @@
 </div>
 
 <!-- Create Shipping Marks Dialog -->
-<p-dialog header="Create Shipping Marks" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowCreateDialog" (onHide)="hideCreateDialog()">
+<p-dialog header="{{ titleDialog }}" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="shippingMarkForm">
       <div class="form-group">
-        <label for="name" class="control-label">Name</label>
-        <input id="name" formControlName="name" type="text" class="form-control" />
-        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
+        <label for="customerId" class="control-label">Customer</label>
+        <input pInputText inputId="customerId" [formControl]="customerControl" />
+        <ng-container *ngIf="customerControl.invalid && (customerControl.dirty || customerControl.touched)">
+          <small class="p-invalid create-user-form__error">Please specify a customer id</small>
         </ng-container>
       </div>
+
       <div class="form-group">
-        <label for="note" class="control-label">Note</label>
-        <input id="note" formControlName="note" type="text" class="form-control" />
+        <label for="revision" class="control-label">Revision</label>
+        <input pInputText inputId="revision" [formControl]="revisionControl" />
+        <ng-container *ngIf="revisionControl.invalid && (revisionControl.dirty || revisionControl.touched)">
+          <small class="p-invalid create-user-form__error">Please specify a revision</small>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="cartonNumber" class="control-label">Carton Number</label>
+        <input pInputText inputId="cartonNumber" [formControl]="cartonNumberControl" />
+        <ng-container *ngIf="cartonNumberControl.invalid && (cartonNumberControl.dirty || cartonNumberControl.touched)">
+          <small class="p-invalid create-user-form__error">Please specify a carton number</small>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="quantity" class="control-label">Quantity</label>
+        <p-inputNumber inputId="quantity" [formControl]="quantityControl"> </p-inputNumber>
+        <ng-container *ngIf="quantityControl.invalid && (quantityControl.dirty || quantityControl.touched)">
+          <small class="p-invalid create-user-form__error">Please enter a valid quantity</small>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="product" class="control-label">Product</label>
+        <p-dropdown [options]="selectItems" [formControl]="productControl" id="product" placeholder="Select a Product" appendTo="body"></p-dropdown>
+        <ng-container *ngIf="productControl.invalid && (productControl.dirty || productControl.touched)">
+          <small class="p-invalid create-user-form__error">Please select product</small>
+        </ng-container>
+      </div>
+
+      <div class="form-group">
+        <label for="notes" class="control-label">Notes</label>
+        <input pInputText id="notes" [formControl]="notesControl" type="text" class="form-control" />
       </div>
     </form>
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideCreateDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingMarkForm.invalid" (click)="onCreate()"></button>
-  </ng-template>
-</p-dialog>
-
-<!-- Edit Shipping Mark Dialog -->
-<p-dialog header="Edit Shipping Mark" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
-  <ng-template pTemplate="content">
-    <form [formGroup]="shippingMarkForm">
-      <div class="form-group">
-        <label for="name" class="control-label">Name</label>
-        <input id="name" formControlName="name" type="text" class="form-control" />
-        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
-        </ng-container>
-      </div>
-      <div class="form-group">
-        <label for="note" class="control-label">Note</label>
-        <input id="note" formControlName="note" type="text" class="form-control" />
-      </div>
-    </form>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingMarkForm.invalid" (click)="onEdit()"></button>
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingMarkForm.invalid" (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>
 
@@ -120,7 +154,7 @@
 <p-dialog header="Delete Shipping Marks" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
   <ng-template pTemplate="content">
     <ng-container *ngIf="currentSelectedShippingMark && currentSelectedShippingMark.length; else deleteMany">
-      <div>Are you sure you want to delete {{ currentSelectedShippingMark[0].name }} ?</div>
+      <div>Are you sure you want to delete {{ currentSelectedShippingMark[0].id }} ?</div>
     </ng-container>
   </ng-template>
 

@@ -28,6 +28,7 @@ import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { StepsModule } from 'primeng/steps';
 import { CardModule } from 'primeng/card';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   declarations: [],
@@ -60,7 +61,9 @@ import { CardModule } from 'primeng/card';
     InputTextareaModule,
     ProgressSpinnerModule,
     StepsModule,
-    CardModule
+    CardModule,
+    InputNumberModule,
+    TooltipModule,
   ],
   exports: [
     CommonModule,
@@ -91,8 +94,10 @@ import { CardModule } from 'primeng/card';
     InputTextareaModule,
     ProgressSpinnerModule,
     StepsModule,
-    CardModule
+    CardModule,
+    InputNumberModule,
+    TooltipModule,
   ],
   providers: [],
 })
-export class SharedModule { }
+export class SharedModule {}

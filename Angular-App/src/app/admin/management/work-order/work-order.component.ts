@@ -1,129 +1,169 @@
+import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { NotificationService } from 'app/shared/services/notification.service';
+import { SelectItem } from 'primeng/api';
 
 @Component({
   templateUrl: './work-order.component.html',
   styleUrls: ['./work-order.component.scss'],
 })
 export class WorkOrderComponent implements OnInit {
-  workOrders: WorkOrder[] = [];
-  selectedWorkOrders: WorkOrder[] = [];
-  isShowCreateDialog: boolean;
-  isShowEditDialog: boolean;
+  workOrders: WorkOrderModel[] = [];
+  products: ProductModel[] = [];
+  selectedWorkOrders: WorkOrderModel[] = [];
+  selectItems: SelectItem[] = [];
+
   isShowDeleteDialog: boolean;
-  currentSelectedWorkOrder: WorkOrder[] = [];
+  currentSelectedWorkOrder: WorkOrderModel[] = [];
   isDeleteMany: boolean;
   workOrderForm: FormGroup;
 
-  get name() {
-    return this.workOrderForm.get('name');
+  isEdit = false;
+  isShowDialog = false;
+  titleDialog = '';
+
+  get quantityControl() {
+    return this.workOrderForm.get('quantity');
   }
 
-  ngOnInit() {
-    this.workOrders = [
-      {
-        id: '1',
-        name: 'Work Order A',
-        note: 'This is Work Order A note',
-        created: new Date(),
-        createBy: 'Mr.A',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1',
-      },
-      {
-        id: '2',
-        name: 'Work Order B',
-        note: 'This is Work Order B note',
-        created: new Date(),
-        createBy: 'Mr.B',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.B 1',
-      },
-      {
-        id: '3',
-        name: 'Work Order C',
-        note: 'This is Work Order C note',
-        created: new Date(),
-        createBy: 'Mr.C',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.C 1',
-      },
-      {
-        id: '4',
-        name: 'Work Order D',
-        note: 'This is Work Order D note',
-        created: new Date(),
-        createBy: 'Mr.D',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.D 1',
-      },
-      {
-        id: '5',
-        name: 'Work Order E',
-        note: 'This is Work Order E note',
-        created: new Date(),
-        createBy: 'Mr.E',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.E 1',
-      },
-      {
-        id: '6',
-        name: 'Work Order F',
-        note: 'This is Work Order F note',
-        created: new Date(),
-        createBy: 'Mr.F',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.F 1',
-      },
-    ];
+  get movingQuantityControl() {
+    return this.workOrderForm.get('movingQuantity');
+  }
 
+  get remainQuantityControl() {
+    return this.workOrderForm.get('remainQuantity');
+  }
+
+  get productControl() {
+    return this.workOrderForm.get('productId');
+  }
+
+  get notesControl() {
+    return this.workOrderForm.get('notes');
+  }
+
+  constructor(private workOrderClients: WorkOrderClients, private productClients: ProductClients, private notificationService: NotificationService) {}
+
+  ngOnInit() {
+    this.initWorkOrders();
+    this.initProducts();
+    this.initForm();
+  }
+
+  initForm() {
     this.workOrderForm = new FormGroup({
-      name: new FormControl('', Validators.required),
-      note: new FormControl(''),
-      created: new FormControl(new Date()),
-      createBy: new FormControl(''),
-      lastModified: new FormControl(new Date()),
+      id: new FormControl(0),
+      productId: new FormControl(0, Validators.required),
+      quantity: new FormControl(0, [Validators.required, Validators.min(1)]),
+      movingQuantity: new FormControl(0, [Validators.required, Validators.min(1)]),
+      notes: new FormControl(''),
+      remainQuantity: new FormControl(0, [Validators.required, Validators.min(1)]),
+      movementRequestId: new FormControl(0),
+      createdBy: new FormControl(''),
+      created: new FormControl(null),
       lastModifiedBy: new FormControl(''),
+      lastModified: new FormControl(null),
     });
+  }
+
+  initWorkOrders() {
+    this.workOrderClients.getWorkOrders().subscribe(
+      (i) => (this.workOrders = i),
+      (_) => (this.workOrders = [])
+    );
+  }
+
+  initProducts() {
+    this.productClients.getProducts().subscribe(
+      (i) => {
+        this.products = i;
+        this.selectItems = this._mapToSelectItem(i);
+      },
+      (_) => (this.products = [])
+    );
+  }
+
+  _mapToSelectItem(products: ProductModel[]): SelectItem[] {
+    return products.map((p) => ({
+      value: p.id,
+      label: `${p.productNumber}-${p.productName}`,
+    }));
   }
 
   // Create Work Order
   openCreateDialog() {
-    this.isShowCreateDialog = true;
+    this.workOrderForm.reset();
+    this.titleDialog = 'Create Work Order';
+    this.isShowDialog = true;
+    this.isEdit = false;
   }
 
-  hideCreateDialog() {
-    this.isShowCreateDialog = false;
-    this.workOrderForm.reset();
+  hideDialog() {
+    this.isShowDialog = false;
+  }
+
+  onSubmit() {
+    if (this.workOrderForm.invalid) {
+      return;
+    }
+
+    this.isEdit ? this.onEdit() : this.onCreate();
   }
 
   onCreate() {
-    console.log(this.workOrderForm.value);
+    const model = this.workOrderForm.value as WorkOrderModel;
+    model.id = 0;
 
-    // this.hideCreateDialog();
+    this.workOrderClients.addWorkOrder(model).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Create Work Order Successfully');
+          this.initWorkOrders();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialog();
+      },
+      (_) => {
+        this.notificationService.error('Create Work Order Failed. Please try again');
+        this.hideDialog();
+      }
+    );
   }
 
   // Edit Work Order
-  openEditDialog(workOrder: WorkOrder) {
-    this.isShowEditDialog = true;
-
-    this.workOrderForm.get('name').setValue(workOrder && workOrder.name);
-    this.workOrderForm.get('note').setValue(workOrder && workOrder.note);
-  }
-
-  hideEditDialog() {
-    this.isShowEditDialog = false;
-    this.workOrderForm.reset();
+  openEditDialog(workOrder: WorkOrderModel) {
+    this.isShowDialog = true;
+    this.titleDialog = 'Create Work Order';
+    this.isEdit = true;
+    this.workOrderForm.patchValue(workOrder);
   }
 
   onEdit() {
-    console.log(this.workOrderForm.value);
+    const { id } = this.workOrderForm.value;
 
-    this.hideEditDialog();
+    this.workOrderClients.updateWorkOrder(id, this.workOrderForm.value).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Edit Work Order Successfully');
+          this.initWorkOrders();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialog();
+      },
+      (_) => {
+        this.notificationService.error('Edit Work Order Failed. Please try again');
+        this.hideDialog();
+      }
+    );
   }
 
   // Delete Work Order
-  openDeleteDialog(singleWorkOrder?: WorkOrder) {
+  openDeleteDialog(singleWorkOrder?: WorkOrderModel) {
     this.isShowDeleteDialog = true;
     this.currentSelectedWorkOrder = [];
 
@@ -140,22 +180,30 @@ export class WorkOrderComponent implements OnInit {
   }
 
   onDelete() {
+    if (this.currentSelectedWorkOrder.length === 0) {
+      return;
+    }
+
     if (this.isDeleteMany) {
       console.log('this.selectedWorkOrders: ' + this.selectedWorkOrders);
     } else {
-      console.log('this.currentSelectedWorkOrder: ' + this.currentSelectedWorkOrder);
+      const workOrder = this.currentSelectedWorkOrder[0];
+      this.workOrderClients.deleteWorkOrderAysnc(workOrder.id).subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Delete Work Order Successfully');
+            this.initWorkOrders();
+          } else {
+            this.notificationService.error(result?.error);
+          }
+
+          this.hideDeleteDialog();
+        },
+        (_) => {
+          this.notificationService.error('Delete Work Order Failed. Please try again');
+          this.hideDialog();
+        }
+      );
     }
-
-    this.hideDeleteDialog();
   }
-}
-
-interface WorkOrder {
-  id: string;
-  name: string;
-  note: string;
-  created: Date;
-  createBy: string;
-  lastModified: Date;
-  lastModifiedBy: string;
 }

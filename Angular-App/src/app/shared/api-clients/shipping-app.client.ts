@@ -1102,7 +1102,7 @@ export class ProductClients {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5003";
     }
 
-    addProducts(product: ProductModel): Observable<number> {
+    addProducts(product: ProductModel): Observable<Result> {
         let url_ = this.baseUrl + "/api/shippingapp/product";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1125,14 +1125,14 @@ export class ProductClients {
                 try {
                     return this.processAddProducts(<any>response_);
                 } catch (e) {
-                    return <Observable<number>><any>_observableThrow(e);
+                    return <Observable<Result>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<number>><any>_observableThrow(response_);
+                return <Observable<Result>><any>_observableThrow(response_);
         }));
     }
 
-    protected processAddProducts(response: HttpResponseBase): Observable<number> {
+    protected processAddProducts(response: HttpResponseBase): Observable<Result> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1142,13 +1142,13 @@ export class ProductClients {
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <number>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
             return _observableOf(result200);
             }));
         } else if (status === 404) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result404: any = null;
-            result404 = _responseText === "" ? null : <number>JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             }));
         } else if (status === 400) {
@@ -1168,7 +1168,7 @@ export class ProductClients {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<number>(<any>null);
+        return _observableOf<Result>(<any>null);
     }
 
     getProducts(): Observable<ProductModel[]> {
@@ -1286,7 +1286,7 @@ export class ProductClients {
         return _observableOf<ProductModel>(<any>null);
     }
 
-    updateProduct(id: number, productDTO: ProductModel): Observable<number> {
+    updateProduct(id: number, productDTO: ProductModel): Observable<Result> {
         let url_ = this.baseUrl + "/api/shippingapp/product/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1312,14 +1312,14 @@ export class ProductClients {
                 try {
                     return this.processUpdateProduct(<any>response_);
                 } catch (e) {
-                    return <Observable<number>><any>_observableThrow(e);
+                    return <Observable<Result>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<number>><any>_observableThrow(response_);
+                return <Observable<Result>><any>_observableThrow(response_);
         }));
     }
 
-    protected processUpdateProduct(response: HttpResponseBase): Observable<number> {
+    protected processUpdateProduct(response: HttpResponseBase): Observable<Result> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1329,13 +1329,13 @@ export class ProductClients {
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <number>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
             return _observableOf(result200);
             }));
         } else if (status === 404) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result404: any = null;
-            result404 = _responseText === "" ? null : <number>JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             }));
         } else if (status === 400) {
@@ -1355,10 +1355,10 @@ export class ProductClients {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<number>(<any>null);
+        return _observableOf<Result>(<any>null);
     }
 
-    deleteProductAysnc(id: number): Observable<number> {
+    deleteProductAysnc(id: number): Observable<Result> {
         let url_ = this.baseUrl + "/api/shippingapp/product/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1380,14 +1380,14 @@ export class ProductClients {
                 try {
                     return this.processDeleteProductAysnc(<any>response_);
                 } catch (e) {
-                    return <Observable<number>><any>_observableThrow(e);
+                    return <Observable<Result>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<number>><any>_observableThrow(response_);
+                return <Observable<Result>><any>_observableThrow(response_);
         }));
     }
 
-    protected processDeleteProductAysnc(response: HttpResponseBase): Observable<number> {
+    protected processDeleteProductAysnc(response: HttpResponseBase): Observable<Result> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1397,13 +1397,13 @@ export class ProductClients {
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <number>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
             return _observableOf(result200);
             }));
         } else if (status === 404) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result404: any = null;
-            result404 = _responseText === "" ? null : <number>JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             }));
         } else if (status === 401) {
@@ -1417,7 +1417,7 @@ export class ProductClients {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<number>(<any>null);
+        return _observableOf<Result>(<any>null);
     }
 }
 

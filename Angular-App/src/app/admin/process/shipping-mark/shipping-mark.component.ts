@@ -1,141 +1,197 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ProductClients, ProductModel, ShippingMarkClients, ShippingMarkModel } from 'app/shared/api-clients/shipping-app.client';
+import { NotificationService } from 'app/shared/services/notification.service';
+import { SelectItem } from 'primeng/api';
 
 @Component({
   templateUrl: './shipping-mark.component.html',
   styleUrls: ['./shipping-mark.component.scss'],
 })
 export class ShippingMarkComponent implements OnInit {
-  shippingMarks: ShippingMark[] = [];
-  selectedShippingMarks: ShippingMark[] = [];
-  isShowCreateDialog: boolean;
-  isShowEditDialog: boolean;
+  shippingMarks: ShippingMarkModel[] = [];
+  products: ProductModel[] = [];
+  selectedShippingMarks: ShippingMarkModel[] = [];
+  selectItems: SelectItem[] = [];
+
   isShowDeleteDialog: boolean;
-  currentSelectedShippingMark: ShippingMark[] = [];
+  currentSelectedShippingMark: ShippingMarkModel[] = [];
   isDeleteMany: boolean;
   shippingMarkForm: FormGroup;
-  cols: { header: string; field: string }[] = [];
 
-  get name() {
-    return this.shippingMarkForm.get('name');
+  isEdit = false;
+  isShowDialog = false;
+  titleDialog = '';
+
+  cols: any[] = [];
+  fields: any[] = [];
+
+  get quantityControl() {
+    return this.shippingMarkForm.get('quantity');
   }
+
+  get productControl() {
+    return this.shippingMarkForm.get('productId');
+  }
+
+  get notesControl() {
+    return this.shippingMarkForm.get('notes');
+  }
+
+  get customerControl() {
+    return this.shippingMarkForm.get('customerId');
+  }
+
+  get revisionControl() {
+    return this.shippingMarkForm.get('revision');
+  }
+
+  get cartonNumberControl() {
+    return this.shippingMarkForm.get('cartonNumber');
+  }
+
+  constructor(private shippingMarkClients: ShippingMarkClients, private productClients: ProductClients, private notificationService: NotificationService) {}
 
   ngOnInit() {
     this.cols = [
-      { header: 'Name', field: 'name' },
-      { header: 'Note', field: 'note' },
-      { header: 'Created', field: 'created' },
-      { header: 'Create By', field: 'createBy' },
-      { header: 'Last Modified', field: 'lastModified' },
-      { header: 'Last Modified By', field: 'lastModifiedBy' },
+      { header: 'Customer', field: 'customerId', isDate: false },
+      { header: 'Quantity', field: 'quantity', isDate: false },
+      { header: 'Revision', field: 'revision', isDate: false },
+      { header: 'Carton Number', field: 'cartonNumber', isDate: false },
+      { header: 'Product', field: 'product', isDate: false, subField: 'productName' },
+      { header: 'Notes', field: 'notes', isDate: false },
+      { header: 'Created', field: 'created', isDate: true },
+      { header: 'Create By', field: 'createBy', isDate: false },
+      { header: 'Last Modified', field: 'lastModified', isDate: true },
+      { header: 'Last Modified By', field: 'lastModifiedBy', isDate: false },
     ];
 
-    this.shippingMarks = [
-      {
-        id: '1',
-        name: 'Shipping Mark A',
-        note: 'This is Shipping Mark A note',
-        created: new Date(),
-        createBy: 'Mr.A',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1',
-      },
-      {
-        id: '2',
-        name: 'Shipping Mark B',
-        note: 'This is Shipping Mark B note',
-        created: new Date(),
-        createBy: 'Mr.B',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.B 1',
-      },
-      {
-        id: '3',
-        name: 'Shipping Mark C',
-        note: 'This is Shipping Mark C note',
-        created: new Date(),
-        createBy: 'Mr.C',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.C 1',
-      },
-      {
-        id: '4',
-        name: 'Shipping Mark D',
-        note: 'This is Shipping Mark D note',
-        created: new Date(),
-        createBy: 'Mr.D',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.D 1',
-      },
-      {
-        id: '5',
-        name: 'Shipping Mark E',
-        note: 'This is Shipping Mark E note',
-        created: new Date(),
-        createBy: 'Mr.E',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.E 1',
-      },
-      {
-        id: '6',
-        name: 'Shipping Mark F',
-        note: 'This is Shipping Mark F note',
-        created: new Date(),
-        createBy: 'Mr.F',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.F 1',
-      },
-    ];
+    this.fields = this.cols.map((i) => i.field);
 
+    this.initForm();
+    this.initDateSource();
+    this.initProducts();
+  }
+
+  initForm() {
     this.shippingMarkForm = new FormGroup({
-      name: new FormControl('', Validators.required),
-      note: new FormControl(''),
+      id: new FormControl(0),
+      productId: new FormControl(0, Validators.required),
+      notes: new FormControl(''),
+      revision: new FormControl('', [Validators.required]),
+      quantity: new FormControl(0, [Validators.required, Validators.min(1)]),
+      cartonNumber: new FormControl('', [Validators.required]),
+      customerId: new FormControl('', [Validators.required]),
+      createdBy: new FormControl(''),
+      created: new FormControl(null),
+      lastModifiedBy: new FormControl(''),
+      lastModified: new FormControl(null),
     });
+  }
+
+  initProducts() {
+    this.productClients.getProducts().subscribe(
+      (i) => {
+        this.products = i;
+        this.selectItems = this._mapToSelectItem(i);
+      },
+      (_) => (this.products = [])
+    );
+  }
+
+  _mapToSelectItem(products: ProductModel[]): SelectItem[] {
+    return products.map((p) => ({
+      value: p.id,
+      label: `${p.productNumber}-${p.productName}`,
+    }));
+  }
+
+  initDateSource() {
+    this.shippingMarkClients.getShippingMarks().subscribe(
+      (i) => (this.shippingMarks = i),
+      (_) => (this.shippingMarks = [])
+    );
   }
 
   // Create Shipping Marks
   openCreateDialog() {
-    this.isShowCreateDialog = true;
-  }
-
-  hideCreateDialog() {
-    this.isShowCreateDialog = false;
     this.shippingMarkForm.reset();
+    this.titleDialog = 'Create Shipping Mark';
+    this.isShowDialog = true;
+    this.isEdit = false;
   }
 
   onCreate() {
-    console.log(this.shippingMarkForm.value);
+    const model = this.shippingMarkForm.value as ShippingMarkModel;
+    model.id = 0;
 
-    // this.hideCreateDialog();
+    this.shippingMarkClients.addShippingMark(model).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Create Shipping Mark Successfully');
+          this.initDateSource();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialog();
+      },
+      (_) => {
+        this.notificationService.error('Create Shipping Mark Failed. Please try again');
+        this.hideDialog();
+      }
+    );
+  }
+
+  onSubmit() {
+    if (this.shippingMarkForm.invalid) {
+      return;
+    }
+
+    this.isEdit ? this.onEdit() : this.onCreate();
   }
 
   // Edit Shipping Mark
-  openEditDialog(shippingPlan: ShippingMark) {
-    this.isShowEditDialog = true;
-
-    this.shippingMarkForm.get('name').setValue(shippingPlan && shippingPlan.name);
-    this.shippingMarkForm.get('note').setValue(shippingPlan && shippingPlan.note);
+  openEditDialog(shippingMark: ShippingMarkModel) {
+    this.isShowDialog = true;
+    this.titleDialog = 'Create Shipping Mark';
+    this.isEdit = true;
+    this.shippingMarkForm.patchValue(shippingMark);
   }
 
-  hideEditDialog() {
-    this.isShowEditDialog = false;
-    this.shippingMarkForm.reset();
+  hideDialog() {
+    this.isShowDialog = false;
   }
 
   onEdit() {
-    console.log(this.shippingMarkForm.value);
+    const { id } = this.shippingMarkForm.value;
 
-    this.hideEditDialog();
+    this.shippingMarkClients.updateShippingRequest(id, this.shippingMarkForm.value).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Edit Shipping Mark Successfully');
+          this.initDateSource();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialog();
+      },
+      (_) => {
+        this.notificationService.error('Edit Shipping Mark Failed. Please try again');
+        this.hideDialog();
+      }
+    );
   }
 
   // Delete Shipping Marks
-  openDeleteDialog(singleMovementRequest?: ShippingMark) {
+  openDeleteDialog(shippingMark?: ShippingMarkModel) {
     this.isShowDeleteDialog = true;
     this.currentSelectedShippingMark = [];
 
-    if (singleMovementRequest) {
+    if (shippingMark) {
       this.isDeleteMany = false;
-      this.currentSelectedShippingMark.push(singleMovementRequest);
+      this.currentSelectedShippingMark.push(shippingMark);
     } else {
       this.isDeleteMany = true;
     }
@@ -146,22 +202,30 @@ export class ShippingMarkComponent implements OnInit {
   }
 
   onDelete() {
+    if (this.currentSelectedShippingMark.length === 0) {
+      return;
+    }
+
     if (this.isDeleteMany) {
       console.log('this.selectedShippingMarks: ' + this.selectedShippingMarks);
     } else {
-      console.log('this.currentSelectedShippingMark: ' + this.currentSelectedShippingMark);
+      const shippingMark = this.currentSelectedShippingMark[0];
+      this.shippingMarkClients.deleteShippingMarkAysnc(shippingMark.id).subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Delete Shipping Mark Successfully');
+            this.initDateSource();
+          } else {
+            this.notificationService.error(result?.error);
+          }
+
+          this.hideDeleteDialog();
+        },
+        (_) => {
+          this.notificationService.error('Delete  Shipping Mark Failed. Please try again');
+          this.hideDialog();
+        }
+      );
     }
-
-    this.hideDeleteDialog();
   }
-}
-
-interface ShippingMark {
-  id: string;
-  name: string;
-  note: string;
-  created: Date;
-  createBy: string;
-  lastModified: Date;
-  lastModifiedBy: string;
 }

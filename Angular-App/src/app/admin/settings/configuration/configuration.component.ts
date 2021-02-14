@@ -1,24 +1,33 @@
+import { NotificationService } from 'app/shared/services/notification.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ConfigClients, ConfigModel } from 'app/shared/api-clients/shipping-app.client';
 
 @Component({
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.scss'],
 })
 export class ConfigurationComponent implements OnInit {
-  configurations: Configuration[] = [];
-  selectedConfigurations: Configuration[] = [];
+  configurations: ConfigModel[] = [];
   isShowEditDialog: boolean;
-  currentSelectedConfiguration: Configuration[] = [];
-  isDeleteMany: boolean;
   configurationForm: FormGroup;
-  cols: { header: string; field: string }[] = [];
 
-  get key() {
+  cols: { header: string; field: string }[] = [];
+  colFields = [];
+
+  get keyControl() {
     return this.configurationForm.get('key');
   }
 
+  get valueControl() {
+    return this.configurationForm.get('value');
+  }
+
+  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) {}
+
   ngOnInit() {
+    this.getConfigurations();
+
     this.cols = [
       { header: 'Key', field: 'key' },
       { header: 'Value', field: 'value' },
@@ -28,48 +37,25 @@ export class ConfigurationComponent implements OnInit {
       { header: 'Last Modified By', field: 'lastModifiedBy' },
     ];
 
-    this.configurations = [
-      {
-        id: '1',
-        key: 'MinShippingDay',
-        value: '2',
-        created: new Date(),
-        createBy: 'Mr.A',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1',
-      },
-      {
-        id: '2',
-        key: 'ShippingDeptEmail',
-        value: 'shipping@gmail.com',
-        created: new Date(),
-        createBy: 'Mr.A',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1',
-      },
-      {
-        id: '3',
-        key: 'LogisticDeptEmail',
-        value: 'logistic@gmail.com',
-        created: new Date(),
-        createBy: 'Mr.A',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1',
-      },
-    ];
+    this.colFields = this.cols.map((i) => i.field);
 
     this.configurationForm = new FormGroup({
       key: new FormControl('', Validators.required),
-      value: new FormControl(''),
+      value: new FormControl('', Validators.required),
     });
   }
 
-  // Edit Configuration
-  openEditDialog(shippingPlan: Configuration) {
-    this.isShowEditDialog = true;
+  getConfigurations() {
+    this.configsClients.getConfigs().subscribe(
+      (configs) => (this.configurations = configs),
+      (_) => (this.configurations = [])
+    );
+  }
 
-    this.configurationForm.get('key').setValue(shippingPlan && shippingPlan.key);
-    this.configurationForm.get('value').setValue(shippingPlan && shippingPlan.value);
+  // Edit Configuration
+  openEditDialog(config: ConfigModel) {
+    this.isShowEditDialog = true;
+    this.configurationForm.setValue(config);
   }
 
   hideEditDialog() {
@@ -78,18 +64,28 @@ export class ConfigurationComponent implements OnInit {
   }
 
   onEdit() {
-    console.log(this.configurationForm.value);
+    const { key, value } = this.configurationForm.value;
 
-    // this.hideEditDialog();
+    const model: ConfigModel = {
+      key,
+      value,
+    };
+
+    this.configsClients.updateConfig(key, model).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.getConfigurations();
+          this.notifiactionService.success('Edit Config Successfully');
+        } else {
+          this.notifiactionService.success(result.error);
+        }
+
+        this.hideEditDialog();
+      },
+      (_) => {
+        this.notifiactionService.success('Edit Config Falied. Please try again');
+        this.hideEditDialog();
+      }
+    );
   }
-}
-
-interface Configuration {
-  id: string;
-  key: string;
-  value: string;
-  created: Date;
-  createBy: string;
-  lastModified: Date;
-  lastModifiedBy: string;
 }

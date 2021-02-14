@@ -24,7 +24,7 @@
     [rowHover]="true"
     [paginator]="true"
     [showCurrentPageReport]="true"
-    [globalFilterFields]="['name', 'note', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
+    [globalFilterFields]="fields"
     [(selection)]="selectedReceivedMarks"
   >
     <ng-template pTemplate="caption">
@@ -53,11 +53,36 @@
           <p-tableCheckbox [value]="receivedMark"></p-tableCheckbox>
         </td>
         <td *ngFor="let col of columns">
-          {{ receivedMark[col.field] }}
+          <ng-container *ngIf="col.isDate; else normalField">
+            {{ receivedMark[col.field] | date: 'dd/MM/yyyy' }}
+          </ng-container>
+          <ng-template #normalField>
+            <ng-container *ngIf="col.subField; else elseTemplate">
+              {{ receivedMark[col.field][col.subField] }}
+            </ng-container>
+            <ng-template #elseTemplate>
+              {{ receivedMark[col.field] }}
+            </ng-template>
+          </ng-template>
         </td>
         <td>
-          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(receivedMark)"></button>
-          <button class="p-button-rounded p-button-danger" pButton pRipple icon="pi pi-trash" (click)="openDeleteDialog(receivedMark)"></button>
+          <button
+            class="p-button-rounded p-button-success p-mr-2"
+            pButton
+            pTooltip="Edit Received Mark"
+            pRipple
+            icon="pi pi-pencil"
+            (click)="openEditDialog(receivedMark)"
+          ></button>
+          <button
+            class="p-button-rounded p-button-danger p-mr-2"
+            pButton
+            pTooltip="Delete Received Mark"
+            pRipple
+            icon="pi pi-trash"
+            (click)="openDeleteDialog(receivedMark)"
+          ></button>
+          <button class="p-button-rounded p-button-warning" pButton pTooltip="History Changes" pRipple icon="pi pi-search"></button>
         </td>
       </tr>
     </ng-template>
@@ -68,51 +93,27 @@
   </p-table>
 </div>
 
-<!-- Create Received Marks Dialog -->
-<p-dialog header="Create Received Marks" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowCreateDialog" (onHide)="hideCreateDialog()">
-  <ng-template pTemplate="content">
-    <form [formGroup]="receivedMarkForm">
-      <div class="form-group">
-        <label for="name" class="control-label">Name</label>
-        <input id="name" formControlName="name" type="text" class="form-control" />
-        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
-        </ng-container>
-      </div>
-      <div class="form-group">
-        <label for="note" class="control-label">Note</label>
-        <input id="note" formControlName="note" type="text" class="form-control" />
-      </div>
-    </form>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideCreateDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="receivedMarkForm.invalid" (click)="onCreate()"></button>
-  </ng-template>
-</p-dialog>
-
 <!-- Edit Received Mark Dialog -->
-<p-dialog header="Edit Received Mark" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
+<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="receivedMarkForm">
       <div class="form-group">
-        <label for="name" class="control-label">Name</label>
-        <input id="name" formControlName="name" type="text" class="form-control" />
-        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
+        <label for="product" class="control-label">Work Order</label>
+        <p-dropdown [options]="selectItems" [formControl]="workOrderControl" id="workOrder" placeholder="Select a Work Order" appendTo="body"></p-dropdown>
+        <ng-container *ngIf="workOrderControl.invalid && (workOrderControl.dirty || workOrderControl.touched)">
+          <small class="p-invalid create-user-form__error">Please select work order</small>
         </ng-container>
       </div>
       <div class="form-group">
-        <label for="note" class="control-label">Note</label>
-        <input id="note" formControlName="note" type="text" class="form-control" />
+        <label for="notes" class="control-label">Notes</label>
+        <input pInputText id="notes" [formControl]="notesControl" type="text" class="form-control" />
       </div>
     </form>
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="receivedMarkForm.invalid" (click)="onEdit()"></button>
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="receivedMarkForm.invalid" (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>
 
@@ -120,7 +121,7 @@
 <p-dialog header="Delete Received Marks" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
   <ng-template pTemplate="content">
     <ng-container *ngIf="currentSelectedReceivedMark && currentSelectedReceivedMark.length; else deleteMany">
-      <div>Are you sure you want to delete {{ currentSelectedReceivedMark[0].name }} ?</div>
+      <div>Are you sure you want to delete {{ currentSelectedReceivedMark[0].id }} ?</div>
     </ng-container>
   </ng-template>
 

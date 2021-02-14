@@ -1,7 +1,7 @@
 <div class="card">
   <p-table
     #configurationDataTable
-    dataKey="id"
+    dataKey="key"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="20"
     [columns]="cols"
@@ -9,12 +9,11 @@
     [rowHover]="true"
     [paginator]="true"
     [showCurrentPageReport]="true"
-    [globalFilterFields]="['key', 'value', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
-    [(selection)]="selectedConfigurations"
+    [globalFilterFields]="colFields"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Configuration</h5>
+        <h5 class="p-m-0">Configurations</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input pInputText type="text" (input)="configurationDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
@@ -35,7 +34,14 @@
           {{ configuration[col.field] }}
         </td>
         <td>
-          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(configuration)"></button>
+          <button
+            class="p-button-rounded p-button-success p-mr-2"
+            pButton
+            pTooltip="Edit Configuration"
+            pRipple
+            icon="pi pi-pencil"
+            (click)="openEditDialog(configuration)"
+          ></button>
         </td>
       </tr>
     </ng-template>
@@ -52,14 +58,14 @@
     <form [formGroup]="configurationForm">
       <div class="form-group">
         <label for="key" class="control-label">Key</label>
-        <input id="key" formControlName="key" type="text" disabled class="form-control" />
-        <ng-container *ngIf="key.invalid && (key.dirty || key.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Key is required.</small>
+        <input id="key" [formControl]="keyControl" type="text" disabled class="form-control" />
+        <ng-container *ngIf="keyControl.invalid && (keyControl.dirty || keyControl.touched)">
+          <small *ngIf="keyControl && keyControl.errors?.required" id="email-error" class="p-invalid create-user-form__error">Key is required.</small>
         </ng-container>
       </div>
       <div class="form-group">
         <label for="value" class="control-label">Value</label>
-        <input id="value" formControlName="value" type="text" class="form-control" />
+        <input id="value" [formControl]="valueControl" type="text" class="form-control" />
       </div>
     </form>
   </ng-template>

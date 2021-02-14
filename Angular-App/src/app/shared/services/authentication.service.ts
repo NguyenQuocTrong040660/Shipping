@@ -1,9 +1,11 @@
+import { environment } from './../../../environments/environment.dev';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, delay, finalize, tap } from 'rxjs/operators';
 import { LoginRequest, IdentityResult, RefreshTokenRequest, UserClient } from '../api-clients/user.client';
 import { ApplicationUser } from '../models/application-user';
+import { NotificationService } from './notification.service';
 import { States, StateService } from './state.service';
 
 @Injectable({
@@ -14,16 +16,13 @@ export class AuthenticationService implements OnDestroy {
   private _user = new BehaviorSubject<ApplicationUser>(null);
   user$: Observable<ApplicationUser> = this._user.asObservable();
 
-  constructor(private router: Router, private usersClient: UserClient, private stateService: StateService) {
+  constructor(private router: Router, private usersClient: UserClient, private stateService: StateService, private notificationService: NotificationService) {
     console.log('init AuthenticationService');
     window.addEventListener('storage', this.storageEventListener.bind(this));
   }
 
   handleError(error) {
-    const errorMessage =
-      error.error instanceof ErrorEvent
-        ? `Error: ${error.error.message}`
-        : `Error Code: ${error.status}\n Message: ${error.message}`;
+    const errorMessage = error.error instanceof ErrorEvent ? `Error: ${error.error.message}` : `Error Code: ${error.status}\n Message: ${error.message}`;
 
     return throwError(errorMessage);
   }
@@ -35,6 +34,14 @@ export class AuthenticationService implements OnDestroy {
       rememberMe,
     };
 
+    if (!environment.production) {
+      const mockIdentityResult: IdentityResult = {
+        succeeded: true,
+      };
+
+      return of(mockIdentityResult);
+    }
+
     return this.usersClient.apiUserUserLogin(loginRequest).pipe(
       tap((data: IdentityResult) => {
         if (data && data.succeeded) {
@@ -45,10 +52,8 @@ export class AuthenticationService implements OnDestroy {
           });
           this.setLocalStorage(data);
           this.startTokenTimer();
-        }
-
-        if (data && !data.succeeded) {
-          alert(data.errorMessage);
+        } else {
+          this.notificationService.error(data.errorMessage);
         }
 
         return data;
@@ -79,7 +84,11 @@ export class AuthenticationService implements OnDestroy {
           roles: x.roles,
           originalUserName: x.originalUserName,
         }),
-      (_) => console.log('User logged out')
+      (_) => {
+        console.log('User logged out');
+        this.clearLocalStorage();
+        this.router.navigate(['login']);
+      }
     );
   }
 
