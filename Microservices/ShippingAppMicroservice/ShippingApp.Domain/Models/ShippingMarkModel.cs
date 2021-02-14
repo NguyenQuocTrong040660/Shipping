@@ -1,9 +1,8 @@
-﻿using ShippingApp.Domain.CommonEntities;
-using System;
+﻿using System;
 
-namespace ShippingApp.Domain.Entities
+namespace ShippingApp.Domain.Models
 {
-    public class ShippingMark : AuditableEntity
+    public class ShippingMarkModel
     {
         public int Id { get; set; }
         public string CustomerId { get; set; }
@@ -14,6 +13,11 @@ namespace ShippingApp.Domain.Entities
         public string Notes { get; set; }
 
         public int ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual ProductModel Product { get; set; }
+
+        public string CreatedBy { get; set; }
+        public DateTime? Created { get; set; }
+        public string LastModifiedBy { get; set; }
+        public DateTime? LastModified { get; set; }
     }
 }

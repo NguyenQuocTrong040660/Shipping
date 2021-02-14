@@ -1,17 +1,17 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/shippingapp/{everything}",
+      "DownstreamPathTemplate": "/api/files/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5003
+          "Port": 5002
         }
       ],
-      "UpstreamPathTemplate": "/api/shippingapp/{everything}",
+      "UpstreamPathTemplate": "/api/files/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "shippingapp"
+      "SwaggerKey": "files"
     }
   ]
 }

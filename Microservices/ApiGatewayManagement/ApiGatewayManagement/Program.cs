@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using MMLib.SwaggerForOcelot.DependencyInjection;
 using Serilog;
 using Serilog.Events;
-using System;
 using System.IO;
 using System.Threading.Tasks;
 

@@ -82,6 +82,8 @@ namespace ApiGatewayManagement
                 options.SuppressModelStateInvalidFilter = true;
             });
 
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+
             services.AddOpenApiDocument(configure =>
             {
                 configure.Title = "GatewayApi API";
@@ -97,7 +99,7 @@ namespace ApiGatewayManagement
                 configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
 
-            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+
             ConfigureAuthenticationServices(services);
         }
 

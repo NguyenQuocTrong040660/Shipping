@@ -5,6 +5,7 @@ using AutoMapper;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ShippingApp.Application.Common.Results;
+using System.Linq;
 
 namespace ShippingApp.Infrastructure.Repositories
 {
@@ -54,6 +55,11 @@ namespace ShippingApp.Infrastructure.Repositories
             return await _dbset.AsNoTracking().ToListAsync();
         }
 
+        public DbSet<T> GetDbSet()
+        {
+            return _dbset;
+        }
+
         public async Task<Result> Update(int id, T model)
         {
             var entity = await _dbset.FindAsync(id);
@@ -63,7 +69,7 @@ namespace ShippingApp.Infrastructure.Repositories
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            _mapper.Map(model, entity);
+            _context.EntryEntity(entity).CurrentValues.SetValues(model);
 
             return await _context.SaveChangesAsync() > 0
                 ? Result.Success()

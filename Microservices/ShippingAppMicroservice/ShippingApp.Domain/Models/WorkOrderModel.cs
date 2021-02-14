@@ -14,11 +14,11 @@ namespace ShippingApp.Domain.Models
         public int ProductId { get; set; }
         public virtual ProductModel Product { get; set; }
 
-        public int MovementRequestId { get; set; }
+        public int? MovementRequestId { get; set; }
         public virtual MovementRequestModel MovementRequest { get; set; }
 
         public string CreatedBy { get; set; }
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
         public string LastModifiedBy { get; set; }
         public DateTime? LastModified { get; set; }
     }

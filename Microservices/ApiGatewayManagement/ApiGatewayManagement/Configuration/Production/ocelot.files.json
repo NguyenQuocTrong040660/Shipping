@@ -1,0 +1,16 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/files/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "api-files.spartronics.com.vn:8080"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/files/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "files"
+    }
+  ]
+}

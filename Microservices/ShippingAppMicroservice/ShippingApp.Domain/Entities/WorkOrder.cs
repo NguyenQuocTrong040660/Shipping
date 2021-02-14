@@ -11,7 +11,7 @@ namespace ShippingApp.Domain.Entities
         public int MovingQuantity { get; set; }
         public int RemainQuantity { get; set; }
         public string Notes { get; set; }
-        public int MovementRequestId { get; set; }
+        public int? MovementRequestId { get; set; }
         public int ProductId { get; set; }
         public virtual Product Product { get; set; }
         public virtual MovementRequest MovementRequest { get; set; }

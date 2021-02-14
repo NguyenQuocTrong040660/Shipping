@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ShippingApp.Application.Common.Results;
 using ShippingApp.Application.Product.Commands;
 using ShippingApp.Application.Product.Queries;
 using ShippingApp.Domain.Models;
@@ -20,11 +21,11 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProductModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<bool>> AddProducts(ProductModel product)
+        public async Task<ActionResult<Result>> AddProducts(ProductModel product)
         {
             if (!ModelState.IsValid)
             {
@@ -54,11 +55,11 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProductModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<int>> UpdateProductAsync(int id, [FromBody] ProductModel productDTO)
+        public async Task<ActionResult<Result>> UpdateProductAsync(int id, [FromBody] ProductModel productDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -70,10 +71,10 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(int), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<int>> DeleteProductAysnc(int id)
+        public async Task<ActionResult<Result>> DeleteProductAysnc(int id)
         {
             var result = await Mediator.Send(new DeleteProductCommand { Id = id });
             return Ok(result);

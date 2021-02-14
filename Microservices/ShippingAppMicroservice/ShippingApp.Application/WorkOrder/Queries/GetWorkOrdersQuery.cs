@@ -1,12 +1,13 @@
-﻿using ShippingApp.Application.Interfaces;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using ShippingApp.Application.Interfaces;
+using ShippingApp.Domain.Models;
 using System;
 using System.Collections.Generic;
-using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using Entities = ShippingApp.Domain.Entities;
-using AutoMapper;
-using ShippingApp.Domain.Models;
 
 namespace ShippingApp.Application.WorkOrder.Queries
 {
@@ -27,7 +28,10 @@ namespace ShippingApp.Application.WorkOrder.Queries
 
         public async Task<List<WorkOrderModel>> Handle(GetWorkOrdersQuery request, CancellationToken cancellationToken)
         {
-            var workOrders = await _shippingAppRepository.GetAllAsync();
+            var workOrders = await _shippingAppRepository.GetDbSet()
+                .Include(x => x.Product)
+                .ToListAsync();
+
             return _mapper.Map<List<WorkOrderModel>>(workOrders);
         }
     }

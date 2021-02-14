@@ -9,6 +9,10 @@ namespace ShippingApp.Persistence.Configurations
         public void Configure(EntityTypeBuilder<ShippingPlan> builder)
         {
             builder.Property(t => t.Id).UseIdentityColumn();
+
+            builder.HasOne<Product>(s => s.Product)
+                   .WithMany(g => g.ShippingPlans)
+                   .HasForeignKey(s => s.ProductId);
         }
     }
 }

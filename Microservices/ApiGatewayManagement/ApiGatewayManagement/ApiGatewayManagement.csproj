@@ -36,5 +36,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="logs\" />
+  </ItemGroup>
+
 
 </Project>

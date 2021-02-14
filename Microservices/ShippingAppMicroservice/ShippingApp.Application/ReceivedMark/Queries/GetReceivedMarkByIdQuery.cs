@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ShippingApp.Application.ReceivedMark.Queries
 {
@@ -26,7 +28,11 @@ namespace ShippingApp.Application.ReceivedMark.Queries
 
         public async Task<ReceivedMarkModel> Handle(GetReceivedMarkByIdQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _shippingAppRepository.GetAsync(request.Id);
+            var receivedMarks = await _shippingAppRepository.GetDbSet()
+                 .Include(x => x.WorkOrder)
+                 .ToListAsync();
+
+            var entity = receivedMarks.FirstOrDefault(x => x.Id == request.Id);
             return _mapper.Map<ReceivedMarkModel>(entity);
         }
     }

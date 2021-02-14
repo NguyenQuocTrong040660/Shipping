@@ -11,11 +11,7 @@
       ],
       "UpstreamPathTemplate": "/api/shippingapp/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "shippingapp",
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      }
+      "SwaggerKey": "shippingapp"
     }
   ]
 }

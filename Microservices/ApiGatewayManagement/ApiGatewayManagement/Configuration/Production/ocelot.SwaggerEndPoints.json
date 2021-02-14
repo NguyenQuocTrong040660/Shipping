@@ -11,12 +11,12 @@
       ]
     },
     {
-      "Key": "album",
+      "Key": "files",
       "Config": [
         {
-          "Name": "Album API",
+          "Name": "Files API",
           "Version": "v1",
-          "Url": "https://api-album.spartronics.com.vn:8080/swagger/v1/swagger.json"
+          "Url": "https://api-files.spartronics.com.vn:8080/swagger/v1/swagger.json"
         }
       ]
     },

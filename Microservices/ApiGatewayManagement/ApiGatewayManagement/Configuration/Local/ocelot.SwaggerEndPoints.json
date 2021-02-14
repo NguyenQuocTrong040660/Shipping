@@ -11,10 +11,10 @@
       ]
     },
     {
-      "Key": "album",
+      "Key": "files",
       "Config": [
         {
-          "Name": "Album API",
+          "Name": "Files API",
           "Version": "v1",
           "Url": "https://localhost:5002/swagger/v1/swagger.json"
         }

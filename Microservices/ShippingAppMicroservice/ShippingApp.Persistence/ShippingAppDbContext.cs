@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using ShippingApp.Domain.Entities;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ShippingApp.Persistence.DBContext
 {
@@ -32,6 +33,11 @@ namespace ShippingApp.Persistence.DBContext
         public DbSet<TEntity> SetEntity<TEntity>() where TEntity : class
         {
             return Set<TEntity>();
+        }
+
+        public EntityEntry<T> EntryEntity<T>(T entity) where T : class
+        {
+            return Entry<T>(entity);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShippingApp.Persistence.DBContext;
 
 namespace ShippingApp.Persistence.Migrations
 {
     [DbContext(typeof(ShippingAppDbContext))]
-    partial class ShippingAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210211162131_UpdateMoveRequestColumn")]
+    partial class UpdateMoveRequestColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +26,7 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("Key")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -52,7 +54,7 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("CountryName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -78,7 +80,7 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -107,7 +109,7 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -145,7 +147,7 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -174,7 +176,7 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -211,7 +213,7 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("CartonNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -257,7 +259,7 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -275,8 +277,11 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PurchaseOrder")
                         .HasColumnType("nvarchar(max)");
@@ -293,15 +298,13 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<int>("SemlineNumber")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ShippingDate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("ShippingDate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShippingMode")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("ShippingPlans");
                 });
@@ -315,7 +318,7 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -373,7 +376,7 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("Created")
+                    b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CreatedBy")
@@ -425,15 +428,6 @@ namespace ShippingApp.Persistence.Migrations
                 {
                     b.HasOne("ShippingApp.Domain.Entities.Product", "Product")
                         .WithMany("ShippingMarks")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ShippingApp.Domain.Entities.ShippingPlan", b =>
-                {
-                    b.HasOne("ShippingApp.Domain.Entities.Product", "Product")
-                        .WithMany("ShippingPlans")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

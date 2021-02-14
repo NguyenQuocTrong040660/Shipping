@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Entities = ShippingApp.Domain.Entities;
 using AutoMapper;
 using ShippingApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShippingApp.Application.ShippingMark.Queries
 {
@@ -27,8 +28,11 @@ namespace ShippingApp.Application.ShippingMark.Queries
 
         public async Task<List<ShippingMarkModel>> Handle(GetShippingMarksQuery request, CancellationToken cancellationToken)
         {
-            var requests = await _shippingAppRepository.GetAllAsync();
-            return _mapper.Map<List<ShippingMarkModel>>(requests);
+            var shippingMarks = await _shippingAppRepository.GetDbSet()
+                .Include(x => x.Product)
+                .ToListAsync();
+
+            return _mapper.Map<List<ShippingMarkModel>>(shippingMarks);
         }
     }
 }
