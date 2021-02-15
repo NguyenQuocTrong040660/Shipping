@@ -17,13 +17,14 @@
   <p-table
     #productsDataTable
     dataKey="id"
-    styleClass="p-datatable-responsive"
+    styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [showCurrentPageReport]="true"
     [globalFilterFields]="['id', 'productName', 'productNumber', 'qtyPerPackage', 'notes', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
     [value]="products"
     [rows]="20"
     [paginator]="true"
+    [resizableColumns]="true"
     [rowHover]="true"
     [(selection)]="selectedItems"
   >
@@ -42,14 +43,14 @@
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th>Product Name</th>
-        <th>Product Nunmber</th>
-        <th>Quantity Package</th>
-        <th>Notes</th>
-        <th>Created</th>
-        <th>Created By</th>
-        <th>Last Modified</th>
-        <th>Last Modified By</th>
+        <th pResizableColumn>Product Nunmber</th>
+        <th pResizableColumn>Product Name</th>
+        <th pResizableColumn>Quantity Package</th>
+        <th pResizableColumn>Notes</th>
+        <th pResizableColumn>Created</th>
+        <th pResizableColumn>Created By</th>
+        <th pResizableColumn>Last Modified</th>
+        <th pResizableColumn>Last Modified By</th>
         <th></th>
       </tr>
     </ng-template>
@@ -58,8 +59,8 @@
         <td>
           <p-tableCheckbox [value]="item"></p-tableCheckbox>
         </td>
-        <td>{{ item.productName }}</td>
         <td>{{ item.productNumber }}</td>
+        <td>{{ item.productName }}</td>
         <td>{{ item.qtyPerPackage }}</td>
         <td>{{ item.notes }}</td>
         <td>{{ item.created | date: 'dd/MM/yyyy' }}</td>

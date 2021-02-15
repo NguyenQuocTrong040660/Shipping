@@ -17,14 +17,16 @@
   <p-table
     #workOrderDataTable
     dataKey="id"
-    styleClass="p-datatable-responsive"
+    styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="20"
+    [columns]="cols"
     [value]="workOrders"
     [rowHover]="true"
+    [resizableColumns]="true"
     [paginator]="true"
     [showCurrentPageReport]="true"
-    [globalFilterFields]="['id', 'quantity', 'movingQuantity', 'remainQuantity', 'productNumber', 'notes', 'created', 'createBy', 'lastModified', 'lastModifiedBy']"
+    [globalFilterFields]="fields"
     [(selection)]="selectedWorkOrders"
   >
     <ng-template pTemplate="caption">
@@ -37,50 +39,43 @@
       </div>
     </ng-template>
 
-    <ng-template pTemplate="header">
+    <ng-template pTemplate="header" let-columns>
       <tr>
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-
-        <th pSortableColumn="quantity">Quantity<p-sortIcon field="quantity"></p-sortIcon></th>
-        <th pSortableColumn="movingQuantity">Moving Quantity<p-sortIcon field="movingQuantity"></p-sortIcon></th>
-        <th pSortableColumn="remainQuantity">Remain Quantity<p-sortIcon field="remainQuantity"></p-sortIcon></th>
-        <th pSortableColumn="productNumber">Product Number<p-sortIcon field="productNumber"></p-sortIcon></th>
-        <th pSortableColumn="notes">Notes<p-sortIcon field="notes"></p-sortIcon></th>
-
-        <th pSortableColumn="created">Created<p-sortIcon field="created"></p-sortIcon></th>
-        <th pSortableColumn="createBy">Create By<p-sortIcon field="createBy"></p-sortIcon></th>
-        <th pSortableColumn="lastModified">Last Modified<p-sortIcon field="nolastModifiedte"></p-sortIcon></th>
-        <th pSortableColumn="lastModifiedBy">Last Modified By<p-sortIcon field="lastModifiedBy"></p-sortIcon></th>
+        <th *ngFor="let col of columns" pResizableColumn pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
         <th></th>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-workOrder>
+    <ng-template pTemplate="body" let-workOrder let-columns="columns">
       <tr>
         <td>
           <p-tableCheckbox [value]="workOrder"></p-tableCheckbox>
         </td>
-        <td>{{ workOrder.quantity }}</td>
-        <td>{{ workOrder.movingQuantity }}</td>
-        <td>{{ workOrder.remainQuantity }}</td>
-        <td>{{ workOrder.product.productNumber }}</td>
-        <td>{{ workOrder.notes }}</td>
-        <td>{{ workOrder.created | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ workOrder.createBy }}</td>
-        <td>{{ workOrder.lastModified | date: 'dd/MM/yyyy' }}</td>
-        <td>{{ workOrder.lastModifiedBy }}</td>
+        <td *ngFor="let col of columns">
+          <span class="p-column-title">{{ col.header }}</span>
+
+          <ng-container *ngIf="col.isDate; else normalField">
+            {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}
+          </ng-container>
+          <ng-template #normalField>
+            <ng-container *ngIf="col.subField; else elseTemplate">
+              {{ workOrder[col.field][col.subField] }}
+            </ng-container>
+            <ng-template #elseTemplate>
+              {{ workOrder[col.field] }}
+            </ng-template>
+          </ng-template>
+        </td>
+
         <td>
           <button class="p-button-rounded p-button-success p-mr-2" pTooltip="Edit Work Order" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(workOrder)"></button>
           <button class="p-button-rounded p-button-danger p-mr-2" pTooltip="Delete Work Order" pButton pRipple icon="pi pi-trash" (click)="openDeleteDialog(workOrder)"></button>
           <button class="p-button-rounded p-button-warning" pTooltip="History Changes" pButton pRipple icon="pi pi-search"></button>
         </td>
       </tr>
-    </ng-template>
-
-    <ng-template pTemplate="summary">
-      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ workOrders ? workOrders.length : 0 }} work orders.</div>
     </ng-template>
   </p-table>
 </div>
@@ -92,7 +87,7 @@
         <label for="quantity" class="control-label">Quantity</label>
         <p-inputNumber inputId="quantity" [formControl]="quantityControl"> </p-inputNumber>
         <ng-container *ngIf="quantityControl.invalid && (quantityControl.dirty || quantityControl.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Please enter a valid quantity</small>
+          <small class="p-invalid create-user-form__error">Please enter a valid quantity</small>
         </ng-container>
       </div>
 
@@ -100,7 +95,7 @@
         <label for="movingQuantity" class="control-label">Moving Quantity</label>
         <p-inputNumber inputId="movingQuantity" [formControl]="movingQuantityControl"> </p-inputNumber>
         <ng-container *ngIf="movingQuantityControl.invalid && (movingQuantityControl.dirty || movingQuantityControl.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Please enter a valid moving quantity</small>
+          <small class="p-invalid create-user-form__error">Please enter a valid moving quantity</small>
         </ng-container>
       </div>
 
@@ -108,7 +103,7 @@
         <label for="" class="control-label">Remain Quantity</label>
         <p-inputNumber inputId="remainQuantity" [formControl]="remainQuantityControl"> </p-inputNumber>
         <ng-container *ngIf="remainQuantityControl.invalid && (remainQuantityControl.dirty || remainQuantityControl.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Please enter a valid remain quantity</small>
+          <small class="p-invalid create-user-form__error">Please enter a valid remain quantity</small>
         </ng-container>
       </div>
 
@@ -117,7 +112,7 @@
         <p-dropdown [options]="selectItems" [formControl]="productControl" id="product" placeholder="Select a Product" appendTo="body"></p-dropdown>
 
         <ng-container *ngIf="productControl.invalid && (productControl.dirty || productControl.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Please select product</small>
+          <small class="p-invalid create-user-form__error">Please select product</small>
         </ng-container>
       </div>
 

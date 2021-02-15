@@ -17,6 +17,7 @@
   <p-table
     #shippingRequestDataTable
     dataKey="id"
+    styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="20"
     [columns]="cols"
@@ -24,6 +25,7 @@
     [rowHover]="true"
     [paginator]="true"
     [showCurrentPageReport]="true"
+    [resizableColumns]="true"
     [globalFilterFields]="fields"
     [(selection)]="selectedReceivedMarks"
   >
@@ -42,7 +44,7 @@
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th *ngFor="let col of columns" pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
+        <th *ngFor="let col of columns" pResizableColumn pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
         <th></th>
       </tr>
     </ng-template>
@@ -53,6 +55,8 @@
           <p-tableCheckbox [value]="receivedMark"></p-tableCheckbox>
         </td>
         <td *ngFor="let col of columns">
+          <span class="p-column-title">{{ col.header }}</span>
+
           <ng-container *ngIf="col.isDate; else normalField">
             {{ receivedMark[col.field] | date: 'dd/MM/yyyy' }}
           </ng-container>
@@ -85,10 +89,6 @@
           <button class="p-button-rounded p-button-warning" pButton pTooltip="History Changes" pRipple icon="pi pi-search"></button>
         </td>
       </tr>
-    </ng-template>
-
-    <ng-template pTemplate="summary">
-      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ receivedMarks ? receivedMarks.length : 0 }} users.</div>
     </ng-template>
   </p-table>
 </div>

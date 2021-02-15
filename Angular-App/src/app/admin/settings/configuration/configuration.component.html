@@ -2,12 +2,14 @@
   <p-table
     #configurationDataTable
     dataKey="key"
+    styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [rows]="20"
     [columns]="cols"
     [value]="configurations"
     [rowHover]="true"
     [paginator]="true"
+    [resizableColumns]="true"
     [showCurrentPageReport]="true"
     [globalFilterFields]="colFields"
   >
@@ -23,7 +25,7 @@
 
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th *ngFor="let col of columns" pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
+        <th *ngFor="let col of columns" pResizableColumn pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
         <th></th>
       </tr>
     </ng-template>
@@ -31,6 +33,8 @@
     <ng-template pTemplate="body" let-configuration let-columns="columns">
       <tr>
         <td *ngFor="let col of columns">
+          <span class="p-column-title">{{ col.header }}</span>
+
           <ng-container *ngIf="col.isDate; else elseTemplate">
             {{ configuration[col.field] | date: 'dd/MM/yyyy' }}
           </ng-container>
@@ -49,10 +53,6 @@
           ></button>
         </td>
       </tr>
-    </ng-template>
-
-    <ng-template pTemplate="summary">
-      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ configurations ? configurations.length : 0 }} configurations.</div>
     </ng-template>
   </p-table>
 </div>

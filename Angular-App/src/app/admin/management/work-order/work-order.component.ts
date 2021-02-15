@@ -21,7 +21,11 @@ export class WorkOrderComponent implements OnInit {
 
   isEdit = false;
   isShowDialog = false;
+  isShowHistoryDialog = false;
   titleDialog = '';
+
+  cols: any[] = [];
+  fields: any[] = [];
 
   get quantityControl() {
     return this.workOrderForm.get('quantity');
@@ -46,6 +50,21 @@ export class WorkOrderComponent implements OnInit {
   constructor(private workOrderClients: WorkOrderClients, private productClients: ProductClients, private notificationService: NotificationService) {}
 
   ngOnInit() {
+    this.cols = [
+      { header: 'ID', field: 'id' },
+      { header: 'Product Number', field: 'product', subField: 'productNumber' },
+      { header: 'Qty', field: 'quantity' },
+      { header: 'Moving Qty', field: 'movingQuantity' },
+      { header: 'Remain Qty', field: 'remainQuantity' },
+      { header: 'Notes', field: 'notes' },
+      { header: 'Created', field: 'created', isDate: true },
+      { header: 'Create By', field: 'createBy' },
+      { header: 'Last Modified', field: 'lastModified', isDate: true },
+      { header: 'Last Modified By', field: 'lastModifiedBy' },
+    ];
+
+    this.fields = this.cols.map((i) => i.field);
+
     this.initWorkOrders();
     this.initProducts();
     this.initForm();
@@ -79,6 +98,8 @@ export class WorkOrderComponent implements OnInit {
       (i) => {
         this.products = i;
         this.selectItems = this._mapToSelectItem(i);
+
+        console.log(i);
       },
       (_) => (this.products = [])
     );
