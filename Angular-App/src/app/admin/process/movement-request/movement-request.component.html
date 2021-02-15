@@ -1,16 +1,29 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
-    <ng-template pTemplate="left">
-      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Movement Requests"
+    <ng-template pTemplate="left"></ng-template>
+    <ng-template pTemplate="right">
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
         (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
         pRipple
         icon="pi pi-trash"
-        [disabled]="!selectedMovementRequests || !selectedMovementRequests.length"
-        label="Delete Movement Requests"
-        (click)="openDeleteDialog()"></button>
+        label="Delete"
+        [disabled]="selectedMovementRequests && selectedMovementRequests.length !== 1"
+        (click)="openDeleteDialog(selectedMovementRequests[0])"></button>
+
+      <button
+        class="p-button-success p-mr-2"
+        pButton
+        pRipple
+        label="Edit"
+        icon="pi pi-pencil"
+        [disabled]="selectedMovementRequests && selectedMovementRequests.length !== 1"
+        (click)="openEditDialog(selectedMovementRequests[0])"></button>
+
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search"
+        [disabled]="selectedMovementRequests && selectedMovementRequests.length !== 1" label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -27,6 +40,7 @@
     [showCurrentPageReport]="true"
     [resizableColumns]="true"
     [globalFilterFields]="colFields"
+    [scrollable]="true"
     [(selection)]="selectedMovementRequests">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
@@ -39,43 +53,48 @@
       </div>
     </ng-template>
 
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col [style.width.px]="col.width" *ngFor="let col of columns" />
+      </colgroup>
+    </ng-template>
+
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th style="width: 3rem">
-          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-        </th>
-        <th *ngFor="let col of columns" pResizableColumn pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon
-            field="{{ col.field }}"></p-sortIcon>
-        </th>
-        <th></th>
+        <ng-container *ngFor="let col of columns">
+          <ng-container [ngSwitch]="col.type">
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+              <th>
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon
+                  [field]="col.field"></p-sortIcon>
+              </th>
+            </ng-container>
+          </ng-container>
+        </ng-container>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-movementRequest let-columns="columns">
+    <ng-template pTemplate="body" let-workOrder let-columns="columns">
       <tr>
-        <td>
-          <p-tableCheckbox [value]="movementRequest"></p-tableCheckbox>
-        </td>
         <td *ngFor="let col of columns">
-          {{ movementRequest[col.field] }}
-        </td>
-        <td>
-          <button
-            class="p-button-rounded p-button-success p-mr-2"
-            pTooltip="Edit Movement Request"
-            pButton
-            pRipple
-            icon="pi pi-pencil"
-            (click)="openEditDialog(movementRequest)"></button>
-          <button
-            class="p-button-rounded p-button-danger p-mr-2"
-            pTooltip="Delete Movement Request"
-            pButton
-            pRipple
-            icon="pi pi-trash"
-            (click)="openDeleteDialog(movementRequest)"></button>
-          <button class="p-button-rounded p-button-warning" pTooltip="History Changes" pButton pRipple
-            icon="pi pi-search"></button>
+          <ng-container [ngSwitch]="col.type">
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+              <p-tableCheckbox [value]="workOrder"></p-tableCheckbox>
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+              {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+              {{ workOrder[col.field][col.subField] }}
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+              {{ workOrder[col.field] }}
+            </ng-container>
+          </ng-container>
         </td>
       </tr>
     </ng-template>
@@ -96,7 +115,6 @@
         <ng-template pTemplate="title"> Movement Request </ng-template>
         <ng-template pTemplate="content">
           <div class="p-fluid">
-            {{ movementRequestForm.value | json }}
             <form [formGroup]="movementRequestForm">
               <div class="form-group">
                 <label for="workOrders" class="control-label">Work Orders</label><span class="p-invalid">*</span>

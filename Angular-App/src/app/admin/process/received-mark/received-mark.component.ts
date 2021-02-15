@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReceivedMarkClients, ReceivedMarkModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { TypeColumn } from 'app/shared/configs/type-column';
+import { WidthColumn } from 'app/shared/configs/width-column';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { SelectItem } from 'primeng/api';
 
@@ -25,6 +27,7 @@ export class ReceivedMarkComponent implements OnInit {
 
   cols: any[] = [];
   fields: any[] = [];
+  TypeColumn = TypeColumn;
 
   get workOrderControl() {
     return this.receivedMarkForm.get('workOrderId');
@@ -34,16 +37,17 @@ export class ReceivedMarkComponent implements OnInit {
     return this.receivedMarkForm.get('notes');
   }
 
-  constructor(private receivedMarkClients: ReceivedMarkClients, private workOrderClients: WorkOrderClients, private notificationService: NotificationService) {}
+  constructor(private receivedMarkClients: ReceivedMarkClients, private workOrderClients: WorkOrderClients, private notificationService: NotificationService) { }
 
   ngOnInit() {
     this.cols = [
-      { header: 'Work Order', field: 'workOrder', isDate: false, subField: 'id' },
-      { header: 'Notes', field: 'notes', isDate: false },
-      { header: 'Created', field: 'created', isDate: true },
-      { header: 'Create By', field: 'createBy', isDate: false },
-      { header: 'Last Modified', field: 'lastModified', isDate: true },
-      { header: 'Last Modified By', field: 'lastModifiedBy', isDate: false },
+      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'Work Order', field: 'workOrder', subField: 'id', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);

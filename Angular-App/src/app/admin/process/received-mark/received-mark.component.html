@@ -1,16 +1,29 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
-    <ng-template pTemplate="left">
-      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Received Marks" (click)="openCreateDialog()"></button>
+    <ng-template pTemplate="left"></ng-template>
+    <ng-template pTemplate="right">
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
+        (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
         pRipple
         icon="pi pi-trash"
-        [disabled]="!selectedReceivedMarks || !selectedReceivedMarks.length"
-        label="Delete Received Marks"
-        (click)="openDeleteDialog()"
-      ></button>
+        label="Delete"
+        [disabled]="selectedReceivedMarks && selectedReceivedMarks.length !== 1"
+        (click)="openDeleteDialog(selectedReceivedMarks[0])"></button>
+
+      <button
+        class="p-button-success p-mr-2"
+        pButton
+        pRipple
+        label="Edit"
+        icon="pi pi-pencil"
+        [disabled]="selectedReceivedMarks && selectedReceivedMarks.length !== 1"
+        (click)="openEditDialog(selectedReceivedMarks[0])"></button>
+
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search"
+        [disabled]="selectedReceivedMarks && selectedReceivedMarks.length !== 1" label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -27,64 +40,61 @@
     [showCurrentPageReport]="true"
     [resizableColumns]="true"
     [globalFilterFields]="fields"
-    [(selection)]="selectedReceivedMarks"
-  >
+    [scrollable]="true"
+    [(selection)]="selectedReceivedMarks">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">Received Mark</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+          <input pInputText type="text" (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
         </span>
       </div>
     </ng-template>
 
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col [style.width.px]="col.width" *ngFor="let col of columns" />
+      </colgroup>
+    </ng-template>
+
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th style="width: 3rem">
-          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-        </th>
-        <th *ngFor="let col of columns" pResizableColumn pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
-        <th></th>
+        <ng-container *ngFor="let col of columns">
+          <ng-container [ngSwitch]="col.type">
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+              <th>
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon
+                  [field]="col.field"></p-sortIcon>
+              </th>
+            </ng-container>
+          </ng-container>
+        </ng-container>
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-receivedMark let-columns="columns">
+    <ng-template pTemplate="body" let-workOrder let-columns="columns">
       <tr>
-        <td>
-          <p-tableCheckbox [value]="receivedMark"></p-tableCheckbox>
-        </td>
         <td *ngFor="let col of columns">
-          <ng-container *ngIf="col.isDate; else normalField">
-            {{ receivedMark[col.field] | date: 'dd/MM/yyyy' }}
-          </ng-container>
-          <ng-template #normalField>
-            <ng-container *ngIf="col.subField; else elseTemplate">
-              {{ receivedMark[col.field][col.subField] }}
+          <ng-container [ngSwitch]="col.type">
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+              <p-tableCheckbox [value]="workOrder"></p-tableCheckbox>
             </ng-container>
-            <ng-template #elseTemplate>
-              {{ receivedMark[col.field] }}
-            </ng-template>
-          </ng-template>
-        </td>
-        <td>
-          <button
-            class="p-button-rounded p-button-success p-mr-2"
-            pButton
-            pTooltip="Edit Received Mark"
-            pRipple
-            icon="pi pi-pencil"
-            (click)="openEditDialog(receivedMark)"
-          ></button>
-          <button
-            class="p-button-rounded p-button-danger p-mr-2"
-            pButton
-            pTooltip="Delete Received Mark"
-            pRipple
-            icon="pi pi-trash"
-            (click)="openDeleteDialog(receivedMark)"
-          ></button>
-          <button class="p-button-rounded p-button-warning" pButton pTooltip="History Changes" pRipple icon="pi pi-search"></button>
+            <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+              {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+              {{ workOrder[col.field][col.subField] }}
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+              {{ workOrder[col.field] }}
+            </ng-container>
+          </ng-container>
         </td>
       </tr>
     </ng-template>
@@ -92,12 +102,14 @@
 </div>
 
 <!-- Edit Received Mark Dialog -->
-<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog"
+  (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="receivedMarkForm">
       <div class="form-group">
         <label for="product" class="control-label">Work Order</label>
-        <p-dropdown [options]="selectItems" [formControl]="workOrderControl" id="workOrder" placeholder="Select a Work Order" appendTo="body"></p-dropdown>
+        <p-dropdown [options]="selectItems" [formControl]="workOrderControl" id="workOrder"
+          placeholder="Select a Work Order" appendTo="body"></p-dropdown>
         <ng-container *ngIf="workOrderControl.invalid && (workOrderControl.dirty || workOrderControl.touched)">
           <small class="p-invalid create-user-form__error">Please select work order</small>
         </ng-container>
@@ -111,12 +123,14 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="receivedMarkForm.invalid" (click)="onSubmit()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="receivedMarkForm.invalid"
+      (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>
 
 <!-- Delete Received Marks Dialog -->
-<p-dialog header="Delete Received Marks" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
+<p-dialog header="Delete Received Marks" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog"
+  (onHide)="hideDeleteDialog()">
   <ng-template pTemplate="content">
     <ng-container *ngIf="currentSelectedReceivedMark && currentSelectedReceivedMark.length; else deleteMany">
       <div>Are you sure you want to delete {{ currentSelectedReceivedMark[0].id }} ?</div>
@@ -128,7 +142,8 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDeleteDialog()"></button>
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+      (click)="hideDeleteDialog()"></button>
     <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onDelete()"></button>
   </ng-template>
 </p-dialog>

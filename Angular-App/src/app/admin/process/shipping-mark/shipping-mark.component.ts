@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingMarkClients, ShippingMarkModel } from 'app/shared/api-clients/shipping-app.client';
+import { TypeColumn } from 'app/shared/configs/type-column';
+import { WidthColumn } from 'app/shared/configs/width-column';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { SelectItem } from 'primeng/api';
 
@@ -25,6 +27,7 @@ export class ShippingMarkComponent implements OnInit {
 
   cols: any[] = [];
   fields: any[] = [];
+  TypeColumn = TypeColumn;
 
   get quantityControl() {
     return this.shippingMarkForm.get('quantity');
@@ -50,20 +53,21 @@ export class ShippingMarkComponent implements OnInit {
     return this.shippingMarkForm.get('cartonNumber');
   }
 
-  constructor(private shippingMarkClients: ShippingMarkClients, private productClients: ProductClients, private notificationService: NotificationService) {}
+  constructor(private shippingMarkClients: ShippingMarkClients, private productClients: ProductClients, private notificationService: NotificationService) { }
 
   ngOnInit() {
     this.cols = [
-      { header: 'Customer', field: 'customerId', isDate: false },
-      { header: 'Quantity', field: 'quantity', isDate: false },
-      { header: 'Revision', field: 'revision', isDate: false },
-      { header: 'Carton Number', field: 'cartonNumber', isDate: false },
-      { header: 'Product', field: 'product', isDate: false, subField: 'productName' },
-      { header: 'Notes', field: 'notes', isDate: false },
-      { header: 'Created', field: 'created', isDate: true },
-      { header: 'Create By', field: 'createBy', isDate: false },
-      { header: 'Last Modified', field: 'lastModified', isDate: true },
-      { header: 'Last Modified By', field: 'lastModifiedBy', isDate: false },
+      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'Customer', field: 'customerId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Quantity', field: 'quantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Revision', field: 'revision', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Carton Number', field: 'cartonNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Product', field: 'product', subField: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn }
     ];
 
     this.fields = this.cols.map((i) => i.field);

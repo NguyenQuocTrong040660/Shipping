@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MenuItem } from 'primeng/api';
 import { MovementRequestClients, MovementRequestModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { NotificationService } from 'app/shared/services/notification.service';
+import { WidthColumn } from 'app/shared/configs/width-column';
+import { TypeColumn } from 'app/shared/configs/type-column';
 
 @Component({
   templateUrl: './movement-request.component.html',
@@ -21,9 +23,10 @@ export class MovementRequestComponent implements OnInit {
   activeIndex = 0;
   workOrderList: WorkOrderModel[] = [];
   workOrderItems: WorkOrderItems[] = [];
-  cols: { header: string; field: string }[] = [];
+  cols: any[] = [];
   colFields = [];
   productsOfSelectedWOs = [];
+  TypeColumn = TypeColumn;
 
   get name() {
     return this.movementRequestForm.get('name');
@@ -37,15 +40,19 @@ export class MovementRequestComponent implements OnInit {
 
   ngOnInit() {
     this.cols = [
-      { header: 'Name', field: 'name' },
-      { header: 'Note', field: 'note' },
-      { header: 'Created', field: 'created' },
-      { header: 'Create By', field: 'createBy' },
-      { header: 'Last Modified', field: 'lastModified' },
-      { header: 'Last Modified By', field: 'lastModifiedBy' },
+      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'Name', field: 'name', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn }
     ];
-    this.stepItems = [{ label: 'Work Order' }, { label: 'Move Quantity' }, { label: 'Confirm' }];
+
     this.colFields = this.cols.map((i) => i.field);
+
+
+    this.stepItems = [{ label: 'Work Order' }, { label: 'Move Quantity' }, { label: 'Confirm' }];
 
     this.initMovementRequests();
     this.initWorkOrders();
@@ -54,32 +61,32 @@ export class MovementRequestComponent implements OnInit {
       {
         id: '1',
         name: 'Product Of WO 1 1',
-        workOrderId: 1,
+        workOrderId: 1
       },
       {
         id: '2',
         name: 'Product Of WO 1 2',
-        workOrderId: 1,
+        workOrderId: 1
       },
       {
         id: '3',
         name: 'Product Of WO 1 3',
-        workOrderId: 1,
+        workOrderId: 1
       },
       {
         id: '4',
         name: 'Product Of WO 2 1',
-        workOrderId: 2,
+        workOrderId: 2
       },
       {
         id: '3',
         name: 'Product Of WO 3 1',
-        workOrderId: 3,
+        workOrderId: 3
       },
       {
         id: '3',
         name: 'Product Of WO 3 2',
-        workOrderId: 3,
+        workOrderId: 3
       },
     ];
 
@@ -143,6 +150,12 @@ export class MovementRequestComponent implements OnInit {
   hideCreateDialog() {
     this.isShowCreateDialog = false;
     this.activeIndex = 0;
+    this.workOrderItems.map(i => {
+      if (i.quantity) {
+        i.quantity = null;
+      }
+    });
+
     this.movementRequestForm.reset();
   }
 
@@ -207,14 +220,7 @@ export class MovementRequestComponent implements OnInit {
             this.productsOfSelectedWOs.push(i);
           });
         });
-
         break;
-      }
-      case 1: {
-        break;
-      }
-      case 2: {
-
       }
     }
 
@@ -238,4 +244,5 @@ interface WorkOrderItems {
   id: string;
   name: string;
   workOrderId: number;
+  quantity?: number;
 }
