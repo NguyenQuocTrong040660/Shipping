@@ -55,8 +55,6 @@
           <p-tableCheckbox [value]="receivedMark"></p-tableCheckbox>
         </td>
         <td *ngFor="let col of columns">
-          <span class="p-column-title">{{ col.header }}</span>
-
           <ng-container *ngIf="col.isDate; else normalField">
             {{ receivedMark[col.field] | date: 'dd/MM/yyyy' }}
           </ng-container>

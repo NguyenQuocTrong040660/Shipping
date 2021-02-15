@@ -55,8 +55,6 @@
           <p-tableCheckbox [value]="shippingPlan"></p-tableCheckbox>
         </td>
         <td *ngFor="let col of columns">
-          <span class="p-column-title">{{ col.header }}</span>
-
           {{ shippingPlan[col.field] }}
         </td>
         <td>

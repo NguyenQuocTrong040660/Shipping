@@ -55,8 +55,6 @@
           <p-tableCheckbox [value]="shippingMark"></p-tableCheckbox>
         </td>
         <td *ngFor="let col of columns">
-          <span class="p-column-title">{{ col.header }}</span>
-
           <ng-container *ngIf="col.isDate; else normalField">
             {{ shippingMark[col.field] | date: 'dd/MM/yyyy' }}
           </ng-container>

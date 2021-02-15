@@ -55,8 +55,6 @@
           <p-tableCheckbox [value]="movementRequest"></p-tableCheckbox>
         </td>
         <td *ngFor="let col of columns">
-          <span class="p-column-title">{{ col.header }}</span>
-
           {{ movementRequest[col.field] }}
         </td>
         <td>

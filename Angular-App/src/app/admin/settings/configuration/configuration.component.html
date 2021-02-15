@@ -33,8 +33,6 @@
     <ng-template pTemplate="body" let-configuration let-columns="columns">
       <tr>
         <td *ngFor="let col of columns">
-          <span class="p-column-title">{{ col.header }}</span>
-
           <ng-container *ngIf="col.isDate; else elseTemplate">
             {{ configuration[col.field] | date: 'dd/MM/yyyy' }}
           </ng-container>

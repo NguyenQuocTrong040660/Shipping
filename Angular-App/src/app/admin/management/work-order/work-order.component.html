@@ -55,8 +55,6 @@
           <p-tableCheckbox [value]="workOrder"></p-tableCheckbox>
         </td>
         <td *ngFor="let col of columns">
-          <span class="p-column-title">{{ col.header }}</span>
-
           <ng-container *ngIf="col.isDate; else normalField">
             {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}
           </ng-container>
