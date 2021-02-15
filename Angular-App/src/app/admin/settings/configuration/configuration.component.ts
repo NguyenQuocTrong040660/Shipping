@@ -2,6 +2,8 @@ import { NotificationService } from 'app/shared/services/notification.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfigClients, ConfigModel } from 'app/shared/api-clients/shipping-app.client';
+import { WidthColumn } from 'app/shared/configs/width-column';
+import { TypeColumn } from 'app/shared/configs/type-column';
 
 @Component({
   templateUrl: './configuration.component.html',
@@ -9,8 +11,12 @@ import { ConfigClients, ConfigModel } from 'app/shared/api-clients/shipping-app.
 })
 export class ConfigurationComponent implements OnInit {
   configurations: ConfigModel[] = [];
+  selectedConfigurations: ConfigModel[] = [];
   isShowEditDialog: boolean;
   configurationForm: FormGroup;
+
+  WidthColumn = WidthColumn;
+  TypeColumn = TypeColumn;
 
   cols: any[] = [];
   colFields = [];
@@ -29,16 +35,21 @@ export class ConfigurationComponent implements OnInit {
     this.getConfigurations();
 
     this.cols = [
-      { header: 'Key', field: 'key' },
-      { header: 'Value', field: 'value' },
-      { header: 'Created', field: 'created', isDate: true },
-      { header: 'Create By', field: 'createBy' },
-      { header: 'Last Modified', field: 'lastModified', isDate: true },
-      { header: 'Last Modified By', field: 'lastModifiedBy' },
+      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'Key', field: 'key', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Value', field: 'value', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
     ];
 
     this.colFields = this.cols.map((i) => i.field);
 
+    this.initForm();
+  }
+
+  initForm() {
     this.configurationForm = new FormGroup({
       key: new FormControl('', Validators.required),
       value: new FormControl('', Validators.required),

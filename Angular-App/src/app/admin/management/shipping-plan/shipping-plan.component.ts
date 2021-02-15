@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
-import { SelectItem } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 import { NotificationService } from 'app/shared/services/notification.service';
+import { WidthColumn } from 'app/shared/configs/width-column';
+import { TypeColumn } from 'app/shared/configs/type-column';
 
 @Component({
   templateUrl: './shipping-plan.component.html',
@@ -14,32 +16,82 @@ export class ShippingPlanComponent implements OnInit {
   selectItems: SelectItem[] = [];
   products: ProductModel[] = [];
 
-  isShowDeleteDialog: boolean;
-  currentSelectedShippingPlan: ShippingPlanModel[] = [];
-  isDeleteMany: boolean;
   shippingPlanForm: FormGroup;
-
-  cols: any[] = [];
-  fields: any[] = [];
 
   isEdit = false;
   isShowDialog = false;
   titleDialog = '';
 
-  get name() {
-    return this.shippingPlanForm.get('name');
+  cols: any[] = [];
+  fields: any[] = [];
+
+  WidthColumn = WidthColumn;
+  TypeColumn = TypeColumn;
+
+  get purchaseOrderControl() {
+    return this.shippingPlanForm.get('purchaseOrder');
   }
 
-  constructor(private shippingPlanClients: ShippingPlanClients, private productClients: ProductClients, private notificationService: NotificationService) {}
+  get semlineNumberControl() {
+    return this.shippingPlanForm.get('semlineNumber');
+  }
+
+  get customerNameControl() {
+    return this.shippingPlanForm.get('customerName');
+  }
+
+  get salesPriceControl() {
+    return this.shippingPlanForm.get('salesPrice');
+  }
+
+  get salesIdControl() {
+    return this.shippingPlanForm.get('salesID');
+  }
+
+  get quantityControl() {
+    return this.shippingPlanForm.get('quantityOrder');
+  }
+
+  get shippingDateControl() {
+    return this.shippingPlanForm.get('shippingDate');
+  }
+
+  get shippingModeControl() {
+    return this.shippingPlanForm.get('shippingMode');
+  }
+
+  get productControl() {
+    return this.shippingPlanForm.get('productId');
+  }
+
+  get notesControl() {
+    return this.shippingPlanForm.get('notes');
+  }
+
+  constructor(
+    private shippingPlanClients: ShippingPlanClients,
+    private confirmationService: ConfirmationService,
+    private productClients: ProductClients,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit() {
     this.cols = [
-      { header: 'Name', field: 'name' },
-      { header: 'Notes', field: 'notes' },
-      { header: 'Created', field: 'created' },
-      { header: 'Create By', field: 'createBy' },
-      { header: 'Last Modified', field: 'lastModified' },
-      { header: 'Last Modified By', field: 'lastModifiedBy' },
+      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Qty Order', field: 'quantityOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Sales Price', field: 'salesPrice', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Sales ID', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Shipping Mode', field: 'shippingMode', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -59,7 +111,7 @@ export class ShippingPlanComponent implements OnInit {
       salesID: new FormControl(0, Validators.required),
       semlineNumber: new FormControl(0, Validators.required),
       shippingMode: new FormControl('', Validators.required),
-      shippingDate: new FormControl(null),
+      shippingDate: new FormControl(null, Validators.required),
       notes: new FormControl(''),
       productId: new FormControl(0, Validators.required),
       created: new FormControl(null),
@@ -134,7 +186,7 @@ export class ShippingPlanComponent implements OnInit {
   // Edit Shipping Mark
   openEditDialog(shippingPlan: ShippingPlanModel) {
     this.isShowDialog = true;
-    this.titleDialog = 'Create Shipping Mark';
+    this.titleDialog = 'Create Shipping Plan';
     this.isEdit = true;
     this.shippingPlanForm.patchValue(shippingPlan);
   }
@@ -164,44 +216,26 @@ export class ShippingPlanComponent implements OnInit {
     );
   }
 
-  // Delete Shipping Plan
-  openDeleteDialog(singleShippingPlan?: ShippingPlanModel) {
-    this.isShowDeleteDialog = true;
-    this.currentSelectedShippingPlan = [];
+  openDeleteDialog(singleShippingPlan: ShippingPlanModel) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this items?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.shippingPlanClients.deletedShippingPlan(singleShippingPlan.id).subscribe(
+          (result) => {
+            if (result && result.succeeded) {
+              this.notificationService.success('Delete Shipping Plan Successfully');
+              this.initDataSource();
+            } else {
+              this.notificationService.error(result?.error);
+            }
 
-    if (singleShippingPlan) {
-      this.isDeleteMany = false;
-      this.currentSelectedShippingPlan.push(singleShippingPlan);
-    } else {
-      this.isDeleteMany = true;
-    }
-  }
-
-  hideDeleteDialog() {
-    this.isShowDeleteDialog = false;
-  }
-
-  onDelete() {
-    if (this.isDeleteMany) {
-      console.log('this.selectedShippingPlans: ' + this.selectedShippingPlans);
-    } else {
-      const shippingPlan = this.currentSelectedShippingPlan[0];
-      this.shippingPlanClients.deletedShippingPlan(shippingPlan.id).subscribe(
-        (result) => {
-          if (result && result.succeeded) {
-            this.notificationService.success('Delete Shipping Plan Successfully');
-            this.initDataSource();
-          } else {
-            this.notificationService.error(result?.error);
-          }
-
-          this.hideDeleteDialog();
-        },
-        (_) => {
-          this.notificationService.error('Delete  Shipping Plan Failed. Please try again');
-          this.hideDialog();
-        }
-      );
-    }
+            this.selectedShippingPlans = this.selectedShippingPlans.filter((i) => i.id !== singleShippingPlan.id);
+          },
+          (_) => this.notificationService.error('Delete Shipping Plan Failed. Please try again')
+        );
+      },
+    });
   }
 }

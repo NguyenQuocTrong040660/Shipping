@@ -5,27 +5,12 @@
         <div class="card card-primary card-outline">
           <div class="card-body box-profile">
             <div class="text-center">
-              <img
-                class="profile-user-img img-fluid img-circle"
-                src="assets/img/admin/acount.png"
-                alt="User profile picture"
-              />
+              <img class="profile-user-img img-fluid img-circle" src="assets/img/admin/acount.png" alt="User profile picture" />
             </div>
 
             <h3 class="profile-username text-center">{{ user?.userName }}</h3>
 
             <p class="text-muted text-center">{{ user?.roles?.length > 0 ? user?.roles[0] : '' }}</p>
-          </div>
-        </div>
-
-        <div class="card card-primary">
-          <div class="card-header">
-            <h3 class="card-title">About</h3>
-          </div>
-          <div class="card-body">
-            <strong><i class="fas fa-book mr-1"></i> Education</strong>
-
-            <p class="text-muted">B.S. in Computer Science from the University of Tennessee at Knoxville</p>
           </div>
         </div>
       </div>
@@ -39,65 +24,72 @@
           <div class="card-body">
             <div class="tab-content">
               <div class="active tab-pane" id="settings">
-                <form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()" class="form-horizontal">
-                  <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Old Password</label>
-                    <div class="col-sm-10">
-                      <input [formControl]="oldPassword" type="password" class="form-control" placeholder="" />
-                      <span
-                        *ngIf="oldPassword?.invalid && (oldPassword?.dirty || oldPassword?.touched || submitted)"
-                        class="error invalid-feedback d-block"
-                      >
-                        <ng-container *ngIf="oldPassword.errors.required">Please specify a password</ng-container>
-                        <ng-container *ngIf="oldPassword.errors.minlength"
-                          >Password must be at least 6 characters.</ng-container
-                        >
-                      </span>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">New Password</label>
-                    <div class="col-sm-10">
-                      <input type="password" class="form-control" [formControl]="newPassword" placeholder="" />
-                      <span
-                        *ngIf="newPassword?.invalid && (newPassword?.dirty || newPassword?.touched || submitted)"
-                        class="error invalid-feedback d-block"
-                      >
-                        <ng-container *ngIf="newPassword.errors.required">Please specify a new password</ng-container>
-                        <ng-container *ngIf="newPassword.errors.minlength"
-                          >Password must be at least 6 characters.</ng-container
-                        >
-                      </span>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label class="col-sm-2 col-form-label">Confirm Password</label>
-                    <div class="col-sm-10">
-                      <input type="password" class="form-control" [formControl]="confirmPassword" placeholder="" />
-                      <span
-                        *ngIf="
-                          confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched || submitted)
-                        "
-                        class="error invalid-feedback d-block"
-                      >
-                        <ng-container *ngIf="confirmPassword.errors.required"
-                          >Please specify a confirm password</ng-container
-                        >
-                        <ng-container *ngIf="confirmPassword.errors.minlength"
-                          >Password must be at least 6 characters.</ng-container
-                        >
-                        <ng-container *ngIf="confirmPassword.errors.invalidConfirmPassword"
-                          >Confirm password does not match with your new password</ng-container
-                        >
-                      </span>
+                <form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()">
+                  <div class="p-grid p-fluid">
+                    <div class="p-col-2">Old Password</div>
+                    <div class="p-col-10">
+                      <div class="p-field">
+                        <input
+                          [ngClass]="{ 'ng-dirty': oldPassword.invalid && (oldPassword.dirty || oldPassword.touched) }"
+                          pInputText
+                          id="password"
+                          [formControl]="oldPassword"
+                          type="password"
+                          placeholder="Password"
+                        />
+                        <span class="p-invalid p-error" *ngIf="oldPassword?.invalid && (oldPassword?.dirty || oldPassword?.touched || submitted)">
+                          <ng-container *ngIf="oldPassword.errors.required">Please specify a password</ng-container>
+                          <ng-container *ngIf="oldPassword.errors.minlength">Password must be at least 6 characters.</ng-container>
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="form-group row">
-                    <div class="offset-sm-2 col-sm-10">
-                      <button [disabled]="changePasswordForm.invalid" type="submit" class="btn btn-danger">
-                        Submit
-                      </button>
+                  <div class="p-grid p-fluid">
+                    <div class="p-col-2">New Password</div>
+                    <div class="p-col-10">
+                      <div class="p-field">
+                        <input
+                          [ngClass]="{ 'ng-dirty': newPassword.invalid && (newPassword.dirty || newPassword.touched) }"
+                          pInputText
+                          id="newPassword"
+                          type="password"
+                          [formControl]="newPassword"
+                          placeholder="New Password"
+                        />
+                        <span class="p-invalid p-error" *ngIf="newPassword?.invalid && (newPassword?.dirty || newPassword?.touched || submitted)">
+                          <ng-container *ngIf="newPassword.errors.required">Please specify a new password</ng-container>
+                          <ng-container *ngIf="newPassword.errors.minlength">Password must be at least 6 characters.</ng-container>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="p-grid p-fluid">
+                    <div class="p-col-2">Confirm Password</div>
+                    <div class="p-col-10">
+                      <div class="p-field">
+                        <input
+                          [ngClass]="{ 'ng-dirty': confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched) }"
+                          pInputText
+                          type="password"
+                          id="confirmPassword"
+                          [formControl]="confirmPassword"
+                          placeholder="Confirm Password"
+                        />
+                        <span class="p-invalid p-error" *ngIf="confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched || submitted)">
+                          <ng-container *ngIf="confirmPassword.errors.required">Please specify a confirm password</ng-container>
+                          <ng-container *ngIf="confirmPassword.errors.minlength">Password must be at least 6 characters.</ng-container>
+                          <ng-container *ngIf="confirmPassword.errors.invalidConfirmPassword">Confirm password does not match with your new password</ng-container>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="p-grid p-fluid">
+                    <div class="p-col-2"></div>
+                    <div class="p-col-10">
+                      <button [style.width.px]="120" [disabled]="changePasswordForm.invalid" type="submit" pButton pRipple label="Submit" class="p-button-success"></button>
                     </div>
                   </div>
                 </form>

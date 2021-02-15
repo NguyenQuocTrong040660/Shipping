@@ -1,16 +1,33 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Shipping Plans" (click)="openCreateDialog()"></button>
+      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload>
+      <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+    </ng-template>
+
+    <ng-template pTemplate="right">
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
         pRipple
         icon="pi pi-trash"
-        [disabled]="!selectedShippingPlans || !selectedShippingPlans.length"
-        label="Delete Shipping Plans"
-        (click)="openDeleteDialog()"
+        label="Delete"
+        [disabled]="selectedShippingPlans && selectedShippingPlans.length !== 1"
+        (click)="openDeleteDialog(selectedShippingPlans[0])"
       ></button>
+
+      <button
+        class="p-button-success p-mr-2"
+        pButton
+        pRipple
+        label="Edit"
+        icon="pi pi-pencil"
+        [disabled]="selectedShippingPlans && selectedShippingPlans.length !== 1"
+        (click)="openEditDialog(selectedShippingPlans[0])"
+      ></button>
+
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="selectedShippingPlans && selectedShippingPlans.length !== 1" label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -19,19 +36,20 @@
     dataKey="id"
     styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [rows]="20"
     [columns]="cols"
     [value]="shippingPlans"
+    [globalFilterFields]="fields"
+    [(selection)]="selectedShippingPlans"
     [rowHover]="true"
     [resizableColumns]="true"
     [paginator]="true"
+    [scrollable]="true"
     [showCurrentPageReport]="true"
-    [globalFilterFields]="fields"
-    [(selection)]="selectedShippingPlans"
+    [rows]="20"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Shipping Plan</h5>
+        <h5 class="p-m-0">Shipping Plan Management</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input pInputText type="text" (input)="shippingPlanDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
@@ -39,27 +57,46 @@
       </div>
     </ng-template>
 
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col [style.width.px]="col.width" *ngFor="let col of columns" />
+      </colgroup>
+    </ng-template>
+
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th style="width: 3rem">
-          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-        </th>
-        <th *ngFor="let col of columns" pResizableColumn pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
-        <th></th>
+        <ng-container *ngFor="let col of columns">
+          <ng-container [ngSwitch]="col.type">
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+              <th>
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+            </ng-container>
+            <ng-container *ngSwitchDefault>
+              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+            </ng-container>
+          </ng-container>
+        </ng-container>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-shippingPlan let-columns="columns">
       <tr>
-        <td>
-          <p-tableCheckbox [value]="shippingPlan"></p-tableCheckbox>
-        </td>
         <td *ngFor="let col of columns">
-          {{ shippingPlan[col.field] }}
-        </td>
-        <td>
-          <button class="p-button-rounded p-button-success p-mr-2" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(shippingPlan)"></button>
-          <button class="p-button-rounded p-button-danger" pButton pRipple icon="pi pi-trash" (click)="openDeleteDialog(shippingPlan)"></button>
+          <ng-container [ngSwitch]="col.type">
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+              <p-tableCheckbox [value]="shippingPlan"></p-tableCheckbox>
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+              {{ shippingPlan[col.field] | date: 'dd/MM/yyyy' }}
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+              {{ shippingPlan[col.field][col.subField] }}
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+              {{ shippingPlan[col.field] }}
+            </ng-container>
+          </ng-container>
         </td>
       </tr>
     </ng-template>
@@ -67,19 +104,164 @@
 </div>
 
 <!-- Create Shipping Plans Dialog -->
-<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="shippingPlanForm">
-      <div class="form-group">
-        <label for="name" class="control-label">Name</label>
-        <input id="name" formControlName="name" type="text" class="form-control" />
-        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
-        </ng-container>
-      </div>
-      <div class="form-group">
-        <label for="note" class="control-label">Note</label>
-        <input id="note" formControlName="note" type="text" class="form-control" />
+      <div class="p-grid p-fluid">
+        <div class="p-col-12">
+          <div class="p-field">
+            <label for="customerName">Customer Name</label>
+            <input
+              [ngClass]="{ 'ng-dirty': customerNameControl.invalid && (customerNameControl.dirty || customerNameControl.touched) }"
+              pInputText
+              id="customerName"
+              [formControl]="customerNameControl"
+              type="text"
+            />
+            <ng-container *ngIf="customerNameControl.invalid && (customerNameControl.dirty || customerNameControl.touched)">
+              <small class="p-invalid p-error">Please specify a customer name</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="product">Product</label>
+            <p-dropdown
+              [ngClass]="{ 'ng-dirty': productControl.invalid && (productControl.dirty || productControl.touched) }"
+              [options]="selectItems"
+              [formControl]="productControl"
+              id="product"
+              placeholder="Select a Product"
+              appendTo="body"
+            ></p-dropdown>
+
+            <ng-container *ngIf="productControl.invalid && (productControl.dirty || productControl.touched)">
+              <small class="p-invalid p-error">Please select product</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="movingQuantity">Quantity</label>
+            <p-inputNumber
+              [ngClass]="{ 'ng-dirty': quantityControl.invalid && (quantityControl.dirty || quantityControl.touched) }"
+              inputId="movingQuantity"
+              [formControl]="quantityControl"
+            >
+            </p-inputNumber>
+            <ng-container *ngIf="quantityControl.invalid && (quantityControl.dirty || quantityControl.touched)">
+              <small class="p-invalid p-error">Please specify a quantity</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="p-col-6">
+          <div class="p-field">
+            <label for="semlineNumber">Semline Number</label>
+            <input
+              [ngClass]="{ 'ng-dirty': semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched) }"
+              pInputText
+              id="semlineNumber"
+              [formControl]="semlineNumberControl"
+              type="text"
+            />
+
+            <ng-container *ngIf="semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched)">
+              <small class="p-invalid p-error">Please specify a semline number</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="p-col-6">
+          <div class="p-field">
+            <label for="purchaseOrder">Purchase Order</label>
+            <input
+              [ngClass]="{ 'ng-dirty': purchaseOrderControl.invalid && (purchaseOrderControl.dirty || purchaseOrderControl.touched) }"
+              pInputText
+              id="purchaseOrder"
+              [formControl]="purchaseOrderControl"
+              type="text"
+            />
+
+            <ng-container *ngIf="purchaseOrderControl.invalid && (purchaseOrderControl.dirty || purchaseOrderControl.touched)">
+              <small class="p-invalid p-error">Please specify a purchase order</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="shippingMode">Shipping Mode</label>
+            <input
+              [ngClass]="{ 'ng-dirty': shippingModeControl.invalid && (shippingModeControl.dirty || shippingModeControl.touched) }"
+              pInputText
+              id="shippingMode"
+              [formControl]="shippingModeControl"
+              type="text"
+            />
+
+            <ng-container *ngIf="shippingModeControl.invalid && (shippingModeControl.dirty || shippingModeControl.touched)">
+              <small class="p-invalid p-error">Please specify a shipping mode</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="shippingDate">Shipping Date</label>
+            <p-calendar
+              [ngClass]="{ 'ng-dirty': shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched) }"
+              id="shippingDate"
+              [formControl]="shippingDateControl"
+              appendTo="body"
+            ></p-calendar>
+
+            <ng-container *ngIf="shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched)">
+              <small class="p-invalid p-error">Please select shipping date</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="salesId">Sales Id</label>
+            <input
+              [ngClass]="{ 'ng-dirty': salesIdControl.invalid && (salesIdControl.dirty || salesIdControl.touched) }"
+              pInputText
+              id="salesId"
+              [formControl]="salesIdControl"
+              type="text"
+            />
+            <ng-container *ngIf="salesIdControl.invalid && (salesIdControl.dirty || salesIdControl.touched)">
+              <small class="p-invalid p-error">Please specify a sales id</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="salesPrice">Sales Price</label>
+            <p-inputNumber
+              [ngClass]="{ 'ng-dirty': salesPriceControl.invalid && (salesPriceControl.dirty || salesPriceControl.touched) }"
+              inputId="salesPrice"
+              mode="decimal"
+              [formControl]="salesPriceControl"
+            >
+            </p-inputNumber>
+            <ng-container *ngIf="salesPriceControl.invalid && (salesPriceControl.dirty || salesPriceControl.touched)">
+              <small class="p-invalid p-error">Please specify a sales price</small>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="p-field">
+            <label for="notes">Notes</label>
+            <input pInputText id="notes" [formControl]="notesControl" type="text" />
+          </div>
+        </div>
       </div>
     </form>
   </ng-template>
@@ -87,23 +269,5 @@
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingPlanForm.invalid" (click)="onSubmit()"></button>
-  </ng-template>
-</p-dialog>
-
-<!-- Delete Shipping Plan Dialog -->
-<p-dialog header="Delete Shipping Plans" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
-  <ng-template pTemplate="content">
-    <ng-container *ngIf="currentSelectedShippingPlan && currentSelectedShippingPlan.length; else deleteMany">
-      <div>Are you sure you want to delete {{ currentSelectedShippingPlan[0].id }} ?</div>
-    </ng-container>
-  </ng-template>
-
-  <ng-template #deleteMany>
-    <div>Are you sure you want to delete {{ selectedShippingPlans && selectedShippingPlans.length }} items ?</div>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDeleteDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onDelete()"></button>
   </ng-template>
 </p-dialog>

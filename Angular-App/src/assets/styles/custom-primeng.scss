@@ -40,6 +40,10 @@ p-table {
   }
 }
 
+.ng-invalid.ng-touched {
+  border-color: #f44336;
+}
+
 // p-table {
 //   .p-paginator {
 //     .p-paginator-current {

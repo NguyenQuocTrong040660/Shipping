@@ -1,167 +1,296 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import { TypeColumn } from 'app/shared/configs/type-column';
+import { WidthColumn } from 'app/shared/configs/width-column';
+import { NotificationService } from 'app/shared/services/notification.service';
+import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 
 @Component({
   templateUrl: './shipping-request.component.html',
   styleUrls: ['./shipping-request.component.scss'],
 })
 export class ShippingRequestComponent implements OnInit {
-  shippingRequests: ShippingRequest[] = [];
-  selectedShippingRequests: ShippingRequest[] = [];
-  isShowCreateDialog: boolean;
-  isShowEditDialog: boolean;
-  isShowDeleteDialog: boolean;
-  currentSelectedShippingRequest: ShippingRequest[] = [];
-  isDeleteMany: boolean;
-  shippingRequestForm: FormGroup;
-  cols: { header: string; field: string }[] = [];
+  shippingRequests: ShippingRequestModel[] = [];
+  shippingPlans: ShippingPlanModel[] = [];
+  selectedShippingRequests: ShippingRequestModel[] = [];
+  selectedShippingPlan: ShippingPlanModel;
 
-  get name() {
-    return this.shippingRequestForm.get('name');
+  selectItems: SelectItem[] = [];
+  products: ProductModel[] = [];
+
+  shippingRequestForm: FormGroup;
+
+  isEdit = false;
+  isShowDialogCreate = false;
+  isShowDialogEdit = false;
+  titleDialog = '';
+
+  stepItems: MenuItem[] = [];
+  cols: any[] = [];
+  colShippingPlans: any[] = [];
+  fields: any[] = [];
+  fieldShippingPlans: any[] = [];
+
+  activeIndex = 0;
+
+  WidthColumn = WidthColumn;
+  TypeColumn = TypeColumn;
+
+  get purchaseOrderControl() {
+    return this.shippingRequestForm.get('purchaseOrder');
   }
+
+  get semlineNumberControl() {
+    return this.shippingRequestForm.get('semlineNumber');
+  }
+
+  get customerNameControl() {
+    return this.shippingRequestForm.get('customerName');
+  }
+
+  get salesPriceControl() {
+    return this.shippingRequestForm.get('salesPrice');
+  }
+
+  get salesIdControl() {
+    return this.shippingRequestForm.get('salesID');
+  }
+
+  get quantityControl() {
+    return this.shippingRequestForm.get('quantityOrder');
+  }
+
+  get shippingDateControl() {
+    return this.shippingRequestForm.get('shippingDate');
+  }
+
+  get shippingModeControl() {
+    return this.shippingRequestForm.get('shippingMode');
+  }
+
+  get productControl() {
+    return this.shippingRequestForm.get('productId');
+  }
+
+  get notesControl() {
+    return this.shippingRequestForm.get('notes');
+  }
+
+  constructor(
+    private shippingRequestClients: ShippingRequestClients,
+    private shippingPlanClients: ShippingPlanClients,
+    private confirmationService: ConfirmationService,
+    private productClients: ProductClients,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit() {
     this.cols = [
-      { header: 'Name', field: 'name' },
-      { header: 'Note', field: 'note' },
-      { header: 'Created', field: 'created' },
-      { header: 'Create By', field: 'createBy' },
-      { header: 'Last Modified', field: 'lastModified' },
-      { header: 'Last Modified By', field: 'lastModifiedBy' },
+      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Qty Order', field: 'quantityOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Sales Price', field: 'salesPrice', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Sales ID', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Shipping Mode', field: 'shippingMode', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
     ];
 
-    this.shippingRequests = [
-      {
-        id: '1',
-        name: 'Shipping Request A',
-        note: 'This is Shipping Request A note',
-        created: new Date(),
-        createBy: 'Mr.A',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.A 1',
-      },
-      {
-        id: '2',
-        name: 'Shipping Request B',
-        note: 'This is Shipping Request B note',
-        created: new Date(),
-        createBy: 'Mr.B',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.B 1',
-      },
-      {
-        id: '3',
-        name: 'Shipping Request C',
-        note: 'This is Shipping Request C note',
-        created: new Date(),
-        createBy: 'Mr.C',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.C 1',
-      },
-      {
-        id: '4',
-        name: 'Shipping Request D',
-        note: 'This is Shipping Request D note',
-        created: new Date(),
-        createBy: 'Mr.D',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.D 1',
-      },
-      {
-        id: '5',
-        name: 'Shipping Request E',
-        note: 'This is Shipping Request E note',
-        created: new Date(),
-        createBy: 'Mr.E',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.E 1',
-      },
-      {
-        id: '6',
-        name: 'Shipping Request F',
-        note: 'This is Shipping Request F note',
-        created: new Date(),
-        createBy: 'Mr.F',
-        lastModified: new Date(),
-        lastModifiedBy: 'Mr.F 1',
-      },
-    ];
+    this.fields = this.cols.map((i) => i.field);
+    this.colShippingPlans = this.cols.filter((i) => i.field !== 'created' && i.field !== 'createBy' && i.field !== 'lastModified' && i.field !== 'lastModifiedBy');
+    this.fieldShippingPlans = this.colShippingPlans.map((i) => i.field);
 
+    this.stepItems = [{ label: 'Shipping Plan' }, { label: 'Confirmation' }];
+
+    this.initForm();
+    this.initShippingPlan();
+    this.initDataSource();
+    this.initProducts();
+  }
+
+  initShippingPlan() {
+    this.shippingPlanClients.getAllShippingPlan().subscribe(
+      (i) => (this.shippingPlans = i),
+      (_) => (this.shippingPlans = [])
+    );
+  }
+
+  initForm() {
     this.shippingRequestForm = new FormGroup({
-      name: new FormControl('', Validators.required),
-      note: new FormControl(''),
+      id: new FormControl(0),
+      purchaseOrder: new FormControl('', Validators.required),
+      customerName: new FormControl('', Validators.required),
+      quantityOrder: new FormControl(0, Validators.required),
+      salesPrice: new FormControl(0, Validators.required),
+      salesID: new FormControl(0, Validators.required),
+      semlineNumber: new FormControl(0, Validators.required),
+      shippingMode: new FormControl('', Validators.required),
+      shippingDate: new FormControl(null, Validators.required),
+      notes: new FormControl(''),
+      productId: new FormControl(0, Validators.required),
+      created: new FormControl(null),
+      createBy: new FormControl(''),
+      lastModified: new FormControl(null),
+      lastModifiedBy: new FormControl(''),
     });
+  }
+
+  initDataSource() {
+    this.shippingRequestClients.getShippingRequests().subscribe(
+      (i) => (this.shippingRequests = i),
+      (_) => (this.shippingRequests = [])
+    );
+  }
+
+  initProducts() {
+    this.productClients.getProducts().subscribe(
+      (i) => {
+        this.products = i;
+        this.selectItems = this._mapToSelectItem(i);
+      },
+      (_) => (this.products = [])
+    );
+  }
+
+  _mapToSelectItem(products: ProductModel[]): SelectItem[] {
+    return products.map((p) => ({
+      value: p.id,
+      label: `${p.productNumber}-${p.productName}`,
+    }));
   }
 
   // Create Shipping Request
   openCreateDialog() {
-    this.isShowCreateDialog = true;
-  }
-
-  hideCreateDialog() {
-    this.isShowCreateDialog = false;
     this.shippingRequestForm.reset();
+    this.titleDialog = 'Create Shipping Request';
+    this.isShowDialogCreate = true;
+    this.isEdit = false;
   }
 
   onCreate() {
-    console.log(this.shippingRequestForm.value);
+    const model = this.shippingRequestForm.value as ShippingRequestModel;
+    model.id = 0;
 
-    // this.hideCreateDialog();
+    this.shippingRequestClients.addShippingRequest(model).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Create Shipping Request Successfully');
+          this.initDataSource();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialogCreate();
+      },
+      (_) => {
+        this.notificationService.error('Create Shipping Request Failed. Please try again');
+        this.hideDialogCreate();
+      }
+    );
   }
 
-  // Edit Shipping Request
-  openEditDialog(shippingPlan: ShippingRequest) {
-    this.isShowEditDialog = true;
+  onSubmit() {
+    if (this.shippingRequestForm.invalid) {
+      return;
+    }
 
-    this.shippingRequestForm.get('name').setValue(shippingPlan && shippingPlan.name);
-    this.shippingRequestForm.get('note').setValue(shippingPlan && shippingPlan.note);
+    this.isEdit ? this.onEdit() : this.onCreate();
   }
 
-  hideEditDialog() {
-    this.isShowEditDialog = false;
-    this.shippingRequestForm.reset();
+  // Edit Shipping Mark
+  openEditDialog(shippingRequest: ShippingRequestModel) {
+    this.isShowDialogEdit = true;
+    this.titleDialog = 'Create Shipping Request';
+    this.isEdit = true;
+    this.shippingRequestForm.patchValue(shippingRequest);
+  }
+
+  hideDialogEdit() {
+    this.isShowDialogEdit = false;
+  }
+
+  hideDialogCreate() {
+    this.activeIndex = 0;
+    this.selectedShippingPlan = null;
+    this.isShowDialogCreate = false;
   }
 
   onEdit() {
-    console.log(this.shippingRequestForm.value);
+    const { id } = this.shippingRequestForm.value;
 
-    this.hideEditDialog();
+    this.shippingRequestClients.updateShippingRequest(id, this.shippingRequestForm.value).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Edit Shipping Request Successfully');
+          this.initDataSource();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialogEdit();
+      },
+      (_) => {
+        this.notificationService.error('Edit Shipping Request Failed. Please try again');
+        this.hideDialogEdit();
+      }
+    );
   }
 
-  // Delete Shipping Request
-  openDeleteDialog(singleShippingRequest?: ShippingRequest) {
-    this.isShowDeleteDialog = true;
-    this.currentSelectedShippingRequest = [];
+  openDeleteDialog(singleShippingRequest: ShippingRequestModel) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this items?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.shippingRequestClients.deleteShippingRequestAysnc(singleShippingRequest.id).subscribe(
+          (result) => {
+            if (result && result.succeeded) {
+              this.notificationService.success('Delete Shipping Request Successfully');
+              this.initDataSource();
+            } else {
+              this.notificationService.error(result?.error);
+            }
 
-    if (singleShippingRequest) {
-      this.isDeleteMany = false;
-      this.currentSelectedShippingRequest.push(singleShippingRequest);
-    } else {
-      this.isDeleteMany = true;
+            this.selectedShippingRequests = this.selectedShippingRequests.filter((i) => i.id !== singleShippingRequest.id);
+          },
+          (_) => this.notificationService.error('Delete Shipping Request Failed. Please try again')
+        );
+      },
+    });
+  }
+
+  nextPage(currentIndex: number) {
+    switch (currentIndex) {
+      case 0: {
+        if (!this.selectedShippingPlan) {
+          this.confirmationService.confirm({
+            message: 'Are you sure you want to create shipping request without selecting shipping plan?',
+            header: 'Confirm',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => (this.activeIndex += 1),
+          });
+
+          return;
+        }
+
+        const shippingPlan = this.shippingPlans.find((i) => i.id === this.selectedShippingPlan.id);
+        shippingPlan.shippingDate = new Date(shippingPlan.shippingDate);
+        this.shippingRequestForm.patchValue(shippingPlan);
+        this.activeIndex += 1;
+        break;
+      }
     }
   }
 
-  hideDeleteDialog() {
-    this.isShowDeleteDialog = false;
+  prevPage() {
+    this.activeIndex -= 1;
   }
-
-  onDelete() {
-    if (this.isDeleteMany) {
-      console.log('this.selectedShippingRequests: ' + this.selectedShippingRequests);
-    } else {
-      console.log('this.currentSelectedShippingRequest: ' + this.currentSelectedShippingRequest);
-    }
-
-    this.hideDeleteDialog();
-  }
-}
-
-interface ShippingRequest {
-  id: string;
-  name: string;
-  note: string;
-  created: Date;
-  createBy: string;
-  lastModified: Date;
-  lastModifiedBy: string;
 }

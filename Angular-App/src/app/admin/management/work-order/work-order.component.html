@@ -1,14 +1,12 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import"
-        class="p-mr-2 p-d-inline-block"></p-fileUpload>
+      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload>
       <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
     </ng-template>
 
     <ng-template pTemplate="right">
-      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
-        (click)="openCreateDialog()"></button>
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
@@ -16,7 +14,8 @@
         icon="pi pi-trash"
         label="Delete"
         [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1"
-        (click)="openDeleteDialog(selectedWorkOrders[0])"></button>
+        (click)="openDeleteDialog(selectedWorkOrders[0])"
+      ></button>
 
       <button
         class="p-button-success p-mr-2"
@@ -25,10 +24,10 @@
         label="Edit"
         icon="pi pi-pencil"
         [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1"
-        (click)="openEditDialog(selectedWorkOrders[0])"></button>
+        (click)="openEditDialog(selectedWorkOrders[0])"
+      ></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search"
-        [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1" label="History"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1" label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -46,14 +45,14 @@
     [paginator]="true"
     [scrollable]="true"
     [showCurrentPageReport]="true"
-    [rows]="20">
+    [rows]="20"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Work Orders</h5>
+        <h5 class="p-m-0">Work Orders Management</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search..." />
+          <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -74,9 +73,7 @@
               </th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon
-                  [field]="col.field"></p-sortIcon>
-              </th>
+              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
             </ng-container>
           </ng-container>
         </ng-container>
@@ -106,56 +103,69 @@
   </p-table>
 </div>
 
-<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog"
-  (onHide)="hideDialog()">
+<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="workOrderForm">
-      <div class="form-group">
-        <label for="quantity" class="control-label">Quantity</label>
-        <p-inputNumber inputId="quantity" [formControl]="quantityControl"> </p-inputNumber>
+      <div class="p-field">
+        <label for="quantity">Quantity</label>
+        <p-inputNumber [ngClass]="{ 'ng-dirty': quantityControl.invalid && (quantityControl.dirty || quantityControl.touched) }" inputId="quantity" [formControl]="quantityControl">
+        </p-inputNumber>
         <ng-container *ngIf="quantityControl.invalid && (quantityControl.dirty || quantityControl.touched)">
-          <small class="p-invalid create-user-form__error">Please enter a valid quantity</small>
+          <small class="p-invalid p-error">Please enter a valid quantity</small>
         </ng-container>
       </div>
 
-      <div class="form-group">
-        <label for="movingQuantity" class="control-label">Moving Quantity</label>
-        <p-inputNumber inputId="movingQuantity" [formControl]="movingQuantityControl"> </p-inputNumber>
-        <ng-container
-          *ngIf="movingQuantityControl.invalid && (movingQuantityControl.dirty || movingQuantityControl.touched)">
-          <small class="p-invalid create-user-form__error">Please enter a valid moving quantity</small>
+      <div class="p-field">
+        <label for="movingQuantity">Moving Quantity</label>
+        <p-inputNumber
+          [ngClass]="{ 'ng-dirty': movingQuantityControl.invalid && (movingQuantityControl.dirty || movingQuantityControl.touched) }"
+          inputId="movingQuantity"
+          [formControl]="movingQuantityControl"
+        >
+        </p-inputNumber>
+        <ng-container *ngIf="movingQuantityControl.invalid && (movingQuantityControl.dirty || movingQuantityControl.touched)">
+          <small class="p-invalid p-error">Please enter a valid moving quantity</small>
         </ng-container>
       </div>
 
-      <div class="form-group">
-        <label for="" class="control-label">Remain Quantity</label>
-        <p-inputNumber inputId="remainQuantity" [formControl]="remainQuantityControl"> </p-inputNumber>
-        <ng-container
-          *ngIf="remainQuantityControl.invalid && (remainQuantityControl.dirty || remainQuantityControl.touched)">
-          <small class="p-invalid create-user-form__error">Please enter a valid remain quantity</small>
+      <div class="p-field">
+        <label for="">Remain Quantity</label>
+        <p-inputNumber
+          [ngClass]="{ 'ng-dirty': remainQuantityControl.invalid && (remainQuantityControl.dirty || remainQuantityControl.touched) }"
+          inputId="remainQuantity"
+          [formControl]="remainQuantityControl"
+        >
+        </p-inputNumber>
+        <ng-container *ngIf="remainQuantityControl.invalid && (remainQuantityControl.dirty || remainQuantityControl.touched)">
+          <small class="p-invalid p-error">Please enter a valid remain quantity</small>
         </ng-container>
       </div>
 
-      <div class="form-group">
-        <label for="product" class="control-label">Product</label>
-        <p-dropdown [options]="selectItems" [formControl]="productControl" id="product" placeholder="Select a Product"
-          appendTo="body"></p-dropdown>
+      <div class="p-field">
+        <label for="product">Product</label>
+        <p-dropdown
+          [ngClass]="{ 'ng-dirty': productControl.invalid && (productControl.dirty || productControl.touched) }"
+          [options]="selectItems"
+          [formControl]="productControl"
+          id="product"
+          placeholder="Select a Product"
+          appendTo="body"
+        ></p-dropdown>
 
         <ng-container *ngIf="productControl.invalid && (productControl.dirty || productControl.touched)">
-          <small class="p-invalid create-user-form__error">Please select product</small>
+          <small class="p-invalid p-error">Please select product</small>
         </ng-container>
       </div>
 
-      <div class="form-group">
-        <label for="notes" class="control-label">Notes</label>
-        <input id="notes" [formControl]="notesControl" type="text" class="form-control" />
+      <div class="p-field">
+        <label for="notes">Notes</label>
+        <input pInputText id="notes" [formControl]="notesControl" type="text" class="form-control" />
       </div>
     </form>
   </ng-template>
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="workOrderForm.invalid"
-      (click)="onSubmit()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="workOrderForm.invalid" (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>

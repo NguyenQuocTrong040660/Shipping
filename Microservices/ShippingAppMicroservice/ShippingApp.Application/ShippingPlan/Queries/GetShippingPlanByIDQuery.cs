@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Entities = ShippingApp.Domain.Entities;
 using AutoMapper;
 using ShippingApp.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ShippingApp.Application.ShippingPlan.Queries
 {
@@ -17,9 +19,9 @@ namespace ShippingApp.Application.ShippingPlan.Queries
     public class GetShippingPlanByIDQueryHandler : IRequestHandler<GetShippingPlanByIDQuery, ShippingPlanModel>
     {
         private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.Product> _shippingAppRepository;
+        private readonly IShippingAppRepository<Entities.ShippingPlan> _shippingAppRepository;
 
-        public GetShippingPlanByIDQueryHandler(IMapper mapper, IShippingAppRepository<Entities.Product> shippingAppRepository)
+        public GetShippingPlanByIDQueryHandler(IMapper mapper, IShippingAppRepository<Entities.ShippingPlan> shippingAppRepository)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
@@ -27,8 +29,13 @@ namespace ShippingApp.Application.ShippingPlan.Queries
 
         public async Task<ShippingPlanModel> Handle(GetShippingPlanByIDQuery request, CancellationToken cancellationToken)
         {
-            var shippingPlan = await _shippingAppRepository.GetAsync(request.Id);
-            return _mapper.Map<ShippingPlanModel>(shippingPlan);
+            var shippingPlans = await _shippingAppRepository.GetDbSet()
+                .Include(x => x.Product)
+                .ToListAsync();
+
+            var entity = shippingPlans.FirstOrDefault(x => x.Id == request.Id);
+
+            return _mapper.Map<ShippingPlanModel>(entity);
         }
     }
 }
