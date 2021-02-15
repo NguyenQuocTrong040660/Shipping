@@ -1,16 +1,33 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Work Orders" (click)="openCreateDialog()"></button>
+      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload>
+      <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+    </ng-template>
+
+    <ng-template pTemplate="right">
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
         pRipple
         icon="pi pi-trash"
-        [disabled]="!selectedWorkOrders || !selectedWorkOrders.length"
-        label="Delete Work Orders"
-        (click)="openDeleteDialog()"
+        label="Delete"
+        [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1"
+        (click)="openDeleteDialog(selectedWorkOrders[0])"
       ></button>
+
+      <button
+        class="p-button-success p-mr-2"
+        pButton
+        pRipple
+        label="Edit"
+        icon="pi pi-pencil"
+        [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1"
+        (click)="openEditDialog(selectedWorkOrders[0])"
+      ></button>
+
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1" label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -19,15 +36,16 @@
     dataKey="id"
     styleClass="p-datatable-customers"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [rows]="20"
     [columns]="cols"
     [value]="workOrders"
+    [globalFilterFields]="fields"
+    [(selection)]="selectedWorkOrders"
     [rowHover]="true"
     [resizableColumns]="true"
     [paginator]="true"
+    [scrollable]="true"
     [showCurrentPageReport]="true"
-    [globalFilterFields]="fields"
-    [(selection)]="selectedWorkOrders"
+    [rows]="20"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
@@ -39,46 +57,45 @@
       </div>
     </ng-template>
 
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col [style.width.px]="col.width" *ngFor="let col of columns" />
+      </colgroup>
+    </ng-template>
+
     <ng-template pTemplate="header" let-columns>
       <tr>
-        <th style="width: 3rem">
+        <th>
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th *ngFor="let col of columns" pResizableColumn pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
-        <th></th>
+        <th *ngFor="let col of columns" pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-workOrder let-columns="columns">
       <tr>
-        <td>
-          <p-tableCheckbox [value]="workOrder"></p-tableCheckbox>
-        </td>
         <td *ngFor="let col of columns">
-          <ng-container *ngIf="col.isDate; else normalField">
-            {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}
-          </ng-container>
-          <ng-template #normalField>
-            <ng-container *ngIf="col.subField; else elseTemplate">
+          <ng-container [ngSwitch]="col.type">
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+              <p-tableCheckbox [value]="workOrder"></p-tableCheckbox>
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+              {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
               {{ workOrder[col.field][col.subField] }}
             </ng-container>
-            <ng-template #elseTemplate>
+            <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
               {{ workOrder[col.field] }}
-            </ng-template>
-          </ng-template>
-        </td>
-
-        <td>
-          <button class="p-button-rounded p-button-success p-mr-2" pTooltip="Edit Work Order" pButton pRipple icon="pi pi-pencil" (click)="openEditDialog(workOrder)"></button>
-          <button class="p-button-rounded p-button-danger p-mr-2" pTooltip="Delete Work Order" pButton pRipple icon="pi pi-trash" (click)="openDeleteDialog(workOrder)"></button>
-          <button class="p-button-rounded p-button-warning" pTooltip="History Changes" pButton pRipple icon="pi pi-search"></button>
+            </ng-container>
+          </ng-container>
         </td>
       </tr>
     </ng-template>
   </p-table>
 </div>
 
-<p-dialog header="{{ titleDialog }}" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="workOrderForm">
       <div class="form-group">
@@ -124,23 +141,5 @@
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="workOrderForm.invalid" (click)="onSubmit()"></button>
-  </ng-template>
-</p-dialog>
-
-<!-- Delete Work Order Dialog -->
-<p-dialog header="Delete Work Orders" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
-  <ng-template pTemplate="content">
-    <ng-container *ngIf="currentSelectedWorkOrder && currentSelectedWorkOrder.length; else deleteMany">
-      <div>Are you sure you want to delete {{ currentSelectedWorkOrder[0].id }} ?</div>
-    </ng-container>
-  </ng-template>
-
-  <ng-template #deleteMany>
-    <div>Are you sure you want to delete {{ selectedWorkOrders && selectedWorkOrders.length }} items ?</div>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDeleteDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onDelete()"></button>
   </ng-template>
 </p-dialog>

@@ -34,6 +34,12 @@
   width: 800px;
 }
 
+p-table {
+  .p-datatable-tbody tr {
+    height: 72px;
+  }
+}
+
 // p-table {
 //   .p-paginator {
 //     .p-paginator-current {

@@ -2,7 +2,9 @@ import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel } from '
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NotificationService } from 'app/shared/services/notification.service';
-import { SelectItem } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
+import { WidthColumn } from 'app/shared/configs/width-column';
+import { TypeColumn } from 'app/shared/configs/type-column';
 
 @Component({
   templateUrl: './work-order.component.html',
@@ -14,15 +16,14 @@ export class WorkOrderComponent implements OnInit {
   selectedWorkOrders: WorkOrderModel[] = [];
   selectItems: SelectItem[] = [];
 
-  isShowDeleteDialog: boolean;
-  currentSelectedWorkOrder: WorkOrderModel[] = [];
-  isDeleteMany: boolean;
   workOrderForm: FormGroup;
 
   isEdit = false;
   isShowDialog = false;
-  isShowHistoryDialog = false;
   titleDialog = '';
+
+  WidthColumn = WidthColumn;
+  TypeColumn = TypeColumn;
 
   cols: any[] = [];
   fields: any[] = [];
@@ -47,20 +48,26 @@ export class WorkOrderComponent implements OnInit {
     return this.workOrderForm.get('notes');
   }
 
-  constructor(private workOrderClients: WorkOrderClients, private productClients: ProductClients, private notificationService: NotificationService) {}
+  constructor(
+    private workOrderClients: WorkOrderClients,
+    private confirmationService: ConfirmationService,
+    private productClients: ProductClients,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit() {
     this.cols = [
-      { header: 'ID', field: 'id' },
-      { header: 'Product Number', field: 'product', subField: 'productNumber' },
-      { header: 'Qty', field: 'quantity' },
-      { header: 'Moving Qty', field: 'movingQuantity' },
-      { header: 'Remain Qty', field: 'remainQuantity' },
-      { header: 'Notes', field: 'notes' },
-      { header: 'Created', field: 'created', isDate: true },
-      { header: 'Create By', field: 'createBy' },
-      { header: 'Last Modified', field: 'lastModified', isDate: true },
-      { header: 'Last Modified By', field: 'lastModifiedBy' },
+      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'ID', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
+      { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Qty', field: 'quantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Moving Qty', field: 'movingQuantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Remain Qty', field: 'remainQuantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -98,8 +105,6 @@ export class WorkOrderComponent implements OnInit {
       (i) => {
         this.products = i;
         this.selectItems = this._mapToSelectItem(i);
-
-        console.log(i);
       },
       (_) => (this.products = [])
     );
@@ -183,48 +188,26 @@ export class WorkOrderComponent implements OnInit {
     );
   }
 
-  // Delete Work Order
-  openDeleteDialog(singleWorkOrder?: WorkOrderModel) {
-    this.isShowDeleteDialog = true;
-    this.currentSelectedWorkOrder = [];
+  openDeleteDialog(singleWorkOrder: WorkOrderModel) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this items?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.workOrderClients.deleteWorkOrderAysnc(singleWorkOrder.id).subscribe(
+          (result) => {
+            if (result && result.succeeded) {
+              this.notificationService.success('Delete Work Order Successfully');
+              this.initWorkOrders();
+            } else {
+              this.notificationService.error(result?.error);
+            }
 
-    if (singleWorkOrder) {
-      this.isDeleteMany = false;
-      this.currentSelectedWorkOrder.push(singleWorkOrder);
-    } else {
-      this.isDeleteMany = true;
-    }
-  }
-
-  hideDeleteDialog() {
-    this.isShowDeleteDialog = false;
-  }
-
-  onDelete() {
-    if (this.currentSelectedWorkOrder.length === 0) {
-      return;
-    }
-
-    if (this.isDeleteMany) {
-      console.log('this.selectedWorkOrders: ' + this.selectedWorkOrders);
-    } else {
-      const workOrder = this.currentSelectedWorkOrder[0];
-      this.workOrderClients.deleteWorkOrderAysnc(workOrder.id).subscribe(
-        (result) => {
-          if (result && result.succeeded) {
-            this.notificationService.success('Delete Work Order Successfully');
-            this.initWorkOrders();
-          } else {
-            this.notificationService.error(result?.error);
-          }
-
-          this.hideDeleteDialog();
-        },
-        (_) => {
-          this.notificationService.error('Delete Work Order Failed. Please try again');
-          this.hideDialog();
-        }
-      );
-    }
+            this.selectedWorkOrders = this.selectedWorkOrders.filter((i) => i.id !== singleWorkOrder.id);
+          },
+          (_) => this.notificationService.error('Delete Work Order Failed. Please try again')
+        );
+      },
+    });
   }
 }
