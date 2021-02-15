@@ -1,7 +1,8 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Movement Requests" (click)="openCreateDialog()"></button>
+      <button class="p-button-primary p-mr-2" pButton pRipple icon="pi pi-plus" label="Create Movement Requests"
+        (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
@@ -9,8 +10,7 @@
         icon="pi pi-trash"
         [disabled]="!selectedMovementRequests || !selectedMovementRequests.length"
         label="Delete Movement Requests"
-        (click)="openDeleteDialog()"
-      ></button>
+        (click)="openDeleteDialog()"></button>
     </ng-template>
   </p-toolbar>
 
@@ -27,14 +27,14 @@
     [showCurrentPageReport]="true"
     [resizableColumns]="true"
     [globalFilterFields]="colFields"
-    [(selection)]="selectedMovementRequests"
-  >
+    [(selection)]="selectedMovementRequests">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">Movement Request</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="movementRequestDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+          <input pInputText type="text" (input)="movementRequestDataTable.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -44,7 +44,9 @@
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th *ngFor="let col of columns" pResizableColumn pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon field="{{ col.field }}"></p-sortIcon></th>
+        <th *ngFor="let col of columns" pResizableColumn pSortableColumn="{{ col.field }}">{{ col.header }}<p-sortIcon
+            field="{{ col.field }}"></p-sortIcon>
+        </th>
         <th></th>
       </tr>
     </ng-template>
@@ -64,17 +66,16 @@
             pButton
             pRipple
             icon="pi pi-pencil"
-            (click)="openEditDialog(movementRequest)"
-          ></button>
+            (click)="openEditDialog(movementRequest)"></button>
           <button
             class="p-button-rounded p-button-danger p-mr-2"
             pTooltip="Delete Movement Request"
             pButton
             pRipple
             icon="pi pi-trash"
-            (click)="openDeleteDialog(movementRequest)"
-          ></button>
-          <button class="p-button-rounded p-button-warning" pTooltip="History Changes" pButton pRipple icon="pi pi-search"></button>
+            (click)="openDeleteDialog(movementRequest)"></button>
+          <button class="p-button-rounded p-button-warning" pTooltip="History Changes" pButton pRipple
+            icon="pi pi-search"></button>
         </td>
       </tr>
     </ng-template>
@@ -82,7 +83,8 @@
 </div>
 
 <!-- Create Movement Requests Dialog -->
-<p-dialog header="Create Movement Requests" styleClass="p-fluid p-w-600" [modal]="true" [(visible)]="isShowCreateDialog" (onHide)="hideCreateDialog()">
+<p-dialog header="Create Movement Requests" styleClass="p-fluid p-w-700" [modal]="true" [(visible)]="isShowCreateDialog"
+  (onHide)="hideCreateDialog()">
   <ng-template pTemplate="content">
     <div class="card">
       <p-steps [model]="stepItems" [activeIndex]="activeIndex"></p-steps>
@@ -94,10 +96,12 @@
         <ng-template pTemplate="title"> Movement Request </ng-template>
         <ng-template pTemplate="content">
           <div class="p-fluid">
+            {{ movementRequestForm.value | json }}
             <form [formGroup]="movementRequestForm">
               <div class="form-group">
                 <label for="workOrders" class="control-label">Work Orders</label><span class="p-invalid">*</span>
-                <p-multiSelect [options]="workOrderList" formControlName="workOrders" defaultLabel="Select Work Orders" optionLabel="name" appendTo="body"></p-multiSelect>
+                <p-multiSelect [options]="workOrderList" formControlName="workOrders" defaultLabel="Select Work Orders"
+                  optionLabel="productNumber" appendTo="body"></p-multiSelect>
                 <ng-container *ngIf="workOrders.invalid && (workOrders.dirty || workOrders.touched)">
                   <small id="email-error" class="p-invalid create-user-form__error">Work Order is required.</small>
                 </ng-container>
@@ -118,7 +122,8 @@
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-end">
-            <p-button label="Next" [disabled]="movementRequestForm.invalid" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right"></p-button>
+            <p-button label="Next" [disabled]="movementRequestForm.invalid" (onClick)="nextPage(activeIndex)"
+              icon="pi pi-angle-right" iconPos="right"></p-button>
           </div>
         </ng-template>
       </p-card>
@@ -129,12 +134,46 @@
       <p-card>
         <ng-template pTemplate="title"> Work Orders </ng-template>
         <ng-template pTemplate="content">
-          <div class="p-fluid">step 2</div>
+          <p-table [value]="productsOfSelectedWOs">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product>
+              <tr>
+                <td>{{product.name}}</td>
+                <td pEditableColumn>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <input pInputText type="number" [(ngModel)]="product.quantity">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      <ng-container *ngIf="product.quantity; else messageFillQuantity">
+                        {{product.quantity}}
+                      </ng-container>
+                      <ng-template #messageFillQuantity>
+                        Click to fill quantities
+                      </ng-template>
+                    </ng-template>
+                  </p-cellEditor>
+                </td>
+                <td>
+                  <button class="p-button-rounded p-button-danger" pTooltip="Remove Product" pButton pRipple
+                    icon="pi pi-trash" (click)="removeProduct(product)"></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
         </ng-template>
         <ng-template pTemplate="footer">
-          <div class="p-grid p-nogutter p-justify-between">
-            <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
-            <p-button label="Next" (onClick)="nextPage()" icon="pi pi-angle-right" iconPos="right" styleClass="p-button-success"></p-button>
+          <div class="p-grid p-nogutter p-justify-end">
+            <!-- <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button> -->
+            <p-button label="Next" icon="pi pi-angle-right" iconPos="right" [disabled]="isDisableStep2()"
+              (onClick)="nextPage(activeIndex)">
+            </p-button>
           </div>
         </ng-template>
       </p-card>
@@ -150,53 +189,49 @@
               <label for="name"><b>Name</b></label>
               <p>{{ movementRequestForm.value.name }}</p>
             </div>
-            <div class="p-field p-col-12">
-              <label for="note"><b>Note</b></label>
-              <p>{{ movementRequestForm.value.note }}</p>
-            </div>
+            <ng-container *ngIf="movementRequestForm.value.note">
+              <div class="p-field p-col-12">
+                <label for="note"><b>Note</b></label>
+                <p>{{ movementRequestForm.value.note }}</p>
+              </div>
+            </ng-container>
+
+            <p-table [value]="productsOfSelectedWOs">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-product>
+                <tr>
+                  <td>{{product.name}}</td>
+                  <td>{{product.quantity}}</td>
+                </tr>
+              </ng-template>
+            </p-table>
           </div>
         </ng-template>
         <ng-template pTemplate="footer">
-          <div class="p-grid p-nogutter p-justify-between">
-            <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button>
+          <div class="p-grid p-nogutter p-justify-end">
+            <!-- <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button> -->
             <p-button
               styleClass="p-button-success"
               label="Complete"
               [disabled]="movementRequestForm.invalid"
               (onClick)="onCreate()"
               icon="pi pi-angle-right"
-              iconPos="right"
-            ></p-button>
+              iconPos="right"></p-button>
           </div>
         </ng-template>
       </p-card>
     </ng-container>
-
-    <!-- <form [formGroup]="movementRequestForm">
-      <div class="form-group">
-        <label for="name" class="control-label">Name</label>
-        <input id="name" formControlName="name" type="text" class="form-control" />
-        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
-        </ng-container>
-      </div>
-      <div class="form-group">
-        <label for="note" class="control-label">Note</label>
-        <input id="note" formControlName="note" type="text" class="form-control" />
-      </div>
-    </form> -->
   </ng-template>
-
-  <!-- <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
-      (click)="hideCreateDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-      [disabled]="movementRequestForm.invalid" (click)="onCreate()"></button>
-  </ng-template> -->
 </p-dialog>
 
 <!-- Edit Movement Request Dialog -->
-<p-dialog header="Edit Movement Request" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
+<p-dialog header="Edit Movement Request" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
+  (onHide)="hideEditDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="movementRequestForm">
       <div class="form-group">
@@ -215,12 +250,14 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="movementRequestForm.invalid" (click)="onEdit()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+      [disabled]="movementRequestForm.invalid" (click)="onEdit()"></button>
   </ng-template>
 </p-dialog>
 
 <!-- Delete Movement Requests Dialog -->
-<p-dialog header="Delete Movement Requests" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog" (onHide)="hideDeleteDialog()">
+<p-dialog header="Delete Movement Requests" styleClass="p-fluid" [modal]="true" [(visible)]="isShowDeleteDialog"
+  (onHide)="hideDeleteDialog()">
   <ng-template pTemplate="content">
     <ng-container *ngIf="currentSelectedMovementRequest && currentSelectedMovementRequest.length; else deleteMany">
       <div>Are you sure you want to delete {{ currentSelectedMovementRequest[0].id }} ?</div>
@@ -232,7 +269,8 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDeleteDialog()"></button>
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text"
+      (click)="hideDeleteDialog()"></button>
     <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onDelete()"></button>
   </ng-template>
 </p-dialog>
