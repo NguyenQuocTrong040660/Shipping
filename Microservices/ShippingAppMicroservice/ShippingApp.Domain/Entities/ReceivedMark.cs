@@ -7,12 +7,13 @@ namespace ShippingApp.Domain.Entities
     {
         public int Id { get; set; }
         public int Sequence { get; set; }
-        public DateTime? PrintDate { get; set; }
-        public string PrintBy { get; set; }
         public int Quantity { get; set; }
         public string Status { get; set; }
         public string Notes { get; set; }
+        public int PrintCount { get; set; }
         public int ProductId { get; set; }
+        public int MovementRequestId { get; set; }
+        public virtual MovementRequest MovementRequest { get; set; }
         public virtual Product Product { get; set; }
     }
 }
