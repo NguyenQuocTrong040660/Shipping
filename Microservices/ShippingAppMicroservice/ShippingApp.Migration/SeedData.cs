@@ -20,64 +20,7 @@ namespace ShippingApp.Migration
 
         public void SeedData()
         {
-            Seed_ProductType();
             Seed_Country();
-        }
-
-        private void Seed_ProductType()
-        {
-            if (!_ShippingAppDbContext.ProductTypes.Any())
-            {
-                List<ProductType> productTypes = new List<ProductType>()
-                {
-                    new ProductType()
-                    {
-                        ProductTypeName = "Dao - Chip - Mũi Khoan"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Thiệt Bị Đo WENZEL"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Thiệt Bị Giám Sát Lực Kistler"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Thiệt Bị Khí Nén CKD"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Thiệt Bị Đo OHM"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Fanuc"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Hệ Thống Đồ Gá System 3R"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Lò Tôi Nabertherm"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Máy Hàn Khuôn"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Máy Rửa Khuôn"
-                    },
-                    new ProductType()
-                    {
-                        ProductTypeName = "Thiệt Bị Đo Renishaw"
-                    }
-                };
-                _ShippingAppDbContext.ProductTypes.AddRange(productTypes);
-            }
-            _ShippingAppDbContext.SaveChanges();
         }
         private void Seed_Country()
         {

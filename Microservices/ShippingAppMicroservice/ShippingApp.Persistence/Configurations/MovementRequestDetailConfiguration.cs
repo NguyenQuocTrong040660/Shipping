@@ -4,9 +4,9 @@ using ShippingApp.Domain.Entities;
 
 namespace ShippingApp.Persistence.Configurations
 {
-    public class ProductTypeConfiguration : IEntityTypeConfiguration<ProductType>
+    public class MovementRequestConfiguration : IEntityTypeConfiguration<MovementRequest>
     {
-        public void Configure(EntityTypeBuilder<ProductType> builder)
+        public void Configure(EntityTypeBuilder<MovementRequest> builder)
         {
             builder.Property(t => t.Id).UseIdentityColumn();
         }

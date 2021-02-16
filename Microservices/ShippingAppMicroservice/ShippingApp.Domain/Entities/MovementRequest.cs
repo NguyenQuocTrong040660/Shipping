@@ -8,6 +8,6 @@ namespace ShippingApp.Domain.Entities
     {
         public int Id { get; set; }
         public string Notes { get; set; }
-        public virtual ICollection<WorkOrder> WorkOrders { get; set; }
+        public virtual ICollection<MovementRequestDetail> MovementRequestDetails { get; set; }
     }
 }

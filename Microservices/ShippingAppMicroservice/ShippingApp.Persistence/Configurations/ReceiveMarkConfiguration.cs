@@ -9,10 +9,9 @@ namespace ShippingApp.Persistence.Configurations
         public void Configure(EntityTypeBuilder<ReceivedMark> builder)
         {
             builder.Property(t => t.Id).UseIdentityColumn();
-
-            builder.HasOne<WorkOrder>(s => s.WorkOrder)
-                    .WithMany(g => g.ReceiveMarks)
-                    .HasForeignKey(s => s.WorkOrderId);
+            builder.HasOne<Product>(s => s.Product)
+                    .WithMany(g => g.ReceivedMarks)
+                    .HasForeignKey(s => s.ProductId);
         }
     }
 }

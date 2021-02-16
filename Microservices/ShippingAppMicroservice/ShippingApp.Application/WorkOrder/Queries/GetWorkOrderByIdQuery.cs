@@ -28,11 +28,7 @@ namespace ShippingApp.Application.WorkOrder.Queries
 
         public async Task<WorkOrderModel> Handle(GetWorkOrderByIdQuery request, CancellationToken cancellationToken)
         {
-            var workOrders = await _shippingAppRepository.GetDbSet()
-                .Include(x => x.Product)
-                .ToListAsync();
-
-            var entity = workOrders.FirstOrDefault(x => x.Id == request.Id);
+            var entity = await _shippingAppRepository.GetAsync(request.Id);
             return _mapper.Map<WorkOrderModel>(entity);
         }
     }

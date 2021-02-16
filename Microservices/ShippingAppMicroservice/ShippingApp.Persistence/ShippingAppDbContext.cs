@@ -19,16 +19,20 @@ namespace ShippingApp.Persistence.DBContext
             _currentUserService = currentUserServic ?? throw new ArgumentNullException(nameof(currentUserServic));
         }
 
-        public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ShippingPlan> ShippingPlans { get; set; }
+        public DbSet<ShippingPlanDetail> ShippingPlanDetails { get; set; }
         public DbSet<MovementRequest> MovementRequests { get; set; }
+        public DbSet<MovementRequestDetail> MovementRequestDetails { get; set; }
         public DbSet<WorkOrder> WorkOrders { get; set; }
+        public DbSet<WorkOrderDetail> WorkOrderDetails { get; set; }
         public DbSet<Config> Configs { get; set; }
         public DbSet<ReceivedMark> ReceivedMarks { get; set; }
         public DbSet<ShippingMark> ShippingMarks { get; set; }
         public DbSet<ShippingRequest> ShippingRequests { get; set; }
+        public DbSet<ShippingRequestDetail> ShippingRequestDetails { get; set; }
+        public DbSet<ShippingRequestLogistic> ShippingRequestLogistics { get; set; }
 
         public DbSet<TEntity> SetEntity<TEntity>() where TEntity : class
         {

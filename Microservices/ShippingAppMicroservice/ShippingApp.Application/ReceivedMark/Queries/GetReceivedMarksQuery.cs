@@ -29,7 +29,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
         public async Task<List<ReceivedMarkModel>> Handle(GetReceivedMarksQuery request, CancellationToken cancellationToken)
         {
             var receivedMarks = await _shippingAppRepository.GetDbSet()
-                .Include(x => x.WorkOrder)
+                .Include(x => x.Product)
                 .ToListAsync();
 
             return _mapper.Map<List<ReceivedMarkModel>>(receivedMarks);

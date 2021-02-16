@@ -14,13 +14,14 @@ namespace ShippingApp.Application.Common.Mapping
             CreateMap<Entities.Product, Models.ProductModel>()
                .ReverseMap();
 
-            CreateMap<Entities.ProductType, Models.ProductTypeModel>()
-             .ReverseMap();
-
             CreateMap<Entities.ShippingPlan, Models.ShippingPlanModel>()
                 .ReverseMap();
+            CreateMap<Entities.ShippingPlanDetail, Models.ShippingPlanDetailModel>()
+               .ReverseMap();
 
             CreateMap<Entities.MovementRequest, Models.MovementRequestModel>()
+               .ReverseMap();
+            CreateMap<Entities.MovementRequestDetail, Models.MovementRequestDetailModel>()
                .ReverseMap();
 
             CreateMap<Entities.ReceivedMark, Models.ReceivedMarkModel>()
@@ -31,9 +32,16 @@ namespace ShippingApp.Application.Common.Mapping
 
             CreateMap<Entities.ShippingRequest, Models.ShippingRequestModel>()
                 .ReverseMap();
+            CreateMap<Entities.ShippingRequestDetail, Models.ShippingRequestDetailModel>()
+              .ReverseMap();
+            CreateMap<Entities.ShippingRequestLogistic, Models.ShippingRequestLogisticModel>()
+              .ReverseMap();
 
             CreateMap<Entities.WorkOrder, Models.WorkOrderModel>()
                .ReverseMap();
+
+            CreateMap<Entities.WorkOrderDetail, Models.WorkOrderDetailModel>()
+              .ReverseMap();
 
             CreateMap<Entities.Config, Models.ConfigModel>()
               .ReverseMap();
