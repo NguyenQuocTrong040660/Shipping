@@ -44,6 +44,7 @@ namespace ShippingApp.Api
                     }
 
                     await ShippingAppDbContextSeed.SeedConfiguration(context);
+                    await ShippingAppDbContextSeed.SeedData(context);
                 }
                 catch (Exception ex)
                 {

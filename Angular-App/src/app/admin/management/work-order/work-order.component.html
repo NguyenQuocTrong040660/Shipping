@@ -13,21 +13,13 @@
         pRipple
         icon="pi pi-trash"
         label="Delete"
-        [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1"
-        (click)="openDeleteDialog(selectedWorkOrders[0])"
+        [disabled]="!selectedWorkOrder"
+        (click)="openDeleteDialog(selectedWorkOrder)"
       ></button>
 
-      <button
-        class="p-button-success p-mr-2"
-        pButton
-        pRipple
-        label="Edit"
-        icon="pi pi-pencil"
-        [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1"
-        (click)="openEditDialog(selectedWorkOrders[0])"
-      ></button>
+      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil" [disabled]="!selectedWorkOrder" (click)="openEditDialog(selectedWorkOrder)"></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="selectedWorkOrders && selectedWorkOrders.length !== 1" label="History"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="!selectedWorkOrder" label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -39,12 +31,13 @@
     [columns]="cols"
     [value]="workOrders"
     [globalFilterFields]="fields"
-    [(selection)]="selectedWorkOrders"
+    [(selection)]="selectedWorkOrder"
     [rowHover]="true"
     [resizableColumns]="true"
     [paginator]="true"
     [scrollable]="true"
     [showCurrentPageReport]="true"
+    selectionMode="single"
     [rows]="20"
   >
     <ng-template pTemplate="caption">
@@ -68,9 +61,7 @@
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <th>
-                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-              </th>
+              <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
               <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
@@ -85,7 +76,7 @@
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <p-tableCheckbox [value]="workOrder"></p-tableCheckbox>
+              <p-tableRadioButton [value]="workOrder"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}

@@ -13,7 +13,7 @@ import { TypeColumn } from 'app/shared/configs/type-column';
   templateUrl: './product.component.html',
 })
 export class ProductComponent implements OnInit {
-  selectedItems: ProductModel[] = [];
+  selectedItem: ProductModel;
   products: ProductModel[] = [];
 
   editMode = false;
@@ -132,8 +132,6 @@ export class ProductComponent implements OnInit {
               } else {
                 this.notificationService.error(result?.error);
               }
-
-              this.selectedItems = this.selectedItems.filter((i) => i.id !== product.id);
             },
             (_) => this.notificationService.error('Delete Product Failed. Please try again')
           );

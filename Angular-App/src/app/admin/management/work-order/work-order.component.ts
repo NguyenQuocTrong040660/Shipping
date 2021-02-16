@@ -13,7 +13,7 @@ import { TypeColumn } from 'app/shared/configs/type-column';
 export class WorkOrderComponent implements OnInit {
   workOrders: WorkOrderModel[] = [];
   products: ProductModel[] = [];
-  selectedWorkOrders: WorkOrderModel[] = [];
+  selectedWorkOrder: WorkOrderModel;
   selectItems: SelectItem[] = [];
 
   workOrderForm: FormGroup;
@@ -202,8 +202,6 @@ export class WorkOrderComponent implements OnInit {
             } else {
               this.notificationService.error(result?.error);
             }
-
-            this.selectedWorkOrders = this.selectedWorkOrders.filter((i) => i.id !== singleWorkOrder.id);
           },
           (_) => this.notificationService.error('Delete Work Order Failed. Please try again')
         );

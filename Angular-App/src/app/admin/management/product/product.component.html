@@ -7,27 +7,9 @@
 
     <ng-template pTemplate="right">
       <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
-      <button
-        class="p-button-danger p-mr-2"
-        pButton
-        pRipple
-        icon="pi pi-trash"
-        label="Delete"
-        [disabled]="selectedItems && selectedItems.length !== 1"
-        (click)="deleteProduct(selectedItems[0])"
-      ></button>
-
-      <button
-        class="p-button-success p-mr-2"
-        pButton
-        pRipple
-        label="Edit"
-        icon="pi pi-pencil"
-        [disabled]="selectedItems && selectedItems.length !== 1"
-        (click)="editProduct(selectedItems[0])"
-      ></button>
-
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="selectedItems && selectedItems.length !== 1" label="History"></button>
+      <button class="p-button-danger p-mr-2" pButton pRipple icon="pi pi-trash" label="Delete" [disabled]="!selectedItem" (click)="deleteProduct(selectedItem)"></button>
+      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil" [disabled]="!selectedItem" (click)="editProduct(selectedItem)"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="!selectedItem" label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -40,12 +22,13 @@
     [columns]="cols"
     [value]="products"
     [globalFilterFields]="fields"
-    [(selection)]="selectedItems"
+    [(selection)]="selectedItem"
     [rowHover]="true"
     [resizableColumns]="true"
     [paginator]="true"
     [scrollable]="true"
     [showCurrentPageReport]="true"
+    selectionMode="single"
     [rows]="20"
   >
     <ng-template pTemplate="caption">
@@ -69,9 +52,7 @@
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <th>
-                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-              </th>
+              <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
               <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
@@ -86,7 +67,7 @@
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <p-tableCheckbox [value]="product"></p-tableCheckbox>
+              <p-tableRadioButton [value]="product"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               {{ product[col.field] | date: 'dd/MM/yyyy' }}
