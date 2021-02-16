@@ -29,6 +29,16 @@
           "Url": "https://api-shippingapp.spartronics.com.vn:8080/swagger/v1/swagger.json"
         }
       ]
+    },
+    {
+      "Key": "communication",
+      "Config": [
+        {
+          "Name": "Communication API",
+          "Version": "v1",
+          "Url": "https://api-communication.spartronics.com.vn:8080/swagger/v1/swagger.json"
+        }
+      ]
     }
   ]
 }
