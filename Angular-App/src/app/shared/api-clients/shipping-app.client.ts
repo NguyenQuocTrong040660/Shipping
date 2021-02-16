@@ -22,7 +22,7 @@ export class ConfigClients {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5003";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
     getConfigs(): Observable<ConfigModel[]> {
@@ -530,69 +530,6 @@ export class CountryClients {
             }));
         }
         return _observableOf<CountryModel>(<any>null);
-    }
-}
-
-@Injectable()
-export class EmailNotificationClients {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:5003";
-    }
-
-    sendEmail(emailInformationDto: EmailItemDTO): Observable<boolean> {
-        let url_ = this.baseUrl + "/api/shippingapp/emailnotification";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(emailInformationDto);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processSendEmail(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processSendEmail(<any>response_);
-                } catch (e) {
-                    return <Observable<boolean>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<boolean>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processSendEmail(response: HttpResponseBase): Observable<boolean> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <boolean>JSON.parse(_responseText, this.jsonParseReviver);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<boolean>(<any>null);
     }
 }
 
@@ -2850,13 +2787,16 @@ export class WorkOrderClients {
     }
 }
 
-export interface ConfigModel {
-    key?: string | undefined;
-    value?: string | undefined;
+export interface AuditableEntityModel {
     createdBy?: string | undefined;
     created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
+}
+
+export interface ConfigModel extends AuditableEntityModel {
+    key?: string | undefined;
+    value?: string | undefined;
 }
 
 export interface ProblemDetails {
@@ -2873,134 +2813,141 @@ export interface Result {
     error?: string | undefined;
 }
 
-export interface CountryModel {
+export interface CountryModel extends AuditableEntityModel {
     countryCode?: string | undefined;
     countryName?: string | undefined;
-    createdBy?: string | undefined;
-    created?: Date | undefined;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
 }
 
-export interface EmailItemDTO {
-    customer?: CustomerItemDTO | undefined;
-}
-
-export interface CustomerItemDTO {
-    customerName?: string | undefined;
-    emailAddress?: string | undefined;
-    phoneNumber?: string | undefined;
-    birththday?: string | undefined;
-    dateSet?: string | undefined;
-    countPerson?: number;
-    service?: string | undefined;
-}
-
-export interface MovementRequestModel {
+export interface MovementRequestModel extends AuditableEntityModel {
     id?: number;
     notes?: string | undefined;
-    workOrders?: WorkOrderModel[] | undefined;
-    createdBy?: string | undefined;
-    created?: Date | undefined;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
+    movementRequestDetails?: MovementRequestDetailModel[] | undefined;
+    receivedMarks?: ReceivedMarkModel[] | undefined;
 }
 
-export interface WorkOrderModel {
+export interface MovementRequestDetailModel extends AuditableEntityModel {
     id?: number;
-    productNumber?: string | undefined;
+    workOrderId?: number;
+    workOrder?: WorkOrderModel | undefined;
+    movementRequestId?: number;
+    movementRequest?: MovementRequestModel | undefined;
+}
+
+export interface WorkOrderModel extends AuditableEntityModel {
+    id?: number;
+    refId?: string | undefined;
+    notes?: string | undefined;
+    workOrderDetails?: WorkOrderDetailModel[] | undefined;
+    movementRequestDetails?: MovementRequestDetailModel[] | undefined;
+}
+
+export interface WorkOrderDetailModel extends AuditableEntityModel {
+    id?: number;
     quantity?: number;
-    movingQuantity?: number;
-    remainQuantity?: number;
-    notes?: string | undefined;
+    workOrderId?: number;
+    workOrder?: WorkOrderModel | undefined;
     productId?: number;
     product?: ProductModel | undefined;
-    movementRequestId?: number | undefined;
-    movementRequest?: MovementRequestModel | undefined;
-    createdBy?: string | undefined;
-    created?: Date | undefined;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
 }
 
-export interface ProductModel {
+export interface ProductModel extends AuditableEntityModel {
     id?: number;
     productName?: string | undefined;
     productNumber?: string | undefined;
     notes?: string | undefined;
     qtyPerPackage?: string | undefined;
-    createdBy?: string | undefined;
-    created?: Date | undefined;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
-    workOrders?: WorkOrderModel[] | undefined;
+    shippingPlanDetails?: ShippingPlanDetailModel[] | undefined;
+    shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
+    workOrderDetails?: WorkOrderDetailModel[] | undefined;
     shippingMarks?: ShippingMarkModel[] | undefined;
-    shippingRequests?: ShippingRequestModel[] | undefined;
+    receivedMarks?: ReceivedMarkModel[] | undefined;
 }
 
-export interface ShippingMarkModel {
+export interface ShippingPlanDetailModel extends AuditableEntityModel {
     id?: number;
-    customerId?: string | undefined;
     productNumber?: string | undefined;
+    quantity?: string | undefined;
+    price?: number;
+    shippingMode?: string | undefined;
+    amount?: number;
+    shippingPlanId?: number;
+    productId?: number;
+    product?: ProductModel | undefined;
+    shippingPlan?: ShippingPlanModel | undefined;
+}
+
+export interface ShippingPlanModel extends AuditableEntityModel {
+    id?: number;
+    customerName?: string | undefined;
+    shippingDate?: Date;
+    salesID?: string | undefined;
+    semlineNumber?: number;
+    notes?: string | undefined;
+    shippingPlanDetails?: ShippingPlanDetailModel[] | undefined;
+}
+
+export interface ShippingRequestDetailModel extends AuditableEntityModel {
+    id?: number;
+    quantity?: string | undefined;
+    price?: number;
+    shippingMode?: string | undefined;
+    amount?: number;
+    shippingPlanId?: number;
+    productId?: number;
+    product?: ProductModel | undefined;
+    shippingRequest?: ShippingRequestModel | undefined;
+}
+
+export interface ShippingRequestModel extends AuditableEntityModel {
+    id?: number;
+    customerName?: string | undefined;
+    shippingDate?: Date;
+    salesID?: string | undefined;
+    semlineNumber?: number;
+    notes?: string | undefined;
+    shippingRequestLogistics?: ShippingRequestLogisticModel[] | undefined;
+    shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
+    shippingMarks?: ShippingMarkModel[] | undefined;
+}
+
+export interface ShippingRequestLogisticModel extends AuditableEntityModel {
+    id?: number;
+    notes?: string | undefined;
+    grossWeight?: number;
+    billToCustomer?: string | undefined;
+    receiverCustomer?: string | undefined;
+    receiverAddress?: string | undefined;
+    customDeclarationNumber?: string | undefined;
+    trackingNumber?: string | undefined;
+    shippingRequestId?: number;
+    shippingRequest?: ShippingRequestModel | undefined;
+}
+
+export interface ShippingMarkModel extends AuditableEntityModel {
+    id?: number;
     revision?: string | undefined;
-    cartonNumber?: string | undefined;
     quantity?: number;
+    sequence?: number;
+    status?: string | undefined;
     notes?: string | undefined;
     productId?: number;
+    printCount?: number;
+    shippingRequestId?: number;
+    shippingRequest?: ShippingRequestModel | undefined;
     product?: ProductModel | undefined;
-    createdBy?: string | undefined;
-    created?: Date | undefined;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
 }
 
-export interface ShippingRequestModel {
+export interface ReceivedMarkModel extends AuditableEntityModel {
     id?: number;
-    semlineNumber?: number;
-    purchaseOrder?: string | undefined;
-    quantityOrder?: number;
-    salesPrice?: number;
-    customerName?: string | undefined;
-    salesID?: string | undefined;
-    shippingMode?: string | undefined;
-    shippingDate?: Date;
+    sequence?: number;
+    quantity?: number;
+    status?: string | undefined;
     notes?: string | undefined;
+    printCount?: number;
     productId?: number;
+    movementRequestId?: number;
+    movementRequest?: MovementRequestModel | undefined;
     product?: ProductModel | undefined;
-    createdBy?: string | undefined;
-    created?: Date | undefined;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
-}
-
-export interface ReceivedMarkModel {
-    id?: number;
-    notes?: string | undefined;
-    workOrderId?: number;
-    workOrder?: WorkOrderModel | undefined;
-    createdBy?: string | undefined;
-    created?: Date | undefined;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
-}
-
-export interface ShippingPlanModel {
-    id?: number;
-    semlineNumber?: number;
-    purchaseOrder?: string | undefined;
-    quantityOrder?: number;
-    salesPrice?: number;
-    customerName?: string | undefined;
-    salesID?: string | undefined;
-    shippingMode?: string | undefined;
-    shippingDate?: Date;
-    notes?: string | undefined;
-    productId?: number;
-    product?: ProductModel | undefined;
-    createdBy?: string | undefined;
-    created?: Date | undefined;
-    lastModifiedBy?: string | undefined;
-    lastModified?: Date | undefined;
 }
 
 export interface FileResponse {

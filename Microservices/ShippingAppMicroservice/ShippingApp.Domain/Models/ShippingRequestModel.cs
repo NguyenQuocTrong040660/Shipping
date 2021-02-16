@@ -14,5 +14,6 @@ namespace ShippingApp.Domain.Models
 
         public virtual ICollection<ShippingRequestLogisticModel> ShippingRequestLogistics { get; set; }
         public virtual ICollection<ShippingRequestDetailModel> ShippingRequestDetails { get; set; }
+        public virtual ICollection<ShippingMarkModel> ShippingMarks { get; set; }
     }
 }

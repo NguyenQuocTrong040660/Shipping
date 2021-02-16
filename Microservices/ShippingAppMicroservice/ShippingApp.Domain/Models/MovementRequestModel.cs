@@ -9,5 +9,6 @@ namespace ShippingApp.Domain.Models
         public int Id { get; set; }
         public string Notes { get; set; }
         public virtual ICollection<MovementRequestDetailModel> MovementRequestDetails { get; set; }
+        public virtual ICollection<ReceivedMarkModel> ReceivedMarks { get; set; }
     }
 }

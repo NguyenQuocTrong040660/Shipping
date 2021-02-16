@@ -5,6 +5,8 @@ namespace ShippingApp.Domain.Entities
     public class WorkOrderDetail : AuditableEntity
     {
         public int Id { get; set; }
+        public int Quantity { get; set; }
+
         public int WorkOrderId { get; set; }
         public virtual WorkOrder WorkOrder { get; set; }
         public int ProductId { get; set; }

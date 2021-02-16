@@ -57,8 +57,8 @@ namespace ShippingApp.Persistence.DBContext
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.Created = DateTime.Now;
-                        entry.Entity.CreatedBy = _currentUserService.UserName;
+                        entry.Entity.LastModified = DateTime.Now;
+                        entry.Entity.LastModifiedBy = _currentUserService.UserName;
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModified = DateTime.Now;
@@ -77,8 +77,8 @@ namespace ShippingApp.Persistence.DBContext
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.Created = DateTime.Now;
-                        entry.Entity.CreatedBy = _currentUserService.UserName;
+                        entry.Entity.LastModified = DateTime.Now;
+                        entry.Entity.LastModifiedBy = _currentUserService.UserName;
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModified = DateTime.Now;

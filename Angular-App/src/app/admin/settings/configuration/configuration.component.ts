@@ -38,8 +38,6 @@ export class ConfigurationComponent implements OnInit {
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Key', field: 'key', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Value', field: 'value', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
       { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
     ];

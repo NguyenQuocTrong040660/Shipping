@@ -102,27 +102,21 @@ export class MovementRequestComponent implements OnInit {
     this.workOrderList = [
       {
         id: 1,
-        productNumber: 'Work Order 1',
       },
       {
         id: 2,
-        productNumber: 'Work Order 2',
       },
       {
         id: 3,
-        productNumber: 'Work Order 3',
       },
       {
         id: 4,
-        productNumber: 'Work Order 4',
       },
       {
         id: 5,
-        productNumber: 'Work Order 5',
       },
       {
         id: 6,
-        productNumber: 'Work Order 6',
       },
     ];
   }

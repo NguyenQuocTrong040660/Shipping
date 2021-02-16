@@ -1,8 +1,8 @@
-import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductClients, ProductModel, WorkOrderClients, WorkOrderDetailModel, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { NotificationService } from 'app/shared/services/notification.service';
-import { ConfirmationService, SelectItem } from 'primeng/api';
+import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 
@@ -16,7 +16,14 @@ export class WorkOrderComponent implements OnInit {
   selectedWorkOrder: WorkOrderModel;
   selectItems: SelectItem[] = [];
 
+  selectedProducts: ProductModel[] = [];
+  workOrderDetails: WorkOrderDetailModel[] = [];
+  clonedWorkOrderDetailModels: { [s: string]: WorkOrderDetailModel } = {};
+
   workOrderForm: FormGroup;
+
+  stepItems: MenuItem[];
+  stepIndex = 0;
 
   isEdit = false;
   isShowDialog = false;
@@ -28,20 +35,11 @@ export class WorkOrderComponent implements OnInit {
   cols: any[] = [];
   fields: any[] = [];
 
-  get quantityControl() {
-    return this.workOrderForm.get('quantity');
-  }
+  productCols: any[] = [];
+  productFields: any[] = [];
 
-  get movingQuantityControl() {
-    return this.workOrderForm.get('movingQuantity');
-  }
-
-  get remainQuantityControl() {
-    return this.workOrderForm.get('remainQuantity');
-  }
-
-  get productControl() {
-    return this.workOrderForm.get('productId');
+  get refIdControl() {
+    return this.workOrderForm.get('refId');
   }
 
   get notesControl() {
@@ -59,37 +57,47 @@ export class WorkOrderComponent implements OnInit {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'ID', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
-      { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Qty', field: 'quantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Moving Qty', field: 'movingQuantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Remain Qty', field: 'remainQuantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'RefId', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
       { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
 
+    this.productCols = [
+      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Product Name', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Qty Per Package', field: 'qtyPerPackage', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+    ];
+
+    this.productFields = this.productCols.map((i) => i.field);
+
+    this.stepItems = [{ label: 'Products' }, { label: 'Confirmation' }, { label: 'Complete' }];
+
     this.initWorkOrders();
     this.initProducts();
-    this.initForm();
+    this.initWorkOrderForm();
   }
 
-  initForm() {
+  initWorkOrderForm() {
     this.workOrderForm = new FormGroup({
       id: new FormControl(0),
-      productId: new FormControl(0, Validators.required),
-      quantity: new FormControl(0, [Validators.required, Validators.min(1)]),
-      movingQuantity: new FormControl(0, [Validators.required, Validators.min(1)]),
+      refId: new FormControl('', Validators.required),
       notes: new FormControl(''),
-      remainQuantity: new FormControl(0, [Validators.required, Validators.min(1)]),
-      movementRequestId: new FormControl(0),
-      createdBy: new FormControl(''),
-      created: new FormControl(null),
+      workOrderDetails: new FormArray([]),
       lastModifiedBy: new FormControl(''),
       lastModified: new FormControl(null),
+    });
+  }
+
+  initWorkOrderDetailForm() {
+    return new FormGroup({
+      id: new FormControl(0),
+      quantity: new FormControl(0, Validators.required),
+      workOrderId: new FormControl(0, Validators.required),
+      productId: new FormControl(0, Validators.required),
     });
   }
 
@@ -102,19 +110,21 @@ export class WorkOrderComponent implements OnInit {
 
   initProducts() {
     this.productClients.getProducts().subscribe(
-      (i) => {
-        this.products = i;
-        this.selectItems = this._mapToSelectItem(i);
-      },
+      (i) => (this.products = i),
       (_) => (this.products = [])
     );
   }
 
-  _mapToSelectItem(products: ProductModel[]): SelectItem[] {
-    return products.map((p) => ({
-      value: p.id,
-      label: `${p.productNumber}-${p.productName}`,
-    }));
+  _mapToProductsToWorkOrderDetails(products: ProductModel[]): WorkOrderDetailModel[] {
+    return products.map((item, index) => {
+      return {
+        id: index + 1,
+        productId: item.id,
+        product: item,
+        workOrder: null,
+        workOrderId: 0,
+      };
+    });
   }
 
   // Create Work Order
@@ -127,6 +137,7 @@ export class WorkOrderComponent implements OnInit {
 
   hideDialog() {
     this.isShowDialog = false;
+    this.selectedProducts = [];
   }
 
   onSubmit() {
@@ -207,5 +218,43 @@ export class WorkOrderComponent implements OnInit {
         );
       },
     });
+  }
+
+  nextPage(currentIndex: number) {
+    switch (currentIndex) {
+      case 0: {
+        this.workOrderDetails = this._mapToProductsToWorkOrderDetails(this.selectedProducts);
+        break;
+      }
+      case 1: {
+        break;
+      }
+    }
+
+    this.stepIndex += 1;
+  }
+
+  prevPage() {
+    this.stepIndex -= 1;
+  }
+
+  onRowEditInit(workOrderDetail: WorkOrderDetailModel) {
+    this.clonedWorkOrderDetailModels[workOrderDetail.id] = { ...workOrderDetail };
+  }
+
+  onRowDelete(workOrderDetail: WorkOrderDetailModel) {
+    this.selectedProducts = this.selectedProducts.filter((i) => i.id !== workOrderDetail.productId);
+    this.workOrderDetails = this.workOrderDetails.filter((i) => i.id !== workOrderDetail.id);
+  }
+
+  onRowEditSave(workOrderDetail: WorkOrderDetailModel) {
+    const entity = this.workOrderDetails.find((i) => i.id === workOrderDetail.id);
+    entity.quantity = workOrderDetail.quantity;
+    delete this.clonedWorkOrderDetailModels[workOrderDetail.id];
+  }
+
+  onRowEditCancel(workOrderDetail: WorkOrderDetailModel, index: number) {
+    this.workOrderDetails[index] = this.clonedWorkOrderDetailModels[workOrderDetail.id];
+    delete this.clonedWorkOrderDetailModels[workOrderDetail.id];
   }
 }
