@@ -16,6 +16,7 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
   @Input() workOrderForm: FormGroup;
   @Input() workOrder: WorkOrderModel;
   @Output() submitEvent = new EventEmitter<any>(null);
+  @Output() hideDialogEvent = new EventEmitter<any>();
 
   workOrderDetails: WorkOrderDetailModel[] = [];
   clonedWorkOrderDetailModels: { [s: string]: WorkOrderDetailModel } = {};
@@ -66,6 +67,7 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
     this.workOrderDetails = [];
     this.stepIndex = 0;
     this.workOrderForm.reset();
+    this.hideDialogEvent.emit();
   }
 
   checkModifiedQuantity(workOrderDetails: WorkOrderDetailModel[]) {

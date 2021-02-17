@@ -138,6 +138,7 @@
   [products]="products"
   [isShowDialog]="isShowDialogCreate"
   (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
 ></app-work-order-create>
 
 <app-work-order-edit
@@ -146,4 +147,5 @@
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialogEdit"
   (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
 ></app-work-order-edit>

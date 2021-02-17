@@ -16,6 +16,7 @@ export class WorkOrderCreateComponent implements OnInit {
   @Input() isShowDialog = false;
   @Input() workOrderForm: FormGroup;
   @Output() submitEvent = new EventEmitter<any>(null);
+  @Output() hideDialogEvent = new EventEmitter<any>();
 
   selectedProducts: ProductModel[] = [];
   workOrderDetails: WorkOrderDetailModel[] = [];
@@ -58,6 +59,7 @@ export class WorkOrderCreateComponent implements OnInit {
     this.workOrderDetails = [];
     this.stepIndex = 0;
     this.workOrderForm.reset();
+    this.hideDialogEvent.emit();
   }
 
   onSubmit() {
