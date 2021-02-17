@@ -28,8 +28,12 @@ export class MovementRequestComponent implements OnInit {
   productsOfSelectedWOs = [];
   TypeColumn = TypeColumn;
 
-  get name() {
+  get nameControl() {
     return this.movementRequestForm.get('name');
+  }
+
+  get notesControl() {
+    return this.movementRequestForm.get('notes');
   }
 
   get workOrders() {

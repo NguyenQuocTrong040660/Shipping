@@ -118,29 +118,43 @@
             <form [formGroup]="movementRequestForm">
               <div class="form-group">
                 <label for="workOrders" class="control-label">Work Orders</label><span class="p-invalid">*</span>
-                <p-multiSelect [options]="workOrderList" formControlName="workOrders" defaultLabel="Select Work Orders"
+                <p-multiSelect
+                  [ngClass]="{ 'ng-dirty': workOrders.invalid && (workOrders.dirty || workOrders.touched) }"
+                  [options]="workOrderList" [formControl]="workOrders" defaultLabel="Select Work Orders"
                   optionLabel="productNumber" appendTo="body"></p-multiSelect>
                 <ng-container *ngIf="workOrders.invalid && (workOrders.dirty || workOrders.touched)">
                   <small id="email-error" class="p-invalid create-user-form__error">Work Order is required.</small>
                 </ng-container>
               </div>
-              <div class="form-group">
-                <label for="name" class="control-label">Name</label><span class="p-invalid">*</span>
-                <input id="name" formControlName="name" type="text" class="form-control" />
-                <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
-                  <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
+
+              <div class="p-field">
+                <label for="name">Movement Request Name</label><span class="p-invalid">*</span>
+                <input
+                  [ngClass]="{ 'ng-dirty': nameControl.invalid && (nameControl.dirty || nameControl.touched) }"
+                  pInputText
+                  id="name"
+                  [formControl]="nameControl"
+                  type="text" />
+                <ng-container *ngIf="nameControl.invalid && (nameControl.dirty || nameControl.touched)">
+                  <small class="p-invalid p-error">Movement Request Name is required</small>
                 </ng-container>
               </div>
-              <div class="form-group">
-                <label for="note" class="control-label">Note</label>
-                <input id="note" formControlName="note" type="text" class="form-control" />
+
+              <div class="p-field">
+                <label for="notes">Notes</label>
+                <input
+                  pInputText
+                  id="notes"
+                  [formControl]="notesControl"
+                  type="text" />
               </div>
             </form>
           </div>
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-end">
-            <p-button label="Next" [disabled]="movementRequestForm.invalid" (onClick)="nextPage(activeIndex)"
+            <p-button styleClass="p-button-text" label="Next" [disabled]="movementRequestForm.invalid"
+              (onClick)="nextPage(activeIndex)"
               icon="pi pi-angle-right" iconPos="right"></p-button>
           </div>
         </ng-template>
@@ -189,7 +203,8 @@
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-end">
             <!-- <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button> -->
-            <p-button label="Next" icon="pi pi-angle-right" iconPos="right" [disabled]="isDisableStep2()"
+            <p-button styleClass="p-button-text" label="Next" icon="pi pi-angle-right" iconPos="right"
+              [disabled]="isDisableStep2()"
               (onClick)="nextPage(activeIndex)">
             </p-button>
           </div>
@@ -234,7 +249,7 @@
           <div class="p-grid p-nogutter p-justify-end">
             <!-- <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button> -->
             <p-button
-              styleClass="p-button-success"
+              styleClass="p-button-text"
               label="Complete"
               [disabled]="movementRequestForm.invalid"
               (onClick)="onCreate()"
@@ -251,19 +266,7 @@
 <p-dialog header="Edit Movement Request" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
   (onHide)="hideEditDialog()">
   <ng-template pTemplate="content">
-    <form [formGroup]="movementRequestForm">
-      <div class="form-group">
-        <label for="name" class="control-label">Name</label>
-        <input id="name" formControlName="name" type="text" class="form-control" />
-        <ng-container *ngIf="name.invalid && (name.dirty || name.touched)">
-          <small id="email-error" class="p-invalid create-user-form__error">Name is required.</small>
-        </ng-container>
-      </div>
-      <div class="form-group">
-        <label for="note" class="control-label">Note</label>
-        <input id="note" formControlName="note" type="text" class="form-control" />
-      </div>
-    </form>
+    <div class="p-fluid"> Edit </div>
   </ng-template>
 
   <ng-template pTemplate="footer">
