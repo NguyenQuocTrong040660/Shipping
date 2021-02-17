@@ -4,3 +4,10 @@
 .pointer {
   cursor: pointer;
 }
+
+@media print {
+  footer { display: none; }
+  app-print { display: none; }
+  .isPrinting > * { display: none; }
+  .isPrinting app-print { display: block; }
+}

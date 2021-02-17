@@ -4,6 +4,7 @@ import { ProductClients, ProductModel, ShippingMarkClients, ShippingMarkModel } 
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { NotificationService } from 'app/shared/services/notification.service';
+import { PrintService } from 'app/shared/services/print.service';
 import { SelectItem } from 'primeng/api';
 
 @Component({
@@ -53,7 +54,11 @@ export class ShippingMarkComponent implements OnInit {
     return this.shippingMarkForm.get('cartonNumber');
   }
 
-  constructor(private shippingMarkClients: ShippingMarkClients, private productClients: ProductClients, private notificationService: NotificationService) { }
+  constructor(
+    public printService: PrintService,
+    private shippingMarkClients: ShippingMarkClients,
+    private productClients: ProductClients,
+    private notificationService: NotificationService) { }
 
   ngOnInit() {
     this.cols = [
@@ -231,5 +236,9 @@ export class ShippingMarkComponent implements OnInit {
         }
       );
     }
+  }
+
+  onPrint() {
+    this.printService.printDocument('shipping-mark');
   }
 }

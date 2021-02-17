@@ -4,6 +4,7 @@ import { ReceivedMarkClients, ReceivedMarkModel, WorkOrderClients, WorkOrderMode
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { NotificationService } from 'app/shared/services/notification.service';
+import { PrintService } from 'app/shared/services/print.service';
 import { SelectItem } from 'primeng/api';
 
 @Component({
@@ -37,7 +38,11 @@ export class ReceivedMarkComponent implements OnInit {
     return this.receivedMarkForm.get('notes');
   }
 
-  constructor(private receivedMarkClients: ReceivedMarkClients, private workOrderClients: WorkOrderClients, private notificationService: NotificationService) { }
+  constructor(
+    public printService: PrintService,
+    private receivedMarkClients: ReceivedMarkClients,
+    private workOrderClients: WorkOrderClients,
+    private notificationService: NotificationService) { }
 
   ngOnInit() {
     this.cols = [
@@ -205,5 +210,9 @@ export class ReceivedMarkComponent implements OnInit {
     }
 
     this.hideDeleteDialog();
+  }
+
+  onPrint() {
+    this.printService.printDocument('received-mark');
   }
 }

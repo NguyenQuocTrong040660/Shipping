@@ -29,9 +29,13 @@ import { MessageModule } from 'primeng/message';
 import { StepsModule } from 'primeng/steps';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
+import { PrintComponent } from './components/print/print.component';
+import { PrintService } from './services/print.service';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    PrintComponent
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -97,7 +101,8 @@ import { TooltipModule } from 'primeng/tooltip';
     CardModule,
     InputNumberModule,
     TooltipModule,
+    PrintComponent
   ],
   providers: [],
 })
-export class SharedModule {}
+export class SharedModule { }
