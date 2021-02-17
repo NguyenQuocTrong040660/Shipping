@@ -16,8 +16,6 @@
   <p-table
     #productsDataTable
     dataKey="id"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    [showCurrentPageReport]="true"
     [columns]="cols"
     [value]="products"
     [globalFilterFields]="fields"
@@ -26,7 +24,6 @@
     [resizableColumns]="true"
     [paginator]="true"
     [scrollable]="true"
-    [showCurrentPageReport]="true"
     selectionMode="single"
     [rows]="20"
   >

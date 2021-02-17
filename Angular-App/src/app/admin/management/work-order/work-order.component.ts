@@ -1,12 +1,13 @@
 import { ProductClients, ProductModel, WorkOrderClients, WorkOrderDetailModel, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NotificationService } from 'app/shared/services/notification.service';
-import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 
 @Component({
+  selector: 'app-work-order',
   templateUrl: './work-order.component.html',
   styleUrls: ['./work-order.component.scss'],
 })
@@ -15,17 +16,11 @@ export class WorkOrderComponent implements OnInit {
   products: ProductModel[] = [];
   selectedWorkOrder: WorkOrderModel;
 
-  selectedProducts: ProductModel[] = [];
-  workOrderDetails: WorkOrderDetailModel[] = [];
-  clonedWorkOrderDetailModels: { [s: string]: WorkOrderDetailModel } = {};
-
   workOrderForm: FormGroup;
 
-  stepItems: MenuItem[];
-  stepIndex = 0;
-
   isEdit = false;
-  isShowDialog = false;
+  isShowDialogCreate = false;
+  isShowDialogEdit = false;
   titleDialog = '';
 
   WidthColumn = WidthColumn;
@@ -37,57 +32,44 @@ export class WorkOrderComponent implements OnInit {
   productCols: any[] = [];
   productFields: any[] = [];
 
-  get refIdControl() {
-    return this.workOrderForm.get('refId');
-  }
-
-  get notesControl() {
-    return this.workOrderForm.get('notes');
-  }
+  title = 'Work Orders Management';
 
   constructor(
     private workOrderClients: WorkOrderClients,
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'WO-ID', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
+      { header: 'WO-ID', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Reference ID', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
       { header: '', field: 'details', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
 
-    this.productCols = [
-      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Product Name', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Qty Per Package', field: 'qtyPerPackage', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-    ];
-
-    this.productFields = this.productCols.map((i) => i.field);
-
-    this.stepItems = [{ label: 'Products' }, { label: 'Confirmation' }, { label: 'Complete' }];
-
     this.initWorkOrders();
     this.initProducts();
     this.initWorkOrderForm();
+
+    this.title = this.title.toUpperCase();
   }
 
   initWorkOrderForm() {
-    this.workOrderForm = new FormGroup({
-      id: new FormControl(0),
-      refId: new FormControl('', Validators.required),
-      notes: new FormControl(''),
-      lastModifiedBy: new FormControl(''),
-      lastModified: new FormControl(null),
+    this.workOrderForm = this.fb.group({
+      id: [0],
+      refId: [''],
+      notes: [''],
+      lastModifiedBy: [''],
+      lastModified: [null],
+      workOrderDetails: this.fb.array([]),
     });
   }
 
@@ -121,8 +103,12 @@ export class WorkOrderComponent implements OnInit {
   getDetailWorkOrder(workOrder: WorkOrderModel) {
     const workOrderSelected = this.workOrders.find((i) => i.id == workOrder.id);
 
+    if (workOrderSelected && workOrderSelected.workOrderDetails && workOrderSelected.workOrderDetails.length > 0) {
+      return;
+    }
+
     this.workOrderClients.getWorkOrderById(workOrder.id).subscribe(
-      (i) => {
+      (i: WorkOrderModel) => {
         workOrderSelected.workOrderDetails = i.workOrderDetails;
       },
       (_) => (workOrderSelected.workOrderDetails = [])
@@ -132,15 +118,13 @@ export class WorkOrderComponent implements OnInit {
   // Create Work Order
   openCreateDialog() {
     this.titleDialog = 'Create Work Order';
-    this.isShowDialog = true;
+    this.isShowDialogCreate = true;
     this.isEdit = false;
   }
 
   hideDialog() {
-    this.isShowDialog = false;
-    this.selectedProducts = [];
-    this.workOrderDetails = [];
-    this.stepIndex = 0;
+    this.isShowDialogCreate = false;
+    this.isShowDialogEdit = false;
     this.workOrderForm.reset();
   }
 
@@ -154,8 +138,6 @@ export class WorkOrderComponent implements OnInit {
 
   onCreate() {
     const model = this.workOrderForm.value as WorkOrderModel;
-    model.id = 0;
-    model.workOrderDetails = JSON.parse(JSON.stringify(this.workOrderDetails));
 
     this.workOrderClients.addWorkOrder(model).subscribe(
       (result) => {
@@ -177,10 +159,16 @@ export class WorkOrderComponent implements OnInit {
 
   // Edit Work Order
   openEditDialog(workOrder: WorkOrderModel) {
-    this.isShowDialog = true;
-    this.titleDialog = 'Create Work Order';
+    this.isShowDialogEdit = true;
+    this.titleDialog = 'Edit Work Order';
     this.isEdit = true;
-    this.workOrderForm.patchValue(workOrder);
+
+    this.workOrderClients.getWorkOrderById(workOrder.id).subscribe(
+      (i: WorkOrderModel) => {
+        this.selectedWorkOrder.workOrderDetails = i.workOrderDetails;
+      },
+      (_) => (this.selectedWorkOrder.workOrderDetails = [])
+    );
   }
 
   onEdit() {
@@ -223,47 +211,5 @@ export class WorkOrderComponent implements OnInit {
         );
       },
     });
-  }
-
-  checkModifiedQuantity(workOrderDetails: WorkOrderDetailModel[]) {
-    return workOrderDetails.filter((i) => i.quantity === 0).length === 0;
-  }
-
-  nextPage(currentIndex: number) {
-    switch (currentIndex) {
-      case 0: {
-        this.workOrderDetails = this._mapToProductsToWorkOrderDetails(this.selectedProducts);
-        break;
-      }
-      case 1: {
-        break;
-      }
-    }
-
-    this.stepIndex += 1;
-  }
-
-  prevPage() {
-    this.stepIndex -= 1;
-  }
-
-  onRowEditInit(workOrderDetail: WorkOrderDetailModel) {
-    this.clonedWorkOrderDetailModels[workOrderDetail.id] = { ...workOrderDetail };
-  }
-
-  onRowDelete(workOrderDetail: WorkOrderDetailModel) {
-    this.selectedProducts = this.selectedProducts.filter((i) => i.id !== workOrderDetail.productId);
-    this.workOrderDetails = this.workOrderDetails.filter((i) => i.id !== workOrderDetail.id);
-  }
-
-  onRowEditSave(workOrderDetail: WorkOrderDetailModel) {
-    const entity = this.workOrderDetails.find((i) => i.id === workOrderDetail.id);
-    entity.quantity = workOrderDetail.quantity;
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.id];
-  }
-
-  onRowEditCancel(workOrderDetail: WorkOrderDetailModel, index: number) {
-    this.workOrderDetails[index] = this.clonedWorkOrderDetailModels[workOrderDetail.id];
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.id];
   }
 }

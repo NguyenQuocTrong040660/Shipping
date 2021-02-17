@@ -34,6 +34,32 @@
   width: 800px;
 }
 
+.p-w-1000 {
+  width: 1000px;
+}
+
+.p-card-custom {
+  .p-card-content {
+    padding: 0px;
+  }
+
+  .p-card-body {
+    padding: 1rem 0 0 0;
+  }
+
+  .p-card-footer {
+    padding: 0px;
+  }
+}
+
+// .p-datatable .p-datatable-thead > tr > th {
+//   text-align: center !important;
+// }
+
+// .p-datatable .p-datatable-tbody > tr > td {
+//   text-align: center !important;
+// }
+
 p-table {
   .p-datatable-tbody tr {
     height: 72px;
@@ -41,5 +67,5 @@ p-table {
 }
 
 .ng-invalid.ng-touched {
-  border-color: #B00020;
+  border-color: #b00020;
 }

@@ -26,7 +26,6 @@
   <p-table
     #workOrderDataTable
     dataKey="id"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [columns]="cols"
     [value]="workOrders"
     [globalFilterFields]="fields"
@@ -34,13 +33,12 @@
     [resizableColumns]="true"
     [paginator]="true"
     [scrollable]="true"
-    [showCurrentPageReport]="true"
     selectionMode="single"
     [rows]="20"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Work Orders Management</h5>
+        <h5 class="p-m-0">{{ title }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
@@ -79,6 +77,9 @@
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
               <p-tableRadioButton [value]="workOrder"></p-tableRadioButton>
             </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+              {{ 'WO' + workOrder[col.field] }}
+            </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}
             </ng-container>
@@ -96,7 +97,7 @@
                 (click)="getDetailWorkOrder(workOrder)"
                 [pRowToggler]="workOrder"
                 class="p-button-text p-button-rounded p-button-plain"
-                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
               ></button>
             </ng-container>
           </ng-container>
@@ -131,221 +132,18 @@
   </p-table>
 </div>
 
-<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
-  <ng-template pTemplate="content">
-    <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
+<app-work-order-create
+  [workOrderForm]="workOrderForm"
+  [titleDialog]="titleDialog"
+  [products]="products"
+  [isShowDialog]="isShowDialogCreate"
+  (submitEvent)="onSubmit()"
+></app-work-order-create>
 
-    <ng-container *ngIf="stepIndex === 0">
-      <p-card>
-        <ng-template pTemplate="title"></ng-template>
-        <ng-template pTemplate="content">
-          <div class="p-fluid">
-            <p-table
-              dataKey="id"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-              [columns]="productCols"
-              [value]="products"
-              [globalFilterFields]="productFields"
-              [(selection)]="selectedProducts"
-              [resizableColumns]="true"
-              [paginator]="true"
-              [scrollable]="true"
-              [showCurrentPageReport]="true"
-              [rows]="10"
-              scrollHeight="250px"
-            >
-              <ng-template pTemplate="colgroup" let-columns>
-                <colgroup>
-                  <col [style.width.px]="col.width" *ngFor="let col of columns" />
-                </colgroup>
-              </ng-template>
-
-              <ng-template pTemplate="header" let-columns>
-                <tr>
-                  <ng-container *ngFor="let col of columns">
-                    <ng-container [ngSwitch]="col.type">
-                      <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-                        <th>
-                          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                        </th>
-                      </ng-container>
-                      <ng-container *ngSwitchDefault>
-                        <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
-                      </ng-container>
-                    </ng-container>
-                  </ng-container>
-                </tr>
-              </ng-template>
-
-              <ng-template pTemplate="body" let-product let-columns="columns">
-                <tr>
-                  <td *ngFor="let col of columns">
-                    <ng-container [ngSwitch]="col.type">
-                      <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-                        <p-tableCheckbox [value]="product"></p-tableCheckbox>
-                      </ng-container>
-                      <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-                        {{ product[col.field] | date: 'dd/MM/yyyy' }}
-                      </ng-container>
-                      <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-                        {{ product[col.field][col.subField] }}
-                      </ng-container>
-                      <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-                        {{ product[col.field] }}
-                      </ng-container>
-                    </ng-container>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="footer">
-          <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" icon="pi pi-times" iconPos="left"></p-button>
-            <p-button
-              styleClass="p-button-text"
-              label="Next"
-              [disabled]="selectedProducts && selectedProducts.length === 0"
-              (onClick)="nextPage(stepIndex)"
-              icon="pi pi-angle-right"
-              iconPos="right"
-            ></p-button>
-          </div>
-        </ng-template>
-      </p-card>
-    </ng-container>
-
-    <ng-container *ngIf="stepIndex === 1">
-      <p-card>
-        <ng-template pTemplate="title">Confirmation</ng-template>
-        <ng-template pTemplate="content">
-          <p-table [value]="workOrderDetails" dataKey="product.id" editMode="row">
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Product Number</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th style="width: 10rem"></th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-workOrderDetail let-editing="editing" let-ri="rowIndex">
-              <tr [pEditableRow]="workOrderDetail">
-                <td>
-                  {{ workOrderDetail?.product?.productNumber }}
-                </td>
-                <td>
-                  {{ workOrderDetail?.product?.productName }}
-                </td>
-                <td>
-                  <p-cellEditor>
-                    <ng-template pTemplate="input">
-                      <p-inputNumber [(ngModel)]="workOrderDetail.quantity" required></p-inputNumber>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                      {{ workOrderDetail?.quantity }}
-                    </ng-template>
-                  </p-cellEditor>
-                </td>
-
-                <td style="text-align: center">
-                  <button
-                    *ngIf="!editing"
-                    pButton
-                    pRipple
-                    type="button"
-                    pInitEditableRow
-                    icon="pi pi-pencil"
-                    (click)="onRowEditInit(workOrderDetail)"
-                    class="p-button-rounded p-button-text"
-                  ></button>
-
-                  <button
-                    *ngIf="!editing"
-                    pButton
-                    pRipple
-                    type="button"
-                    pInitEditableRow
-                    icon="pi pi-times"
-                    (click)="onRowDelete(workOrderDetail)"
-                    class="p-button-rounded p-button-text"
-                  ></button>
-
-                  <button
-                    *ngIf="editing"
-                    pButton
-                    pRipple
-                    type="button"
-                    pSaveEditableRow
-                    icon="pi pi-check"
-                    (click)="onRowEditSave(workOrderDetail)"
-                    class="p-button-rounded p-button-text p-button-success p-mr-2"
-                  ></button>
-                  <button
-                    *ngIf="editing"
-                    pButton
-                    pRipple
-                    type="button"
-                    pCancelEditableRow
-                    icon="pi pi-times"
-                    (click)="onRowEditCancel(workOrderDetail, ri)"
-                    class="p-button-rounded p-button-text p-button-danger"
-                  ></button>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </ng-template>
-        <ng-template pTemplate="footer">
-          <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
-            <p-button
-              [disabled]="!checkModifiedQuantity(workOrderDetails)"
-              styleClass="p-button-text"
-              label="Submit"
-              (onClick)="nextPage(stepIndex)"
-              icon="pi pi-angle-right"
-              iconPos="right"
-            ></p-button>
-          </div>
-        </ng-template>
-      </p-card>
-    </ng-container>
-
-    <ng-container *ngIf="stepIndex === 2">
-      <form [formGroup]="workOrderForm">
-        <p-card>
-          <ng-template pTemplate="title">Complete</ng-template>
-          <ng-template pTemplate="content">
-            <div class="p-field">
-              <label for="refId">Reference Id</label>
-
-              <input
-                [ngClass]="{ 'ng-dirty': refIdControl.invalid && (refIdControl.dirty || refIdControl.touched) }"
-                inputId="refId"
-                pInputText
-                [formControl]="refIdControl"
-                type="text"
-              />
-
-              <ng-container *ngIf="refIdControl.invalid && (refIdControl.dirty || refIdControl.touched)">
-                <small class="p-invalid p-error">Please specify a reference id</small>
-              </ng-container>
-            </div>
-
-            <div class="p-field">
-              <label for="notes">Notes</label>
-              <input pInputText id="notes" [formControl]="notesControl" type="text" />
-            </div>
-          </ng-template>
-          <ng-template pTemplate="footer">
-            <div class="p-grid p-nogutter p-justify-between">
-              <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
-              <p-button [disabled]="workOrderForm.invalid" styleClass="p-button-text" label="Submit" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
-            </div>
-          </ng-template>
-        </p-card>
-      </form>
-    </ng-container>
-  </ng-template>
-</p-dialog>
+<app-work-order-edit
+  [workOrder]="selectedWorkOrder"
+  [workOrderForm]="workOrderForm"
+  [titleDialog]="titleDialog"
+  [isShowDialog]="isShowDialogEdit"
+  (submitEvent)="onSubmit()"
+></app-work-order-edit>

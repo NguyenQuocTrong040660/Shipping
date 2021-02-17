@@ -6,8 +6,16 @@
 }
 
 @media print {
-  footer { display: none; }
-  app-print { display: none; }
-  .isPrinting > * { display: none; }
-  .isPrinting app-print { display: block; }
+  footer {
+    display: none;
+  }
+  app-print {
+    display: none;
+  }
+  .isPrinting > * {
+    display: none;
+  }
+  .isPrinting app-print {
+    display: block;
+  }
 }

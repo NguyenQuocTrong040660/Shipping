@@ -5,4 +5,5 @@ export const TypeColumn = {
   ActionsColumn: 3,
   CheckBoxColumn: 4,
   ExpandColumn: 5,
+  IdentityColumn: 6,
 };
