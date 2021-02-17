@@ -4,17 +4,11 @@ using ShippingApp.Domain.Entities;
 
 namespace ShippingApp.Persistence.Configurations
 {
-    public class MovementRequestDetailConfiguration : IEntityTypeConfiguration<MovementRequestDetail>
+    public class MovementRequestConfiguration : IEntityTypeConfiguration<MovementRequest>
     {
-        public void Configure(EntityTypeBuilder<MovementRequestDetail> builder)
+        public void Configure(EntityTypeBuilder<MovementRequest> builder)
         {
             builder.Property(t => t.Id).UseIdentityColumn();
-
-            builder.HasKey(sc => new { sc.WorkOrderId, sc.MovementRequestId });
-            builder.HasOne<WorkOrder>(sc => sc.WorkOrder).WithMany(s => s.MovementRequestDetails)
-                .HasForeignKey(r => r.WorkOrderId);
-            builder.HasOne<MovementRequest>(sc => sc.MovementRequest).WithMany(s => s.MovementRequestDetails)
-                .HasForeignKey(r => r.MovementRequestId);
         }
     }
 }

@@ -4,4 +4,5 @@ export const TypeColumn = {
   SubFieldColumn: 2,
   ActionsColumn: 3,
   CheckBoxColumn: 4,
+  ExpandColumn: 5,
 };

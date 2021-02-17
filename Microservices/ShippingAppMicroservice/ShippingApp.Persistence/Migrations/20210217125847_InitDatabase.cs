@@ -77,6 +77,24 @@ namespace ShippingApp.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ShippingMarkHistory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RefId = table.Column<string>(nullable: true),
+                    ActionType = table.Column<string>(nullable: true),
+                    OldValue = table.Column<string>(nullable: true),
+                    NewValue = table.Column<string>(nullable: true),
+                    UserName = table.Column<string>(nullable: true),
+                    UpdateTime = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShippingMarkHistory", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ShippingPlans",
                 columns: table => new
                 {
@@ -147,50 +165,24 @@ namespace ShippingApp.Persistence.Migrations
                     LastModifiedBy = table.Column<string>(nullable: true),
                     LastModified = table.Column<DateTime>(nullable: true),
                     Sequence = table.Column<int>(nullable: false),
-                    PrintDate = table.Column<DateTime>(nullable: true),
-                    PrintBy = table.Column<string>(nullable: true),
                     Quantity = table.Column<int>(nullable: false),
                     Status = table.Column<string>(nullable: true),
                     Notes = table.Column<string>(nullable: true),
-                    ProductId = table.Column<int>(nullable: false)
+                    PrintCount = table.Column<int>(nullable: false, defaultValue: 1),
+                    ProductId = table.Column<int>(nullable: false),
+                    MovementRequestId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ReceivedMarks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ReceivedMarks_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
+                        name: "FK_ReceivedMarks_MovementRequests_MovementRequestId",
+                        column: x => x.MovementRequestId,
+                        principalTable: "MovementRequests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ShippingMarks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    Created = table.Column<DateTime>(nullable: true),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModified = table.Column<DateTime>(nullable: true),
-                    CustomerId = table.Column<string>(nullable: true),
-                    Revision = table.Column<string>(nullable: true),
-                    CartonNumber = table.Column<string>(nullable: true),
-                    Quantity = table.Column<int>(nullable: false),
-                    Sequence = table.Column<int>(nullable: false),
-                    PrintDate = table.Column<DateTime>(nullable: true),
-                    PrintBy = table.Column<string>(nullable: true),
-                    Status = table.Column<string>(nullable: true),
-                    Notes = table.Column<string>(nullable: true),
-                    ProductId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ShippingMarks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ShippingMarks_Products_ProductId",
+                        name: "FK_ReceivedMarks_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -228,6 +220,42 @@ namespace ShippingApp.Persistence.Migrations
                         name: "FK_ShippingPlanDetails_ShippingPlans_ShippingPlanId",
                         column: x => x.ShippingPlanId,
                         principalTable: "ShippingPlans",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShippingMarks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    Created = table.Column<DateTime>(nullable: true),
+                    LastModifiedBy = table.Column<string>(nullable: true),
+                    LastModified = table.Column<DateTime>(nullable: true),
+                    Revision = table.Column<string>(nullable: true),
+                    Quantity = table.Column<int>(nullable: false),
+                    Sequence = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(nullable: true),
+                    Notes = table.Column<string>(nullable: true),
+                    ProductId = table.Column<int>(nullable: false),
+                    PrintCount = table.Column<int>(nullable: false, defaultValue: 1),
+                    ShippingRequestId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShippingMarks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShippingMarks_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShippingMarks_ShippingRequests_ShippingRequestId",
+                        column: x => x.ShippingRequestId,
+                        principalTable: "ShippingRequests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -305,9 +333,7 @@ namespace ShippingApp.Persistence.Migrations
                     CreatedBy = table.Column<string>(nullable: true),
                     Created = table.Column<DateTime>(nullable: true),
                     LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModified = table.Column<DateTime>(nullable: true),
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    LastModified = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -336,8 +362,7 @@ namespace ShippingApp.Persistence.Migrations
                     Created = table.Column<DateTime>(nullable: true),
                     LastModifiedBy = table.Column<string>(nullable: true),
                     LastModified = table.Column<DateTime>(nullable: true),
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    Quantity = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -362,6 +387,11 @@ namespace ShippingApp.Persistence.Migrations
                 column: "MovementRequestId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ReceivedMarks_MovementRequestId",
+                table: "ReceivedMarks",
+                column: "MovementRequestId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ReceivedMarks_ProductId",
                 table: "ReceivedMarks",
                 column: "ProductId");
@@ -370,6 +400,11 @@ namespace ShippingApp.Persistence.Migrations
                 name: "IX_ShippingMarks_ProductId",
                 table: "ShippingMarks",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShippingMarks_ShippingRequestId",
+                table: "ShippingMarks",
+                column: "ShippingRequestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShippingPlanDetails_ProductId",
@@ -415,6 +450,9 @@ namespace ShippingApp.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReceivedMarks");
+
+            migrationBuilder.DropTable(
+                name: "ShippingMarkHistory");
 
             migrationBuilder.DropTable(
                 name: "ShippingMarks");

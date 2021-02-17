@@ -5,6 +5,7 @@ using ShippingApp.Application.Interfaces;
 using ShippingApp.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Entities = ShippingApp.Domain.Entities;
@@ -28,7 +29,11 @@ namespace ShippingApp.Application.WorkOrder.Queries
 
         public async Task<List<WorkOrderModel>> Handle(GetWorkOrdersQuery request, CancellationToken cancellationToken)
         {
-            var workOrders = await _shippingAppRepository.GetAllAsync();
+            var workOrders = await _shippingAppRepository
+                .GetDbSet()
+                .OrderByDescending(i => i.LastModified)
+                .ToListAsync();
+
             return _mapper.Map<List<WorkOrderModel>>(workOrders);
         }
     }

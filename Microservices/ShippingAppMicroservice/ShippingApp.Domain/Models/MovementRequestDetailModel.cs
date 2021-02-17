@@ -2,7 +2,6 @@
 {
     public class MovementRequestDetailModel : AuditableEntityModel
     {
-        public int Id { get; set; }
         public int WorkOrderId { get; set; }
         public virtual WorkOrderModel WorkOrder { get; set; }
         public int MovementRequestId { get; set; }

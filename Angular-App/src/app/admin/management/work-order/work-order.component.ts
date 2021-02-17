@@ -14,7 +14,6 @@ export class WorkOrderComponent implements OnInit {
   workOrders: WorkOrderModel[] = [];
   products: ProductModel[] = [];
   selectedWorkOrder: WorkOrderModel;
-  selectItems: SelectItem[] = [];
 
   selectedProducts: ProductModel[] = [];
   workOrderDetails: WorkOrderDetailModel[] = [];
@@ -56,11 +55,12 @@ export class WorkOrderComponent implements OnInit {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'ID', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
-      { header: 'RefId', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'WO-ID', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
+      { header: 'Reference ID', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
       { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: '', field: 'details', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -86,18 +86,8 @@ export class WorkOrderComponent implements OnInit {
       id: new FormControl(0),
       refId: new FormControl('', Validators.required),
       notes: new FormControl(''),
-      workOrderDetails: new FormArray([]),
       lastModifiedBy: new FormControl(''),
       lastModified: new FormControl(null),
-    });
-  }
-
-  initWorkOrderDetailForm() {
-    return new FormGroup({
-      id: new FormControl(0),
-      quantity: new FormControl(0, Validators.required),
-      workOrderId: new FormControl(0, Validators.required),
-      productId: new FormControl(0, Validators.required),
     });
   }
 
@@ -123,13 +113,24 @@ export class WorkOrderComponent implements OnInit {
         product: item,
         workOrder: null,
         workOrderId: 0,
+        quantity: 0,
       };
     });
   }
 
+  getDetailWorkOrder(workOrder: WorkOrderModel) {
+    const workOrderSelected = this.workOrders.find((i) => i.id == workOrder.id);
+
+    this.workOrderClients.getWorkOrderById(workOrder.id).subscribe(
+      (i) => {
+        workOrderSelected.workOrderDetails = i.workOrderDetails;
+      },
+      (_) => (workOrderSelected.workOrderDetails = [])
+    );
+  }
+
   // Create Work Order
   openCreateDialog() {
-    this.workOrderForm.reset();
     this.titleDialog = 'Create Work Order';
     this.isShowDialog = true;
     this.isEdit = false;
@@ -138,6 +139,9 @@ export class WorkOrderComponent implements OnInit {
   hideDialog() {
     this.isShowDialog = false;
     this.selectedProducts = [];
+    this.workOrderDetails = [];
+    this.stepIndex = 0;
+    this.workOrderForm.reset();
   }
 
   onSubmit() {
@@ -151,6 +155,7 @@ export class WorkOrderComponent implements OnInit {
   onCreate() {
     const model = this.workOrderForm.value as WorkOrderModel;
     model.id = 0;
+    model.workOrderDetails = JSON.parse(JSON.stringify(this.workOrderDetails));
 
     this.workOrderClients.addWorkOrder(model).subscribe(
       (result) => {
@@ -218,6 +223,10 @@ export class WorkOrderComponent implements OnInit {
         );
       },
     });
+  }
+
+  checkModifiedQuantity(workOrderDetails: WorkOrderDetailModel[]) {
+    return workOrderDetails.filter((i) => i.quantity === 0).length === 0;
   }
 
   nextPage(currentIndex: number) {

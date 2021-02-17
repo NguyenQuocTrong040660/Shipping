@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Application.Common.Results;
+using System.Linq;
 
 namespace ShippingApp.Application.WorkOrder.Commands
 {
@@ -29,6 +30,11 @@ namespace ShippingApp.Application.WorkOrder.Commands
         public async Task<Result> Handle(CreateWorkOrderCommand request, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<Entities.WorkOrder>(request.WorkOrder);
+
+            entity.WorkOrderDetails.ToList().ForEach(i => {
+                i.Product = null;
+            });
+
             return await _shippingAppRepository.AddAsync(entity);
         }
     }

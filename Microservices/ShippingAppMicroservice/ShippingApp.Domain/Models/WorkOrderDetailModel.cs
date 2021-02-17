@@ -2,7 +2,6 @@
 {
     public class WorkOrderDetailModel : AuditableEntityModel
     {
-        public int Id { get; set; }
         public int Quantity { get; set; }
         public int WorkOrderId { get; set; }
         public virtual WorkOrderModel WorkOrder { get; set; }
