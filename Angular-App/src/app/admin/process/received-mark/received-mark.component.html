@@ -1,4 +1,5 @@
-<div class="card">
+<div class="card" [class.isPrinting]="printService.isPrinting">
+  <app-print [title]="'receive-mark Componnet'"></app-print>
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left"></ng-template>
     <ng-template pTemplate="right">
@@ -22,8 +23,10 @@
         [disabled]="selectedReceivedMarks && selectedReceivedMarks.length !== 1"
         (click)="openEditDialog(selectedReceivedMarks[0])"></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search"
+      <button class="p-button-warning p-mr-2" pButton pRipple icon="pi pi-search"
         [disabled]="selectedReceivedMarks && selectedReceivedMarks.length !== 1" label="History"></button>
+      <button class="p-button-primary" pButton pRipple icon="pi pi-print" label="Print"
+        (click)="onPrint()"></button>
     </ng-template>
   </p-toolbar>
 

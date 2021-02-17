@@ -87,5 +87,5 @@ export const adminRoutes: Routes = [
         canActivate: [AuthenticationGuard],
       },
     ],
-  },
+  }
 ];
