@@ -40,7 +40,7 @@ export class WorkOrderComponent implements OnInit {
     private productClients: ProductClients,
     private notificationService: NotificationService,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
@@ -101,7 +101,7 @@ export class WorkOrderComponent implements OnInit {
   }
 
   getDetailWorkOrder(workOrder: WorkOrderModel) {
-    const workOrderSelected = this.workOrders.find((i) => i.id == workOrder.id);
+    const workOrderSelected = this.workOrders.find((i) => i.id === workOrder.id);
 
     if (workOrderSelected && workOrderSelected.workOrderDetails && workOrderSelected.workOrderDetails.length > 0) {
       return;

@@ -6,15 +6,23 @@
 }
 
 @media print {
+  @page {
+    size: 100mm 60mm;
+    margin: 3mm;
+  }
+
   footer {
     display: none;
   }
+
   app-print {
     display: none;
   }
+
   .isPrinting > * {
     display: none;
   }
+
   .isPrinting app-print {
     display: block;
   }

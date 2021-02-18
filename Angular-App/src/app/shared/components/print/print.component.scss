@@ -1,3 +1,27 @@
+.print {
+  &__header {
+    margin-bottom: 10px;
+  }
+
+  &__company-name {
+    line-height: 50px;
+    font-size: 35px;
+  }
+
+  &__identity {
+    font-weight: bold;
+  }
+
+  &__value {
+    padding-left: 10px;
+  }
+
+  &__detail {
+    font-size: 20px;
+    line-height: normal;
+  }
+}
+
 @media screen {
   :host {
     display: none;
