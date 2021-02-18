@@ -1,12 +1,14 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload>
+      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import"
+        class="p-mr-2 p-d-inline-block"></p-fileUpload>
       <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
     </ng-template>
 
     <ng-template pTemplate="right">
-      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
+        (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
@@ -14,12 +16,13 @@
         icon="pi pi-trash"
         label="Delete"
         [disabled]="!selectedWorkOrder"
-        (click)="openDeleteDialog(selectedWorkOrder)"
-      ></button>
+        (click)="openDeleteDialog(selectedWorkOrder)"></button>
 
-      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil" [disabled]="!selectedWorkOrder" (click)="openEditDialog(selectedWorkOrder)"></button>
+      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil"
+        [disabled]="!selectedWorkOrder" (click)="openEditDialog(selectedWorkOrder)"></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="!selectedWorkOrder" label="History"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="!selectedWorkOrder"
+        label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -29,41 +32,35 @@
     [columns]="cols"
     [value]="workOrders"
     [globalFilterFields]="fields"
-    [(selection)]="selectedWorkOrder"
-    [resizableColumns]="true"
     [paginator]="true"
-    [scrollable]="true"
-    selectionMode="single"
     [rows]="20"
-  >
+    [resizableColumns]="true"
+    [(selection)]="selectedWorkOrder">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">{{ title }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+          <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
         </span>
       </div>
-    </ng-template>
-
-    <ng-template pTemplate="colgroup" let-columns>
-      <colgroup>
-        <col [style.width.px]="col.width" *ngFor="let col of columns" />
-      </colgroup>
     </ng-template>
 
     <ng-template pTemplate="header" let-columns>
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
-            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <th></th>
-            </ng-container>
-            <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
-              <th style="width: 3rem"></th>
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
+              <th [style.width.px]="col.width"></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+              <th [style.width.px]="col.width" pResizableColumn [pSortableColumn]="col.field">
+                {{ col.header }}
+                <ng-container *ngIf="col.field">
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </ng-container>
+              </th>
             </ng-container>
           </ng-container>
         </ng-container>
@@ -97,8 +94,7 @@
                 (click)="getDetailWorkOrder(workOrder)"
                 [pRowToggler]="workOrder"
                 class="p-button-text p-button-rounded p-button-plain"
-                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
-              ></button>
+                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"></button>
             </ng-container>
           </ng-container>
         </td>
@@ -107,29 +103,29 @@
 
     <ng-template pTemplate="rowexpansion" let-workOrder>
       <tr>
-        <td colspan="7">
-          <div class="p-p-3">
-            <p-table [value]="workOrder.workOrderDetails">
-              <ng-template pTemplate="header" dataKey="detail.product.productNumber">
-                <tr>
-                  <th>Product Number</th>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-detail>
-                <tr>
-                  <td>{{ detail?.product?.productNumber }}</td>
-                  <td>{{ detail?.product?.productName }}</td>
-                  <td>{{ detail?.quantity }}</td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </div>
-        </td>
+        <td colspan="7" class="work-order__expaned">
+          <div>
+            <p-table class="work-order__expaned-table" [value]="workOrder.workOrderDetails">
+              <ng-template pTemplate="header">
+      <tr>
+        <th>Product Number</th>
+        <th>Product Name</th>
+        <th>Quantity</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-detail>
+      <tr>
+        <td>{{ detail?.product?.productNumber }}</td>
+        <td>{{ detail?.product?.productName }}</td>
+        <td>{{ detail?.quantity }}</td>
       </tr>
     </ng-template>
   </p-table>
+</div>
+</td>
+</tr>
+</ng-template>
+</p-table>
 </div>
 
 <app-work-order-create
@@ -138,8 +134,7 @@
   [products]="products"
   [isShowDialog]="isShowDialogCreate"
   (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog()"
-></app-work-order-create>
+  (hideDialogEvent)="hideDialog()"></app-work-order-create>
 
 <app-work-order-edit
   [workOrder]="selectedWorkOrder"
@@ -147,5 +142,4 @@
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialogEdit"
   (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog()"
-></app-work-order-edit>
+  (hideDialogEvent)="hideDialog()"></app-work-order-edit>

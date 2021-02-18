@@ -1,7 +1,7 @@
 export const WidthColumn = {
-  IdentityColumn: 70,
-  NormalColumn: 140,
   CheckBoxColumn: 50,
-  ActionsColumn: 200,
-  DescriptionColumn: 200,
+  IdentityColumn: 100,
+  NormalColumn: 200,
+  ActionsColumn: 1000,
+  DescriptionColumn: 150,
 };

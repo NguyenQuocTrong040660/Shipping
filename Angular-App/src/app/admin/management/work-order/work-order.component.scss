@@ -1,0 +1,12 @@
+.work-order {
+  // Overwrite padding of primeNG
+  &__expaned {
+    padding: 0px !important;
+  }
+
+  &__expaned-table {
+    th, td {
+      border: none;
+    }
+  }
+}
