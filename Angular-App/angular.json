@@ -19,7 +19,6 @@
             "assets": ["src/assets", "src/favicon.ico", "src/robots.txt", "src/web.config"],
             "styles": [
               "node_modules/admin-lte/plugins/fontawesome-free/css/all.min.css",
-              "node_modules/admin-lte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css",
               "node_modules/admin-lte/dist/css/adminlte.min.css",
               "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/themes/nova/theme.css",
@@ -30,12 +29,7 @@
             "scripts": [
               "node_modules/admin-lte/plugins/jquery/jquery.min.js",
               "node_modules/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js",
-              "node_modules/admin-lte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.js",
-              "node_modules/admin-lte/dist/js/adminlte.min.js",
-              "node_modules/admin-lte/plugins/jquery-mousewheel/jquery.mousewheel.js",
-              "node_modules/admin-lte/plugins/raphael/raphael.js",
-              "node_modules/admin-lte/plugins/jquery-mapael/jquery.mapael.js",
-              "node_modules/admin-lte/plugins/jquery-mapael/maps/usa_states.js"
+              "node_modules/admin-lte/dist/js/adminlte.min.js"
             ]
           },
           "configurations": {
@@ -67,9 +61,10 @@
               ]
             },
             "local": {
-              "optimization": true,
-              "aot": true,
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": false
             }
           }
         },

@@ -9,8 +9,6 @@ import { CommonModule } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthenticationService } from './shared/services/authentication.service';
-import { API_BASE_URL } from './shared/api-clients/files.client';
-import { environment } from 'environments/environment';
 import { HttpConfigInterceptor } from './shared/interceptors/http-config.interceptor';
 import { LoadingService } from './shared/services/loading.service';
 import { QuicklinkModule, QuicklinkStrategy } from 'ngx-quicklink';
