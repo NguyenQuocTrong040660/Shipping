@@ -20,18 +20,16 @@
   <p-table
     #configurationDataTable
     dataKey="key"
-    styleClass="p-datatable-customers"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [columns]="cols"
     [value]="configurations"
     [globalFilterFields]="colFields"
     [(selection)]="selectedConfigurations"
-    [rows]="20"
     [rowHover]="true"
     [resizableColumns]="true"
     [paginator]="true"
-    [scrollable]="true"
-    [showCurrentPageReport]="true"
+    selectionMode="single"
+    [rows]="20"
+    styleClass="p-datatable-custom"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
