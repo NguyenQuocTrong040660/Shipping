@@ -121,7 +121,8 @@
                 <p-multiSelect
                   [ngClass]="{ 'ng-dirty': workOrders.invalid && (workOrders.dirty || workOrders.touched) }"
                   [options]="workOrderList" [formControl]="workOrders" defaultLabel="Select Work Orders"
-                  optionLabel="productNumber" appendTo="body"></p-multiSelect>
+                  optionLabel="id" appendTo="body">
+                </p-multiSelect>
                 <ng-container *ngIf="workOrders.invalid && (workOrders.dirty || workOrders.touched)">
                   <small id="email-error" class="p-invalid create-user-form__error">Work Order is required.</small>
                 </ng-container>

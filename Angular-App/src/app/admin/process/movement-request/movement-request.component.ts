@@ -98,31 +98,10 @@ export class MovementRequestComponent implements OnInit {
   }
 
   initWorkOrders() {
-    // this.workOrderClients.getWorkOrders().subscribe(
-    //   (i) => (this.workOrderList = i),
-    //   (_) => (this.workOrderList = [])
-    // );
-
-    this.workOrderList = [
-      {
-        id: 1,
-      },
-      {
-        id: 2,
-      },
-      {
-        id: 3,
-      },
-      {
-        id: 4,
-      },
-      {
-        id: 5,
-      },
-      {
-        id: 6,
-      },
-    ];
+    this.workOrderClients.getWorkOrders().subscribe(
+      (i) => (this.workOrderList = i),
+      (_) => (this.workOrderList = [])
+    );
   }
 
   initMovementRequests() {
