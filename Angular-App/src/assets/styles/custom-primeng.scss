@@ -59,3 +59,13 @@
 // .p-datatable .p-datatable-tbody > tr > td {
 //   text-align: center !important;
 // }
+
+.p-datatable {
+  .p-datatable-header {
+    background-color: #d9d9d9;
+  }
+
+  .p-datatable-thead > tr > th {
+    background-color: #e6e6e6;
+  }
+}
