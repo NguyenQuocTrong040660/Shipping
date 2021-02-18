@@ -13,6 +13,8 @@ import { TypeColumn } from 'app/shared/configs/type-column';
   templateUrl: './product.component.html',
 })
 export class ProductComponent implements OnInit {
+  title = 'Products Management';
+
   selectedItem: ProductModel;
   products: ProductModel[] = [];
 
@@ -61,11 +63,12 @@ export class ProductComponent implements OnInit {
       { header: 'Product Name', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Qty Per Package', field: 'qtyPerPackage', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
+    this.title = this.title.toUpperCase();
     this.initForm();
     this.initProducts();
   }
@@ -77,8 +80,6 @@ export class ProductComponent implements OnInit {
       productNumber: ['', [Validators.required]],
       notes: [''],
       qtyPerPackage: ['', [Validators.required, Validators.min(0)]],
-      createdBy: [''],
-      created: [null],
       lastModifiedBy: [''],
       lastModified: [null],
     });

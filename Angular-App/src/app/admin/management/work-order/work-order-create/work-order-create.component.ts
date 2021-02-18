@@ -79,23 +79,23 @@ export class WorkOrderCreateComponent implements OnInit {
   }
 
   onRowEditInit(workOrderDetail: WorkOrderDetailModel) {
-    this.clonedWorkOrderDetailModels[workOrderDetail.id] = { ...workOrderDetail };
+    this.clonedWorkOrderDetailModels[workOrderDetail.productId] = { ...workOrderDetail };
   }
 
   onRowDelete(workOrderDetail: WorkOrderDetailModel) {
     this.selectedProducts = this.selectedProducts.filter((i) => i.id !== workOrderDetail.productId);
-    this.workOrderDetails = this.workOrderDetails.filter((i) => i.id !== workOrderDetail.id);
+    this.workOrderDetails = this.workOrderDetails.filter((i) => i.productId !== workOrderDetail.productId);
   }
 
   onRowEditSave(workOrderDetail: WorkOrderDetailModel) {
-    const entity = this.workOrderDetails.find((i) => i.id === workOrderDetail.id);
+    const entity = this.workOrderDetails.find((i) => i.productId === workOrderDetail.productId);
     entity.quantity = workOrderDetail.quantity;
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.id];
+    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
   }
 
   onRowEditCancel(workOrderDetail: WorkOrderDetailModel, index: number) {
-    this.workOrderDetails[index] = this.clonedWorkOrderDetailModels[workOrderDetail.id];
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.id];
+    this.workOrderDetails[index] = this.clonedWorkOrderDetailModels[workOrderDetail.productId];
+    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
   }
 
   checkModifiedQuantity(workOrderDetails: WorkOrderDetailModel[]) {

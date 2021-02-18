@@ -38,8 +38,10 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
   constructor(private fb: FormBuilder) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.workOrder && changes.workOrder.currentValue && changes.workOrder.currentValue.workOderDetails) {
-      changes.workOrder.currentValue.workOderDetails.forEach((i) => {});
+    if (changes.workOrder && changes.workOrder.currentValue) {
+      const workOrder = changes.workOrder.currentValue as WorkOrderModel;
+      this.workOrderDetails = workOrder.workOrderDetails;
+      this.workOrderForm.patchValue(workOrder);
     }
   }
 
@@ -75,22 +77,22 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
   }
 
   onRowEditInit(workOrderDetail: WorkOrderDetailModel) {
-    this.clonedWorkOrderDetailModels[workOrderDetail.id] = { ...workOrderDetail };
+    this.clonedWorkOrderDetailModels[workOrderDetail.productId] = { ...workOrderDetail };
   }
 
   onRowDelete(workOrderDetail: WorkOrderDetailModel) {
-    this.workOrderDetails = this.workOrderDetails.filter((i) => i.id !== workOrderDetail.id);
+    this.workOrderDetails = this.workOrderDetails.filter((i) => i.productId !== workOrderDetail.productId);
   }
 
   onRowEditSave(workOrderDetail: WorkOrderDetailModel) {
-    const entity = this.workOrderDetails.find((i) => i.id === workOrderDetail.id);
+    const entity = this.workOrderDetails.find((i) => i.productId === workOrderDetail.productId);
     entity.quantity = workOrderDetail.quantity;
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.id];
+    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
   }
 
   onRowEditCancel(workOrderDetail: WorkOrderDetailModel, index: number) {
-    this.workOrderDetails[index] = this.clonedWorkOrderDetailModels[workOrderDetail.id];
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.id];
+    this.workOrderDetails[index] = this.clonedWorkOrderDetailModels[workOrderDetail.productId];
+    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
   }
 
   nextPage(currentIndex: number) {

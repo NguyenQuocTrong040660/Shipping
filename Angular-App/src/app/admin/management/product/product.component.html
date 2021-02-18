@@ -26,10 +26,11 @@
     [scrollable]="true"
     selectionMode="single"
     [rows]="20"
+    styleClass="p-datatable-custom"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Product Management</h5>
+        <h5 class="p-m-0">{{ title }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input pInputText type="text" (input)="productsDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
@@ -39,7 +40,7 @@
 
     <ng-template pTemplate="colgroup" let-columns>
       <colgroup>
-        <col [style.width.px]="col.width" *ngFor="let col of columns" />
+        <col *ngFor="let col of columns" [style.width.px]="col.width" />
       </colgroup>
     </ng-template>
 
