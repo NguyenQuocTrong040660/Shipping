@@ -72,7 +72,7 @@
               <p-tableRadioButton [value]="configuration"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ 'WO' + configuration[col.field] }}
+              {{ configuration[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               {{ configuration[col.field] | date: 'dd/MM/yyyy' }}
@@ -103,12 +103,14 @@
           <small *ngIf="keyControl && keyControl.errors?.required" class="p-invalid p-error">Key is required.</small>
         </ng-container>
       </div>
+
       <div class="p-field">
-        <label for="notes">Notes</label>
-        <input [ngClass]="{ 'ng-dirty': notesControl.invalid && (notesControl.dirty || notesControl.touched) }"
+        <label for="descriptions">Descriptions</label>
+        <input [ngClass]="{ 'ng-dirty': descriptionsControl.invalid && (descriptionsControl.dirty || descriptionsControl.touched) }"
           pInputText
-          id="notes" [formControl]="notesControl" type="text" />
+          id="descriptions" [formControl]="descriptionsControl" type="text" />
       </div>
+      
       <div class="p-field">
         <label for="value">Value</label>
         <input [ngClass]="{ 'ng-dirty': valueControl.invalid && (valueControl.dirty || valueControl.touched) }"

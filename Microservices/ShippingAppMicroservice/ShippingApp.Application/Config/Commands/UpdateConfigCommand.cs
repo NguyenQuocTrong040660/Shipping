@@ -37,7 +37,8 @@ namespace ShippingApp.Application.Config.Commands
             }
 
             entity.Value = request.Config.Value;
-            
+            entity.Descriptions = request.Config.Descriptions;
+
             return await _context.SaveChangesAsync() > 0 ? Result.Success() : Result.Failure("Failed to update config");
         }
     }

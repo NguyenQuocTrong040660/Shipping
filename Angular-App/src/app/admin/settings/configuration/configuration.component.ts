@@ -25,8 +25,8 @@ export class ConfigurationComponent implements OnInit {
     return this.configurationForm.get('key');
   }
 
-  get notesControl() {
-    return this.configurationForm.get('notes');
+  get descriptionsControl() {
+    return this.configurationForm.get('descriptions');
   }
 
   get valueControl() {
@@ -41,7 +41,7 @@ export class ConfigurationComponent implements OnInit {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Key', field: 'key', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Notes', field: 'Notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
+      { header: 'Descriptions', field: 'descriptions', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Value', field: 'value', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn }
@@ -55,7 +55,7 @@ export class ConfigurationComponent implements OnInit {
   initForm() {
     this.configurationForm = new FormGroup({
       key: new FormControl('', Validators.required),
-      notes: new FormControl(''),
+      descriptions: new FormControl(''),
       value: new FormControl('', Validators.required),
     });
   }
@@ -79,11 +79,12 @@ export class ConfigurationComponent implements OnInit {
   }
 
   onEdit() {
-    const { key, value } = this.configurationForm.value;
+    const { key, value, descriptions } = this.configurationForm.value;
 
     const model: ConfigModel = {
-      key,
+      key,      
       value,
+      descriptions
     };
 
     this.configsClients.updateConfig(key, model).subscribe(
