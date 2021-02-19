@@ -3,7 +3,9 @@ import { CreateUserRequest, CreateUserResult } from './../../../shared/api-clien
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
-import { SelectItem } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
+import { WidthColumn } from 'app/shared/configs/width-column';
+import { TypeColumn } from 'app/shared/configs/type-column';
 
 @Component({
   templateUrl: './user-management.component.html',
@@ -22,7 +24,7 @@ export class UserManagementComponent implements OnInit {
   createUserForm: FormGroup;
   setNewPasswordForm: FormGroup;
 
-  cols: { header: string; field: string }[] = [];
+  cols: any[] = [];
 
   get userForms() {
     return this.createUserForm.get('userForms') as FormArray;
@@ -32,17 +34,15 @@ export class UserManagementComponent implements OnInit {
     return this.setNewPasswordForm.get('newPasswordForms') as FormArray;
   }
 
-  constructor(private userClient: UserClient, private notificationService: NotificationService) {}
+  constructor(private userClient: UserClient, private notificationService: NotificationService, private confirmationService: ConfirmationService) { }
 
   ngOnInit() {
     this.cols = [
-      { header: 'Email', field: 'email' },
-      { header: 'User Name', field: 'userName' },
-      { header: 'Role Name', field: 'roleName' },
-      { header: 'Created', field: 'created' },
-      { header: 'Create By', field: 'createBy' },
-      { header: 'Last Modified', field: 'lastModified' },
-      { header: 'Last Modified By', field: 'lastModifiedBy' },
+      { header: 'Email', field: 'email', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'User Name', field: 'userName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Role Name', field: 'roleName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn }
     ];
 
     this.initUsers();
@@ -193,15 +193,14 @@ export class UserManagementComponent implements OnInit {
 
   // Delete Users
   openDeleteDialog() {
-    this.isShowDeleteDialog = true;
-  }
-
-  hideDeleteUsersDialog() {
-    this.isShowDeleteDialog = false;
-  }
-
-  onDelete() {
-    console.log('this.selectedUsers: ', this.selectedUsers);
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this user?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.notificationService.success('Delete User Successfully');
+      },
+    });
   }
 
   removeUser(index: number, formArray: FormArray) {

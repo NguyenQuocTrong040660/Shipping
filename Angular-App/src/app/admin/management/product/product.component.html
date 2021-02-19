@@ -1,15 +1,20 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload>
+      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import"
+        class="p-mr-2 p-d-inline-block"></p-fileUpload>
       <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
     </ng-template>
 
     <ng-template pTemplate="right">
-      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
-      <button class="p-button-danger p-mr-2" pButton pRipple icon="pi pi-trash" label="Delete" [disabled]="!selectedItem" (click)="deleteProduct(selectedItem)"></button>
-      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil" [disabled]="!selectedItem" (click)="editProduct(selectedItem)"></button>
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="!selectedItem" label="History"></button>
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
+        (click)="openCreateDialog()"></button>
+      <button class="p-button-danger p-mr-2" pButton pRipple icon="pi pi-trash" label="Delete"
+        [disabled]="!selectedItem" (click)="deleteProduct(selectedItem)"></button>
+      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil"
+        [disabled]="!selectedItem" (click)="editProduct(selectedItem)"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="!selectedItem"
+        label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -20,19 +25,17 @@
     [value]="products"
     [globalFilterFields]="fields"
     [(selection)]="selectedItem"
-    [rowHover]="true"
     [resizableColumns]="true"
     [paginator]="true"
-    selectionMode="single"
     [rows]="20"
-    styleClass="p-datatable-custom"
-  >
+    styleClass="p-datatable-custom">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">{{ title }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="productsDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+          <input pInputText type="text" (input)="productsDataTable.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -51,10 +54,20 @@
               <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field">
+                </p-sortIcon>
+              </th>
             </ng-container>
           </ng-container>
         </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td [attr.colspan]="columns.length" class="text-center">
+          No records found
+        </td>
       </tr>
     </ng-template>
 
@@ -91,8 +104,7 @@
           pInputText
           id="productName"
           [formControl]="productNameControl"
-          type="text"
-        />
+          type="text" />
         <ng-container *ngIf="productNameControl.invalid && (productNameControl.dirty || productNameControl.touched)">
           <small class="p-invalid p-error">Please enter a valid product name</small>
         </ng-container>
@@ -105,9 +117,9 @@
           pInputText
           id="productNumber"
           [formControl]="productNumberControl"
-          type="text"
-        />
-        <ng-container *ngIf="productNumberControl.invalid && (productNumberControl.dirty || productNumberControl.touched)">
+          type="text" />
+        <ng-container
+          *ngIf="productNumberControl.invalid && (productNumberControl.dirty || productNumberControl.touched)">
           <small class="p-invalid p-error">Please enter a valid product number</small>
         </ng-container>
       </div>
@@ -117,10 +129,10 @@
         <p-inputNumber
           [ngClass]="{ 'ng-dirty': qtyPerPackageControl.invalid && (qtyPerPackageControl.dirty || qtyPerPackageControl.touched) }"
           inputId="qtyPerPackage"
-          [formControl]="qtyPerPackageControl"
-        >
+          [formControl]="qtyPerPackageControl">
         </p-inputNumber>
-        <ng-container *ngIf="qtyPerPackageControl.invalid && (qtyPerPackageControl.dirty || qtyPerPackageControl.touched)">
+        <ng-container
+          *ngIf="qtyPerPackageControl.invalid && (qtyPerPackageControl.dirty || qtyPerPackageControl.touched)">
           <small class="p-invalid p-error">Please enter a valid number</small>
         </ng-container>
       </div>
@@ -134,6 +146,7 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="productForm.invalid" (click)="onSubmit()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="productForm.invalid"
+      (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>

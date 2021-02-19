@@ -53,7 +53,7 @@ export class ProductComponent implements OnInit {
     private notificationService: NotificationService,
     private confirmationService: ConfirmationService,
     private productClients: ProductClients
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
@@ -64,7 +64,7 @@ export class ProductComponent implements OnInit {
       { header: 'Qty/ Pkg', field: 'qtyPerPackage', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn }
     ];
 
     this.fields = this.cols.map((i) => i.field);

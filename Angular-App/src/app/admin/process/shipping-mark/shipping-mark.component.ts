@@ -14,7 +14,7 @@ import { SelectItem } from 'primeng/api';
 export class ShippingMarkComponent implements OnInit {
   shippingMarks: ShippingMarkModel[] = [];
   products: ProductModel[] = [];
-  selectedShippingMarks: ShippingMarkModel[] = [];
+  selectedShippingMark: ShippingMarkModel;
   selectItems: SelectItem[] = [];
 
   isShowDeleteDialog: boolean;
@@ -68,11 +68,9 @@ export class ShippingMarkComponent implements OnInit {
       { header: 'Revision', field: 'revision', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Carton Number', field: 'cartonNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Product', field: 'product', subField: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn }
+      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn }
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -194,48 +192,20 @@ export class ShippingMarkComponent implements OnInit {
   }
 
   // Delete Shipping Marks
-  openDeleteDialog(shippingMark?: ShippingMarkModel) {
-    this.isShowDeleteDialog = true;
-    this.currentSelectedShippingMark = [];
-
-    if (shippingMark) {
-      this.isDeleteMany = false;
-      this.currentSelectedShippingMark.push(shippingMark);
-    } else {
-      this.isDeleteMany = true;
-    }
-  }
-
-  hideDeleteDialog() {
-    this.isShowDeleteDialog = false;
-  }
-
-  onDelete() {
-    if (this.currentSelectedShippingMark.length === 0) {
-      return;
-    }
-
-    if (this.isDeleteMany) {
-      console.log('this.selectedShippingMarks: ' + this.selectedShippingMarks);
-    } else {
-      const shippingMark = this.currentSelectedShippingMark[0];
-      this.shippingMarkClients.deleteShippingMarkAysnc(shippingMark.id).subscribe(
-        (result) => {
-          if (result && result.succeeded) {
-            this.notificationService.success('Delete Shipping Mark Successfully');
-            this.initDataSource();
-          } else {
-            this.notificationService.error(result?.error);
-          }
-
-          this.hideDeleteDialog();
-        },
-        (_) => {
-          this.notificationService.error('Delete  Shipping Mark Failed. Please try again');
-          this.hideDialog();
+  openDeleteDialog(shippingMark: ShippingMarkModel) {
+    this.shippingMarkClients.deleteShippingMarkAysnc(shippingMark.id).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Delete Shipping Mark Successfully');
+          this.initDataSource();
+        } else {
+          this.notificationService.error(result?.error);
         }
-      );
-    }
+      },
+      (_) => {
+        this.notificationService.error('Delete Shipping Mark Failed. Please try again');
+      }
+    );
   }
 
   onPrint() {

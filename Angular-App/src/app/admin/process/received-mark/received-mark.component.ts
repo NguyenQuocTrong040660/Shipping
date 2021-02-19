@@ -5,7 +5,7 @@ import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { PrintService } from 'app/shared/services/print.service';
-import { SelectItem } from 'primeng/api';
+import { SelectItem, ConfirmationService } from 'primeng/api';
 
 @Component({
   templateUrl: './received-mark.component.html',
@@ -13,7 +13,7 @@ import { SelectItem } from 'primeng/api';
 })
 export class ReceivedMarkComponent implements OnInit {
   receivedMarks: ReceivedMarkModel[] = [];
-  selectedReceivedMarks: ReceivedMarkModel[] = [];
+  selectedReceivedMark: ReceivedMarkModel;
   workOrders: WorkOrderModel[] = [];
   selectItems: SelectItem[] = [];
 
@@ -42,17 +42,16 @@ export class ReceivedMarkComponent implements OnInit {
     public printService: PrintService,
     private receivedMarkClients: ReceivedMarkClients,
     private workOrderClients: WorkOrderClients,
-    private notificationService: NotificationService) { }
+    private notificationService: NotificationService,
+    private confirmationService: ConfirmationService) { }
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Work Order', field: 'workOrder', subField: 'id', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn }
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -170,46 +169,27 @@ export class ReceivedMarkComponent implements OnInit {
   }
 
   // Delete Received Marks
-  openDeleteDialog(receivedMark?: ReceivedMarkModel) {
-    this.isShowDeleteDialog = true;
-    this.currentSelectedReceivedMark = [];
-
-    if (receivedMark) {
-      this.isDeleteMany = false;
-      this.currentSelectedReceivedMark.push(receivedMark);
-    } else {
-      this.isDeleteMany = true;
-    }
-  }
-
-  hideDeleteDialog() {
-    this.isShowDeleteDialog = false;
-  }
-
-  onDelete() {
-    if (this.isDeleteMany) {
-      console.log('this.selectedReceivedMarks: ' + this.selectedReceivedMarks);
-    } else {
-      const receivedMark = this.currentSelectedReceivedMark[0];
-      this.receivedMarkClients.deleteReceivedMarkAysnc(receivedMark.id).subscribe(
-        (result) => {
-          if (result && result.succeeded) {
-            this.notificationService.success('Delete Received Mark Successfully');
-            this.initDataSource();
-          } else {
-            this.notificationService.error(result?.error);
+  openDeleteDialog(receivedMark: ReceivedMarkModel) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this items?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.receivedMarkClients.deleteReceivedMarkAysnc(receivedMark.id).subscribe(
+          (result) => {
+            if (result && result.succeeded) {
+              this.notificationService.success('Delete Received Mark Successfully');
+              this.initDataSource();
+            } else {
+              this.notificationService.error(result?.error);
+            }
+          },
+          (_) => {
+            this.notificationService.error('Delete Received Mark Failed. Please try again');
           }
-
-          this.hideDeleteDialog();
-        },
-        (_) => {
-          this.notificationService.error('Delete  Received Mark Failed. Please try again');
-          this.hideDialog();
-        }
-      );
-    }
-
-    this.hideDeleteDialog();
+        );
+      },
+    });
   }
 
   onPrint() {

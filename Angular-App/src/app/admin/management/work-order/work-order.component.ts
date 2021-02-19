@@ -37,7 +37,7 @@ export class WorkOrderComponent implements OnInit {
     private productClients: ProductClients,
     private notificationService: NotificationService,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
@@ -47,7 +47,7 @@ export class WorkOrderComponent implements OnInit {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn }
     ];
 
     this.fields = this.cols.map((i) => i.field);

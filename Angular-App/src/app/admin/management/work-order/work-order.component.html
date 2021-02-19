@@ -1,12 +1,14 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload>
+      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import"
+        class="p-mr-2 p-d-inline-block"></p-fileUpload>
       <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
     </ng-template>
 
     <ng-template pTemplate="right">
-      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
+        (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
@@ -14,12 +16,13 @@
         icon="pi pi-trash"
         label="Delete"
         [disabled]="!selectedWorkOrder"
-        (click)="openDeleteDialog(selectedWorkOrder)"
-      ></button>
+        (click)="openDeleteDialog(selectedWorkOrder)"></button>
 
-      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil" [disabled]="!selectedWorkOrder" (click)="openEditDialog(selectedWorkOrder)"></button>
+      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil"
+        [disabled]="!selectedWorkOrder" (click)="openEditDialog(selectedWorkOrder)"></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="!selectedWorkOrder" label="History"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="!selectedWorkOrder"
+        label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -31,16 +34,15 @@
     [globalFilterFields]="fields"
     [paginator]="true"
     [rows]="20"
-    selectionMode="single"
     [resizableColumns]="true"
-    [(selection)]="selectedWorkOrder"
-  >
+    [(selection)]="selectedWorkOrder">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">{{ title }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+          <input pInputText type="text" (input)="workOrderDataTable.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -62,6 +64,14 @@
             </ng-container>
           </ng-container>
         </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td [attr.colspan]="columns.length" class="text-center">
+          No records found
+        </td>
       </tr>
     </ng-template>
 
@@ -92,8 +102,7 @@
                 (click)="getDetailWorkOrder(workOrder)"
                 [pRowToggler]="workOrder"
                 class="p-button-text p-button-rounded p-button-plain"
-                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
-              ></button>
+                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"></button>
             </ng-container>
           </ng-container>
         </td>
@@ -106,25 +115,25 @@
           <div>
             <p-table class="work-order__expaned-table" [value]="workOrder.workOrderDetails">
               <ng-template pTemplate="header">
-                <tr>
-                  <th>Product Number</th>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-detail>
-                <tr>
-                  <td>{{ detail?.product?.productNumber }}</td>
-                  <td>{{ detail?.product?.productName }}</td>
-                  <td>{{ detail?.quantity }}</td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </div>
-        </td>
+      <tr>
+        <th>Product Number</th>
+        <th>Product Name</th>
+        <th>Quantity</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-detail>
+      <tr>
+        <td>{{ detail?.product?.productNumber }}</td>
+        <td>{{ detail?.product?.productName }}</td>
+        <td>{{ detail?.quantity }}</td>
       </tr>
     </ng-template>
   </p-table>
+</div>
+</td>
+</tr>
+</ng-template>
+</p-table>
 </div>
 
 <app-work-order-create
@@ -133,8 +142,7 @@
   [products]="products"
   [isShowDialog]="isShowDialogCreate"
   (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog()"
-></app-work-order-create>
+  (hideDialogEvent)="hideDialog()"></app-work-order-create>
 
 <app-work-order-edit
   [workOrder]="selectedWorkOrder"
@@ -142,5 +150,4 @@
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialogEdit"
   (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog()"
-></app-work-order-edit>
+  (hideDialogEvent)="hideDialog()"></app-work-order-edit>

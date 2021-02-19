@@ -12,7 +12,7 @@ import { TypeColumn } from 'app/shared/configs/type-column';
 })
 export class ShippingPlanComponent implements OnInit {
   shippingPlans: ShippingPlanModel[] = [];
-  selectedShippingPlans: ShippingPlanModel[] = [];
+  selectedShippingPlan: ShippingPlanModel;
   selectItems: SelectItem[] = [];
   products: ProductModel[] = [];
 
@@ -73,7 +73,7 @@ export class ShippingPlanComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
@@ -86,18 +86,17 @@ export class ShippingPlanComponent implements OnInit {
       { header: 'Sales ID', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Mode', field: 'shippingMode', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn }
     ];
 
     this.fields = this.cols.map((i) => i.field);
 
     this.initForm();
-    this.initDataSource();
+    this.initShippingPlans();
     this.initProducts();
   }
 
@@ -121,11 +120,13 @@ export class ShippingPlanComponent implements OnInit {
     });
   }
 
-  initDataSource() {
+  initShippingPlans() {
     this.shippingPlanClients.getAllShippingPlan().subscribe(
       (i) => (this.shippingPlans = i),
       (_) => (this.shippingPlans = [])
     );
+
+    console.log('this.shippingPlans: ', this.shippingPlans);
   }
 
   initProducts() {
@@ -161,7 +162,7 @@ export class ShippingPlanComponent implements OnInit {
       (result) => {
         if (result && result.succeeded) {
           this.notificationService.success('Create Shipping Plan Successfully');
-          this.initDataSource();
+          this.initShippingPlans();
         } else {
           this.notificationService.error(result?.error);
         }
@@ -202,7 +203,7 @@ export class ShippingPlanComponent implements OnInit {
       (result) => {
         if (result && result.succeeded) {
           this.notificationService.success('Edit Shipping Plan Successfully');
-          this.initDataSource();
+          this.initShippingPlans();
         } else {
           this.notificationService.error(result?.error);
         }
@@ -216,26 +217,28 @@ export class ShippingPlanComponent implements OnInit {
     );
   }
 
-  openDeleteDialog(singleShippingPlan: ShippingPlanModel) {
+  openDeleteDialog(shippingPlan: ShippingPlanModel) {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete this items?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.shippingPlanClients.deletedShippingPlan(singleShippingPlan.id).subscribe(
+        this.shippingPlanClients.deletedShippingPlan(shippingPlan.id).subscribe(
           (result) => {
             if (result && result.succeeded) {
               this.notificationService.success('Delete Shipping Plan Successfully');
-              this.initDataSource();
+              this.initShippingPlans();
             } else {
               this.notificationService.error(result?.error);
             }
-
-            this.selectedShippingPlans = this.selectedShippingPlans.filter((i) => i.id !== singleShippingPlan.id);
           },
           (_) => this.notificationService.error('Delete Shipping Plan Failed. Please try again')
         );
       },
     });
+  }
+
+  getDetailShippingPlan(shippingPlan: ShippingPlanModel) {
+    // TODO: show shipping plan Detail
   }
 }

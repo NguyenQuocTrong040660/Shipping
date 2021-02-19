@@ -11,8 +11,8 @@
         pRipple
         icon="pi pi-trash"
         label="Delete"
-        [disabled]="selectedShippingRequests && selectedShippingRequests.length !== 1"
-        (click)="openDeleteDialog(selectedShippingRequests[0])"></button>
+        [disabled]="!selectedShippingRequest"
+        (click)="openDeleteDialog(selectedShippingRequest)"></button>
 
       <button
         class="p-button-success p-mr-2"
@@ -20,11 +20,11 @@
         pRipple
         label="Edit"
         icon="pi pi-pencil"
-        [disabled]="selectedShippingRequests && selectedShippingRequests.length !== 1"
-        (click)="openEditDialog(selectedShippingRequests[0])"></button>
+        [disabled]="!selectedShippingRequest"
+        (click)="openEditDialog(selectedShippingRequest)"></button>
 
       <button class="p-button-warning" pButton pRipple icon="pi pi-search"
-        [disabled]="selectedShippingRequests && selectedShippingRequests.length !== 1" label="History"></button>
+        [disabled]="!selectedShippingRequest" label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -32,16 +32,12 @@
     #shippingRequestDataTable
     dataKey="id"
     styleClass="p-datatable-customers"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [columns]="cols"
     [value]="shippingRequests"
     [globalFilterFields]="fields"
-    [(selection)]="selectedShippingRequests"
-    [rowHover]="true"
+    [(selection)]="selectedShippingRequest"
     [resizableColumns]="true"
     [paginator]="true"
-    [scrollable]="true"
-    [showCurrentPageReport]="true"
     [rows]="20">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
@@ -54,24 +50,19 @@
       </div>
     </ng-template>
 
-    <ng-template pTemplate="colgroup" let-columns>
-      <colgroup>
-        <col [style.width.px]="col.width" *ngFor="let col of columns" />
-      </colgroup>
-    </ng-template>
-
     <ng-template pTemplate="header" let-columns>
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
-            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <th>
-                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-              </th>
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
+              <th [style.width.px]="col.width"></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field">
-                </p-sortIcon>
+              <th [style.width.px]="col.width" pResizableColumn [pSortableColumn]="col.field">
+                {{ col.header }}
+                <ng-container *ngIf="col.field">
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </ng-container>
               </th>
             </ng-container>
           </ng-container>
@@ -79,12 +70,23 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-shippingRequest let-columns="columns">
+    <ng-template pTemplate="emptymessage" let-columns>
+      <tr>
+        <td [attr.colspan]="columns.length" class="text-center">
+          No records found
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-shippingRequest let-columns="columns" let-expanded="expanded">
       <tr>
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <p-tableCheckbox [value]="shippingRequest"></p-tableCheckbox>
+              <p-tableRadioButton [value]="shippingRequest"></p-tableRadioButton>
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+              {{ 'WO' + shippingRequest[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               {{ shippingRequest[col.field] | date: 'dd/MM/yyyy' }}
@@ -95,10 +97,46 @@
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
               {{ shippingRequest[col.field] }}
             </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
+              <button
+                type="button"
+                pButton
+                pRipple
+                (click)="getDetailShippingRequest(shippingRequest)"
+                [pRowToggler]="shippingRequest"
+                class="p-button-text p-button-rounded p-button-plain"
+                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"></button>
+            </ng-container>
           </ng-container>
         </td>
       </tr>
     </ng-template>
+
+    <!-- TODO: implement when have data -->
+    <!-- <ng-template pTemplate="rowexpansion" let-shippingRequest>
+      <tr>
+        <td colspan="7" class="work-order__expaned">
+          <div>
+            <p-table class="work-order__expaned-table" [value]="shippingRequest.shippingRequestDetails">
+              <ng-template pTemplate="header">
+      <tr>
+        <th>Product Number</th>
+        <th>Product Name</th>
+        <th>Quantity</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-detail>
+      <tr>
+        <td>{{ detail?.product?.productNumber }}</td>
+        <td>{{ detail?.product?.productName }}</td>
+        <td>{{ detail?.quantity }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+</td>
+</tr>
+</ng-template> -->
   </p-table>
 </div>
 
@@ -116,18 +154,13 @@
             <p-table
               dataKey="id"
               styleClass="p-datatable-customers"
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
               [columns]="colShippingPlans"
               [value]="shippingPlans"
               [globalFilterFields]="fieldShippingPlans"
               [(selection)]="selectedShippingPlan"
-              [rowHover]="true"
               [resizableColumns]="true"
               [paginator]="true"
-              [scrollable]="true"
-              [showCurrentPageReport]="true"
               [rows]="10"
-              selectionMode="single"
               scrollHeight="200px">
               <ng-template pTemplate="colgroup" let-columns>
                 <colgroup>

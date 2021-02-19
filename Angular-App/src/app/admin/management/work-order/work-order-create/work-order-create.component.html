@@ -1,4 +1,5 @@
-<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true"
+  [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
@@ -12,10 +13,8 @@
           [(selection)]="selectedProducts"
           [resizableColumns]="true"
           [paginator]="true"
-          [scrollable]="true"
           [rows]="10"
-          scrollHeight="350px"
-        >
+          scrollHeight="350px">
           <ng-template pTemplate="colgroup" let-columns>
             <colgroup>
               <col [style.width.px]="col.width" *ngFor="let col of columns" />
@@ -32,7 +31,9 @@
                     </th>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
-                    <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                    <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field">
+                      </p-sortIcon>
+                    </th>
                   </ng-container>
                 </ng-container>
               </ng-container>
@@ -62,15 +63,15 @@
         </p-table>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" icon="pi pi-times" iconPos="left"></p-button>
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" icon="pi pi-times"
+              iconPos="left"></p-button>
             <p-button
               styleClass="p-button-text"
               label="Next"
               [disabled]="selectedProducts && selectedProducts.length === 0"
               (onClick)="nextPage(stepIndex)"
               icon="pi pi-angle-right"
-              iconPos="right"
-            ></p-button>
+              iconPos="right"></p-button>
           </div>
         </ng-template>
       </p-card>
@@ -116,8 +117,7 @@
                     pInitEditableRow
                     icon="pi pi-pencil"
                     (click)="onRowEditInit(workOrderDetail)"
-                    class="p-button-rounded p-button-text"
-                  ></button>
+                    class="p-button-rounded p-button-text"></button>
 
                   <button
                     *ngIf="!editing"
@@ -127,8 +127,7 @@
                     pInitEditableRow
                     icon="pi pi-times"
                     (click)="onRowDelete(workOrderDetail)"
-                    class="p-button-rounded p-button-text"
-                  ></button>
+                    class="p-button-rounded p-button-text"></button>
 
                   <button
                     *ngIf="editing"
@@ -138,8 +137,7 @@
                     pSaveEditableRow
                     icon="pi pi-check"
                     (click)="onRowEditSave(workOrderDetail)"
-                    class="p-button-rounded p-button-text p-button-success p-mr-2"
-                  ></button>
+                    class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
                   <button
                     *ngIf="editing"
                     pButton
@@ -148,8 +146,7 @@
                     pCancelEditableRow
                     icon="pi pi-times"
                     (click)="onRowEditCancel(workOrderDetail, ri)"
-                    class="p-button-rounded p-button-text p-button-danger"
-                  ></button>
+                    class="p-button-rounded p-button-text p-button-danger"></button>
                 </td>
               </tr>
             </ng-template>
@@ -157,15 +154,15 @@
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left"
+              icon="pi pi-angle-left"></p-button>
             <p-button
               [disabled]="!checkModifiedQuantity(workOrderDetails)"
               styleClass="p-button-text"
               label="Submit"
               (onClick)="nextPage(stepIndex)"
               icon="pi pi-angle-right"
-              iconPos="right"
-            ></p-button>
+              iconPos="right"></p-button>
           </div>
         </ng-template>
       </p-card>
@@ -182,8 +179,10 @@
           </ng-template>
           <ng-template pTemplate="footer">
             <div class="p-grid p-nogutter p-justify-between">
-              <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
-              <p-button [disabled]="workOrderForm.invalid" styleClass="p-button-text" label="Submit" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
+              <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left"
+                icon="pi pi-angle-left"></p-button>
+              <p-button [disabled]="workOrderForm.invalid" styleClass="p-button-text" label="Submit"
+                (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
             </div>
           </ng-template>
         </p-card>

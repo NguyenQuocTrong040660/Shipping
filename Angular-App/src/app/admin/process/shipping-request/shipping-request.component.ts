@@ -13,7 +13,7 @@ import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 export class ShippingRequestComponent implements OnInit {
   shippingRequests: ShippingRequestModel[] = [];
   shippingPlans: ShippingPlanModel[] = [];
-  selectedShippingRequests: ShippingRequestModel[] = [];
+  selectedShippingRequest: ShippingRequestModel;
   selectedShippingPlan: ShippingPlanModel;
 
   selectItems: SelectItem[] = [];
@@ -83,7 +83,7 @@ export class ShippingRequestComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
@@ -97,11 +97,10 @@ export class ShippingRequestComponent implements OnInit {
       { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Mode', field: 'shippingMode', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn }
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -259,7 +258,6 @@ export class ShippingRequestComponent implements OnInit {
               this.notificationService.error(result?.error);
             }
 
-            this.selectedShippingRequests = this.selectedShippingRequests.filter((i) => i.id !== singleShippingRequest.id);
           },
           (_) => this.notificationService.error('Delete Shipping Request Failed. Please try again')
         );
@@ -292,5 +290,9 @@ export class ShippingRequestComponent implements OnInit {
 
   prevPage() {
     this.activeIndex -= 1;
+  }
+
+  getDetailShippingRequest(shippingRequest: ShippingRequestModel) {
+    // TODO: show Shipping Request Detail
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, ConfirmationService } from 'primeng/api';
 import { MovementRequestClients, MovementRequestModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
@@ -12,7 +12,7 @@ import { TypeColumn } from 'app/shared/configs/type-column';
 })
 export class MovementRequestComponent implements OnInit {
   movementRequests: MovementRequestModel[] = [];
-  selectedMovementRequests: MovementRequestModel[] = [];
+  selectedMovementRequest: MovementRequestModel;
   isShowCreateDialog: boolean;
   isShowEditDialog: boolean;
   isShowDeleteDialog: boolean;
@@ -40,17 +40,20 @@ export class MovementRequestComponent implements OnInit {
     return this.movementRequestForm.get('workOrders');
   }
 
-  constructor(private workOrderClients: WorkOrderClients, private notificationService: NotificationService, private movementRequestClients: MovementRequestClients) { }
+  constructor(
+    private workOrderClients: WorkOrderClients,
+    private notificationService: NotificationService,
+    private movementRequestClients: MovementRequestClients,
+    private confirmationService: ConfirmationService) { }
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Name', field: 'name', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Notes', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Created', field: 'created', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Create By', field: 'createBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Last Modified', field: 'lastModified', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
-      { header: 'Last Modified By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn }
+      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn }
     ];
 
     this.colFields = this.cols.map((i) => i.field);
@@ -162,30 +165,15 @@ export class MovementRequestComponent implements OnInit {
   }
 
   // Delete Movement Request
-  openDeleteDialog(singleMovementRequest?: MovementRequestModel) {
-    this.isShowDeleteDialog = true;
-    this.currentSelectedMovementRequest = [];
-
-    if (singleMovementRequest) {
-      this.isDeleteMany = false;
-      this.currentSelectedMovementRequest.push(singleMovementRequest);
-    } else {
-      this.isDeleteMany = true;
-    }
-  }
-
-  hideDeleteDialog() {
-    this.isShowDeleteDialog = false;
-  }
-
-  onDelete() {
-    if (this.isDeleteMany) {
-      console.log('this.selectedShippingRequests: ' + this.selectedMovementRequests);
-    } else {
-      console.log('this.currentSelectedMovementRequest: ' + this.currentSelectedMovementRequest);
-    }
-
-    this.hideDeleteDialog();
+  openDeleteDialog(movememtRequest: MovementRequestModel) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this items?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.notificationService.success('Delete Movement Request Successfully');
+      },
+    });
   }
 
   nextPage(currentIndex: number) {
@@ -214,6 +202,10 @@ export class MovementRequestComponent implements OnInit {
 
   isDisableStep2(): boolean {
     return this.productsOfSelectedWOs.some(p => !p.quantity);
+  }
+
+  getDetailMovementRequest(movementRequest: MovementRequestModel) {
+    // TODO: show Movement Request Detail
   }
 }
 
