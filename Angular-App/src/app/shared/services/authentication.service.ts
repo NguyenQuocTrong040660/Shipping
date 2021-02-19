@@ -52,8 +52,6 @@ export class AuthenticationService implements OnDestroy {
           });
           this.setLocalStorage(data);
           this.startTokenTimer();
-        } else {
-          this.notificationService.error(data.errorMessage);
         }
 
         return data;

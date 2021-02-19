@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace UserManagement.Infrastructure.Persistence
 
             if (userManager.Users.All(u => u.UserName != defaultUser.UserName))
             {
+                defaultUser.LockoutEnabled = false;
+                defaultUser.LockoutEnd = DateTime.Now;
                 await userManager.CreateAsync(defaultUser, "ad@123456");
             }
 

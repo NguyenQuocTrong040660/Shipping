@@ -8,7 +8,8 @@ namespace UserManagement.Application.Common.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<ApplicationUser, UserResult>().ReverseMap();
+            CreateMap<ApplicationUser, UserResult>()
+                .ReverseMap();
             CreateMap<IdentityRole, RoleModel>().ReverseMap();
         }
     }

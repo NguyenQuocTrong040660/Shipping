@@ -1,11 +1,13 @@
 import { NotificationService } from 'app/shared/services/notification.service';
-import { CreateUserRequest, CreateUserResult } from './../../../shared/api-clients/user.client';
+import { CreateUserRequest, CreateUserResult, LockRequest } from './../../../shared/api-clients/user.client';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   templateUrl: './user-management.component.html',
@@ -34,15 +36,18 @@ export class UserManagementComponent implements OnInit {
     return this.setNewPasswordForm.get('newPasswordForms') as FormArray;
   }
 
-  constructor(private userClient: UserClient, private notificationService: NotificationService, private confirmationService: ConfirmationService) { }
+  private destroyed$ = new Subject<void>();
+
+  constructor(private userClient: UserClient, private notificationService: NotificationService, private confirmationService: ConfirmationService) {}
 
   ngOnInit() {
     this.cols = [
       { header: 'Email', field: 'email', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'User Name', field: 'userName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Role Name', field: 'roleName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Locked', field: 'lockoutEnabled', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn }
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];
 
     this.initUsers();
@@ -191,14 +196,64 @@ export class UserManagementComponent implements OnInit {
     // this.hideSetNewPasswordDialog();
   }
 
-  // Delete Users
-  openDeleteDialog() {
+  // Lock Users
+  openLockDialog() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this user?',
+      message: 'Are you sure you want to lock this user?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
+
       accept: () => {
-        this.notificationService.success('Delete User Successfully');
+        this.selectedUsers.forEach((u) => {
+          const lockRequest: LockRequest = {
+            userId: u.id,
+          };
+          this.userClient
+            .apiUserAdminUserLock(lockRequest)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(
+              (result) => {
+                if (result && result.succeeded) {
+                  this.notificationService.success('Lock User Successfully');
+                  this.initUsers();
+                } else {
+                  this.notificationService.error(result?.error);
+                }
+              },
+              (_) => this.notificationService.error('Lock User Failed. Please try again')
+            );
+        });
+      },
+    });
+  }
+
+  // Lock Users
+  openUnlockDialog() {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to unlock this user?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+
+      accept: () => {
+        this.selectedUsers.forEach((u) => {
+          const lockRequest: LockRequest = {
+            userId: u.id,
+          };
+          this.userClient
+            .apiUserAdminUserUnlock(lockRequest)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(
+              (result) => {
+                if (result && result.succeeded) {
+                  this.notificationService.success('Unlock User Successfully');
+                  this.initUsers();
+                } else {
+                  this.notificationService.error(result?.error);
+                }
+              },
+              (_) => this.notificationService.error('Unlock User Failed. Please try again')
+            );
+        });
       },
     });
   }

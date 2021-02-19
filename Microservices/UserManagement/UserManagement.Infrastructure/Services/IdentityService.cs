@@ -45,7 +45,8 @@ namespace UserManagement.Infrastructure.Services
             {
                 UserName = userName,
                 Email = email ?? userName,
-                LockoutEnabled = true,
+                LockoutEnabled = false,
+                LockoutEnd = DateTime.Now,
                 RequireChangePassword = mustChangePassword
             };
 
@@ -124,7 +125,7 @@ namespace UserManagement.Infrastructure.Services
 
             var temporaryPassword = CreatePassword(10);
 
-            (Result result, string userId) = await CreateUserAsync(userName, temporaryPassword, true, email);
+            (Result result, string userId) = await CreateUserAsync(userName, temporaryPassword, false, email);
 
             if (result.Succeeded)
             {
@@ -178,7 +179,7 @@ namespace UserManagement.Infrastructure.Services
         public async Task UnlockUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-
+            user.LockoutEnabled = false;
             user.LockoutEnd = DateTime.Now;
             await _userManager.UpdateAsync(user);
         }
