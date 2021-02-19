@@ -128,8 +128,6 @@ export class ShippingPlanComponent implements OnInit {
       (i) => (this.shippingPlans = i),
       (_) => (this.shippingPlans = [])
     );
-
-    console.log('this.shippingPlans: ', this.shippingPlans);
   }
 
   initProducts() {

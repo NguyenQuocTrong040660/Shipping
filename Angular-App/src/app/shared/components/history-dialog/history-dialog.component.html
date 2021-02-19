@@ -1,6 +1,72 @@
-<p-dialog header="Create Users" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowDialog"
+<p-dialog header="History" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog"
   (onHide)="hideDialog()">
   <ng-template pTemplate="content">
-    <p>This is History Dialog of {{tittle}}</p>
+    <div class="p-field history__search-group">
+      <label for="search">Search Id: </label>
+      <input id="search" type="text" pInputText [(ngModel)]="searchText" (keydown.enter)="search()" />
+    </div>
+
+    <p-table
+      #historyDataTable
+      [value]="histories"
+      [columns]="cols"
+      [resizableColumns]="true"
+      [paginator]="true"
+      [rows]="10"
+      [lazy]="true"
+      [loading]="loading">
+
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <ng-container *ngFor="let col of columns">
+            <ng-container [ngSwitch]="col.type">
+              <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
+                <th [style.width.px]="col.width"></th>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <th [style.width.px]="col.width" pResizableColumn [pSortableColumn]="col.field">
+                  {{ col.header }}
+                  <ng-container *ngIf="col.field">
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                  </ng-container>
+                </th>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length" class="text-center">
+            No records found
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-shippingRequest let-columns="columns">
+        <tr>
+          <td *ngFor="let col of columns">
+            <ng-container [ngSwitch]="col.type">
+              <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+                <p-tableRadioButton [value]="shippingRequest"></p-tableRadioButton>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+                {{ 'WO' + shippingRequest[col.field] }}
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+                {{ shippingRequest[col.field] | date: 'dd/MM/yyyy' }}
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+                {{ shippingRequest[col.field][col.subField] }}
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+                {{ shippingRequest[col.field] }}
+              </ng-container>
+            </ng-container>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
   </ng-template>
 </p-dialog>
