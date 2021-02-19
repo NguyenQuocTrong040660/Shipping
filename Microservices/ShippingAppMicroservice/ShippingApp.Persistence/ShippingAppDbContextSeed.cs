@@ -19,7 +19,7 @@ namespace ShippingApp.Persistence
                     {
                         Key = "MinShippingDay",
                         Value = "2",
-                        Descriptions = "Shipping Request should be summitted before (n) days"
+                        Descriptions = "Shipping Request should be submitted before (n) days"
                     },
                     new Config
                     {
