@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ShippingApp.Application.Interfaces;
-using ShippingApp.Domain.CommonEntities;
-using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ShippingApp.Persistence.DBContext;
 using System.Linq;
 using ShippingApp.Domain.Entities;
@@ -27,12 +23,14 @@ namespace ShippingApp.Persistence
                     new Config
                     {
                         Key = "ShippingDeptEmail",
-                        Value = "shipping@gmail.com"
+                        Value = "shipping@gmail.com",
+                        Descriptions = "To Email of Shipping Department"
                     },
                     new Config
                     {
                         Key = "LogisticDeptEmail",
-                        Value = "logistic@gmail.com"
+                        Value = "logistic@gmail.com",
+                        Descriptions = "To Email of Logistic Department"
                     }
                 };
 

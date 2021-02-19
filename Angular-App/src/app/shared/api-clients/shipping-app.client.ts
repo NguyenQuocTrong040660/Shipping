@@ -2788,8 +2788,6 @@ export class WorkOrderClients {
 }
 
 export interface AuditableEntityModel {
-    createdBy?: string | undefined;
-    created?: Date | undefined;
     lastModifiedBy?: string | undefined;
     lastModified?: Date | undefined;
 }
@@ -2797,6 +2795,7 @@ export interface AuditableEntityModel {
 export interface ConfigModel extends AuditableEntityModel {
     key?: string | undefined;
     value?: string | undefined;
+    descriptions?: string | undefined;
 }
 
 export interface ProblemDetails {
@@ -2826,11 +2825,13 @@ export interface MovementRequestModel extends AuditableEntityModel {
 }
 
 export interface MovementRequestDetailModel extends AuditableEntityModel {
-    id?: number;
     workOrderId?: number;
     workOrder?: WorkOrderModel | undefined;
     movementRequestId?: number;
     movementRequest?: MovementRequestModel | undefined;
+    productId?: number;
+    product?: ProductModel | undefined;
+    quantity?: number;
 }
 
 export interface WorkOrderModel extends AuditableEntityModel {
@@ -2842,7 +2843,6 @@ export interface WorkOrderModel extends AuditableEntityModel {
 }
 
 export interface WorkOrderDetailModel extends AuditableEntityModel {
-    id?: number;
     quantity?: number;
     workOrderId?: number;
     workOrder?: WorkOrderModel | undefined;
