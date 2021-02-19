@@ -22,7 +22,7 @@ export class AuthenticationGuard implements CanActivate {
       const accessToken = this.stateService.select('accessToken');
       if (accessToken) {
         this.userClient.apiUserUserInfo().subscribe((_) => {
-          this.notificationService.success('Login successfully');
+          // this.notificationService.success('Login successfully');
           return true;
         });
       } else {
