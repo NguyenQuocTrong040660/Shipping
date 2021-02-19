@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReceivedMarkClients, ReceivedMarkModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
+import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { PrintService } from 'app/shared/services/print.service';
 import { SelectItem, ConfirmationService } from 'primeng/api';
@@ -24,11 +25,13 @@ export class ReceivedMarkComponent implements OnInit {
 
   isEdit = false;
   isShowDialog = false;
+  isShowDialogHistory = false;
   titleDialog = '';
 
   cols: any[] = [];
   fields: any[] = [];
   TypeColumn = TypeColumn;
+  HistoryDialogType = HistoryDialogType;
 
   get workOrderControl() {
     return this.receivedMarkForm.get('workOrderId');
@@ -107,6 +110,7 @@ export class ReceivedMarkComponent implements OnInit {
 
   hideDialog() {
     this.isShowDialog = false;
+    this.isShowDialogHistory = false;
   }
 
   onEdit() {
@@ -194,5 +198,9 @@ export class ReceivedMarkComponent implements OnInit {
 
   onPrint() {
     this.printService.printDocument('received-mark');
+  }
+
+  openHistoryDialog() {
+    this.isShowDialogHistory = true;
   }
 }

@@ -22,8 +22,8 @@
         [disabled]="!selectedMovementRequest"
         (click)="openEditDialog(selectedMovementRequest)"></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search"
-        [disabled]="!selectedMovementRequest" label="History"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History"
+        (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
 
@@ -314,3 +314,9 @@
       [disabled]="movementRequestForm.invalid" (click)="onEdit()"></button>
   </ng-template>
 </p-dialog>
+
+<app-history-dialog
+  [isShowDialog]="isShowDialogHistory"
+  [type]="HistoryDialogType.MovementRequest"
+  (hideDialogEvent)="hideDialog()">
+</app-history-dialog>

@@ -27,8 +27,8 @@
         [disabled]="!selectedShippingPlan"
         (click)="openEditDialog(selectedShippingPlan)"></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search"
-        [disabled]="!selectedShippingPlan" label="History"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History"
+        (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
 
@@ -309,3 +309,9 @@
       (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>
+
+<app-history-dialog
+  [isShowDialog]="isShowDialogHistory"
+  [type]="HistoryDialogType.ShippingPlan"
+  (hideDialogEvent)="hideDialog()">
+</app-history-dialog>

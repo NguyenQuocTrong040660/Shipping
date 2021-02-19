@@ -5,6 +5,7 @@ import { ConfirmationService, SelectItem } from 'primeng/api';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
+import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
 
 @Component({
   templateUrl: './shipping-plan.component.html',
@@ -20,6 +21,7 @@ export class ShippingPlanComponent implements OnInit {
 
   isEdit = false;
   isShowDialog = false;
+  isShowDialogHistory = false;
   titleDialog = '';
 
   cols: any[] = [];
@@ -27,6 +29,7 @@ export class ShippingPlanComponent implements OnInit {
 
   WidthColumn = WidthColumn;
   TypeColumn = TypeColumn;
+  HistoryDialogType = HistoryDialogType;
 
   get purchaseOrderControl() {
     return this.shippingPlanForm.get('purchaseOrder');
@@ -194,6 +197,7 @@ export class ShippingPlanComponent implements OnInit {
 
   hideDialog() {
     this.isShowDialog = false;
+    this.isShowDialogHistory = false;
   }
 
   onEdit() {
@@ -240,5 +244,9 @@ export class ShippingPlanComponent implements OnInit {
 
   getDetailShippingPlan(shippingPlan: ShippingPlanModel) {
     // TODO: show shipping plan Detail
+  }
+
+  openHistoryDialog() {
+    this.isShowDialogHistory = true;
   }
 }

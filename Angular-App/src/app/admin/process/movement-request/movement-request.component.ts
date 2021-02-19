@@ -5,6 +5,7 @@ import { MovementRequestClients, MovementRequestModel, WorkOrderClients, WorkOrd
 import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
+import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
 
 @Component({
   templateUrl: './movement-request.component.html',
@@ -16,6 +17,7 @@ export class MovementRequestComponent implements OnInit {
   isShowCreateDialog: boolean;
   isShowEditDialog: boolean;
   isShowDeleteDialog: boolean;
+  isShowDialogHistory = false;
   currentSelectedMovementRequest: MovementRequestModel[] = [];
   isDeleteMany: boolean;
   movementRequestForm: FormGroup;
@@ -27,6 +29,7 @@ export class MovementRequestComponent implements OnInit {
   colFields = [];
   productsOfSelectedWOs = [];
   TypeColumn = TypeColumn;
+  HistoryDialogType = HistoryDialogType;
 
   get nameControl() {
     return this.movementRequestForm.get('name');
@@ -206,6 +209,14 @@ export class MovementRequestComponent implements OnInit {
 
   getDetailMovementRequest(movementRequest: MovementRequestModel) {
     // TODO: show Movement Request Detail
+  }
+
+  hideDialog() {
+    this.isShowDialogHistory = false;
+  }
+
+  openHistoryDialog() {
+    this.isShowDialogHistory = true;
   }
 }
 

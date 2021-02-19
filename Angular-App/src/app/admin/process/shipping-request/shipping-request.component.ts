@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
+import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 
@@ -24,6 +25,8 @@ export class ShippingRequestComponent implements OnInit {
   isEdit = false;
   isShowDialogCreate = false;
   isShowDialogEdit = false;
+  isShowDialogHistory = false;
+  HistoryDialogType = HistoryDialogType;
   titleDialog = '';
 
   stepItems: MenuItem[] = [];
@@ -294,5 +297,13 @@ export class ShippingRequestComponent implements OnInit {
 
   getDetailShippingRequest(shippingRequest: ShippingRequestModel) {
     // TODO: show Shipping Request Detail
+  }
+
+  hideDialog() {
+    this.isShowDialogHistory = false;
+  }
+
+  openHistoryDialog() {
+    this.isShowDialogHistory = true;
   }
 }

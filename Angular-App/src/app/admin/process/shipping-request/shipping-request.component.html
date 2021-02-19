@@ -23,8 +23,8 @@
         [disabled]="!selectedShippingRequest"
         (click)="openEditDialog(selectedShippingRequest)"></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search"
-        [disabled]="!selectedShippingRequest" label="History"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History"
+        (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
 
@@ -558,3 +558,9 @@
       [disabled]="shippingRequestForm.invalid" (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>
+
+<app-history-dialog
+  [isShowDialog]="isShowDialogHistory"
+  [type]="HistoryDialogType.ShippingRequest"
+  (hideDialogEvent)="hideDialog()">
+</app-history-dialog>
