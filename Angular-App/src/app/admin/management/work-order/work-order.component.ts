@@ -5,6 +5,7 @@ import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
+import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
 
 @Component({
   selector: 'app-work-order',
@@ -23,10 +24,12 @@ export class WorkOrderComponent implements OnInit {
   isEdit = false;
   isShowDialogCreate = false;
   isShowDialogEdit = false;
+  isShowDialogHistory = false;
   titleDialog = '';
 
   WidthColumn = WidthColumn;
   TypeColumn = TypeColumn;
+  HistoryDialogType = HistoryDialogType;
 
   cols: any[] = [];
   fields: any[] = [];
@@ -109,6 +112,7 @@ export class WorkOrderComponent implements OnInit {
   hideDialog() {
     this.isShowDialogCreate = false;
     this.isShowDialogEdit = false;
+    this.isShowDialogHistory = false;
     this.workOrderForm.reset();
   }
 
@@ -195,5 +199,9 @@ export class WorkOrderComponent implements OnInit {
         );
       },
     });
+  }
+
+  openHistoryDialog() {
+    this.isShowDialogHistory = true;
   }
 }

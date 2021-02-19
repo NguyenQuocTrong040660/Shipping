@@ -11,9 +11,6 @@
         icon="pi pi-pencil"
         [disabled]="!selectedConfiguration"
         (click)="openEditDialog(selectedConfiguration)"></button>
-
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search"
-        [disabled]="!selectedConfiguration" label="History"></button>
     </ng-template>
   </p-toolbar>
 
@@ -105,6 +102,12 @@
         <ng-container *ngIf="keyControl.invalid && (keyControl.dirty || keyControl.touched)">
           <small *ngIf="keyControl && keyControl.errors?.required" class="p-invalid p-error">Key is required.</small>
         </ng-container>
+      </div>
+      <div class="p-field">
+        <label for="notes">Notes</label>
+        <input [ngClass]="{ 'ng-dirty': notesControl.invalid && (notesControl.dirty || notesControl.touched) }"
+          pInputText
+          id="notes" [formControl]="notesControl" type="text" />
       </div>
       <div class="p-field">
         <label for="value">Value</label>

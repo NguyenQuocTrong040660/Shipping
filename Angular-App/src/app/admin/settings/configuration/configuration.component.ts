@@ -25,6 +25,10 @@ export class ConfigurationComponent implements OnInit {
     return this.configurationForm.get('key');
   }
 
+  get notesControl() {
+    return this.configurationForm.get('notes');
+  }
+
   get valueControl() {
     return this.configurationForm.get('value');
   }
@@ -51,6 +55,7 @@ export class ConfigurationComponent implements OnInit {
   initForm() {
     this.configurationForm = new FormGroup({
       key: new FormControl('', Validators.required),
+      notes: new FormControl(''),
       value: new FormControl('', Validators.required),
     });
   }

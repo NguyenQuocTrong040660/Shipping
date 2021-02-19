@@ -30,11 +30,14 @@ import { StepsModule } from 'primeng/steps';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
 import { PrintComponent } from './components/print/print.component';
-import { PrintService } from './services/print.service';
 import { PanelModule } from 'primeng/panel';
+import { HistoryDialogComponent } from './components/history-dialog/history-dialog.component';
 
 @NgModule({
-  declarations: [PrintComponent],
+  declarations: [
+    PrintComponent,
+    HistoryDialogComponent
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -101,9 +104,10 @@ import { PanelModule } from 'primeng/panel';
     CardModule,
     InputNumberModule,
     TooltipModule,
-    PrintComponent,
     PanelModule,
+    PrintComponent,
+    HistoryDialogComponent
   ],
   providers: [],
 })
-export class SharedModule {}
+export class SharedModule { }

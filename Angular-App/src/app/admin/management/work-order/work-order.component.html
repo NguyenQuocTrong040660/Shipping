@@ -17,12 +17,10 @@
         label="Delete"
         [disabled]="!selectedWorkOrder"
         (click)="openDeleteDialog(selectedWorkOrder)"></button>
-
       <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil"
         [disabled]="!selectedWorkOrder" (click)="openEditDialog(selectedWorkOrder)"></button>
-
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" [disabled]="!selectedWorkOrder"
-        label="History"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History"
+        (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
 
@@ -142,7 +140,8 @@
   [products]="products"
   [isShowDialog]="isShowDialogCreate"
   (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog()"></app-work-order-create>
+  (hideDialogEvent)="hideDialog()">
+</app-work-order-create>
 
 <app-work-order-edit
   [workOrder]="selectedWorkOrder"
@@ -150,4 +149,11 @@
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialogEdit"
   (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog()"></app-work-order-edit>
+  (hideDialogEvent)="hideDialog()">
+</app-work-order-edit>
+
+<app-history-dialog
+  [isShowDialog]="isShowDialogHistory"
+  [type]="HistoryDialogType.WorkOrder"
+  (hideDialogEvent)="hideDialog()">
+</app-history-dialog>

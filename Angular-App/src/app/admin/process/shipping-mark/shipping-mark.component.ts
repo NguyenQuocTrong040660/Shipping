@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingMarkClients, ShippingMarkModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
+import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { PrintService } from 'app/shared/services/print.service';
 import { SelectItem } from 'primeng/api';
@@ -24,11 +25,13 @@ export class ShippingMarkComponent implements OnInit {
 
   isEdit = false;
   isShowDialog = false;
+  isShowDialogHistory = false;
   titleDialog = '';
 
   cols: any[] = [];
   fields: any[] = [];
   TypeColumn = TypeColumn;
+  HistoryDialogType = HistoryDialogType;
 
   get quantityControl() {
     return this.shippingMarkForm.get('quantity');
@@ -168,6 +171,7 @@ export class ShippingMarkComponent implements OnInit {
 
   hideDialog() {
     this.isShowDialog = false;
+    this.isShowDialogHistory = false;
   }
 
   onEdit() {
@@ -210,5 +214,9 @@ export class ShippingMarkComponent implements OnInit {
 
   onPrint() {
     this.printService.printDocument('shipping-mark');
+  }
+
+  openHistoryDialog() {
+    this.isShowDialogHistory = true;
   }
 }

@@ -23,8 +23,8 @@
         [disabled]="!selectedShippingMark"
         (click)="openEditDialog(selectedShippingMark)"></button>
 
-      <button class="p-button-warning p-mr-2" pButton pRipple icon="pi pi-search"
-        [disabled]="!selectedShippingMark" label="History"></button>
+      <button class="p-button-warning p-mr-2" pButton pRipple icon="pi pi-search" label="History"
+        (click)="openHistoryDialog()"></button>
       <button class="p-button-primary" pButton pRipple icon="pi pi-print" label="Print"
         (click)="onPrint()"></button>
     </ng-template>
@@ -165,3 +165,9 @@
       (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>
+
+<app-history-dialog
+  [isShowDialog]="isShowDialogHistory"
+  [type]="HistoryDialogType.ShippingMark"
+  (hideDialogEvent)="hideDialog()">
+</app-history-dialog>
