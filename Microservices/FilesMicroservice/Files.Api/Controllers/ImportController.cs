@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,6 +59,26 @@ namespace Files.Api.Controllers
             }
 
             return Ok(data);
+        }
+        
+        [HttpPost("Validate/Product")]
+        public async Task<IActionResult> ValidateProductAsync([FromBody] List<ProductTemplate> products)
+        {
+            foreach (var item in products)
+            {
+                var ctx = new ValidationContext(item);
+                var results = new List<ValidationResult>();
+
+                if (!Validator.TryValidateObject(item, ctx, results, true))
+                {
+                    foreach (var errors in results)
+                    {
+                        Console.WriteLine("Error {0}", errors);
+                    }
+                }
+            }
+
+            return Ok();
         }
 
         private static AttachmentDto InitAttachment(IFormFile file, string fileUrl, string fileName)

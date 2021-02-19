@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,9 +41,23 @@ namespace Files.Infrastructure.Services
 
                 var types = typeof(T).GetProperties();
 
+                worksheet.Protection.IsProtected = true;
+
                 for (int i = 1; i <= types.Length; i++)
                 {
-                    worksheet.Cells[1, i].Value = types[i - 1].Name;
+                    worksheet.Column(i).Style.Locked = false;
+                    worksheet.Column(i).Width = 30;
+                    worksheet.Column(i).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+                    var cell = worksheet.Cells[1, i];
+
+                    cell.Style.Locked = true;
+                    cell.Value = types[i - 1].Name;
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Font.Size = 14;
+                    cell.Style.Border.BorderAround(ExcelBorderStyle.Medium);
+                    cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    cell.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
                 }
 
                 package.Save();

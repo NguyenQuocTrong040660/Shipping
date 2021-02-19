@@ -25,11 +25,11 @@ namespace Files.Infrastructure.Services
         {
             string fullPath = string.Concat(_environmentApplication.WebRootPath, path);
 
-            string jsonString = GetJsonStringFromExcel(fullPath);
+            string jsonString = GetJsonStringFromExcel<T>(fullPath);
             return JsonConvert.DeserializeObject<List<T>>(jsonString);
         }
 
-        private static string GetJsonStringFromExcel(string path, bool hasHeader = true)
+        private static string GetJsonStringFromExcel<T>(string path, bool hasHeader = true)
         {
             List<dynamic> models = new List<dynamic>();
 
@@ -43,11 +43,13 @@ namespace Files.Infrastructure.Services
                 int startRow = hasHeader ? worksheet.Dimension.Start.Row + 1 : worksheet.Dimension.Start.Row;
                 int startColumn = worksheet.Dimension.Start.Column;
 
+                var types = typeof(T).GetProperties();
+
                 for (int i = startRow; i <= rows; i++)
                 {
                     dynamic model = new JObject();
 
-                    for (int j = startColumn; j <= columns; j++)
+                    for (int j = startColumn; j <= types.Length; j++)
                     {
                         if (worksheet.Cells[i, j].Value != null)
                         {
