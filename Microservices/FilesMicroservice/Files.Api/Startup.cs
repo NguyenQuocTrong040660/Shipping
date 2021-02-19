@@ -14,6 +14,11 @@ using Files.Persistence;
 using Serilog;
 using Files.Api.Configs;
 using Files.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
+using Files.Api.Services;
 
 namespace Files.Api
 {
@@ -87,6 +92,37 @@ namespace Files.Api
             services.AddApplication();
             services.AddInfrastructure(Configuration);
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+            ConfigureAuthenticationServices(services);
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+        }
+
+        private void ConfigureAuthenticationServices(IServiceCollection services)
+        {
+            string secret = Configuration["JWTTokenConfig:Secret"];
+            string issuer = Configuration["JWTTokenConfig:Issuer"];
+            string audience = Configuration["JWTTokenConfig:Audience"];
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = true;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)),
+                    ValidAudience = audience,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(5)
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
