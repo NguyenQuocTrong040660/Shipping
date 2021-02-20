@@ -4,7 +4,7 @@ namespace Files.Domain.Template
 {
     public class ProductTemplate
     {
-        [ValidateDataType(IsRequired = true)]
+        [ValidateDataType(IsRequired = true, IsUnique = true)]
         public string ProductNumber { get; set; }
         [ValidateDataType(IsRequired = true)]
         public string ProductName { get; set; }

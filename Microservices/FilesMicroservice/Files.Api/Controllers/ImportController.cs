@@ -63,7 +63,7 @@ namespace Files.Api.Controllers
                 return Ok(Result.Failure($"Failed to import data for {nameof(type)}"));
             }
 
-            return Ok(Result.SuccessWithData(JsonConvert.SerializeObject(data)));
+            return Ok(Result.SuccessWithData(data));
         }
 
         [HttpPut("Validate/{type}")]
@@ -78,19 +78,21 @@ namespace Files.Api.Controllers
 
             dynamic invalidItems = null;
 
+            string jsonString = JsonConvert.SerializeObject(request.Data);
+
             switch (type)
             {
                 case TemplateType.Product:
-                    invalidItems = _dataService.ValidateData<ProductTemplate>(request.DataJson);
+                    invalidItems = _dataService.ValidateData<ProductTemplate>(jsonString);
                     break;
                 case TemplateType.WorkOrder:
-                    invalidItems = _dataService.ValidateData<WorkOrderTemplate>(request.DataJson);
+                    invalidItems = _dataService.ValidateData<WorkOrderTemplate>(jsonString);
                     break;
                 default:
                     break;
             }
 
-            return Ok(Result.SuccessWithData(JsonConvert.SerializeObject(invalidItems)));
+            return Ok(Result.SuccessWithData(invalidItems));
         }
 
         private static AttachmentDto InitAttachment(IFormFile file, string fileUrl, string fileName)

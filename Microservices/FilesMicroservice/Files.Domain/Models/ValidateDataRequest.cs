@@ -2,6 +2,6 @@
 {
     public class ValidateDataRequest
     {
-        public string DataJson { get; set; }
+        public dynamic Data { get; set; }
     }
 }

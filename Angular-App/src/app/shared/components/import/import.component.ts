@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
+import { FilesClient, TemplateType, ValidateDataRequest } from 'app/shared/api-clients/files.client';
+import { ProductModel, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { MenuItem } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
@@ -16,8 +17,8 @@ export class ImportComponent implements OnInit {
   stepIndex = 0;
 
   uploadedFiles: any[] = [];
-
   data: any[] = [];
+  dataValidated: any[] = [];
 
   TemplateType = TemplateType;
 
@@ -51,7 +52,6 @@ export class ImportComponent implements OnInit {
       (_) => this.notificationService.error('Failed to update load data')
     );
   }
-
   handleUploadError(error) {
     this.notificationService.error(error);
   }
@@ -78,10 +78,37 @@ export class ImportComponent implements OnInit {
     this.stepIndex += 1;
   }
   handleValidationDataImport(data: any[], typeImport: TemplateType) {
+    const request: ValidateDataRequest = {
+      data,
+    };
+
     switch (typeImport) {
       case TemplateType.Product:
+        this.filesClient.apiImportValidate(typeImport, request).subscribe((result) => {
+          if (result && result.succeeded) {
+            const invalidItems = result.data as ProductModel[];
+
+            data.forEach((item: ProductModel) => {
+              const invalidItem = invalidItems.find((i) => i.productNumber == item.productNumber);
+              item['valid'] = invalidItem ? false : true;
+              this.dataValidated.push(item);
+            });
+          }
+        });
         break;
       case TemplateType.WorkOrder:
+        this.filesClient.apiImportValidate(typeImport, request).subscribe((result) => {
+          if (result && result.succeeded) {
+            const invalidItems = result.data;
+
+            data.forEach((item) => {
+              const invalidItem = invalidItems.find((i) => i.workOrderId == item.workOrderId);
+              item['valid'] = invalidItem ? false : true;
+              this.dataValidated.push(item);
+            });
+            console.log(this.dataValidated);
+          }
+        });
         break;
       default:
         break;

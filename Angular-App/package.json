@@ -9,9 +9,9 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start",
-    "serve:local": "ng s -c local",
-    "serve:dev": "ng s -c dev",
-    "serve:prod": "ng s -c prod"
+    "local": "ng s -c local",
+    "dev": "ng s -c dev",
+    "prod": "ng s -c prod"
   },
   "private": true,
   "dependencies": {

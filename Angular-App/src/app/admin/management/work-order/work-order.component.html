@@ -1,8 +1,8 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload>
-      <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+      <button (click)="openImportSection()" pButton pRipple label="Import" icon="pi pi-upload" class="p-button-primary p-mr-2"></button>
+      <button (click)="exportTemplate()" pButton pRipple label="Export Template" icon="pi pi-download" class="p-button-help"></button>
     </ng-template>
 
     <ng-template pTemplate="right">

@@ -1,18 +1,21 @@
-import { ProductClients, ProductModel, WorkOrderClients, WorkOrderDetailModel, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
-import { Component, OnInit } from '@angular/core';
+import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
+import { ImportComponent } from 'app/shared/components/import/import.component';
 
 @Component({
   selector: 'app-work-order',
   templateUrl: './work-order.component.html',
   styleUrls: ['./work-order.component.scss'],
 })
-export class WorkOrderComponent implements OnInit {
+export class WorkOrderComponent implements OnInit, OnDestroy {
   title = 'Work Orders Management';
 
   workOrders: WorkOrderModel[] = [];
@@ -34,12 +37,16 @@ export class WorkOrderComponent implements OnInit {
   cols: any[] = [];
   fields: any[] = [];
 
+  ref: DynamicDialogRef;
+
   constructor(
     private workOrderClients: WorkOrderClients,
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
     private notificationService: NotificationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialogService: DialogService,
+    private filesClient: FilesClient
   ) {}
 
   ngOnInit() {
@@ -60,6 +67,34 @@ export class WorkOrderComponent implements OnInit {
     this.initWorkOrderForm();
 
     this.title = this.title.toUpperCase();
+  }
+
+  openImportSection() {
+    this.ref = this.dialogService.open(ImportComponent, {
+      header: 'IMPORT WORK ORDERS',
+      width: '70%',
+      contentStyle: { height: '800px', overflow: 'auto' },
+      baseZIndex: 10000,
+      data: TemplateType.WorkOrder,
+    });
+  }
+
+  exportTemplate() {
+    this.filesClient.apiExportTemplate(TemplateType.WorkOrder).subscribe(
+      (i) => {
+        const aTag = document.createElement('a');
+        aTag.id = 'downloadButton';
+        aTag.style.display = 'none';
+        aTag.href = i;
+        aTag.download = 'WorkOderTemplate';
+        document.body.appendChild(aTag);
+        aTag.click();
+        window.URL.revokeObjectURL(i);
+
+        aTag.remove();
+      },
+      (_) => this.notificationService.error('Failed to export template')
+    );
   }
 
   initWorkOrderForm() {
@@ -203,5 +238,11 @@ export class WorkOrderComponent implements OnInit {
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.ref) {
+      this.ref.close();
+    }
   }
 }
