@@ -42,7 +42,7 @@ export class ImportComponent implements OnInit {
       fileName: files[0].name,
     };
 
-    this.filesClient.apiImport(this.typeImport, file).subscribe(
+    this.filesClient.apiFilesImport(this.typeImport, file).subscribe(
       (result) => {
         if (result && result.succeeded) {
           this.data = result.data;
@@ -84,7 +84,7 @@ export class ImportComponent implements OnInit {
 
     switch (typeImport) {
       case TemplateType.Product:
-        this.filesClient.apiImportValidate(typeImport, request).subscribe((result) => {
+        this.filesClient.apiFilesImportValidate(typeImport, request).subscribe((result) => {
           if (result && result.succeeded) {
             const invalidItems = result.data as ProductModel[];
 
@@ -97,7 +97,7 @@ export class ImportComponent implements OnInit {
         });
         break;
       case TemplateType.WorkOrder:
-        this.filesClient.apiImportValidate(typeImport, request).subscribe((result) => {
+        this.filesClient.apiFilesImportValidate(typeImport, request).subscribe((result) => {
           if (result && result.succeeded) {
             const invalidItems = result.data;
 

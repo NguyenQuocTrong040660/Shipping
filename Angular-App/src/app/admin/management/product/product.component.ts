@@ -91,7 +91,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   exportTemplate() {
-    this.filesClient.apiExportTemplate(TemplateType.Product).subscribe(
+    this.filesClient.apiFilesExportTemplate(TemplateType.Product).subscribe(
       (i) => {
         const aTag = document.createElement('a');
         aTag.id = 'downloadButton';

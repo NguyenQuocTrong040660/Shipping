@@ -14,14 +14,10 @@ export class AttachmentTypesManagementComponent implements OnInit {
   submitted: boolean;
   selectedItems: AttachmentTypeDto[];
 
-  constructor(
-    private filesClient: FilesClient,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService
-  ) {}
+  constructor(private filesClient: FilesClient, private messageService: MessageService, private confirmationService: ConfirmationService) {}
 
   ngOnInit() {
-    this.filesClient.apiAttachmenttypeGet().subscribe((data) => {
+    this.filesClient.apiFilesAttachmenttypeGet().subscribe((data) => {
       this.attachmentTypes = data;
     });
 
@@ -29,7 +25,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
   }
 
   reloadData() {
-    this.filesClient.apiAttachmenttypeGet().subscribe((data) => (this.attachmentTypes = data));
+    this.filesClient.apiFilesAttachmenttypeGet().subscribe((data) => (this.attachmentTypes = data));
   }
 
   initCols() {
@@ -61,9 +57,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
     this.submitted = true;
 
     if (this.attachmentType.name.trim()) {
-      !!this.attachmentType.id
-        ? this.updateAttachmentType(this.attachmentType.id, this.attachmentType)
-        : this.addAttachmentType(this.attachmentType);
+      !!this.attachmentType.id ? this.updateAttachmentType(this.attachmentType.id, this.attachmentType) : this.addAttachmentType(this.attachmentType);
 
       this.dialog = false;
       this.attachmentType = {};
@@ -71,7 +65,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
   }
 
   updateAttachmentType(id: string, attachmentType) {
-    this.filesClient.apiAttachmenttypePut(id, attachmentType).subscribe((result) => {
+    this.filesClient.apiFilesAttachmenttypePut(id, attachmentType).subscribe((result) => {
       if (result && result.succeeded) {
         this.reloadData();
         this.showMessage('success', 'Successful', 'Attachment Type Updated Successful');
@@ -82,7 +76,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
   }
 
   addAttachmentType(attachmentType: AttachmentTypeDto) {
-    this.filesClient.apiAttachmenttypePost(attachmentType).subscribe((result) => {
+    this.filesClient.apiFilesAttachmenttypePost(attachmentType).subscribe((result) => {
       if (result && result.succeeded) {
         this.showMessage('success', 'Successful', 'Attachment Type Created Successful');
         this.reloadData();
@@ -100,7 +94,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
       accept: () => {
         this.attachmentTypes = this.attachmentTypes.filter((val) => val.id !== attachmentType.id);
         this.filesClient
-          .apiAttachmenttypeDelete(attachmentType.id)
+          .apiFilesAttachmenttypeDelete(attachmentType.id)
           .subscribe((result) =>
             result && result.succeeded
               ? this.showMessage('success', 'Successful', 'Attachment Type Successful')

@@ -22,11 +22,7 @@ export class FilesManagementComponent implements OnInit {
 
   selectedItems: AttachmentDto[];
 
-  constructor(
-    private filesClient: FilesClient,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService
-  ) {}
+  constructor(private filesClient: FilesClient, private messageService: MessageService, private confirmationService: ConfirmationService) {}
 
   ngOnInit() {
     this.initAttachmentTypes();
@@ -47,7 +43,7 @@ export class FilesManagementComponent implements OnInit {
   }
 
   initAttachmentTypes() {
-    this.filesClient.apiAttachmenttypeGet().subscribe((data) => {
+    this.filesClient.apiFilesAttachmenttypeGet().subscribe((data) => {
       this.attachmentTypes = data;
       this.initType();
     });
@@ -55,11 +51,11 @@ export class FilesManagementComponent implements OnInit {
 
   initDataSource() {
     if (this.isPhoto()) {
-      this.filesClient.apiAttachmentsPhoto().subscribe((data) => (this.attachments = data));
+      this.filesClient.apiFilesAttachmentsPhoto().subscribe((data) => (this.attachments = data));
     }
 
     if (this.isVideo()) {
-      this.filesClient.apiAttachmentsPhoto().subscribe((data) => (this.attachments = data));
+      this.filesClient.apiFilesAttachmentsPhoto().subscribe((data) => (this.attachments = data));
     }
   }
 
@@ -81,7 +77,7 @@ export class FilesManagementComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.filesClient.apiAttachmentsDelete(attachment.id).subscribe((result) => {
+        this.filesClient.apiFilesAttachmentsDelete(attachment.id).subscribe((result) => {
           if (result && result.succeeded) {
             this.showMessage('success', 'Successful', 'Attachment Deleted Successfuly');
             this.attachments = this.attachments.filter((val) => val.id !== attachment.id);
@@ -105,7 +101,7 @@ export class FilesManagementComponent implements OnInit {
       fileName: files[0].name,
     };
 
-    this.filesClient.apiAttachmentsPost(file, this.attachmentType.id).subscribe(
+    this.filesClient.apiFilesAttachmentsPost(file, this.attachmentType.id).subscribe(
       (result) => {
         if (result && result.succeeded) {
           this.showMessage('success', 'Successful', 'Create Attachment Successfuly');
@@ -202,7 +198,7 @@ export class FilesManagementComponent implements OnInit {
       accept: () => {
         const items: string[] = this.selectedItems.map((i) => i.id);
 
-        this.filesClient.apiAttachmentsBulkdeleteattachments(items).subscribe((result) => {
+        this.filesClient.apiFilesAttachmentsBulkdeleteattachments(items).subscribe((result) => {
           if (result && result.succeeded) {
             this.showMessage('success', 'Successful', 'Attachments Deleted');
             this.attachments = this.attachments.filter((val) => !this.selectedItems.includes(val));

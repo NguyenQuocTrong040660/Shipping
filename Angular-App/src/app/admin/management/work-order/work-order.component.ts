@@ -80,7 +80,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   }
 
   exportTemplate() {
-    this.filesClient.apiExportTemplate(TemplateType.WorkOrder).subscribe(
+    this.filesClient.apiFilesExportTemplate(TemplateType.WorkOrder).subscribe(
       (i) => {
         const aTag = document.createElement('a');
         aTag.id = 'downloadButton';
