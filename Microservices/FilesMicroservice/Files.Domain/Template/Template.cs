@@ -1,9 +1,9 @@
 ﻿namespace Files.Domain.Template
 {
-    public enum Template
+    public enum TemplateType
     {
-        Product,
+        Product = 1,
+        WorkOrder,
         ShippingPlan,
-        WorkOrder
     }
 }

@@ -1,0 +1,19 @@
+﻿using System;
+
+namespace Files.Domain.Attributes
+{
+    public class ValidateDataType : Attribute
+    {
+        public bool IsNumber { get; set; }
+
+        public bool IsRequired { get; set; }
+        public bool IsDateTime { get; set; }
+
+        public ValidateDataType()
+        {
+            IsNumber = false;
+            IsDateTime = false;
+            IsRequired = false;
+        }
+    }
+}

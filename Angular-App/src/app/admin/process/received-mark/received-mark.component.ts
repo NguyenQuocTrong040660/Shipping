@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ReceivedMarkClients, ReceivedMarkModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
-import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
+import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { PrintService } from 'app/shared/services/print.service';
 import { SelectItem, ConfirmationService } from 'primeng/api';
@@ -46,7 +46,8 @@ export class ReceivedMarkComponent implements OnInit {
     private receivedMarkClients: ReceivedMarkClients,
     private workOrderClients: WorkOrderClients,
     private notificationService: NotificationService,
-    private confirmationService: ConfirmationService) { }
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -54,7 +55,7 @@ export class ReceivedMarkComponent implements OnInit {
       { header: 'Work Order', field: 'workOrder', subField: 'id', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn }
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);

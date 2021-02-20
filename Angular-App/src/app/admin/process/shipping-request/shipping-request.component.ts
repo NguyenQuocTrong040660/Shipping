@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
-import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
+import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 
@@ -86,7 +86,7 @@ export class ShippingRequestComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
     private notificationService: NotificationService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -103,7 +103,7 @@ export class ShippingRequestComponent implements OnInit {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn }
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -260,7 +260,6 @@ export class ShippingRequestComponent implements OnInit {
             } else {
               this.notificationService.error(result?.error);
             }
-
           },
           (_) => this.notificationService.error('Delete Shipping Request Failed. Please try again')
         );

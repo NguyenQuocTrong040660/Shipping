@@ -1,12 +1,11 @@
 ﻿using Files.Application.Common.Interfaces;
+using Files.Domain.Template;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Files.Api.Controllers
 {
@@ -30,6 +29,30 @@ namespace Files.Api.Controllers
         public IActionResult GetHealth()
         {
             return Ok();
+        }
+
+        [HttpGet("Template/{type}")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        public ActionResult<string> GetExportTemplateUrl(TemplateType type)
+        {
+            string domain = GetDomain();
+            string templateUrl = string.Empty;
+
+            switch (type)
+            {
+                case TemplateType.Product:
+                    templateUrl = $"{domain}/templates/{nameof(ProductTemplate)}.xlsx";
+                    break;
+                case TemplateType.ShippingPlan:
+                    break;
+                case TemplateType.WorkOrder:
+                    templateUrl = $"{domain}/templates/{nameof(WorkOrderTemplate)}.xlsx";
+                    break;
+                default:
+                    break;
+            }
+
+            return Ok(templateUrl);
         }
     }
 }

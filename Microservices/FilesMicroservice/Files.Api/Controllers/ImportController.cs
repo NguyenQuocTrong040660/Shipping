@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -34,8 +35,8 @@ namespace Files.Api.Controllers
         }
 
         [HttpPut("{type}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ImportDataAsync([FromRoute] Template type, IFormFile file)
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        public async Task<ActionResult<Result>> ImportDataAsync([FromRoute] TemplateType type, IFormFile file)
         {
             (Result resultUpload, string fileUrl, string fileName) = _uploadService.UploadFile(file, GetDomain(), AttachmentTypes.Excel);
 
@@ -47,8 +48,11 @@ namespace Files.Api.Controllers
 
                 switch (type)
                 {
-                    case Template.Product:
+                    case TemplateType.Product:
                         data = _dataService.ReadFromExcelFile<ProductTemplate>(fileUrl);
+                        break;
+                    case TemplateType.WorkOrder:
+                        data = _dataService.ReadFromExcelFile<WorkOrderTemplate>(fileUrl);
                         break;
                     default:
                         break;
@@ -56,29 +60,22 @@ namespace Files.Api.Controllers
 
                 _logger.LogInformation("Upload result", resultUpload);
                 await Mediator.Send(new AddAttachmentCommand() { Model = attachment, AttachmentType = AttachmentTypes.Excel });
-            }
+            }    
 
-            return Ok(data);
-        }
-        
-        [HttpPost("Validate/Product")]
-        public async Task<IActionResult> ValidateProductAsync([FromBody] List<ProductTemplate> products)
-        {
-            foreach (var item in products)
+            if (data == null)
             {
-                var ctx = new ValidationContext(item);
-                var results = new List<ValidationResult>();
-
-                if (!Validator.TryValidateObject(item, ctx, results, true))
-                {
-                    foreach (var errors in results)
-                    {
-                        Console.WriteLine("Error {0}", errors);
-                    }
-                }
+                return Ok(Result.Failure($"Failed to import data for {nameof(type)}"));
             }
 
-            return Ok();
+            return Ok(Result.SuccessWithData(JsonConvert.SerializeObject(data)));
+        }
+
+        [HttpPost("Validate")]
+        public IActionResult ValidateData([FromBody] ValidateResult products)
+        {
+            var invalidItems = _dataService.ValidateData<ProductTemplate>(products.DataJson);
+
+            return Ok(invalidItems);
         }
 
         private static AttachmentDto InitAttachment(IFormFile file, string fileUrl, string fileName)

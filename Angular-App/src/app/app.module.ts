@@ -7,7 +7,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuthenticationService } from './shared/services/authentication.service';
 import { HttpConfigInterceptor } from './shared/interceptors/http-config.interceptor';
 import { LoadingService } from './shared/services/loading.service';
@@ -34,9 +33,7 @@ import { ApiClientModule } from './shared/api-clients/api-client.module';
   ],
   providers: [
     LoadingService,
-    MessageService,
     NotificationService,
-    ConfirmationService,
     AuthenticationService,
     {
       provide: APP_INITIALIZER,

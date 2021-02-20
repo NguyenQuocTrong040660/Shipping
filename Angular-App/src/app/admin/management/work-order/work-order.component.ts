@@ -5,7 +5,7 @@ import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
-import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
+import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
 
 @Component({
   selector: 'app-work-order',
@@ -40,7 +40,7 @@ export class WorkOrderComponent implements OnInit {
     private productClients: ProductClients,
     private notificationService: NotificationService,
     private fb: FormBuilder
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -50,7 +50,7 @@ export class WorkOrderComponent implements OnInit {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn }
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);

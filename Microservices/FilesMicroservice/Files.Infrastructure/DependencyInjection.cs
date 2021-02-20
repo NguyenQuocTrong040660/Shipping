@@ -14,6 +14,7 @@ namespace Files.Infrastructure
             services.AddTransient<IDataService, DataService>();
 
             services.AddHostedService<TemplateService<ProductTemplate>>();
+            services.AddHostedService<TemplateService<WorkOrderTemplate>>();
 
             return services;
         }

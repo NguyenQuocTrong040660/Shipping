@@ -19,6 +19,11 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using Files.Api.Services;
+using System.Text.Json.Serialization;
+using System.Linq;
+using NSwag;
+using NSwag.Generation.Processors.Security;
+using OpenApiSecurityScheme = NSwag.OpenApiSecurityScheme;
 
 namespace Files.Api
 {
@@ -64,20 +69,21 @@ namespace Files.Api
                 options.AllowSynchronousIO = true;
             });
 
-            //Disabled in PROD
-            //if (!Environment.IsProduction())
-            //{
-                services.AddSwaggerGen(c =>
+
+            services.AddOpenApiDocument(configure =>
+            {
+                configure.Title = "Files API";
+
+                configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
                 {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Files API", Version = "v1" });
-                    c.IgnoreObsoleteActions();
-                    c.IgnoreObsoleteProperties();
-                    c.MapType<FileContentResult>(() => new OpenApiSchema
-                    {
-                        Type = "file"
-                    });
+                    Type = OpenApiSecuritySchemeType.ApiKey,
+                    Name = "Authorization",
+                    In = OpenApiSecurityApiKeyLocation.Header,
+                    Description = "Type into the textbox: Bearer {your JWT token}.",
                 });
-            //}
+
+                configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+            });
 
             services.AddControllers();
 
@@ -131,8 +137,13 @@ namespace Files.Api
             //if (!env.IsProduction())
             //{
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
+                
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
 
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+                // specifying the Swagger JSON endpoint.
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Files API V1");

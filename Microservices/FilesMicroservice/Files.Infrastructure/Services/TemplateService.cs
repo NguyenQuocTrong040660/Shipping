@@ -45,9 +45,15 @@ namespace Files.Infrastructure.Services
 
                 for (int i = 1; i <= types.Length; i++)
                 {
-                    worksheet.Column(i).Style.Locked = false;
-                    worksheet.Column(i).Width = 30;
-                    worksheet.Column(i).Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    var column = worksheet.Column(i);
+
+                    column.Style.Locked = false;
+                    column.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    column.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    column.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    column.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    column.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    column.Width = 30;
 
                     var cell = worksheet.Cells[1, i];
 
@@ -55,7 +61,6 @@ namespace Files.Infrastructure.Services
                     cell.Value = types[i - 1].Name;
                     cell.Style.Font.Bold = true;
                     cell.Style.Font.Size = 14;
-                    cell.Style.Border.BorderAround(ExcelBorderStyle.Medium);
                     cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
                     cell.Style.Fill.BackgroundColor.SetColor(Color.Yellow);
                 }

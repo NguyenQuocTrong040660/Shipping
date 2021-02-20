@@ -1,4 +1,5 @@
 ﻿using Files.Application.Common.Interfaces;
+using Files.Domain.Attributes;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Files.Infrastructure.Services
 {
@@ -27,6 +29,60 @@ namespace Files.Infrastructure.Services
 
             string jsonString = GetJsonStringFromExcel<T>(fullPath);
             return JsonConvert.DeserializeObject<List<T>>(jsonString);
+        }
+
+        public List<T> ValidateData<T>(string dataJson)
+        {
+            var itemInvalids = new List<T>();
+
+            var data = JsonConvert.DeserializeObject<List<T>>(dataJson);
+
+            foreach (var item in data)
+            {
+                var properties = typeof(T).GetProperties();
+               
+                foreach (var prop in properties)
+                {
+                    var value = prop.GetValue(item);
+                    var customeAttr = prop.GetCustomAttribute<ValidateDataType>();
+
+                    if (customeAttr == null)
+                    {
+                        continue;
+                    }
+
+                    if (customeAttr.IsRequired)
+                    {
+                        if (value == null)
+                        {
+                            itemInvalids.Add(item);
+                            continue;
+                        }
+                    }
+
+                    string valueString = value.ToString();
+
+                    if (customeAttr.IsNumber)
+                    {
+                        if (!int.TryParse(valueString, out _))
+                        {
+                            itemInvalids.Add(item);
+                            continue;
+                        }
+                    }
+
+                    if (customeAttr.IsDateTime)
+                    {
+                        if (!DateTime.TryParse(valueString, out _))
+                        {
+                            itemInvalids.Add(item);
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            return itemInvalids;
         }
 
         private static string GetJsonStringFromExcel<T>(string path, bool hasHeader = true)

@@ -5,7 +5,7 @@ import { MovementRequestClients, MovementRequestModel, WorkOrderClients, WorkOrd
 import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
-import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
+import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
 
 @Component({
   templateUrl: './movement-request.component.html',
@@ -47,7 +47,8 @@ export class MovementRequestComponent implements OnInit {
     private workOrderClients: WorkOrderClients,
     private notificationService: NotificationService,
     private movementRequestClients: MovementRequestClients,
-    private confirmationService: ConfirmationService) { }
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -56,11 +57,10 @@ export class MovementRequestComponent implements OnInit {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn }
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.colFields = this.cols.map((i) => i.field);
-
 
     this.stepItems = [{ label: 'Work Order' }, { label: 'Move Quantity' }, { label: 'Confirm' }];
 
@@ -71,32 +71,32 @@ export class MovementRequestComponent implements OnInit {
       {
         id: '1',
         name: 'Product Of WO 1 1',
-        workOrderId: 1
+        workOrderId: 1,
       },
       {
         id: '2',
         name: 'Product Of WO 1 2',
-        workOrderId: 1
+        workOrderId: 1,
       },
       {
         id: '3',
         name: 'Product Of WO 1 3',
-        workOrderId: 1
+        workOrderId: 1,
       },
       {
         id: '4',
         name: 'Product Of WO 2 1',
-        workOrderId: 2
+        workOrderId: 2,
       },
       {
         id: '3',
         name: 'Product Of WO 3 1',
-        workOrderId: 3
+        workOrderId: 3,
       },
       {
         id: '3',
         name: 'Product Of WO 3 2',
-        workOrderId: 3
+        workOrderId: 3,
       },
     ];
 
@@ -133,7 +133,7 @@ export class MovementRequestComponent implements OnInit {
   hideCreateDialog() {
     this.isShowCreateDialog = false;
     this.activeIndex = 0;
-    this.workOrderItems.map(i => {
+    this.workOrderItems.map((i) => {
       if (i.quantity) {
         i.quantity = null;
       }
@@ -183,10 +183,12 @@ export class MovementRequestComponent implements OnInit {
     switch (currentIndex) {
       case 0: {
         this.productsOfSelectedWOs = [];
-        this.workOrders.value.forEach(wo => {
-          const a = this.workOrderItems.filter(i => i.workOrderId === wo.id).forEach(i => {
-            this.productsOfSelectedWOs.push(i);
-          });
+        this.workOrders.value.forEach((wo) => {
+          const a = this.workOrderItems
+            .filter((i) => i.workOrderId === wo.id)
+            .forEach((i) => {
+              this.productsOfSelectedWOs.push(i);
+            });
         });
         break;
       }
@@ -200,11 +202,11 @@ export class MovementRequestComponent implements OnInit {
   }
 
   removeProduct(product: WorkOrderItems) {
-    this.productsOfSelectedWOs = this.productsOfSelectedWOs.filter(p => p.id !== product.id);
+    this.productsOfSelectedWOs = this.productsOfSelectedWOs.filter((p) => p.id !== product.id);
   }
 
   isDisableStep2(): boolean {
-    return this.productsOfSelectedWOs.some(p => !p.quantity);
+    return this.productsOfSelectedWOs.some((p) => !p.quantity);
   }
 
   getDetailMovementRequest(movementRequest: MovementRequestModel) {

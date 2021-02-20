@@ -49,3 +49,5 @@ Thumbs.db
 
 **/logs/**
 **dotnet-tools.json
+
+**/FilesMicroservice/Files.Api/wwwroot/files/**

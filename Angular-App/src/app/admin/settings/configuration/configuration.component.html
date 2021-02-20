@@ -10,7 +10,8 @@
         label="Edit"
         icon="pi pi-pencil"
         [disabled]="!selectedConfiguration"
-        (click)="openEditDialog(selectedConfiguration)"></button>
+        (click)="openEditDialog(selectedConfiguration)"
+      ></button>
     </ng-template>
   </p-toolbar>
 
@@ -24,14 +25,14 @@
     [resizableColumns]="true"
     [paginator]="true"
     [rows]="20"
-    styleClass="p-datatable-custom">
+    styleClass="p-datatable-custom"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">Configurations</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="configurationDataTable.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search..." />
+          <input pInputText type="text" (input)="configurationDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -58,9 +59,7 @@
 
     <ng-template pTemplate="emptymessage" let-columns>
       <tr>
-        <td [attr.colspan]="columns.length" class="text-center">
-          No records found
-        </td>
+        <td [attr.colspan]="columns.length" class="text-center">No records found</td>
       </tr>
     </ng-template>
 
@@ -91,14 +90,12 @@
 </div>
 
 <!-- Edit Configuration Dialog -->
-<p-dialog header="Edit Configuration" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
-  (onHide)="hideEditDialog()">
+<p-dialog header="Edit Configuration" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="configurationForm">
       <div class="p-field">
         <label for="key">Key</label>
-        <input [ngClass]="{ 'ng-dirty': keyControl.invalid && (keyControl.dirty || keyControl.touched) }" pInputText
-          id="key" [formControl]="keyControl" type="text" disabled />
+        <input [ngClass]="{ 'ng-dirty': keyControl.invalid && (keyControl.dirty || keyControl.touched) }" pInputText id="key" [formControl]="keyControl" type="text" disabled />
         <ng-container *ngIf="keyControl.invalid && (keyControl.dirty || keyControl.touched)">
           <small *ngIf="keyControl && keyControl.errors?.required" class="p-invalid p-error">Key is required.</small>
         </ng-container>
@@ -106,18 +103,20 @@
 
       <div class="p-field">
         <label for="descriptions">Descriptions</label>
-        <input [ngClass]="{ 'ng-dirty': descriptionsControl.invalid && (descriptionsControl.dirty || descriptionsControl.touched) }"
+        <input
+          [ngClass]="{ 'ng-dirty': descriptionsControl.invalid && (descriptionsControl.dirty || descriptionsControl.touched) }"
           pInputText
-          id="descriptions" [formControl]="descriptionsControl" type="text" />
+          id="descriptions"
+          [formControl]="descriptionsControl"
+          type="text"
+        />
       </div>
-      
+
       <div class="p-field">
         <label for="value">Value</label>
-        <input [ngClass]="{ 'ng-dirty': valueControl.invalid && (valueControl.dirty || valueControl.touched) }"
-          pInputText id="value" [formControl]="valueControl" type="text" />
+        <input [ngClass]="{ 'ng-dirty': valueControl.invalid && (valueControl.dirty || valueControl.touched) }" pInputText id="value" [formControl]="valueControl" type="text" />
         <ng-container *ngIf="valueControl.invalid && (valueControl.dirty || valueControl.touched)">
-          <small *ngIf="valueControl && valueControl.errors?.required" class="p-invalid p-error">Please specify a
-            value</small>
+          <small *ngIf="valueControl && valueControl.errors?.required" class="p-invalid p-error">Please specify a value</small>
         </ng-container>
       </div>
     </form>
@@ -125,7 +124,6 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="configurationForm.invalid"
-      (click)="onEdit()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="configurationForm.invalid" (click)="onEdit()"></button>
   </ng-template>
 </p-dialog>

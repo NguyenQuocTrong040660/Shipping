@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
-import { HistoryDialogType } from 'app/shared/enums/history-dialog-type.enum';
+import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
 import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-history-dialog',
   templateUrl: './history-dialog.component.html',
-  styleUrls: ['./history-dialog.component.scss']
+  styleUrls: ['./history-dialog.component.scss'],
 })
 export class HistoryDialogComponent implements OnInit, OnChanges {
   @Input() isShowDialog: boolean;
@@ -22,7 +22,7 @@ export class HistoryDialogComponent implements OnInit, OnChanges {
   tittle: string;
   histories: History[] = [];
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.cols = [
@@ -32,7 +32,7 @@ export class HistoryDialogComponent implements OnInit, OnChanges {
       { header: 'Old Value', field: 'oldValue', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'New Value', field: 'newValue', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn }
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];
   }
 
@@ -61,8 +61,8 @@ export class HistoryDialogComponent implements OnInit, OnChanges {
               oldValue: 'oldValue',
               newValue: 'newValue',
               lastModifiedBy: 'User A',
-              lastModified: new Date()
-            }
+              lastModified: new Date(),
+            },
           ];
           this.loading = false;
         }, 1000);
