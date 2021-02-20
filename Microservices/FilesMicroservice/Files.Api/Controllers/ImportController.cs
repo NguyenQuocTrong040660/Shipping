@@ -4,16 +4,12 @@ using Files.Domain.Enumerations;
 using Files.Domain.Models;
 using Files.Domain.Template;
 using MediatR;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Files.Api.Controllers
@@ -36,7 +32,7 @@ namespace Files.Api.Controllers
 
         [HttpPut("{type}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        public async Task<ActionResult<Result>> ImportDataAsync([FromRoute] TemplateType type, IFormFile file)
+        public async Task<ActionResult<Result>> ImportDataAsync(TemplateType type, IFormFile file)
         {
             (Result resultUpload, string fileUrl, string fileName) = _uploadService.UploadFile(file, GetDomain(), AttachmentTypes.Excel);
 
@@ -70,12 +66,31 @@ namespace Files.Api.Controllers
             return Ok(Result.SuccessWithData(JsonConvert.SerializeObject(data)));
         }
 
-        [HttpPost("Validate")]
-        public IActionResult ValidateData([FromBody] ValidateResult products)
+        [HttpPut("Validate/{type}")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidateDataRequest), StatusCodes.Status400BadRequest)]
+        public ActionResult<Result> ValidateData(TemplateType type, [FromBody] ValidateDataRequest request)
         {
-            var invalidItems = _dataService.ValidateData<ProductTemplate>(products.DataJson);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(request);
+            }
 
-            return Ok(invalidItems);
+            dynamic invalidItems = null;
+
+            switch (type)
+            {
+                case TemplateType.Product:
+                    invalidItems = _dataService.ValidateData<ProductTemplate>(request.DataJson);
+                    break;
+                case TemplateType.WorkOrder:
+                    invalidItems = _dataService.ValidateData<WorkOrderTemplate>(request.DataJson);
+                    break;
+                default:
+                    break;
+            }
+
+            return Ok(Result.SuccessWithData(JsonConvert.SerializeObject(invalidItems)));
         }
 
         private static AttachmentDto InitAttachment(IFormFile file, string fileUrl, string fileName)
