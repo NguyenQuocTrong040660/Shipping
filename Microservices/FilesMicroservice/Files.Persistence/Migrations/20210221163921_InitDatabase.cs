@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Files.Persistence.Migrations
 {
-    public partial class InitDB : Migration
+    public partial class InitDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,28 +21,6 @@ namespace Files.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AttachmentTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "VideoHomePages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(maxLength: 50, nullable: false, defaultValueSql: "(newid())"),
-                    CreatedBy = table.Column<string>(nullable: true),
-                    Created = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModified = table.Column<DateTime>(nullable: true),
-                    Width = table.Column<int>(nullable: false),
-                    Height = table.Column<int>(nullable: false),
-                    YoutubeLink = table.Column<string>(maxLength: 256, nullable: true),
-                    YoutubeId = table.Column<string>(maxLength: 100, nullable: true),
-                    YoutubeImage = table.Column<string>(maxLength: 256, nullable: true),
-                    Descriptions = table.Column<string>(maxLength: 256, nullable: true),
-                    Code = table.Column<string>(maxLength: 256, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_VideoHomePages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,9 +60,6 @@ namespace Files.Persistence.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Attachments");
-
-            migrationBuilder.DropTable(
-                name: "VideoHomePages");
 
             migrationBuilder.DropTable(
                 name: "AttachmentTypes");

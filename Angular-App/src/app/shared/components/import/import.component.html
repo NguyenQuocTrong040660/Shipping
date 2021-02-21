@@ -193,4 +193,57 @@
       </ng-template>
     </p-card>
   </ng-container>
+
+  <ng-container *ngIf="stepIndex === 3">
+    <p-card>
+      <ng-template pTemplate="content">
+        <ng-container [ngSwitch]="typeImport">
+          <ng-container *ngSwitchCase="TemplateType.Product">
+            <div class="p-text-center p-mb-4">
+              {{ failedToImportItems.length === 0 ? 'All Data have been imported successfully' : 'Some records have not been imported successfully' }}
+            </div>
+            <p-table [value]="failedToImportItems.length > 0 ? failedToImportItems : successfullyImportItems" dataKey="">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Qty/ Pkg</th>
+                  <th class="p-text-center">Notes</th>
+                  <th class="p-text-center" [style.width.px]="120">Status</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>
+                    {{ item?.productNumber }}
+                  </td>
+                  <td>
+                    {{ item?.productName }}
+                  </td>
+                  <td class="p-text-center">
+                    {{ item?.qtyPerPackage }}
+                  </td>
+                  <td>
+                    {{ item?.notes }}
+                  </td>
+                  <td class="p-text-center">
+                    <button
+                      pButton
+                      pRipple
+                      [ngClass]="failedToImportItems.length === 0 ? 'p-button-success' : 'p-button-danger'"
+                      type="button"
+                      [icon]="failedToImportItems.length === 0 ? 'pi pi-check-circle' : 'pi pi-ban'"
+                      class="p-button-rounded p-button-text"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </ng-container>
+          <ng-container *ngSwitchCase="TemplateType.WorkOrder"> </ng-container>
+          <ng-container *ngSwitchDefault> </ng-container>
+        </ng-container>
+      </ng-template>
+    </p-card>
+  </ng-container>
 </div>

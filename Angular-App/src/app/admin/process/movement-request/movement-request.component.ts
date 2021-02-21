@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
-import { MenuItem, ConfirmationService } from 'primeng/api';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { ConfirmationService } from 'primeng/api';
 import { MovementRequestClients, MovementRequestModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
@@ -12,22 +12,25 @@ import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.e
   styleUrls: ['./movement-request.component.scss'],
 })
 export class MovementRequestComponent implements OnInit {
+  title = 'Movement Request';
+
   movementRequests: MovementRequestModel[] = [];
   selectedMovementRequest: MovementRequestModel;
-  isShowCreateDialog: boolean;
-  isShowEditDialog: boolean;
-  isShowDeleteDialog: boolean;
+
+  isEdit = false;
+  isShowDialogCreate = false;
+  isShowDialogEdit = false;
   isShowDialogHistory = false;
-  currentSelectedMovementRequest: MovementRequestModel[] = [];
-  isDeleteMany: boolean;
+  titleDialog = '';
+
   movementRequestForm: FormGroup;
-  stepItems: MenuItem[] = [];
-  activeIndex = 0;
+
   workOrderList: WorkOrderModel[] = [];
-  workOrderItems: WorkOrderItems[] = [];
+
   cols: any[] = [];
   colFields = [];
   productsOfSelectedWOs = [];
+
   TypeColumn = TypeColumn;
   HistoryDialogType = HistoryDialogType;
 
@@ -47,13 +50,14 @@ export class MovementRequestComponent implements OnInit {
     private workOrderClients: WorkOrderClients,
     private notificationService: NotificationService,
     private movementRequestClients: MovementRequestClients,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Name', field: 'name', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'ID', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
@@ -61,45 +65,10 @@ export class MovementRequestComponent implements OnInit {
     ];
 
     this.colFields = this.cols.map((i) => i.field);
-
-    this.stepItems = [{ label: 'Work Order' }, { label: 'Move Quantity' }, { label: 'Confirm' }];
+    this.title = this.title.toUpperCase();
 
     this.initMovementRequests();
     this.initWorkOrders();
-
-    this.workOrderItems = [
-      {
-        id: '1',
-        name: 'Product Of WO 1 1',
-        workOrderId: 1,
-      },
-      {
-        id: '2',
-        name: 'Product Of WO 1 2',
-        workOrderId: 1,
-      },
-      {
-        id: '3',
-        name: 'Product Of WO 1 3',
-        workOrderId: 1,
-      },
-      {
-        id: '4',
-        name: 'Product Of WO 2 1',
-        workOrderId: 2,
-      },
-      {
-        id: '3',
-        name: 'Product Of WO 3 1',
-        workOrderId: 3,
-      },
-      {
-        id: '3',
-        name: 'Product Of WO 3 2',
-        workOrderId: 3,
-      },
-    ];
-
     this.initForm();
   }
 
@@ -118,113 +87,120 @@ export class MovementRequestComponent implements OnInit {
   }
 
   initForm() {
-    this.movementRequestForm = new FormGroup({
-      name: new FormControl('', Validators.required),
-      note: new FormControl(''),
-      workOrders: new FormControl([], Validators.required),
+    this.movementRequestForm = this.fb.group({
+      id: [0],
+      notes: [''],
+      lastModifiedBy: [''],
+      lastModified: [null],
+      movementRequestDetails: this.fb.array([]),
     });
   }
 
   // Create Movement Request
-  openCreateDialog() {
-    this.isShowCreateDialog = true;
-  }
-
-  hideCreateDialog() {
-    this.isShowCreateDialog = false;
-    this.activeIndex = 0;
-    this.workOrderItems.map((i) => {
-      if (i.quantity) {
-        i.quantity = null;
-      }
-    });
-
-    this.movementRequestForm.reset();
-  }
 
   onCreate() {
-    console.log(this.movementRequestForm.value);
-    console.log(this.productsOfSelectedWOs);
+    const model = this.movementRequestForm.value as MovementRequestModel;
 
-    this.hideCreateDialog();
+    this.movementRequestClients.addMovementRequest(model).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Create Movement Request Successfully');
+          this.initMovementRequests();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialog();
+      },
+      (_) => {
+        this.notificationService.error('Create Movement Request Failed. Please try again');
+        this.hideDialog();
+      }
+    );
   }
 
   // Edit Movement Request
-  openEditDialog(request: MovementRequestModel) {
-    this.isShowEditDialog = true;
-
-    this.movementRequestForm.setValue(request);
+  openCreateDialog() {
+    this.titleDialog = 'Create Work Order';
+    this.isShowDialogCreate = true;
+    this.isEdit = false;
   }
 
-  hideEditDialog() {
-    this.isShowEditDialog = false;
+  hideDialog() {
+    this.isShowDialogCreate = false;
+    this.isShowDialogEdit = false;
+    this.isShowDialogHistory = false;
     this.movementRequestForm.reset();
   }
 
-  onEdit() {
-    console.log(this.movementRequestForm.value);
+  onSubmit() {
+    if (this.movementRequestForm.invalid) {
+      return;
+    }
 
-    this.hideEditDialog();
+    this.isEdit ? this.onEdit() : this.onCreate();
   }
 
-  // Delete Movement Request
-  openDeleteDialog(movememtRequest: MovementRequestModel) {
+  openEditDialog(movementRequest: MovementRequestModel) {
+    this.titleDialog = 'Edit Movement Request';
+    this.isEdit = true;
+
+    this.movementRequestClients.getMovementRequestById(movementRequest.id).subscribe(
+      (i: MovementRequestModel) => {
+        this.selectedMovementRequest = i;
+        this.isShowDialogEdit = true;
+      },
+      (_) => (this.selectedMovementRequest.movementRequestDetails = [])
+    );
+  }
+
+  onEdit() {
+    const { id } = this.movementRequestForm.value;
+
+    this.movementRequestClients.updateMovementRequest(id, this.movementRequestForm.value).subscribe(
+      (result) => {
+        if (result && result.succeeded) {
+          this.notificationService.success('Edit Movement Request Successfully');
+          this.initMovementRequests();
+        } else {
+          this.notificationService.error(result?.error);
+        }
+
+        this.hideDialog();
+      },
+      (_) => {
+        this.notificationService.error('Edit Movement Request Failed. Please try again');
+        this.hideDialog();
+      }
+    );
+  }
+
+  openDeleteDialog(movementRequest: MovementRequestModel) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this items?',
+      message: 'Are you sure you want to delete this item ?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.notificationService.success('Delete Movement Request Successfully');
+        this.movementRequestClients.deleteMovementRequestAysnc(movementRequest.id).subscribe(
+          (result) => {
+            if (result && result.succeeded) {
+              this.notificationService.success('Delete Movement Request Successfully');
+              this.initWorkOrders();
+            } else {
+              this.notificationService.error(result?.error);
+            }
+          },
+          (_) => this.notificationService.error('Delete Movement Request Failed. Please try again')
+        );
       },
     });
-  }
-
-  nextPage(currentIndex: number) {
-    switch (currentIndex) {
-      case 0: {
-        this.productsOfSelectedWOs = [];
-        this.workOrders.value.forEach((wo) => {
-          const a = this.workOrderItems
-            .filter((i) => i.workOrderId === wo.id)
-            .forEach((i) => {
-              this.productsOfSelectedWOs.push(i);
-            });
-        });
-        break;
-      }
-    }
-
-    this.activeIndex += 1;
-  }
-
-  prevPage() {
-    this.activeIndex -= 1;
-  }
-
-  removeProduct(product: WorkOrderItems) {
-    this.productsOfSelectedWOs = this.productsOfSelectedWOs.filter((p) => p.id !== product.id);
-  }
-
-  isDisableStep2(): boolean {
-    return this.productsOfSelectedWOs.some((p) => !p.quantity);
   }
 
   getDetailMovementRequest(movementRequest: MovementRequestModel) {
     // TODO: show Movement Request Detail
   }
 
-  hideDialog() {
-    this.isShowDialogHistory = false;
-  }
-
   openHistoryDialog() {
     this.isShowDialogHistory = true;
   }
-}
-
-interface WorkOrderItems {
-  id: string;
-  name: string;
-  workOrderId: number;
-  quantity?: number;
 }

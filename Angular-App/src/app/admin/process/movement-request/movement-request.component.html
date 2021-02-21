@@ -2,8 +2,7 @@
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left"></ng-template>
     <ng-template pTemplate="right">
-      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
-        (click)="openCreateDialog()"></button>
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
       <button
         class="p-button-danger p-mr-2"
         pButton
@@ -11,7 +10,8 @@
         icon="pi pi-trash"
         label="Delete"
         [disabled]="!selectedMovementRequest"
-        (click)="openDeleteDialog(selectedMovementRequest)"></button>
+        (click)="openDeleteDialog(selectedMovementRequest)"
+      ></button>
 
       <button
         class="p-button-success p-mr-2"
@@ -20,33 +20,41 @@
         label="Edit"
         icon="pi pi-pencil"
         [disabled]="!selectedMovementRequest"
-        (click)="openEditDialog(selectedMovementRequest)"></button>
+        (click)="openEditDialog(selectedMovementRequest)"
+      ></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History"
-        (click)="openHistoryDialog()"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
 
   <p-table
     #movementRequestDataTable
     dataKey="id"
-    styleClass="p-datatable-customers"
+    styleClass="p-datatable-custom"
     [rows]="20"
     [columns]="cols"
     [value]="movementRequests"
     [paginator]="true"
     [resizableColumns]="true"
     [globalFilterFields]="colFields"
-    [(selection)]="selectedMovementRequest">
+    [scrollable]="true"
+    columnResizeMode="expand"
+    [(selection)]="selectedMovementRequest"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Movement Request</h5>
+        <h5 class="p-m-0">{{ title }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="movementRequestDataTable.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search..." />
+          <input pInputText type="text" (input)="movementRequestDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
+    </ng-template>
+
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col *ngFor="let col of columns" [style.width.px]="col.width" />
+      </colgroup>
     </ng-template>
 
     <ng-template pTemplate="header" let-columns>
@@ -54,10 +62,10 @@
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
-              <th [style.width.px]="col.width"></th>
+              <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th [style.width.px]="col.width" pResizableColumn [pSortableColumn]="col.field">
+              <th pResizableColumn [pSortableColumn]="col.field">
                 {{ col.header }}
                 <ng-container *ngIf="col.field">
                   <p-sortIcon [field]="col.field"></p-sortIcon>
@@ -71,9 +79,7 @@
 
     <ng-template pTemplate="emptymessage" let-columns>
       <tr>
-        <td [attr.colspan]="columns.length" class="text-center">
-          No records found
-        </td>
+        <td [attr.colspan]="columns.length" class="text-center">No records found</td>
       </tr>
     </ng-template>
 
@@ -85,7 +91,7 @@
               <p-tableRadioButton [value]="movementRequest"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ 'WO' + movementRequest[col.field] }}
+              {{ movementRequest[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               {{ movementRequest[col.field] | date: 'dd/MM/yyyy' }}
@@ -104,7 +110,8 @@
                 (click)="getDetailMovementRequest(movementRequest)"
                 [pRowToggler]="movementRequest"
                 class="p-button-text p-button-rounded p-button-plain"
-                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"></button>
+                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
+              ></button>
             </ng-container>
           </ng-container>
         </td>
@@ -139,9 +146,7 @@
   </p-table>
 </div>
 
-<!-- Create Movement Requests Dialog -->
-<p-dialog header="Create Movement Requests" styleClass="p-fluid p-w-700" [modal]="true" [(visible)]="isShowCreateDialog"
-  (onHide)="hideCreateDialog()">
+<p-dialog header="Create Movement Requests" styleClass="p-fluid p-w-700" [modal]="true" [(visible)]="isShowDialogCreate" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <div class="card">
       <p-steps [model]="stepItems" [activeIndex]="activeIndex"></p-steps>
@@ -158,8 +163,12 @@
                 <label for="movementRequests" class="control-label">Work Orders</label><span class="p-invalid">*</span>
                 <p-multiSelect
                   [ngClass]="{ 'ng-dirty': workOrders.invalid && (workOrders.dirty || workOrders.touched) }"
-                  [options]="workOrderList" [formControl]="workOrders" defaultLabel="Select Work Orders"
-                  optionLabel="id" appendTo="body">
+                  [options]="workOrderList"
+                  [formControl]="workOrders"
+                  defaultLabel="Select Work Orders"
+                  optionLabel="id"
+                  appendTo="body"
+                >
                 </p-multiSelect>
                 <ng-container *ngIf="workOrders.invalid && (workOrders.dirty || workOrders.touched)">
                   <small id="email-error" class="p-invalid create-user-form__error">Work Order is required.</small>
@@ -168,12 +177,7 @@
 
               <div class="p-field">
                 <label for="name">Movement Request Name</label><span class="p-invalid">*</span>
-                <input
-                  [ngClass]="{ 'ng-dirty': nameControl.invalid && (nameControl.dirty || nameControl.touched) }"
-                  pInputText
-                  id="name"
-                  [formControl]="nameControl"
-                  type="text" />
+                <input [ngClass]="{ 'ng-dirty': nameControl.invalid && (nameControl.dirty || nameControl.touched) }" pInputText id="name" [formControl]="nameControl" type="text" />
                 <ng-container *ngIf="nameControl.invalid && (nameControl.dirty || nameControl.touched)">
                   <small class="p-invalid p-error">Movement Request Name is required</small>
                 </ng-container>
@@ -181,20 +185,21 @@
 
               <div class="p-field">
                 <label for="notes">Notes</label>
-                <input
-                  pInputText
-                  id="notes"
-                  [formControl]="notesControl"
-                  type="text" />
+                <input pInputText id="notes" [formControl]="notesControl" type="text" />
               </div>
             </form>
           </div>
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-end">
-            <p-button styleClass="p-button-text" label="Next" [disabled]="movementRequestForm.invalid"
+            <p-button
+              styleClass="p-button-text"
+              label="Next"
+              [disabled]="movementRequestForm.invalid"
               (onClick)="nextPage(activeIndex)"
-              icon="pi pi-angle-right" iconPos="right"></p-button>
+              icon="pi pi-angle-right"
+              iconPos="right"
+            ></p-button>
           </div>
         </ng-template>
       </p-card>
@@ -215,25 +220,22 @@
             </ng-template>
             <ng-template pTemplate="body" let-product>
               <tr>
-                <td>{{product.name}}</td>
+                <td>{{ product.name }}</td>
                 <td pEditableColumn>
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                      <input pInputText type="number" [(ngModel)]="product.quantity">
+                      <input pInputText type="number" [(ngModel)]="product.quantity" />
                     </ng-template>
                     <ng-template pTemplate="output">
                       <ng-container *ngIf="product.quantity; else messageFillQuantity">
-                        {{product.quantity}}
+                        {{ product.quantity }}
                       </ng-container>
-                      <ng-template #messageFillQuantity>
-                        Click to fill quantities
-                      </ng-template>
+                      <ng-template #messageFillQuantity> Click to fill quantities </ng-template>
                     </ng-template>
                   </p-cellEditor>
                 </td>
                 <td>
-                  <button class="p-button-rounded p-button-danger" pTooltip="Remove Product" pButton pRipple
-                    icon="pi pi-trash" (click)="removeProduct(product)"></button>
+                  <button class="p-button-rounded p-button-danger" pTooltip="Remove Product" pButton pRipple icon="pi pi-trash" (click)="removeProduct(product)"></button>
                 </td>
               </tr>
             </ng-template>
@@ -242,10 +244,7 @@
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-end">
             <!-- <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button> -->
-            <p-button styleClass="p-button-text" label="Next" icon="pi pi-angle-right" iconPos="right"
-              [disabled]="isDisableStep2()"
-              (onClick)="nextPage(activeIndex)">
-            </p-button>
+            <p-button styleClass="p-button-text" label="Next" icon="pi pi-angle-right" iconPos="right" [disabled]="isDisableStep2()" (onClick)="nextPage(activeIndex)"> </p-button>
           </div>
         </ng-template>
       </p-card>
@@ -277,8 +276,8 @@
               </ng-template>
               <ng-template pTemplate="body" let-product>
                 <tr>
-                  <td>{{product.name}}</td>
-                  <td>{{product.quantity}}</td>
+                  <td>{{ product.name }}</td>
+                  <td>{{ product.quantity }}</td>
                 </tr>
               </ng-template>
             </p-table>
@@ -293,7 +292,8 @@
               [disabled]="movementRequestForm.invalid"
               (onClick)="onCreate()"
               icon="pi pi-angle-right"
-              iconPos="right"></p-button>
+              iconPos="right"
+            ></p-button>
           </div>
         </ng-template>
       </p-card>
@@ -301,22 +301,25 @@
   </ng-template>
 </p-dialog>
 
-<!-- Edit Movement Request Dialog -->
-<p-dialog header="Edit Movement Request" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
-  (onHide)="hideEditDialog()">
+<p-dialog header="Edit Movement Request" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialogEdit" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
-    <div class="p-fluid"> Edit </div>
+    <div class="p-fluid">Edit</div>
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
-      [disabled]="movementRequestForm.invalid" (click)="onEdit()"></button>
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="movementRequestForm.invalid" (click)="onEdit()"></button>
   </ng-template>
 </p-dialog>
 
-<app-history-dialog
-  [isShowDialog]="isShowDialogHistory"
-  [type]="HistoryDialogType.MovementRequest"
-  (hideDialogEvent)="hideDialog()">
-</app-history-dialog>
+<app-movement-request-create
+  [movementRequestForm]="movementRequestForm"
+  [titleDialog]="titleDialog"
+  [workOrders]="workOrderList"
+  [isShowDialog]="isShowDialogCreate"
+  (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
+>
+</app-movement-request-create>
+
+<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.MovementRequest" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

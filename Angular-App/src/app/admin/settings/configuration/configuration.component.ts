@@ -33,7 +33,7 @@ export class ConfigurationComponent implements OnInit {
     return this.configurationForm.get('value');
   }
 
-  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) { }
+  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) {}
 
   ngOnInit() {
     this.getConfigurations();
@@ -44,7 +44,7 @@ export class ConfigurationComponent implements OnInit {
       { header: 'Descriptions', field: 'descriptions', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Value', field: 'value', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn }
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];
 
     this.colFields = this.cols.map((i) => i.field);
@@ -82,9 +82,9 @@ export class ConfigurationComponent implements OnInit {
     const { key, value, descriptions } = this.configurationForm.value;
 
     const model: ConfigModel = {
-      key,      
+      key,
       value,
-      descriptions
+      descriptions,
     };
 
     this.configsClients.updateConfig(key, model).subscribe(

@@ -21,7 +21,9 @@ namespace ShippingApp.Application.WorkOrder.Commands
         private readonly IMapper _mapper;
         private readonly IShippingAppRepository<Entities.WorkOrder> _shippingAppRepository;
 
-        public CreateWorkOrderCommandHandler(IMapper mapper, IShippingAppRepository<Entities.WorkOrder> shippingAppRepository)
+        public CreateWorkOrderCommandHandler(IMapper mapper,
+          
+            IShippingAppRepository<Entities.WorkOrder> shippingAppRepository)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));

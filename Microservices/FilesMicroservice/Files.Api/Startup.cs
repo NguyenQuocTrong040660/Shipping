@@ -1,13 +1,9 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using Files.Application;
 using Files.Infrastructure;
 using Files.Persistence;
@@ -19,7 +15,6 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using Files.Api.Services;
-using System.Text.Json.Serialization;
 using System.Linq;
 using NSwag;
 using NSwag.Generation.Processors.Security;
@@ -98,9 +93,10 @@ namespace Files.Api
             services.AddApplication();
             services.AddInfrastructure(Configuration);
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
-            ConfigureAuthenticationServices(services);
-            services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
+            ConfigureAuthenticationServices(services);
+
+            //services.AddSingleton<ICurrentUserService, CurrentUserService>();
         }
 
         private void ConfigureAuthenticationServices(IServiceCollection services)

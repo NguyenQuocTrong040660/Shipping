@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FilesClient, TemplateType, ValidateDataRequest } from 'app/shared/api-clients/files.client';
-import { ProductModel, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductClients, ProductModel, WorkOrderClients, WorkOrderImportModel, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { MenuItem } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
@@ -19,10 +19,18 @@ export class ImportComponent implements OnInit {
   uploadedFiles: any[] = [];
   data: any[] = [];
   dataValidated: any[] = [];
+  failedToImportItems: any[] = [];
+  successfullyImportItems: any[] = [];
 
   TemplateType = TemplateType;
 
-  constructor(private filesClient: FilesClient, private config: DynamicDialogConfig, private notificationService: NotificationService) {
+  constructor(
+    private filesClient: FilesClient,
+    private productClients: ProductClients,
+    private workOrderClients: WorkOrderClients,
+    private config: DynamicDialogConfig,
+    private notificationService: NotificationService
+  ) {
     this.typeImport = this.config.data;
   }
 
@@ -52,6 +60,7 @@ export class ImportComponent implements OnInit {
       (_) => this.notificationService.error('Failed to update load data')
     );
   }
+
   handleUploadError(error) {
     this.notificationService.error(error);
   }
@@ -70,13 +79,14 @@ export class ImportComponent implements OnInit {
         break;
       }
       case 2: {
-        this.handleImportDataToServer(this.data, this.typeImport);
+        this.handleImportDataToServer(this.dataValidated, this.typeImport);
         break;
       }
     }
 
     this.stepIndex += 1;
   }
+
   handleValidationDataImport(data: any[], typeImport: TemplateType) {
     const request: ValidateDataRequest = {
       data,
@@ -89,7 +99,7 @@ export class ImportComponent implements OnInit {
             const invalidItems = result.data as ProductModel[];
 
             data.forEach((item: ProductModel) => {
-              const invalidItem = invalidItems.find((i) => i.productNumber == item.productNumber);
+              const invalidItem = invalidItems.find((i) => i.productNumber === item.productNumber);
               item['valid'] = invalidItem ? false : true;
               this.dataValidated.push(item);
             });
@@ -102,11 +112,10 @@ export class ImportComponent implements OnInit {
             const invalidItems = result.data;
 
             data.forEach((item) => {
-              const invalidItem = invalidItems.find((i) => i.workOrderId == item.workOrderId);
+              const invalidItem = invalidItems.find((i) => i.workOrderId === item.workOrderId);
               item['valid'] = invalidItem ? false : true;
               this.dataValidated.push(item);
             });
-            console.log(this.dataValidated);
           }
         });
         break;
@@ -114,11 +123,53 @@ export class ImportComponent implements OnInit {
         break;
     }
   }
+
   handleImportDataToServer(data: any[], typeImport: TemplateType) {
+    const dataValids = data.filter((i) => i.valid);
+
     switch (typeImport) {
       case TemplateType.Product:
+        const products: ProductModel[] = dataValids.map((i) => {
+          return {
+            id: 0,
+            productName: i.productName,
+            productNumber: i.productNumber,
+            qtyPerPackage: i.qtyPerPackage,
+          };
+        });
+
+        this.productClients.addProductsAll(products).subscribe(
+          (invalidProducts) => {
+            if (invalidProducts && invalidProducts.length > 0) {
+              this.failedToImportItems = invalidProducts;
+            } else {
+              this.successfullyImportItems = products;
+            }
+          },
+          (_) => {}
+        );
         break;
       case TemplateType.WorkOrder:
+        const workOders: WorkOrderImportModel[] = dataValids.map((i) => {
+          return {
+            workOrderId: i.workOrderId,
+            productNumber: i.productNumber,
+            quantity: i.quantity,
+            notes: i.notes,
+          };
+        });
+
+        this.workOrderClients.addWorkOrderAll(workOders).subscribe(
+          (invalidWorkOrders) => {
+            if (invalidWorkOrders && invalidWorkOrders.length > 0) {
+              this.failedToImportItems = invalidWorkOrders;
+            } else {
+              this.successfullyImportItems = workOders;
+            }
+          },
+          (_) => {}
+        );
+
         break;
       default:
         break;

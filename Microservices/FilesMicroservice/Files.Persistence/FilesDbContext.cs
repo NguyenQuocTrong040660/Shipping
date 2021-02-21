@@ -11,8 +11,9 @@ namespace Files.Persistence.DBContext
     public class FilesDbContext : DbContext, IFilesDbContext
     {
         public FilesDbContext(DbContextOptions<FilesDbContext> options) : base(options) 
-        { 
+        {
         }
+
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<AttachmentType> AttachmentTypes { get; set; }
 

@@ -88,6 +88,8 @@ export class ProductComponent implements OnInit, OnDestroy {
       baseZIndex: 10000,
       data: TemplateType.Product,
     });
+
+    this.ref.onClose.subscribe(() => this.initProducts());
   }
 
   exportTemplate() {

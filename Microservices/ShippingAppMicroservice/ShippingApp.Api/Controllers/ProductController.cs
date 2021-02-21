@@ -20,6 +20,33 @@ namespace ShippingApp.Api.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
+        [HttpPost("BulkInsert")]
+        [ProducesResponseType(typeof(List<ProductModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ProductModel>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<ProductModel>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ProductModel>>> AddProducts(List<ProductModel> products)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(products);
+            }
+
+            var invalidProducts = new List<ProductModel>();
+
+            foreach (var product in products)
+            {
+                var result = await Mediator.Send(new CreateProductCommand { Product = product });
+
+                if (!result.Succeeded)
+                {
+                    invalidProducts.Add(product);
+                }
+            }
+           
+            return Ok(invalidProducts);
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
