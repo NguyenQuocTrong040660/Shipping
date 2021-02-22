@@ -5,8 +5,6 @@ import { Component, OnInit, HostListener } from '@angular/core';
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
 })
-
-
 export class AdminComponent implements OnInit {
   isShow = false;
   topPosToStartShowing = 200;
@@ -21,9 +19,9 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   gotoTop() {
     window.scroll({

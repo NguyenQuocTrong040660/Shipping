@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { ConfirmationService } from 'primeng/api';
-import { MovementRequestClients, MovementRequestModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ConfirmationService, SelectItem } from 'primeng/api';
+import { MovementRequestClients, MovementRequestDetailModel, MovementRequestModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
+import { forkJoin } from 'rxjs';
 
 @Component({
   templateUrl: './movement-request.component.html',
@@ -16,6 +17,7 @@ export class MovementRequestComponent implements OnInit {
 
   movementRequests: MovementRequestModel[] = [];
   selectedMovementRequest: MovementRequestModel;
+  movementRequestForm: FormGroup;
 
   isEdit = false;
   isShowDialogCreate = false;
@@ -23,28 +25,16 @@ export class MovementRequestComponent implements OnInit {
   isShowDialogHistory = false;
   titleDialog = '';
 
-  movementRequestForm: FormGroup;
-
-  workOrderList: WorkOrderModel[] = [];
+  workOrders: WorkOrderModel[] = [];
+  movementRequestDetails: MovementRequestModel[] = [];
 
   cols: any[] = [];
   colFields = [];
-  productsOfSelectedWOs = [];
 
   TypeColumn = TypeColumn;
   HistoryDialogType = HistoryDialogType;
 
-  get nameControl() {
-    return this.movementRequestForm.get('name');
-  }
-
-  get notesControl() {
-    return this.movementRequestForm.get('notes');
-  }
-
-  get workOrders() {
-    return this.movementRequestForm.get('workOrders');
-  }
+  selectItems: SelectItem[] = [];
 
   constructor(
     private workOrderClients: WorkOrderClients,
@@ -61,7 +51,7 @@ export class MovementRequestComponent implements OnInit {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.colFields = this.cols.map((i) => i.field);
@@ -74,8 +64,8 @@ export class MovementRequestComponent implements OnInit {
 
   initWorkOrders() {
     this.workOrderClients.getWorkOrders().subscribe(
-      (i) => (this.workOrderList = i),
-      (_) => (this.workOrderList = [])
+      (i) => (this.selectItems = this._mapToSelectItems(i)),
+      (_) => (this.selectItems = [])
     );
   }
 
@@ -86,6 +76,13 @@ export class MovementRequestComponent implements OnInit {
     );
   }
 
+  _mapToSelectItems(workOrders: WorkOrderModel[]): SelectItem[] {
+    return workOrders.map((p) => ({
+      value: p,
+      label: `WO${p.id}`,
+    }));
+  }
+
   initForm() {
     this.movementRequestForm = this.fb.group({
       id: [0],
@@ -93,11 +90,36 @@ export class MovementRequestComponent implements OnInit {
       lastModifiedBy: [''],
       lastModified: [null],
       movementRequestDetails: this.fb.array([]),
+      workOrders: [[], [Validators.required]],
     });
   }
 
-  // Create Movement Request
+  handleSelectedWorkOrders() {
+    const { workOrders } = this.movementRequestForm.value;
 
+    if (workOrders && workOrders.length > 0) {
+      forkJoin(workOrders.map((workOrder: WorkOrderModel) => this.workOrderClients.getWorkOrderById(workOrder.id))).subscribe((results) => {
+        results.map((workOder: WorkOrderModel) => {
+          workOder.workOrderDetails.map((item) => {
+            const movementRequestDetail: MovementRequestDetailModel = {
+              product: item.product,
+              productId: item.productId,
+              workOrder: workOder,
+              workOrderId: workOder.id,
+              quantity: item.quantity,
+              movementRequestId: 0,
+            };
+
+            this.movementRequestDetails.push(movementRequestDetail);
+          });
+        });
+
+        this.movementRequestDetails.forEach((i, index) => (i['id'] = ++index));
+      });
+    }
+  }
+
+  // Create Movement Request
   onCreate() {
     const model = this.movementRequestForm.value as MovementRequestModel;
 
@@ -121,7 +143,7 @@ export class MovementRequestComponent implements OnInit {
 
   // Edit Movement Request
   openCreateDialog() {
-    this.titleDialog = 'Create Work Order';
+    this.titleDialog = 'Create Movement Request';
     this.isShowDialogCreate = true;
     this.isEdit = false;
   }
@@ -185,7 +207,7 @@ export class MovementRequestComponent implements OnInit {
           (result) => {
             if (result && result.succeeded) {
               this.notificationService.success('Delete Movement Request Successfully');
-              this.initWorkOrders();
+              this.initMovementRequests();
             } else {
               this.notificationService.error(result?.error);
             }
@@ -194,10 +216,6 @@ export class MovementRequestComponent implements OnInit {
         );
       },
     });
-  }
-
-  getDetailMovementRequest(movementRequest: MovementRequestModel) {
-    // TODO: show Movement Request Detail
   }
 
   openHistoryDialog() {

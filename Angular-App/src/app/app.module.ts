@@ -17,6 +17,8 @@ import { appInitializer } from 'app-initializer';
 import { UnAuthorizedInterceptor } from './shared/interceptors/unauthorize.interceptor';
 import { AuthorizeInterceptor } from './shared/interceptors/authorize.interceptor';
 import { ApiClientModule } from './shared/api-clients/api-client.module';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +30,7 @@ import { ApiClientModule } from './shared/api-clients/api-client.module';
     ProgressBarModule,
     SharedModule,
     QuicklinkModule,
+    DynamicDialogModule,
     ApiClientModule,
     RouterModule.forRoot(appRoutes, { preloadingStrategy: QuicklinkStrategy }),
   ],
@@ -35,6 +38,9 @@ import { ApiClientModule } from './shared/api-clients/api-client.module';
     LoadingService,
     NotificationService,
     AuthenticationService,
+    MessageService,
+    ConfirmationService,
+    DialogService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,

@@ -9,16 +9,8 @@ import { AdminNavbarComponent } from './admin-navbar/admin-navbar.component';
 import { adminRoutes } from './admin.routes';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule,
-    SharedModule,
-    RouterModule.forChild(adminRoutes)],
-  declarations: [
-    AdminComponent,
-    AdminControlSidebarComponent,
-    AdminFooterComponent,
-    AdminNavbarComponent],
+  imports: [CommonModule, RouterModule, SharedModule, RouterModule.forChild(adminRoutes)],
+  declarations: [AdminComponent, AdminControlSidebarComponent, AdminFooterComponent, AdminNavbarComponent],
   providers: [],
 })
 export class AdminModule {}

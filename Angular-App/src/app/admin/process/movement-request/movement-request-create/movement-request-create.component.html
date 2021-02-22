@@ -4,68 +4,37 @@
 
     <ng-container *ngIf="stepIndex === 0">
       <p-card styleClass="p-card-custom">
-        <p-table
-          dataKey="id"
-          [columns]="productCols"
-          [value]="products"
-          [globalFilterFields]="productFields"
-          [(selection)]="selectedProducts"
-          [resizableColumns]="true"
-          [paginator]="true"
-          [rows]="10"
-          scrollHeight="350px"
-        >
-          <ng-template pTemplate="colgroup" let-columns>
-            <colgroup>
-              <col [style.width.px]="col.width" *ngFor="let col of columns" />
-            </colgroup>
-          </ng-template>
-
-          <ng-template pTemplate="header" let-columns>
-            <tr>
-              <ng-container *ngFor="let col of columns">
-                <ng-container [ngSwitch]="col.type">
-                  <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-                    <th>
-                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                    </th>
-                  </ng-container>
-                  <ng-container *ngSwitchDefault>
-                    <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"> </p-sortIcon></th>
-                  </ng-container>
-                </ng-container>
+        <ng-template pTemplate="content">
+          <form [formGroup]="movementRequestForm">
+            <div class="p-field">
+              <label for="movementRequests" class="control-label">Work Orders </label><span class="p-invalid"> *</span>
+              <p-multiSelect
+                [ngClass]="{ 'ng-dirty': workOrdersControl.invalid && (workOrdersControl.dirty || workOrdersControl.touched) }"
+                [options]="selectItems"
+                [formControl]="workOrdersControl"
+                defaultLabel="Select Work Orders"
+                appendTo="body"
+              >
+              </p-multiSelect>
+              <ng-container *ngIf="workOrdersControl.invalid && (workOrdersControl.dirty || workOrdersControl.touched)">
+                <small class="p-invalid p-error">Please select Work Order</small>
               </ng-container>
-            </tr>
-          </ng-template>
+            </div>
 
-          <ng-template pTemplate="body" let-product let-columns="columns">
-            <tr>
-              <td *ngFor="let col of columns">
-                <ng-container [ngSwitch]="col.type">
-                  <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-                    <p-tableCheckbox [value]="product"></p-tableCheckbox>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-                    {{ product[col.field] | date: 'dd/MM/yyyy' }}
-                  </ng-container>
-                  <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-                    {{ product[col.field][col.subField] }}
-                  </ng-container>
-                  <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-                    {{ product[col.field] }}
-                  </ng-container>
-                </ng-container>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
+            <div class="p-field">
+              <label for="notes">Notes</label>
+              <input pInputText id="notes" [formControl]="notesControl" type="text" />
+            </div>
+          </form>
+        </ng-template>
+
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" icon="pi pi-times" iconPos="left"></p-button>
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
+              [disabled]="movementRequestForm.invalid"
               styleClass="p-button-text"
               label="Next"
-              [disabled]="selectedProducts && selectedProducts.length === 0"
               (onClick)="nextPage(stepIndex)"
               icon="pi pi-angle-right"
               iconPos="right"
@@ -78,87 +47,92 @@
     <ng-container *ngIf="stepIndex === 1">
       <p-card>
         <ng-template pTemplate="content">
-          <p-table [value]="workOrderDetails" dataKey="product.id" editMode="row">
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Product Number</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th style="width: 10rem"></th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-workOrderDetail let-editing="editing" let-ri="rowIndex">
-              <tr [pEditableRow]="workOrderDetail">
-                <td>
-                  {{ workOrderDetail?.product?.productNumber }}
-                </td>
-                <td>
-                  {{ workOrderDetail?.product?.productName }}
-                </td>
-                <td>
-                  <p-cellEditor>
-                    <ng-template pTemplate="input">
-                      <p-inputNumber [(ngModel)]="workOrderDetail.quantity" required></p-inputNumber>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                      {{ workOrderDetail?.quantity }}
-                    </ng-template>
-                  </p-cellEditor>
-                </td>
+          <p-card styleClass="p-card-custom">
+            <p-table dataKey="id" [value]="movementRequestDetails" editMode="row">
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th>WO-ID</th>
+                  <th>Product Number</th>
+                  <th>Product Name</th>
+                  <th>Quantity</th>
+                  <th style="width: 10rem"></th>
+                </tr>
+              </ng-template>
 
-                <td style="text-align: center">
-                  <button
-                    *ngIf="!editing"
-                    pButton
-                    pRipple
-                    type="button"
-                    pInitEditableRow
-                    icon="pi pi-pencil"
-                    (click)="onRowEditInit(workOrderDetail)"
-                    class="p-button-rounded p-button-text"
-                  ></button>
+              <ng-template pTemplate="body" let-movementRequestDetail let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="movementRequestDetail">
+                  <td>WO{{ movementRequestDetail?.workOrder?.id }}</td>
+                  <td>
+                    {{ movementRequestDetail?.product?.productNumber }}
+                  </td>
+                  <td>
+                    {{ movementRequestDetail?.product?.productName }}
+                  </td>
+                  <td>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <p-inputNumber [(ngModel)]="movementRequestDetail.quantity" required></p-inputNumber>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{ movementRequestDetail?.quantity }}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
 
-                  <button
-                    *ngIf="!editing"
-                    pButton
-                    pRipple
-                    type="button"
-                    pInitEditableRow
-                    icon="pi pi-times"
-                    (click)="onRowDelete(workOrderDetail)"
-                    class="p-button-rounded p-button-text"
-                  ></button>
+                  <td style="text-align: center">
+                    <button
+                      *ngIf="!editing"
+                      pButton
+                      pRipple
+                      type="button"
+                      pInitEditableRow
+                      icon="pi pi-pencil"
+                      (click)="onRowEditInit(movementRequestDetail)"
+                      class="p-button-rounded p-button-text"
+                    ></button>
 
-                  <button
-                    *ngIf="editing"
-                    pButton
-                    pRipple
-                    type="button"
-                    pSaveEditableRow
-                    icon="pi pi-check"
-                    (click)="onRowEditSave(workOrderDetail)"
-                    class="p-button-rounded p-button-text p-button-success p-mr-2"
-                  ></button>
-                  <button
-                    *ngIf="editing"
-                    pButton
-                    pRipple
-                    type="button"
-                    pCancelEditableRow
-                    icon="pi pi-times"
-                    (click)="onRowEditCancel(workOrderDetail, ri)"
-                    class="p-button-rounded p-button-text p-button-danger"
-                  ></button>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
+                    <button
+                      *ngIf="!editing"
+                      pButton
+                      pRipple
+                      type="button"
+                      pInitEditableRow
+                      icon="pi pi-times"
+                      (click)="onRowDelete(movementRequestDetail)"
+                      class="p-button-rounded p-button-text"
+                    ></button>
+
+                    <button
+                      *ngIf="editing"
+                      pButton
+                      pRipple
+                      type="button"
+                      pSaveEditableRow
+                      icon="pi pi-check"
+                      (click)="onRowEditSave(movementRequestDetail)"
+                      class="p-button-rounded p-button-text p-button-success p-mr-2"
+                    ></button>
+                    <button
+                      *ngIf="editing"
+                      pButton
+                      pRipple
+                      type="button"
+                      pCancelEditableRow
+                      icon="pi pi-times"
+                      (click)="onRowEditCancel(movementRequestDetail, ri)"
+                      class="p-button-rounded p-button-text p-button-danger"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
-              [disabled]="!checkModifiedQuantity(workOrderDetails)"
+              [disabled]="movementRequestForm.invalid"
               styleClass="p-button-text"
               label="Submit"
               (onClick)="nextPage(stepIndex)"
@@ -171,22 +145,43 @@
     </ng-container>
 
     <ng-container *ngIf="stepIndex === 2">
-      <form [formGroup]="workOrderForm">
-        <p-card>
-          <ng-template pTemplate="content">
-            <div class="p-field">
-              <label for="notes">Notes</label>
-              <input pInputText id="notes" [formControl]="notesControl" type="text" />
-            </div>
-          </ng-template>
-          <ng-template pTemplate="footer">
-            <div class="p-grid p-nogutter p-justify-between">
-              <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
-              <p-button [disabled]="workOrderForm.invalid" styleClass="p-button-text" label="Submit" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
-            </div>
-          </ng-template>
-        </p-card>
-      </form>
+      <p-card>
+        <ng-template pTemplate="content">
+          <p-card styleClass="p-card-custom">
+            <p-table dataKey="id" [value]="movementRequestDetails">
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th>WO-ID</th>
+                  <th>Product Number</th>
+                  <th>Product Name</th>
+                  <th>Quantity</th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-movementRequestDetail>
+                <tr>
+                  <td>WO{{ movementRequestDetail?.workOrder?.id }}</td>
+                  <td>
+                    {{ movementRequestDetail?.product?.productNumber }}
+                  </td>
+                  <td>
+                    {{ movementRequestDetail?.product?.productName }}
+                  </td>
+                  <td>
+                    {{ movementRequestDetail?.quantity }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button [disabled]="movementRequestForm.invalid" styleClass="p-button-text" label="Submit" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
     </ng-container>
   </ng-template>
 </p-dialog>

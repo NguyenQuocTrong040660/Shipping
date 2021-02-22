@@ -37,7 +37,6 @@
     [paginator]="true"
     [resizableColumns]="true"
     [globalFilterFields]="colFields"
-    [scrollable]="true"
     columnResizeMode="expand"
     [(selection)]="selectedMovementRequest"
   >
@@ -146,64 +145,11 @@
   </p-table>
 </div>
 
-<p-dialog header="Create Movement Requests" styleClass="p-fluid p-w-700" [modal]="true" [(visible)]="isShowDialogCreate" (onHide)="hideDialog()">
+<p-dialog header="Create Movement Requests" styleClass="p-fluid p-w-700" [modal]="true" [(visible)]="isShowDialogEdit" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <div class="card">
       <p-steps [model]="stepItems" [activeIndex]="activeIndex"></p-steps>
     </div>
-
-    <!-- Step 1 -->
-    <ng-container *ngIf="activeIndex === 0">
-      <p-card>
-        <ng-template pTemplate="title"> Movement Request </ng-template>
-        <ng-template pTemplate="content">
-          <div class="p-fluid">
-            <form [formGroup]="movementRequestForm">
-              <div class="form-group">
-                <label for="movementRequests" class="control-label">Work Orders</label><span class="p-invalid">*</span>
-                <p-multiSelect
-                  [ngClass]="{ 'ng-dirty': workOrders.invalid && (workOrders.dirty || workOrders.touched) }"
-                  [options]="workOrderList"
-                  [formControl]="workOrders"
-                  defaultLabel="Select Work Orders"
-                  optionLabel="id"
-                  appendTo="body"
-                >
-                </p-multiSelect>
-                <ng-container *ngIf="workOrders.invalid && (workOrders.dirty || workOrders.touched)">
-                  <small id="email-error" class="p-invalid create-user-form__error">Work Order is required.</small>
-                </ng-container>
-              </div>
-
-              <div class="p-field">
-                <label for="name">Movement Request Name</label><span class="p-invalid">*</span>
-                <input [ngClass]="{ 'ng-dirty': nameControl.invalid && (nameControl.dirty || nameControl.touched) }" pInputText id="name" [formControl]="nameControl" type="text" />
-                <ng-container *ngIf="nameControl.invalid && (nameControl.dirty || nameControl.touched)">
-                  <small class="p-invalid p-error">Movement Request Name is required</small>
-                </ng-container>
-              </div>
-
-              <div class="p-field">
-                <label for="notes">Notes</label>
-                <input pInputText id="notes" [formControl]="notesControl" type="text" />
-              </div>
-            </form>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="footer">
-          <div class="p-grid p-nogutter p-justify-end">
-            <p-button
-              styleClass="p-button-text"
-              label="Next"
-              [disabled]="movementRequestForm.invalid"
-              (onClick)="nextPage(activeIndex)"
-              icon="pi pi-angle-right"
-              iconPos="right"
-            ></p-button>
-          </div>
-        </ng-template>
-      </p-card>
-    </ng-container>
 
     <!-- Step 2 -->
     <ng-container *ngIf="activeIndex === 1">
@@ -301,24 +247,15 @@
   </ng-template>
 </p-dialog>
 
-<p-dialog header="Edit Movement Request" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialogEdit" (onHide)="hideDialog()">
-  <ng-template pTemplate="content">
-    <div class="p-fluid">Edit</div>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="movementRequestForm.invalid" (click)="onEdit()"></button>
-  </ng-template>
-</p-dialog>
-
 <app-movement-request-create
   [movementRequestForm]="movementRequestForm"
+  [movementRequestDetails]="movementRequestDetails"
   [titleDialog]="titleDialog"
-  [workOrders]="workOrderList"
+  [selectItems]="selectItems"
   [isShowDialog]="isShowDialogCreate"
   (submitEvent)="onSubmit()"
   (hideDialogEvent)="hideDialog()"
+  (selectedWorkOrdersEvent)="handleSelectedWorkOrders()"
 >
 </app-movement-request-create>
 

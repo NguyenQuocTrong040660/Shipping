@@ -32,8 +32,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PrintComponent } from './components/print/print.component';
 import { PanelModule } from 'primeng/panel';
 import { HistoryDialogComponent } from './components/history-dialog/history-dialog.component';
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { ImportComponent } from './components/import/import.component';
 
 @NgModule({
@@ -71,7 +69,6 @@ import { ImportComponent } from './components/import/import.component';
     InputNumberModule,
     TooltipModule,
     PanelModule,
-    DynamicDialogModule,
   ],
   exports: [
     CommonModule,
@@ -106,10 +103,9 @@ import { ImportComponent } from './components/import/import.component';
     InputNumberModule,
     TooltipModule,
     PanelModule,
-    DynamicDialogModule,
     PrintComponent,
     HistoryDialogComponent,
   ],
-  providers: [MessageService, ConfirmationService, DialogService],
+  providers: [],
 })
 export class SharedModule {}

@@ -10,6 +10,6 @@ import { MovementRequestEditComponent } from './movement-request-edit/movement-r
 @NgModule({
   declarations: [MovementRequestComponent, MovementRequestCreateComponent, MovementRequestEditComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(movementRequestRoutes)],
-  exports: [],
+  exports: [MovementRequestComponent, MovementRequestCreateComponent, MovementRequestEditComponent],
 })
 export class MovementRequestModule {}
