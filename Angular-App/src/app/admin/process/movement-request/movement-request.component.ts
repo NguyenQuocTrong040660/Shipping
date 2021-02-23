@@ -119,7 +119,6 @@ export class MovementRequestComponent implements OnInit {
     }
   }
 
-  // Create Movement Request
   onCreate() {
     const model = this.movementRequestForm.value as MovementRequestModel;
 
@@ -141,7 +140,6 @@ export class MovementRequestComponent implements OnInit {
     );
   }
 
-  // Edit Movement Request
   openCreateDialog() {
     this.titleDialog = 'Create Movement Request';
     this.isShowDialogCreate = true;
@@ -220,5 +218,18 @@ export class MovementRequestComponent implements OnInit {
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;
+  }
+
+  getDetailMovementRequest(movementRequest: MovementRequestModel) {
+    const movementRequests = this.movementRequests.find((i) => i.id === movementRequest.id);
+
+    if (movementRequests && movementRequests.movementRequestDetails && movementRequests.movementRequestDetails.length > 0) {
+      return;
+    }
+
+    this.movementRequestClients.getMovementRequestById(movementRequest.id).subscribe(
+      (i: MovementRequestModel) => (movementRequests.movementRequestDetails = i.movementRequestDetails),
+      (_) => (movementRequests.movementRequestDetails = [])
+    );
   }
 }

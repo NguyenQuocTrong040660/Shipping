@@ -44,21 +44,13 @@
   }
 
   .p-card-body {
-    padding: 1rem 0 0 0;
+    padding: 0;
   }
 
   .p-card-footer {
     padding: 0px;
   }
 }
-
-// .p-datatable .p-datatable-thead > tr > th {
-//   text-align: center !important;
-// }
-
-// .p-datatable .p-datatable-tbody > tr > td {
-//   text-align: center !important;
-// }
 
 .p-datatable {
   .p-datatable-header {
@@ -72,4 +64,8 @@
 
 .p-datatable-custom .p-datatable-tbody > tr > td {
   padding: 1rem !important;
+}
+
+.p-datatable-scrollable-header-box {
+  padding-right: 0px !important;
 }

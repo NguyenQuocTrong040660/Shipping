@@ -35,7 +35,7 @@
     [columns]="cols"
     [value]="movementRequests"
     [paginator]="true"
-    [resizableColumns]="true"
+    [resizableColumns]="false"
     [globalFilterFields]="colFields"
     columnResizeMode="expand"
     [(selection)]="selectedMovementRequest"
@@ -50,21 +50,15 @@
       </div>
     </ng-template>
 
-    <ng-template pTemplate="colgroup" let-columns>
-      <colgroup>
-        <col *ngFor="let col of columns" [style.width.px]="col.width" />
-      </colgroup>
-    </ng-template>
-
     <ng-template pTemplate="header" let-columns>
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
-              <th></th>
+              <th [style.width.px]="col.width"></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th pResizableColumn [pSortableColumn]="col.field">
+              <th [style.width.px]="col.width" pResizableColumn [pSortableColumn]="col.field">
                 {{ col.header }}
                 <ng-container *ngIf="col.field">
                   <p-sortIcon [field]="col.field"></p-sortIcon>
@@ -117,135 +111,34 @@
       </tr>
     </ng-template>
 
-    <!-- TODO: implement when have data -->
-    <!-- <ng-template pTemplate="rowexpansion" let-movementRequest>
+    <ng-template pTemplate="rowexpansion" let-movementRequest>
       <tr>
-        <td colspan="7" class="work-order__expaned">
+        <td colspan="6" class="movement-request__expaned">
           <div>
-            <p-table class="work-order__expaned-table" [value]="movementRequest.movementRequestDetails">
-              <ng-template pTemplate="header">
-      <tr>
-        <th>Product Number</th>
-        <th>Product Name</th>
-        <th>Quantity</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-detail>
-      <tr>
-        <td>{{ detail?.product?.productNumber }}</td>
-        <td>{{ detail?.product?.productName }}</td>
-        <td>{{ detail?.quantity }}</td>
-      </tr>
-    </ng-template>
-  </p-table>
-</div>
-</td>
-</tr>
-</ng-template> -->
-  </p-table>
-</div>
-
-<p-dialog header="Create Movement Requests" styleClass="p-fluid p-w-700" [modal]="true" [(visible)]="isShowDialogEdit" (onHide)="hideDialog()">
-  <ng-template pTemplate="content">
-    <div class="card">
-      <p-steps [model]="stepItems" [activeIndex]="activeIndex"></p-steps>
-    </div>
-
-    <!-- Step 2 -->
-    <ng-container *ngIf="activeIndex === 1">
-      <p-card>
-        <ng-template pTemplate="title"> Work Orders </ng-template>
-        <ng-template pTemplate="content">
-          <p-table [value]="productsOfSelectedWOs">
-            <ng-template pTemplate="header">
-              <tr>
-                <th>Name</th>
-                <th>Quantity</th>
-                <th></th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-product>
-              <tr>
-                <td>{{ product.name }}</td>
-                <td pEditableColumn>
-                  <p-cellEditor>
-                    <ng-template pTemplate="input">
-                      <input pInputText type="number" [(ngModel)]="product.quantity" />
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                      <ng-container *ngIf="product.quantity; else messageFillQuantity">
-                        {{ product.quantity }}
-                      </ng-container>
-                      <ng-template #messageFillQuantity> Click to fill quantities </ng-template>
-                    </ng-template>
-                  </p-cellEditor>
-                </td>
-                <td>
-                  <button class="p-button-rounded p-button-danger" pTooltip="Remove Product" pButton pRipple icon="pi pi-trash" (click)="removeProduct(product)"></button>
-                </td>
-              </tr>
-            </ng-template>
-          </p-table>
-        </ng-template>
-        <ng-template pTemplate="footer">
-          <div class="p-grid p-nogutter p-justify-end">
-            <!-- <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button> -->
-            <p-button styleClass="p-button-text" label="Next" icon="pi pi-angle-right" iconPos="right" [disabled]="isDisableStep2()" (onClick)="nextPage(activeIndex)"> </p-button>
-          </div>
-        </ng-template>
-      </p-card>
-    </ng-container>
-
-    <!-- Step 3 -->
-    <ng-container *ngIf="activeIndex === 2">
-      <p-card>
-        <ng-template pTemplate="title"> Confirmation </ng-template>
-        <ng-template pTemplate="content">
-          <div class="p-fluid">
-            <div class="p-field p-col-12">
-              <label for="name"><b>Name</b></label>
-              <p>{{ movementRequestForm.value.name }}</p>
-            </div>
-            <ng-container *ngIf="movementRequestForm.value.note">
-              <div class="p-field p-col-12">
-                <label for="note"><b>Note</b></label>
-                <p>{{ movementRequestForm.value.note }}</p>
-              </div>
-            </ng-container>
-
-            <p-table [value]="productsOfSelectedWOs">
+            <p-table class="movement-request__expaned-table" [value]="movementRequest.movementRequestDetails">
               <ng-template pTemplate="header">
                 <tr>
-                  <th>Name</th>
+                  <th>Work Order</th>
+                  <th>Product Number</th>
+                  <th>Product Name</th>
                   <th>Quantity</th>
                 </tr>
               </ng-template>
-              <ng-template pTemplate="body" let-product>
+              <ng-template pTemplate="body" let-detail>
                 <tr>
-                  <td>{{ product.name }}</td>
-                  <td>{{ product.quantity }}</td>
+                  <td>WO-{{ detail?.workOrder?.id }}</td>
+                  <td>{{ detail?.product?.productNumber }}</td>
+                  <td>{{ detail?.product?.productName }}</td>
+                  <td>{{ detail?.quantity }}</td>
                 </tr>
               </ng-template>
             </p-table>
           </div>
-        </ng-template>
-        <ng-template pTemplate="footer">
-          <div class="p-grid p-nogutter p-justify-end">
-            <!-- <p-button label="Back" (onClick)="prevPage()" icon="pi pi-angle-left"></p-button> -->
-            <p-button
-              styleClass="p-button-text"
-              label="Complete"
-              [disabled]="movementRequestForm.invalid"
-              (onClick)="onCreate()"
-              icon="pi pi-angle-right"
-              iconPos="right"
-            ></p-button>
-          </div>
-        </ng-template>
-      </p-card>
-    </ng-container>
-  </ng-template>
-</p-dialog>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
 
 <app-movement-request-create
   [movementRequestForm]="movementRequestForm"
@@ -258,5 +151,15 @@
   (selectedWorkOrdersEvent)="handleSelectedWorkOrders()"
 >
 </app-movement-request-create>
+
+<app-movement-request-edit
+  [movementRequestForm]="movementRequestForm"
+  [movementRequest]="selectedMovementRequest"
+  [titleDialog]="titleDialog"
+  [isShowDialog]="isShowDialogEdit"
+  (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
+>
+</app-movement-request-edit>
 
 <app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.MovementRequest" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

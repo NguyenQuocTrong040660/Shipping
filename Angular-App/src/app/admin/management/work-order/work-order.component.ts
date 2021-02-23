@@ -57,7 +57,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -137,7 +137,6 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Create Work Order
   openCreateDialog() {
     this.titleDialog = 'Create Work Order';
     this.isShowDialogCreate = true;
@@ -180,7 +179,6 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Edit Work Order
   openEditDialog(workOrder: WorkOrderModel) {
     this.titleDialog = 'Edit Work Order';
     this.isEdit = true;

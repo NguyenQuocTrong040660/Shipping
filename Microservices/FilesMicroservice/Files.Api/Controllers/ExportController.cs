@@ -44,6 +44,7 @@ namespace Files.Api.Controllers
                     templateUrl = $"{domain}/templates/{nameof(ProductTemplate)}.xlsx";
                     break;
                 case TemplateType.ShippingPlan:
+                    templateUrl = $"{domain}/templates/{nameof(ShippingPlanTemplate)}.xlsx";
                     break;
                 case TemplateType.WorkOrder:
                     templateUrl = $"{domain}/templates/{nameof(WorkOrderTemplate)}.xlsx";

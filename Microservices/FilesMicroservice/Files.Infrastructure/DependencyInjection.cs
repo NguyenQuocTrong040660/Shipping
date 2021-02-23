@@ -15,7 +15,7 @@ namespace Files.Infrastructure
 
             services.AddHostedService<TemplateService<ProductTemplate>>();
             services.AddHostedService<TemplateService<WorkOrderTemplate>>();
-
+            services.AddHostedService<TemplateService<ShippingPlanTemplate>>();
             return services;
         }
     }

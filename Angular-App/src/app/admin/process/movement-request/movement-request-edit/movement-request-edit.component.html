@@ -1,1 +1,145 @@
-<p>movement-request-edit works!</p>
+<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+  <ng-template pTemplate="content">
+    <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
+
+    <ng-container *ngIf="stepIndex === 0">
+      <p-card>
+        <ng-template pTemplate="content">
+          <p-card styleClass="p-card-custom">
+            <p-table dataKey="id" [value]="movementRequestDetails" editMode="row">
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th class="p-text-center">WO-ID</th>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Quantity</th>
+                  <th style="width: 10rem"></th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-movementRequestDetail let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="movementRequestDetail">
+                  <td>WO{{ movementRequestDetail?.workOrder?.id }}</td>
+                  <td>
+                    {{ movementRequestDetail?.product?.productNumber }}
+                  </td>
+                  <td>
+                    {{ movementRequestDetail?.product?.productName }}
+                  </td>
+                  <td class="p-text-center">
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <p-inputNumber [(ngModel)]="movementRequestDetail.quantity" required></p-inputNumber>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{ movementRequestDetail?.quantity }}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+
+                  <td class="p-text-center">
+                    <button
+                      *ngIf="!editing"
+                      pButton
+                      pRipple
+                      type="button"
+                      pInitEditableRow
+                      icon="pi pi-pencil"
+                      (click)="onRowEditInit(movementRequestDetail)"
+                      class="p-button-rounded p-button-text"
+                    ></button>
+
+                    <button
+                      *ngIf="!editing"
+                      pButton
+                      pRipple
+                      type="button"
+                      pInitEditableRow
+                      icon="pi pi-times"
+                      (click)="onRowDelete(movementRequestDetail)"
+                      class="p-button-rounded p-button-text"
+                    ></button>
+
+                    <button
+                      *ngIf="editing"
+                      pButton
+                      pRipple
+                      type="button"
+                      pSaveEditableRow
+                      icon="pi pi-check"
+                      (click)="onRowEditSave(movementRequestDetail)"
+                      class="p-button-rounded p-button-text p-button-success p-mr-2"
+                    ></button>
+                    <button
+                      *ngIf="editing"
+                      pButton
+                      pRipple
+                      type="button"
+                      pCancelEditableRow
+                      icon="pi pi-times"
+                      (click)="onRowEditCancel(movementRequestDetail, ri)"
+                      class="p-button-rounded p-button-text p-button-danger"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button
+              [disabled]="movementRequestForm.invalid"
+              styleClass="p-button-text"
+              label="Submit"
+              (onClick)="nextPage(stepIndex)"
+              icon="pi pi-angle-right"
+              iconPos="right"
+            ></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+
+    <ng-container *ngIf="stepIndex === 1">
+      <p-card>
+        <ng-template pTemplate="content">
+          <p-card styleClass="p-card-custom">
+            <p-table dataKey="id" [value]="movementRequestDetails">
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th class="p-text-center">WO-ID</th>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Quantity</th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-movementRequestDetail>
+                <tr>
+                  <td>WO{{ movementRequestDetail?.workOrder?.id }}</td>
+                  <td>
+                    {{ movementRequestDetail?.product?.productNumber }}
+                  </td>
+                  <td>
+                    {{ movementRequestDetail?.product?.productName }}
+                  </td>
+                  <td class="p-text-center">
+                    {{ movementRequestDetail?.quantity }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-card>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button [disabled]="movementRequestForm.invalid" styleClass="p-button-text" label="Submit" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+  </ng-template>
+</p-dialog>

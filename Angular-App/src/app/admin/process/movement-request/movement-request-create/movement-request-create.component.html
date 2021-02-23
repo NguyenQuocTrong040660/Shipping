@@ -3,7 +3,7 @@
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
     <ng-container *ngIf="stepIndex === 0">
-      <p-card styleClass="p-card-custom">
+      <p-card>
         <ng-template pTemplate="content">
           <form [formGroup]="movementRequestForm">
             <div class="p-field">
@@ -51,10 +51,10 @@
             <p-table dataKey="id" [value]="movementRequestDetails" editMode="row">
               <ng-template pTemplate="header" let-columns>
                 <tr>
-                  <th>WO-ID</th>
-                  <th>Product Number</th>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
+                  <th class="p-text-center">WO-ID</th>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Quantity</th>
                   <th style="width: 10rem"></th>
                 </tr>
               </ng-template>
@@ -68,7 +68,7 @@
                   <td>
                     {{ movementRequestDetail?.product?.productName }}
                   </td>
-                  <td>
+                  <td class="p-text-center">
                     <p-cellEditor>
                       <ng-template pTemplate="input">
                         <p-inputNumber [(ngModel)]="movementRequestDetail.quantity" required></p-inputNumber>
@@ -79,7 +79,7 @@
                     </p-cellEditor>
                   </td>
 
-                  <td style="text-align: center">
+                  <td class="p-text-center">
                     <button
                       *ngIf="!editing"
                       pButton
@@ -151,10 +151,10 @@
             <p-table dataKey="id" [value]="movementRequestDetails">
               <ng-template pTemplate="header" let-columns>
                 <tr>
-                  <th>WO-ID</th>
-                  <th>Product Number</th>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
+                  <th class="p-text-center">WO-ID</th>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Quantity</th>
                 </tr>
               </ng-template>
 
@@ -167,7 +167,7 @@
                   <td>
                     {{ movementRequestDetail?.product?.productName }}
                   </td>
-                  <td>
+                  <td class="p-text-center">
                     {{ movementRequestDetail?.quantity }}
                   </td>
                 </tr>

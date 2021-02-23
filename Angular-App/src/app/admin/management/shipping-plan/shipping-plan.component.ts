@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
 import { ConfirmationService, SelectItem } from 'primeng/api';
@@ -6,12 +6,15 @@ import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
+import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
+import { ImportComponent } from 'app/shared/components/import/import.component';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   templateUrl: './shipping-plan.component.html',
   styleUrls: ['./shipping-plan.component.scss'],
 })
-export class ShippingPlanComponent implements OnInit {
+export class ShippingPlanComponent implements OnInit, OnDestroy {
   shippingPlans: ShippingPlanModel[] = [];
   selectedShippingPlan: ShippingPlanModel;
   selectItems: SelectItem[] = [];
@@ -71,11 +74,15 @@ export class ShippingPlanComponent implements OnInit {
     return this.shippingPlanForm.get('notes');
   }
 
+  ref: DynamicDialogRef;
+
   constructor(
     private shippingPlanClients: ShippingPlanClients,
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private dialogService: DialogService,
+    private filesClient: FilesClient
   ) {}
 
   ngOnInit() {
@@ -121,6 +128,36 @@ export class ShippingPlanComponent implements OnInit {
       lastModified: new FormControl(null),
       lastModifiedBy: new FormControl(''),
     });
+  }
+
+  openImportSection() {
+    this.ref = this.dialogService.open(ImportComponent, {
+      header: 'IMPORT SHIPPING PLANS',
+      width: '70%',
+      contentStyle: { height: '800px', overflow: 'auto' },
+      baseZIndex: 10000,
+      data: TemplateType.ShippingPlan,
+    });
+
+    this.ref.onClose.subscribe(() => this.initProducts());
+  }
+
+  exportTemplate() {
+    this.filesClient.apiFilesExportTemplate(TemplateType.ShippingPlan).subscribe(
+      (i) => {
+        const aTag = document.createElement('a');
+        aTag.id = 'downloadButton';
+        aTag.style.display = 'none';
+        aTag.href = i;
+        aTag.download = 'ProductTemplate';
+        document.body.appendChild(aTag);
+        aTag.click();
+        window.URL.revokeObjectURL(i);
+
+        aTag.remove();
+      },
+      (_) => this.notificationService.error('Failed to export template')
+    );
   }
 
   initShippingPlans() {
@@ -246,5 +283,11 @@ export class ShippingPlanComponent implements OnInit {
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;
+  }
+
+  ngOnDestroy(): void {
+    if (this.ref) {
+      this.ref.close();
+    }
   }
 }

@@ -19,11 +19,11 @@
     [value]="products"
     [globalFilterFields]="fields"
     [(selection)]="selectedItem"
-    [resizableColumns]="true"
+    [resizableColumns]="false"
     [paginator]="true"
     [rows]="20"
+    [scrollable]="true"
     columnResizeMode="expand"
-    styleClass="p-datatable-custom"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
@@ -49,7 +49,7 @@
               <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"> </p-sortIcon></th>
+              <th [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"> </p-sortIcon></th>
             </ng-container>
           </ng-container>
         </ng-container>

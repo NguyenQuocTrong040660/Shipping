@@ -78,8 +78,6 @@ export class MovementRequestCreateComponent implements OnInit {
   onRowEditInit(movementRequestDetailModel: MovementRequestDetailModel) {
     const key = `${movementRequestDetailModel.workOrderId}-${movementRequestDetailModel.productId}`;
     this.clonedMovementRequestDetailModels[key] = { ...movementRequestDetailModel };
-
-    console.log(this.clonedMovementRequestDetailModels);
   }
 
   onRowDelete(movementRequestDetailModel: MovementRequestDetailModel) {

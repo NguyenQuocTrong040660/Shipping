@@ -50,6 +50,9 @@ namespace Files.Api.Controllers
                     case TemplateType.WorkOrder:
                         data = _dataService.ReadFromExcelFile<WorkOrderTemplate>(fileUrl);
                         break;
+                    case TemplateType.ShippingPlan:
+                        data = _dataService.ReadFromExcelFile<ShippingPlanTemplate>(fileUrl);
+                        break;
                     default:
                         break;
                 }
