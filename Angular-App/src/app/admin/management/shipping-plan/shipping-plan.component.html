@@ -38,7 +38,6 @@
     [value]="shippingPlans"
     [globalFilterFields]="fields"
     [(selection)]="selectedShippingPlan"
-    [resizableColumns]="false"
     [paginator]="true"
     [rows]="20"
     [scrollable]="true"
@@ -54,7 +53,6 @@
       </div>
     </ng-template>
 
-
     <ng-template pTemplate="colgroup" let-columns>
       <colgroup>
         <col *ngFor="let col of columns" [style.width.px]="col.width" />
@@ -66,10 +64,10 @@
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
-              <th ></th>
+              <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th  [pSortableColumn]="col.field">
+              <th [pSortableColumn]="col.field">
                 {{ col.header }}
                 <ng-container *ngIf="col.field">
                   <p-sortIcon [field]="col.field"></p-sortIcon>
