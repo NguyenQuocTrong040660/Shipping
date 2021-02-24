@@ -1,0 +1,345 @@
+<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true"
+  [(visible)]="isShowDialog" (onHide)="hideDialog()">
+  <ng-template pTemplate="content">
+    <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
+
+    <ng-container *ngIf="stepIndex === 0">
+      <p-card>
+        <ng-template pTemplate="content">
+          <form [formGroup]="shippingPlanForm">
+            <div class="p-grid p-fluid">
+              <div class="p-col-12">
+                <div class="p-field">
+                  <label for="customerName">Customer Name</label>
+                  <input
+                    [ngClass]="{ 'ng-dirty': customerNameControl.invalid && (customerNameControl.dirty || customerNameControl.touched) }"
+                    pInputText
+                    id="customerName"
+                    [formControl]="customerNameControl"
+                    type="text" />
+                  <ng-container
+                    *ngIf="customerNameControl.invalid && (customerNameControl.dirty || customerNameControl.touched)">
+                    <small class="p-invalid p-error">Please specify a customer name</small>
+                  </ng-container>
+                </div>
+              </div>
+
+              <div class="p-col-12">
+                <div class="p-field">
+                  <label for="semlineNumber">Semline Number</label>
+                  <input
+                    [ngClass]="{ 'ng-dirty': semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched) }"
+                    pInputText
+                    id="semlineNumber"
+                    [formControl]="semlineNumberControl"
+                    type="text" />
+
+                  <ng-container
+                    *ngIf="semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched)">
+                    <small class="p-invalid p-error">Please specify a semline number</small>
+                  </ng-container>
+                </div>
+              </div>
+
+              <div class="p-col-6">
+                <div class="p-field">
+                  <label for="shippingMode">Shipping Mode</label>
+                  <input
+                    [ngClass]="{ 'ng-dirty': shippingModeControl.invalid && (shippingModeControl.dirty || shippingModeControl.touched) }"
+                    pInputText
+                    id="shippingMode"
+                    [formControl]="shippingModeControl"
+                    type="text" />
+
+                  <ng-container
+                    *ngIf="shippingModeControl.invalid && (shippingModeControl.dirty || shippingModeControl.touched)">
+                    <small class="p-invalid p-error">Please specify a shipping mode</small>
+                  </ng-container>
+                </div>
+              </div>
+
+              <div class="p-col-6">
+                <div class="p-field">
+                  <label for="shippingDate">Shipping Date</label>
+                  <p-calendar
+                    [ngClass]="{ 'ng-dirty': shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched) }"
+                    id="shippingDate"
+                    [formControl]="shippingDateControl"
+                    appendTo="body"></p-calendar>
+
+                  <ng-container
+                    *ngIf="shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched)">
+                    <small class="p-invalid p-error">Please select shipping date</small>
+                  </ng-container>
+                </div>
+              </div>
+
+              <div class="p-col-12">
+                <div class="p-field">
+                  <label for="salesId">Sales Id</label>
+                  <input
+                    [ngClass]="{ 'ng-dirty': salesIdControl.invalid && (salesIdControl.dirty || salesIdControl.touched) }"
+                    pInputText
+                    id="salesId"
+                    [formControl]="salesIdControl"
+                    type="text" />
+                  <ng-container *ngIf="salesIdControl.invalid && (salesIdControl.dirty || salesIdControl.touched)">
+                    <small class="p-invalid p-error">Please specify a sales id</small>
+                  </ng-container>
+                </div>
+              </div>
+
+              <div class="p-col-12">
+                <div class="p-field">
+                  <label for="notes">Notes</label>
+                  <input pInputText id="notes" [formControl]="notesControl" type="text" />
+                </div>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left"
+              icon="pi pi-angle-left"></p-button>
+            <p-button
+              [disabled]="shippingPlanForm.invalid"
+              styleClass="p-button-text"
+              label="Next"
+              (onClick)="nextPage(stepIndex)"
+              icon="pi pi-angle-right"
+              iconPos="right"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+
+    <ng-container *ngIf="stepIndex === 1">
+      <p-card>
+        <ng-template pTemplate="content">
+          <p-table
+            dataKey="id"
+            [columns]="productCols"
+            [value]="products"
+            [globalFilterFields]="productFields"
+            [(selection)]="selectedProducts"
+            [paginator]="true"
+            [rows]="10"
+            scrollHeight="350px">
+            <ng-template pTemplate="colgroup" let-columns>
+              <colgroup>
+                <col [style.width.px]="col.width" *ngFor="let col of columns" />
+              </colgroup>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <ng-container *ngFor="let col of columns">
+                  <ng-container [ngSwitch]="col.type">
+                    <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+                      <th>
+                        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                      </th>
+                    </ng-container>
+                    <ng-container *ngSwitchDefault>
+                      <th [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field">
+                        </p-sortIcon>
+                      </th>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-product let-columns="columns">
+              <tr>
+                <td *ngFor="let col of columns">
+                  <ng-container [ngSwitch]="col.type">
+                    <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+                      <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                    </ng-container>
+                    <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+                      {{ product[col.field] | date: 'dd/MM/yyyy' }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+                      {{ product[col.field][col.subField] }}
+                    </ng-container>
+                    <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+                      {{ product[col.field] }}
+                    </ng-container>
+                  </ng-container>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left"
+              icon="pi pi-angle-left"></p-button>
+            <p-button
+              [disabled]="selectedProducts && selectedProducts.length === 0"
+              styleClass="p-button-text"
+              label="Next"
+              (onClick)="nextPage(stepIndex)"
+              icon="pi pi-angle-right"
+              iconPos="right"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+
+    <ng-container *ngIf="stepIndex === 2">
+      <p-card>
+        <ng-template pTemplate="content">
+          <p-table [value]="workOrderDetails" dataKey="product.id" editMode="row">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Product Number</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Amount</th>
+                <th style="width: 10rem"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-workOrderDetail let-editing="editing" let-ri="rowIndex">
+              <tr [pEditableRow]="workOrderDetail">
+                <td>
+                  {{ workOrderDetail?.product?.productNumber }}
+                </td>
+                <td>
+                  {{ workOrderDetail?.product?.productName }}
+                </td>
+                <td>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <p-inputNumber [(ngModel)]="workOrderDetail.quantity" required></p-inputNumber>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{ workOrderDetail?.quantity }}
+                    </ng-template>
+                  </p-cellEditor>
+                </td>
+                <td>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <p-inputNumber [(ngModel)]="workOrderDetail.price" required></p-inputNumber>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{ workOrderDetail?.price }}
+                    </ng-template>
+                  </p-cellEditor>
+                </td>
+                <td>
+                  {{ workOrderDetail?.amount }}
+                </td>
+
+                <td style="text-align: center">
+                  <button
+                    *ngIf="!editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pInitEditableRow
+                    icon="pi pi-pencil"
+                    (click)="onRowEditInit(workOrderDetail)"
+                    class="p-button-rounded p-button-text"></button>
+
+                  <button
+                    *ngIf="!editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pInitEditableRow
+                    icon="pi pi-times"
+                    (click)="onRowDelete(workOrderDetail)"
+                    class="p-button-rounded p-button-text"></button>
+
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pSaveEditableRow
+                    icon="pi pi-check"
+                    (click)="onRowEditSave(workOrderDetail)"
+                    class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pCancelEditableRow
+                    icon="pi pi-times"
+                    (click)="onRowEditCancel(workOrderDetail, ri)"
+                    class="p-button-rounded p-button-text p-button-danger"></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left"
+              icon="pi pi-angle-left"></p-button>
+            <p-button
+              [disabled]="!checkModifiedQuantity(workOrderDetails)"
+              styleClass="p-button-text"
+              label="Next"
+              (onClick)="nextPage(stepIndex)"
+              icon="pi pi-angle-right"
+              iconPos="right"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+
+    <ng-container *ngIf="stepIndex === 3">
+      <p-card>
+        <ng-template pTemplate="content">
+          <p-table dataKey="id" [value]="workOrderDetails">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>Product Number</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Amount</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-workOrderDetail>
+              <tr>
+                <td>
+                  {{ workOrderDetail?.product?.productNumber }}
+                </td>
+                <td>
+                  {{ workOrderDetail?.product?.productName }}
+                </td>
+                <td>
+                  {{ workOrderDetail?.quantity }}
+                </td>
+                <td>
+                  {{ workOrderDetail?.price }}
+                </td>
+                <td>
+                  {{ workOrderDetail?.amount }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left"
+              icon="pi pi-angle-left"></p-button>
+            <p-button [disabled]="shippingPlanForm.invalid" styleClass="p-button-text" label="Confirm"
+              (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+  </ng-template>
+</p-dialog>

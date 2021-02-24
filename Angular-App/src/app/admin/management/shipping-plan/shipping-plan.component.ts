@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -36,46 +36,6 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   TypeColumn = TypeColumn;
   HistoryDialogType = HistoryDialogType;
 
-  get purchaseOrderControl() {
-    return this.shippingPlanForm.get('purchaseOrder');
-  }
-
-  get semlineNumberControl() {
-    return this.shippingPlanForm.get('semlineNumber');
-  }
-
-  get customerNameControl() {
-    return this.shippingPlanForm.get('customerName');
-  }
-
-  get salesPriceControl() {
-    return this.shippingPlanForm.get('salesPrice');
-  }
-
-  get salesIdControl() {
-    return this.shippingPlanForm.get('salesID');
-  }
-
-  get quantityControl() {
-    return this.shippingPlanForm.get('quantityOrder');
-  }
-
-  get shippingDateControl() {
-    return this.shippingPlanForm.get('shippingDate');
-  }
-
-  get shippingModeControl() {
-    return this.shippingPlanForm.get('shippingMode');
-  }
-
-  get productControl() {
-    return this.shippingPlanForm.get('productId');
-  }
-
-  get notesControl() {
-    return this.shippingPlanForm.get('notes');
-  }
-
   ref: DynamicDialogRef;
 
   constructor(
@@ -84,7 +44,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     private productClients: ProductClients,
     private notificationService: NotificationService,
     private dialogService: DialogService,
-    private filesClient: FilesClient
+    private filesClient: FilesClient,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit() {
@@ -113,22 +74,15 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   initForm() {
-    this.shippingPlanForm = new FormGroup({
-      id: new FormControl(0),
-      purchaseOrder: new FormControl('', Validators.required),
-      customerName: new FormControl('', Validators.required),
-      quantityOrder: new FormControl(0, Validators.required),
-      salesPrice: new FormControl(0, Validators.required),
-      salesID: new FormControl(0, Validators.required),
-      semlineNumber: new FormControl(0, Validators.required),
-      shippingMode: new FormControl('', Validators.required),
-      shippingDate: new FormControl(null, Validators.required),
-      notes: new FormControl(''),
-      productId: new FormControl(0, Validators.required),
-      created: new FormControl(null),
-      createBy: new FormControl(''),
-      lastModified: new FormControl(null),
-      lastModifiedBy: new FormControl(''),
+    this.shippingPlanForm = this.fb.group({
+      customerName: ['', [Validators.required]],
+      salesID: [0, [Validators.required]],
+      semlineNumber: [0, [Validators.required]],
+      shippingMode: ['', [Validators.required]],
+      shippingDate: ['', [Validators.required]],
+      notes: [''],
+      lastModifiedBy: [''],
+      lastModified: [null]
     });
   }
 
@@ -221,7 +175,9 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isEdit ? this.onEdit() : this.onCreate();
+    this.hideDialog();
+    // TODO: Do this later with api
+    // this.isEdit ? this.onEdit() : this.onCreate();
   }
 
   // Edit Shipping Mark
