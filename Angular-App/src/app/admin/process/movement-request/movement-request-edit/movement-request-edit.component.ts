@@ -14,7 +14,7 @@ export class MovementRequestEditComponent implements OnInit {
   @Input() movementRequestForm: FormGroup;
   @Input() titleDialog = '';
   @Input() isShowDialog = false;
-  @Input() movementRequest: MovementRequestModel[] = [];
+  @Input() movementRequest: MovementRequestModel;
 
   movementRequestDetails: MovementRequestDetailModel[] = [];
 
@@ -46,9 +46,12 @@ export class MovementRequestEditComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.movementRequest && changes.movementRequest.currentValue) {
       const movementRequest = changes.movementRequest.currentValue as MovementRequestModel;
+      movementRequest.movementRequestDetails.forEach((item, index) => (item['id'] = index));
+
+      const workOders = movementRequest.movementRequestDetails.map((i) => i.workOrder);
+      this.workOrdersControl.patchValue(workOders);
       this.movementRequestDetails = movementRequest.movementRequestDetails;
       this.movementRequestForm.patchValue(movementRequest);
-      console.log(this.movementRequestForm.value);
     }
   }
 
@@ -64,6 +67,8 @@ export class MovementRequestEditComponent implements OnInit {
   }
 
   onSubmit() {
+    this.movementRequestDetailsControl.clear();
+
     this.movementRequestDetails.forEach((i) => {
       this.movementRequestDetailsControl.push(this.initMovementRequestDetailForm(i));
     });
@@ -100,8 +105,10 @@ export class MovementRequestEditComponent implements OnInit {
   }
 
   onRowEditCancel(movementRequestDetailModel: MovementRequestDetailModel, index: number) {
-    this.movementRequestDetails[index] = this.clonedMovementRequestDetailModels[movementRequestDetailModel['id']];
-    delete this.clonedMovementRequestDetailModels[movementRequestDetailModel['id']];
+    const key = `${movementRequestDetailModel.workOrderId}-${movementRequestDetailModel.productId}`;
+
+    this.movementRequestDetails[index] = this.clonedMovementRequestDetailModels[key];
+    delete this.clonedMovementRequestDetailModels[key];
   }
 
   nextPage(currentIndex: number) {

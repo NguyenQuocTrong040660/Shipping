@@ -91,8 +91,10 @@ export class MovementRequestCreateComponent implements OnInit {
   }
 
   onRowEditCancel(movementRequestDetailModel: MovementRequestDetailModel, index: number) {
-    this.movementRequestDetails[index] = this.clonedMovementRequestDetailModels[movementRequestDetailModel['id']];
-    delete this.clonedMovementRequestDetailModels[movementRequestDetailModel['id']];
+    const key = `${movementRequestDetailModel.workOrderId}-${movementRequestDetailModel.productId}`;
+
+    this.movementRequestDetails[index] = this.clonedMovementRequestDetailModels[key];
+    delete this.clonedMovementRequestDetailModels[key];
   }
 
   nextPage(currentIndex: number) {

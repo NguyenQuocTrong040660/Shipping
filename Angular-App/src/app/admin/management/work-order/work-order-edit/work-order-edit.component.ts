@@ -50,6 +50,8 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
   }
 
   onSubmit() {
+    this.workOrderDetailsControl.clear();
+
     this.workOrderDetails.forEach((i) => {
       this.workOrderDetailsControl.push(this.initWorkOrderDetailForm(i));
     });
@@ -109,6 +111,8 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
   }
 
   prevPage() {
+    if (this.stepIndex === 0) return this.hideDialog();
+
     this.stepIndex -= 1;
   }
 }

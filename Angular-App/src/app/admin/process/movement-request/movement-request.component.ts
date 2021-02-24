@@ -42,7 +42,7 @@ export class MovementRequestComponent implements OnInit {
     private movementRequestClients: MovementRequestClients,
     private confirmationService: ConfirmationService,
     private fb: FormBuilder
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
