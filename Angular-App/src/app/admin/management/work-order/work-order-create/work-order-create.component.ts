@@ -63,6 +63,8 @@ export class WorkOrderCreateComponent implements OnInit {
   }
 
   onSubmit() {
+    this.workOrderDetailsControl.clear();
+
     this.workOrderDetails.forEach((i) => {
       this.workOrderDetailsControl.push(this.initWorkOrderDetailForm(i));
     });

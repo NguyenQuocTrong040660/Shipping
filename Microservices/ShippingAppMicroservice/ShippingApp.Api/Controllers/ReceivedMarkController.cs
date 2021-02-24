@@ -36,12 +36,29 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPut("Generate/{movementRequestId}")]
+        [ProducesResponseType(typeof(List<ReceivedMarkModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReceivedMarkModel>>> GenerateReceivedMarkAsync(int movementRequestId)
+        {
+            var result = await Mediator.Send(new GenerateReceivedMarkCommand {  MovementRequestId = movementRequestId });
+            return Ok(result);
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(List<ReceivedMarkModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<ReceivedMarkModel>>> GetReceivedMarks()
         {
             return await Mediator.Send(new GetReceivedMarksQuery { });
+        }
+
+        [HttpGet("MovementRequest/{movementRequestId}")]
+        [ProducesResponseType(typeof(List<ReceivedMarkModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReceivedMarkModel>>> GetReceivedMarksByMovementRequestId(int movementRequestId)
+        {
+            return await Mediator.Send(new GetReceivedMarkByMovementRequestIdQuery { MovementRequestId = movementRequestId });
         }
 
         [HttpGet("{id}")]

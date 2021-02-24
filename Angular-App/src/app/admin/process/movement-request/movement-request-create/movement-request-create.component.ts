@@ -55,6 +55,8 @@ export class MovementRequestCreateComponent implements OnInit {
   }
 
   onSubmit() {
+    this.movementRequestDetailsControl.clear();
+
     this.movementRequestDetails.forEach((i) => {
       this.movementRequestDetailsControl.push(this.initMovementRequestDetailForm(i));
     });

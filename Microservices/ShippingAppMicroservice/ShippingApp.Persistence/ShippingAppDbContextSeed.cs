@@ -50,9 +50,29 @@ namespace ShippingApp.Persistence
                     .RuleFor(i => i.QtyPerPackage, f => f.Random.Even(50,100))
                     .RuleFor(i => i.Notes, f => f.Commerce.ProductDescription());
 
-                var products = new List<Product>();
+                var products = new List<Product>
+                {
+                    new Product
+                    {
+                        ProductName = "Product Name 1",
+                        ProductNumber = "Product Number 1",
+                        QtyPerPackage = 20
+                    },
+                    new Product
+                    {
+                        ProductName = "Product Name 2",
+                        ProductNumber = "Product Number 2",
+                        QtyPerPackage = 50
+                    },
+                    new Product
+                    {
+                        ProductName = "Product Name 3",
+                        ProductNumber = "Product Number 3",
+                        QtyPerPackage = 100
+                    }
+                };
 
-                for (int i = 0; i < 30; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     products.Add(fake.Generate());
                 }

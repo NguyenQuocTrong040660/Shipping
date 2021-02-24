@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ReceivedMarkClients, ReceivedMarkModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { MovementRequestClients, MovementRequestModel, ReceivedMarkClients, ReceivedMarkModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -17,7 +17,7 @@ export class ReceivedMarkComponent implements OnInit {
 
   receivedMarks: ReceivedMarkModel[] = [];
   selectedReceivedMark: ReceivedMarkModel;
-  workOrders: WorkOrderModel[] = [];
+  movementRequests: MovementRequestModel[] = [];
   selectItems: SelectItem[] = [];
 
   isShowDeleteDialog: boolean;
@@ -35,6 +35,8 @@ export class ReceivedMarkComponent implements OnInit {
   TypeColumn = TypeColumn;
   HistoryDialogType = HistoryDialogType;
 
+  selectedMovementRequest = 0;
+
   get workOrderControl() {
     return this.receivedMarkForm.get('workOrderId');
   }
@@ -46,15 +48,19 @@ export class ReceivedMarkComponent implements OnInit {
   constructor(
     public printService: PrintService,
     private receivedMarkClients: ReceivedMarkClients,
-    private workOrderClients: WorkOrderClients,
     private notificationService: NotificationService,
-    private confirmationService: ConfirmationService
-  ) { }
+    private confirmationService: ConfirmationService,
+    private movementRequestClients: MovementRequestClients
+  ) {}
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Work Order', field: 'workOrder', subField: 'id', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Sequence', field: 'sequence', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
+      { header: 'Product Number', field: 'productId', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Movement Request', field: 'movementRequestId', subField: 'id', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Quantity', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
+      { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
@@ -63,44 +69,50 @@ export class ReceivedMarkComponent implements OnInit {
     this.fields = this.cols.map((i) => i.field);
 
     this.initForm();
-    this.initDataSource();
-    this.initWorkOrders();
+    this.intMovementRequest();
   }
 
   initForm() {
     this.receivedMarkForm = new FormGroup({
       id: new FormControl(0),
-      workOrderId: new FormControl(0, Validators.required),
+      sequence: new FormControl(0),
+      quantity: new FormControl(0),
+      status: new FormControl(''),
       notes: new FormControl(''),
-      createdBy: new FormControl(''),
-      created: new FormControl(null),
+      printCount: new FormControl(0),
+      productId: new FormControl(0),
+      movementRequestId: new FormControl(0),
       lastModifiedBy: new FormControl(''),
       lastModified: new FormControl(null),
     });
   }
 
-  initWorkOrders() {
-    this.workOrderClients.getWorkOrders().subscribe(
+  intMovementRequest() {
+    this.movementRequestClients.getMovementRequests().subscribe(
       (i) => {
-        this.workOrders = i;
-        this.selectItems = this._mapToSelectItem(i);
+        this.movementRequests = i;
+        this.selectItems = this._mapToSelectItems(i);
       },
-      (_) => (this.workOrders = [])
+      (_) => (this.movementRequests = [])
     );
   }
 
-  _mapToSelectItem(workOrders: WorkOrderModel[]): SelectItem[] {
-    return workOrders.map((p) => ({
-      value: p.id,
-      label: `WorkOrder-${p.id}`,
+  _mapToSelectItems(movementRequests: MovementRequestModel[]): SelectItem[] {
+    return movementRequests.map((i) => ({
+      value: i.id,
+      label: `MM${i.id} - ${i.lastModified}`,
     }));
   }
 
-  initDataSource() {
-    this.receivedMarkClients.getReceivedMarks().subscribe(
+  initReceivedMarks(momentRequestId: number) {
+    this.receivedMarkClients.getReceivedMarksByMovementRequestId(momentRequestId).subscribe(
       (i) => (this.receivedMarks = i),
       (_) => (this.receivedMarks = [])
     );
+  }
+
+  handleOnChange(selectedMovementRequest) {
+    this.initReceivedMarks(selectedMovementRequest);
   }
 
   // Create Received Marks
@@ -123,7 +135,6 @@ export class ReceivedMarkComponent implements OnInit {
       (result) => {
         if (result && result.succeeded) {
           this.notificationService.success('Edit Received Mark Successfully');
-          this.initDataSource();
         } else {
           this.notificationService.error(result?.error);
         }
@@ -145,7 +156,6 @@ export class ReceivedMarkComponent implements OnInit {
       (result) => {
         if (result && result.succeeded) {
           this.notificationService.success('Create Received Mark Successfully');
-          this.initDataSource();
         } else {
           this.notificationService.error(result?.error);
         }
@@ -186,7 +196,6 @@ export class ReceivedMarkComponent implements OnInit {
           (result) => {
             if (result && result.succeeded) {
               this.notificationService.success('Delete Received Mark Successfully');
-              this.initDataSource();
             } else {
               this.notificationService.error(result?.error);
             }
