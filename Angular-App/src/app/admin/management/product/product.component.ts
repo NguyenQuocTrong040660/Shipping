@@ -60,7 +60,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     private productClients: ProductClients,
     private dialogService: DialogService,
     private filesClient: FilesClient
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
@@ -75,7 +75,6 @@ export class ProductComponent implements OnInit, OnDestroy {
     ];
 
     this.fields = this.cols.map((i) => i.field);
-    this.title = this.title.toUpperCase();
     this.initForm();
     this.initProducts();
   }

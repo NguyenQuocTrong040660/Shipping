@@ -14,6 +14,8 @@ import { Subject } from 'rxjs';
   styleUrls: ['./user-management.component.scss'],
 })
 export class UserManagementComponent implements OnInit {
+  title = 'Users Management';
+
   users: UserResult[] = [];
   roles: RoleModel[] = [];
 
@@ -27,6 +29,9 @@ export class UserManagementComponent implements OnInit {
   setNewPasswordForm: FormGroup;
 
   cols: any[] = [];
+  fields: any[] = [];
+
+  TypeColumn = TypeColumn;
 
   get userForms() {
     return this.createUserForm.get('userForms') as FormArray;
@@ -38,10 +43,11 @@ export class UserManagementComponent implements OnInit {
 
   private destroyed$ = new Subject<void>();
 
-  constructor(private userClient: UserClient, private notificationService: NotificationService, private confirmationService: ConfirmationService) {}
+  constructor(private userClient: UserClient, private notificationService: NotificationService, private confirmationService: ConfirmationService) { }
 
   ngOnInit() {
     this.cols = [
+      { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Email', field: 'email', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'User Name', field: 'userName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Role Name', field: 'roleName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
@@ -49,6 +55,7 @@ export class UserManagementComponent implements OnInit {
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];
+    this.fields = this.cols.map((i) => i.field);
 
     this.initUsers();
     this.initRoles();

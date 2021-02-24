@@ -47,17 +47,17 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private dialogService: DialogService,
     private filesClient: FilesClient
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'ID', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
-      { header: 'Reference ID', field: 'refId', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      { header: 'Id', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      { header: 'Reference Id', field: 'refId', width: WidthColumn.QuantityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -65,8 +65,6 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     this.initWorkOrders();
     this.initProducts();
     this.initWorkOrderForm();
-
-    this.title = this.title.toUpperCase();
   }
 
   openImportSection() {

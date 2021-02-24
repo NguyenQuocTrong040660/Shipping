@@ -11,7 +11,6 @@
           [value]="products"
           [globalFilterFields]="productFields"
           [(selection)]="selectedProducts"
-          [resizableColumns]="true"
           [paginator]="true"
           [rows]="10"
           scrollHeight="350px">
@@ -31,7 +30,7 @@
                     </th>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
-                    <th pResizableColumn [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field">
+                    <th [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field">
                       </p-sortIcon>
                     </th>
                   </ng-container>

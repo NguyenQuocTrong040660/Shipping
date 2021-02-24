@@ -13,6 +13,8 @@ import { SelectItem } from 'primeng/api';
   styleUrls: ['./shipping-mark.component.scss'],
 })
 export class ShippingMarkComponent implements OnInit {
+  title = 'Shipping Mark';
+
   shippingMarks: ShippingMarkModel[] = [];
   products: ProductModel[] = [];
   selectedShippingMark: ShippingMarkModel;
@@ -62,7 +64,7 @@ export class ShippingMarkComponent implements OnInit {
     private shippingMarkClients: ShippingMarkClients,
     private productClients: ProductClients,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [

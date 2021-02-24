@@ -13,6 +13,8 @@ import { SelectItem, ConfirmationService } from 'primeng/api';
   styleUrls: ['./received-mark.component.scss'],
 })
 export class ReceivedMarkComponent implements OnInit {
+  title = 'Received Mark';
+
   receivedMarks: ReceivedMarkModel[] = [];
   selectedReceivedMark: ReceivedMarkModel;
   workOrders: WorkOrderModel[] = [];
@@ -47,7 +49,7 @@ export class ReceivedMarkComponent implements OnInit {
     private workOrderClients: WorkOrderClients,
     private notificationService: NotificationService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [

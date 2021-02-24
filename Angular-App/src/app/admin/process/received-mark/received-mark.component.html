@@ -33,23 +33,29 @@
   <p-table
     #shippingRequestDataTable
     dataKey="id"
-    styleClass="p-datatable-customers"
+    columnResizeMode="expand"
+    [value]="receivedMarks"
     [rows]="20"
     [columns]="cols"
-    [value]="receivedMarks"
     [paginator]="true"
-    [resizableColumns]="true"
+    [scrollable]="true"
     [globalFilterFields]="fields"
     [(selection)]="selectedReceivedMark">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Received Mark</h5>
+        <h5 class="p-m-0">{{ title | uppercase }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input pInputText type="text" (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')"
             placeholder="Search..." />
         </span>
       </div>
+    </ng-template>
+
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col *ngFor="let col of columns" [style.width.px]="col.width" />
+      </colgroup>
     </ng-template>
 
     <ng-template pTemplate="header" let-columns>
@@ -60,7 +66,7 @@
               <th [style.width.px]="col.width"></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th [style.width.px]="col.width" pResizableColumn [pSortableColumn]="col.field">
+              <th [style.width.px]="col.width" [pSortableColumn]="col.field">
                 {{ col.header }}
                 <ng-container *ngIf="col.field">
                   <p-sortIcon [field]="col.field"></p-sortIcon>

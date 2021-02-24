@@ -42,20 +42,19 @@ export class MovementRequestComponent implements OnInit {
     private movementRequestClients: MovementRequestClients,
     private confirmationService: ConfirmationService,
     private fb: FormBuilder
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'ID', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      { header: 'Id', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.colFields = this.cols.map((i) => i.field);
-    this.title = this.title.toUpperCase();
 
     this.initMovementRequests();
     this.initWorkOrders();

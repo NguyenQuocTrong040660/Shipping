@@ -12,6 +12,8 @@ import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
   styleUrls: ['./shipping-request.component.scss'],
 })
 export class ShippingRequestComponent implements OnInit {
+  title = 'Shipping Request Management';
+
   shippingRequests: ShippingRequestModel[] = [];
   shippingPlans: ShippingPlanModel[] = [];
   selectedShippingRequest: ShippingRequestModel;
@@ -86,7 +88,7 @@ export class ShippingRequestComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
@@ -96,7 +98,7 @@ export class ShippingRequestComponent implements OnInit {
       { header: 'Qty Order', field: 'quantityOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Sales Price', field: 'salesPrice', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Sales ID', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Sales Id', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Mode', field: 'shippingMode', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },

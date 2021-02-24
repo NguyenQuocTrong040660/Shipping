@@ -33,17 +33,17 @@
   <p-table
     #shippingRequestDataTable
     dataKey="id"
-    styleClass="p-datatable-customers"
+    columnResizeMode="expand"
+    [value]="shippingMarks"
     [rows]="20"
     [columns]="cols"
-    [value]="shippingMarks"
     [paginator]="true"
-    [resizableColumns]="true"
+    [scrollable]="true"
     [globalFilterFields]="fields"
     [(selection)]="selectedShippingMark">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Shipping Mark</h5>
+        <h5 class="p-m-0">{{ title | uppercase }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input pInputText type="text" (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')"
@@ -52,15 +52,21 @@
       </div>
     </ng-template>
 
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col *ngFor="let col of columns" [style.width.px]="col.width" />
+      </colgroup>
+    </ng-template>
+
     <ng-template pTemplate="header" let-columns>
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
-              <th [style.width.px]="col.width"></th>
+              <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th [style.width.px]="col.width" pResizableColumn [pSortableColumn]="col.field">
+              <th [pSortableColumn]="col.field">
                 {{ col.header }}
                 <ng-container *ngIf="col.field">
                   <p-sortIcon [field]="col.field"></p-sortIcon>

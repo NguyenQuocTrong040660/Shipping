@@ -15,6 +15,8 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
   styleUrls: ['./shipping-plan.component.scss'],
 })
 export class ShippingPlanComponent implements OnInit, OnDestroy {
+  title = 'Shipping Plan Management';
+
   shippingPlans: ShippingPlanModel[] = [];
   selectedShippingPlan: ShippingPlanModel;
   selectItems: SelectItem[] = [];
@@ -83,7 +85,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private dialogService: DialogService,
     private filesClient: FilesClient
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
@@ -93,7 +95,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       { header: 'Qty Order', field: 'quantityOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Sales Price', field: 'salesPrice', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Sales ID', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Sales Id', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Mode', field: 'shippingMode', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },

@@ -10,6 +10,8 @@ import { TypeColumn } from 'app/shared/configs/type-column';
   styleUrls: ['./configuration.component.scss'],
 })
 export class ConfigurationComponent implements OnInit {
+  title = 'Configurations';
+
   configurations: ConfigModel[] = [];
   selectedConfiguration: ConfigModel[];
   isShowEditDialog: boolean;
@@ -33,7 +35,7 @@ export class ConfigurationComponent implements OnInit {
     return this.configurationForm.get('value');
   }
 
-  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) {}
+  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) { }
 
   ngOnInit() {
     this.getConfigurations();
