@@ -20,14 +20,10 @@ namespace ShippingApp.Application.WorkOrder.Commands
 
     public class UpdateWorkOrderCommandHandler : IRequestHandler<UpdateWorkOrderCommand, Result>
     {
-        private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.WorkOrder> _shippingAppRepository;
         private readonly IShippingAppDbContext _context;
 
-        public UpdateWorkOrderCommandHandler(IMapper mapper, IShippingAppRepository<Entities.WorkOrder> shippingAppRepository, IShippingAppDbContext context)
+        public UpdateWorkOrderCommandHandler(IShippingAppDbContext context)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
@@ -37,6 +33,11 @@ namespace ShippingApp.Application.WorkOrder.Commands
                 .Include(x => x.WorkOrderDetails)
                 .Where(x => x.Id == request.WorkOrder.Id)
                 .FirstOrDefaultAsync();
+            
+            if (workOrder == null)
+            {
+                throw new ArgumentNullException(nameof(workOrder));
+            }
 
             foreach (var item in workOrder.WorkOrderDetails)
             {

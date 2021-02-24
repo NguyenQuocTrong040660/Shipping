@@ -1,5 +1,4 @@
-<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true"
-  [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
@@ -16,9 +15,9 @@
                     pInputText
                     id="customerName"
                     [formControl]="customerNameControl"
-                    type="text" />
-                  <ng-container
-                    *ngIf="customerNameControl.invalid && (customerNameControl.dirty || customerNameControl.touched)">
+                    type="text"
+                  />
+                  <ng-container *ngIf="customerNameControl.invalid && (customerNameControl.dirty || customerNameControl.touched)">
                     <small class="p-invalid p-error">Please specify a customer name</small>
                   </ng-container>
                 </div>
@@ -32,10 +31,10 @@
                     pInputText
                     id="semlineNumber"
                     [formControl]="semlineNumberControl"
-                    type="text" />
+                    type="text"
+                  />
 
-                  <ng-container
-                    *ngIf="semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched)">
+                  <ng-container *ngIf="semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched)">
                     <small class="p-invalid p-error">Please specify a semline number</small>
                   </ng-container>
                 </div>
@@ -49,10 +48,10 @@
                     pInputText
                     id="shippingMode"
                     [formControl]="shippingModeControl"
-                    type="text" />
+                    type="text"
+                  />
 
-                  <ng-container
-                    *ngIf="shippingModeControl.invalid && (shippingModeControl.dirty || shippingModeControl.touched)">
+                  <ng-container *ngIf="shippingModeControl.invalid && (shippingModeControl.dirty || shippingModeControl.touched)">
                     <small class="p-invalid p-error">Please specify a shipping mode</small>
                   </ng-container>
                 </div>
@@ -65,10 +64,10 @@
                     [ngClass]="{ 'ng-dirty': shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched) }"
                     id="shippingDate"
                     [formControl]="shippingDateControl"
-                    appendTo="body"></p-calendar>
+                    appendTo="body"
+                  ></p-calendar>
 
-                  <ng-container
-                    *ngIf="shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched)">
+                  <ng-container *ngIf="shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched)">
                     <small class="p-invalid p-error">Please select shipping date</small>
                   </ng-container>
                 </div>
@@ -82,7 +81,8 @@
                     pInputText
                     id="salesId"
                     [formControl]="salesIdControl"
-                    type="text" />
+                    type="text"
+                  />
                   <ng-container *ngIf="salesIdControl.invalid && (salesIdControl.dirty || salesIdControl.touched)">
                     <small class="p-invalid p-error">Please specify a sales id</small>
                   </ng-container>
@@ -101,15 +101,15 @@
 
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left"
-              icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
               [disabled]="shippingPlanForm.invalid"
               styleClass="p-button-text"
               label="Next"
               (onClick)="nextPage(stepIndex)"
               icon="pi pi-angle-right"
-              iconPos="right"></p-button>
+              iconPos="right"
+            ></p-button>
           </div>
         </ng-template>
       </p-card>
@@ -126,7 +126,8 @@
             [(selection)]="selectedProducts"
             [paginator]="true"
             [rows]="10"
-            scrollHeight="350px">
+            scrollHeight="350px"
+          >
             <ng-template pTemplate="colgroup" let-columns>
               <colgroup>
                 <col [style.width.px]="col.width" *ngFor="let col of columns" />
@@ -143,9 +144,7 @@
                       </th>
                     </ng-container>
                     <ng-container *ngSwitchDefault>
-                      <th [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field">
-                        </p-sortIcon>
-                      </th>
+                      <th [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"> </p-sortIcon></th>
                     </ng-container>
                   </ng-container>
                 </ng-container>
@@ -176,15 +175,15 @@
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left"
-              icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
               [disabled]="selectedProducts && selectedProducts.length === 0"
               styleClass="p-button-text"
               label="Next"
               (onClick)="nextPage(stepIndex)"
               icon="pi pi-angle-right"
-              iconPos="right"></p-button>
+              iconPos="right"
+            ></p-button>
           </div>
         </ng-template>
       </p-card>
@@ -245,7 +244,8 @@
                     pInitEditableRow
                     icon="pi pi-pencil"
                     (click)="onRowEditInit(workOrderDetail)"
-                    class="p-button-rounded p-button-text"></button>
+                    class="p-button-rounded p-button-text"
+                  ></button>
 
                   <button
                     *ngIf="!editing"
@@ -255,7 +255,8 @@
                     pInitEditableRow
                     icon="pi pi-times"
                     (click)="onRowDelete(workOrderDetail)"
-                    class="p-button-rounded p-button-text"></button>
+                    class="p-button-rounded p-button-text"
+                  ></button>
 
                   <button
                     *ngIf="editing"
@@ -265,7 +266,8 @@
                     pSaveEditableRow
                     icon="pi pi-check"
                     (click)="onRowEditSave(workOrderDetail)"
-                    class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                    class="p-button-rounded p-button-text p-button-success p-mr-2"
+                  ></button>
                   <button
                     *ngIf="editing"
                     pButton
@@ -274,7 +276,8 @@
                     pCancelEditableRow
                     icon="pi pi-times"
                     (click)="onRowEditCancel(workOrderDetail, ri)"
-                    class="p-button-rounded p-button-text p-button-danger"></button>
+                    class="p-button-rounded p-button-text p-button-danger"
+                  ></button>
                 </td>
               </tr>
             </ng-template>
@@ -282,15 +285,15 @@
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left"
-              icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
               [disabled]="!checkModifiedQuantity(workOrderDetails)"
               styleClass="p-button-text"
               label="Next"
               (onClick)="nextPage(stepIndex)"
               icon="pi pi-angle-right"
-              iconPos="right"></p-button>
+              iconPos="right"
+            ></p-button>
           </div>
         </ng-template>
       </p-card>
@@ -333,10 +336,8 @@
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left"
-              icon="pi pi-angle-left"></p-button>
-            <p-button [disabled]="shippingPlanForm.invalid" styleClass="p-button-text" label="Confirm"
-              (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
+            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button [disabled]="shippingPlanForm.invalid" styleClass="p-button-text" label="Confirm" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
           </div>
         </ng-template>
       </p-card>

@@ -22,16 +22,13 @@ namespace ShippingApp.Application.ReceivedMark.Commands
     public class GenerateReceivedMarkCommandHandler : IRequestHandler<GenerateReceivedMarkCommand, List<ReceivedMarkModel>>
     {
         private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.ReceivedMark> _shippingAppRepository;
         private readonly IShippingAppDbContext _context;
 
         public GenerateReceivedMarkCommandHandler(IMapper mapper,
-            IShippingAppDbContext context,
-            IShippingAppRepository<Entities.ReceivedMark> shippingAppRepository)
+            IShippingAppDbContext context)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
         }
 
         public async Task<List<ReceivedMarkModel>> Handle(GenerateReceivedMarkCommand request, CancellationToken cancellationToken)
@@ -44,7 +41,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             if (movementRequest == null)
             {
-                return new List<ReceivedMarkModel>();
+                throw new ArgumentNullException(nameof(movementRequest));
             }
 
             if (movementRequest.ReceivedMarks.Any())
@@ -52,7 +49,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 return new List<ReceivedMarkModel>();
             }
 
-            var groupByProduct = movementRequest.MovementRequestDetails
+            var groupProducts = movementRequest.MovementRequestDetails
                 .GroupBy(i => i.Product)
                 .Select(x => new
                 {
@@ -62,7 +59,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             var receivedMark = new List<Entities.ReceivedMark>();
 
-            foreach (var group in groupByProduct)
+            foreach (var group in groupProducts)
             {
                 int remainQty = group.ReceivedQty;
                 var product = group.Product;
@@ -85,10 +82,11 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 }
             }
 
-            _context.ReceivedMarks.AddRange(receivedMark);
-            ;
+            await _context.ReceivedMarks.AddRangeAsync(receivedMark);
 
-            return _context.SaveChanges() > 0 ? _mapper.Map<List<ReceivedMarkModel>>(receivedMark) : new List<ReceivedMarkModel>();
+            return await _context.SaveChangesAsync() > 0 
+                ? _mapper.Map<List<ReceivedMarkModel>>(receivedMark) 
+                : new List<ReceivedMarkModel>();
         }
     }
 }

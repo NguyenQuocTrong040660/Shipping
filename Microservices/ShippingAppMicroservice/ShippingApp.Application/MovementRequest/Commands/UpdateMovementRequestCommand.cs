@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using ShippingApp.Application.Common.Results;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Domain.Models;
 using System;
-using Entities = ShippingApp.Domain.Entities;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -20,14 +18,10 @@ namespace ShippingApp.Application.MovementRequest.Commands
 
     public class UpdateMovementRequestCommandHandler : IRequestHandler<UpdateMovementRequestCommand, Result>
     {
-        private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.MovementRequest> _shippingAppRepository;
         private readonly IShippingAppDbContext _context;
 
-        public UpdateMovementRequestCommandHandler(IMapper mapper, IShippingAppRepository<Entities.MovementRequest> shippingAppRepository, IShippingAppDbContext context)
+        public UpdateMovementRequestCommandHandler(IShippingAppDbContext context)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
@@ -40,7 +34,8 @@ namespace ShippingApp.Application.MovementRequest.Commands
 
             foreach (var item in movementRequest.MovementRequestDetails)
             {
-                var movementRequestDetail = request.MovementRequest.MovementRequestDetails.FirstOrDefault(i => i.ProductId == item.ProductId && i.WorkOrderId == item.WorkOrderId);
+                var movementRequestDetail = request.MovementRequest.MovementRequestDetails
+                    .FirstOrDefault(i => i.ProductId == item.ProductId && i.WorkOrderId == item.WorkOrderId);
 
                 if (movementRequestDetail == null)
                 {
