@@ -71,6 +71,15 @@ namespace Files.Infrastructure.Services
                         }
                     }
 
+                    if (customeAttr.IsDecimal)
+                    {
+                        if (!float.TryParse(valueString, out _))
+                        {
+                            itemInvalids.Add(item);
+                            continue;
+                        }
+                    }
+
                     if (customeAttr.IsDateTime)
                     {
                         if (!DateTime.TryParse(valueString, out _))

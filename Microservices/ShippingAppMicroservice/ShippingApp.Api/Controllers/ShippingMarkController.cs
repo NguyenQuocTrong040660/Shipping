@@ -36,6 +36,15 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPut("Generate/{shippingRequestId}")]
+        [ProducesResponseType(typeof(List<ShippingMarkModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ShippingMarkModel>>> GenerateShippingMarkAsync(int shippingRequestId)
+        {
+            var result = await Mediator.Send(new GenerateShippingMarkCommand { ShippingRequestId = shippingRequestId });
+            return Ok(result);
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(List<ShippingMarkModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

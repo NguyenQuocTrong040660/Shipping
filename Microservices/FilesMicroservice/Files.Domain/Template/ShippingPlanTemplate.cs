@@ -5,6 +5,8 @@ namespace Files.Domain.Template
 {
     public class ShippingPlanTemplate
     {
+        public Guid Key { get; set; }
+        
         [ValidateDataType(IsRequired = true)]
         public string CustomerName { get; set; }
 
@@ -23,9 +25,11 @@ namespace Files.Domain.Template
         [ValidateDataType(IsNumber = true)]
         public int QuantityOrder { get; set; }
 
-        [ValidateDataType(IsNumber = true)]
-        public double SalesPrice { get; set; }
+        [ValidateDataType(IsDecimal = true)]
+        public float SalesPrice { get; set; }
         public string ShippingMode { get; set; }
+
+        [ValidateDataType(IsDateTime = true)]
         public DateTime ShippingDate { get; set; }   
         public string Notes { get; set; }
     }

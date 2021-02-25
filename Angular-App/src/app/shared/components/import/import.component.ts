@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FilesClient, TemplateType, ValidateDataRequest } from 'app/shared/api-clients/files.client';
-import { ProductClients, ProductModel, WorkOrderClients, WorkOrderImportModel, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, WorkOrderClients, WorkOrderImportModel } from 'app/shared/api-clients/shipping-app.client';
 import { NotificationService } from 'app/shared/services/notification.service';
-import { MenuItem } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 
 @Component({
@@ -29,7 +29,9 @@ export class ImportComponent implements OnInit {
     private productClients: ProductClients,
     private workOrderClients: WorkOrderClients,
     private config: DynamicDialogConfig,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private confirmationService: ConfirmationService,
+    private shippingPlanClients: ShippingPlanClients
   ) {
     this.typeImport = this.config.data;
   }
@@ -72,19 +74,35 @@ export class ImportComponent implements OnInit {
   nextPage(currentIndex: number) {
     switch (currentIndex) {
       case 0: {
+        this.stepIndex += 1;
         break;
       }
       case 1: {
         this.handleValidationDataImport(this.data, this.typeImport);
+        this.stepIndex += 1;
         break;
       }
       case 2: {
-        this.handleImportDataToServer(this.dataValidated, this.typeImport);
+        const invalidItems = this.data.filter((i) => i.valid === false);
+
+        if (invalidItems.length > 0) {
+          this.confirmationService.confirm({
+            message: 'There are some invalid data. Are you sure you want to import them ?',
+            header: 'Warning',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+              this.handleImportDataToServer(this.dataValidated, this.typeImport);
+              this.stepIndex += 1;
+            },
+          });
+        } else {
+          this.handleImportDataToServer(this.dataValidated, this.typeImport);
+          this.stepIndex += 1;
+        }
+
         break;
       }
     }
-
-    this.stepIndex += 1;
   }
 
   handleValidationDataImport(data: any[], typeImport: TemplateType) {
@@ -119,7 +137,20 @@ export class ImportComponent implements OnInit {
           }
         });
         break;
-      default:
+      case TemplateType.ShippingPlan:
+        request.data.forEach((i) => (i['key'] = this.createUUID()));
+
+        this.filesClient.apiFilesImportValidate(typeImport, request).subscribe((result) => {
+          if (result && result.succeeded) {
+            const invalidItems = result.data;
+
+            data.forEach((item) => {
+              const invalidItem = invalidItems.find((i) => i.key === item.key);
+              item['valid'] = invalidItem ? false : true;
+              this.dataValidated.push(item);
+            });
+          }
+        });
         break;
     }
   }
@@ -140,13 +171,12 @@ export class ImportComponent implements OnInit {
 
         this.productClients.addProductsAll(products).subscribe(
           (invalidProducts) => {
-            if (invalidProducts && invalidProducts.length > 0) {
-              this.failedToImportItems = invalidProducts;
-            } else {
-              this.successfullyImportItems = products;
-            }
+            this.failedToImportItems = invalidProducts;
           },
-          (_) => {}
+          (_) => {
+            this.notificationService.error('Failed to import data');
+            this.failedToImportItems = products;
+          }
         );
         break;
       case TemplateType.WorkOrder:
@@ -161,17 +191,16 @@ export class ImportComponent implements OnInit {
 
         this.workOrderClients.addWorkOrderAll(workOders).subscribe(
           (invalidWorkOrders) => {
-            if (invalidWorkOrders && invalidWorkOrders.length > 0) {
-              this.failedToImportItems = invalidWorkOrders;
-            } else {
-              this.successfullyImportItems = workOders;
-            }
+            this.failedToImportItems = invalidWorkOrders;
           },
-          (_) => {}
+          (_) => {
+            this.notificationService.error('Failed to import data');
+            this.failedToImportItems = workOders;
+          }
         );
 
         break;
-      default:
+      case TemplateType.ShippingPlan:
         break;
     }
   }
@@ -182,5 +211,16 @@ export class ImportComponent implements OnInit {
 
   getMaximumFile() {
     return 2097152000;
+  }
+
+  createUUID() {
+    let dt = new Date().getTime();
+    let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      let r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+
+    return uuid;
   }
 }

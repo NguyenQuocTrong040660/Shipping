@@ -60,7 +60,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     private productClients: ProductClients,
     private dialogService: DialogService,
     private filesClient: FilesClient
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -85,6 +85,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       width: '70%',
       contentStyle: { height: '800px', overflow: 'auto' },
       baseZIndex: 10000,
+
       data: TemplateType.Product,
     });
 

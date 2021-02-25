@@ -36,6 +36,27 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPut("{movementRequestId}")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ShippingRequestLogisticModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> AddShippingRequestLogistics(int movementRequestId, [FromBody] ShippingRequestLogisticModel shippingRequestLogistic)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(shippingRequestLogistic);
+            }
+
+            var result = await Mediator.Send(new CreateShippingRequestLogisticCommand 
+            { 
+                MovementRequestId = movementRequestId,
+                ShippingRequestLogistic = shippingRequestLogistic
+            });
+
+            return Ok(result);
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(List<ShippingRequestModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

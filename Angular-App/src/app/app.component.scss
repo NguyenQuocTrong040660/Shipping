@@ -6,3 +6,15 @@
 .progress-bar {
   height: 6px;
 }
+
+p-toast {
+  ::ng-deep .p-toast {
+    z-index: 999999999 !important;
+  }
+}
+
+p-confirmdialog {
+  ::ng-deep .p-dialog-mask {
+    z-index: 999999999 !important;
+  }
+}

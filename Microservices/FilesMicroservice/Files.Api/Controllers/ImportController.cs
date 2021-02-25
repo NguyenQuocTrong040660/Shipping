@@ -91,7 +91,8 @@ namespace Files.Api.Controllers
                 case TemplateType.WorkOrder:
                     invalidItems = _dataService.ValidateData<WorkOrderTemplate>(jsonString);
                     break;
-                default:
+                case TemplateType.ShippingPlan:
+                    invalidItems = _dataService.ValidateData<ShippingPlanTemplate>(jsonString);
                     break;
             }
 

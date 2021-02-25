@@ -25,14 +25,13 @@
       <ng-template pTemplate="content">
         <ng-container [ngSwitch]="typeImport">
           <ng-container *ngSwitchCase="TemplateType.Product">
-            <p-table [value]="data" dataKey="">
+            <p-table [value]="data">
               <ng-template pTemplate="header">
                 <tr>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
                   <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Notes</th>
-                  <th class="p-text-center" [style.width.px]="120">Status</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
@@ -49,22 +48,18 @@
                   <td>
                     {{ item?.notes }}
                   </td>
-                  <td class="p-text-center">
-                    <button pButton pRipple type="button" icon="pi pi-cloud-upload" class="p-button-rounded p-button-text"></button>
-                  </td>
                 </tr>
               </ng-template>
             </p-table>
           </ng-container>
           <ng-container *ngSwitchCase="TemplateType.WorkOrder">
-            <p-table [value]="data" dataKey="">
+            <p-table [value]="data">
               <ng-template pTemplate="header">
                 <tr>
-                  <th class="p-text-center">Work Order Id</th>
+                  <th class="p-text-center">Id</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Quantity</th>
                   <th class="p-text-center">Notes</th>
-                  <th class="p-text-center" [style.width.px]="120">Status</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
@@ -81,14 +76,62 @@
                   <td>
                     {{ item?.notes }}
                   </td>
-                  <td class="p-text-center">
-                    <button pButton pRipple type="button" icon="pi pi-cloud-upload" class="p-button-rounded p-button-text"></button>
+                </tr>
+              </ng-template>
+            </p-table>
+          </ng-container>
+          <ng-container *ngSwitchCase="TemplateType.ShippingPlan">
+            <p-table [value]="data">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="p-text-center">Customer Name</th>
+                  <th class="p-text-center">Purchase Order</th>
+                  <th class="p-text-center">Sales ID</th>
+                  <th class="p-text-center">Semline Number</th>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Quantity Order</th>
+                  <th class="p-text-center">Sales Price</th>
+                  <th class="p-text-center">Shipping Mode</th>
+                  <th class="p-text-center">Shipping Date</th>
+                  <th class="p-text-center">Notes</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>
+                    {{ item?.customerName }}
+                  </td>
+                  <td>
+                    {{ item?.purchaseOrder }}
+                  </td>
+                  <td>
+                    {{ item?.salesID }}
+                  </td>
+                  <td>
+                    {{ item?.semlineNumber }}
+                  </td>
+                  <td>
+                    {{ item?.productNumber }}
+                  </td>
+                  <td>
+                    {{ item?.quantityOrder }}
+                  </td>
+                  <td>
+                    {{ item?.salesPrice }}
+                  </td>
+                  <td>
+                    {{ item?.shippingMode }}
+                  </td>
+                  <td>
+                    {{ item?.shippingDate | date: 'dd/MM/yyyy' }}
+                  </td>
+                  <td>
+                    {{ item?.notes }}
                   </td>
                 </tr>
               </ng-template>
             </p-table>
           </ng-container>
-          <ng-container *ngSwitchDefault> </ng-container>
         </ng-container>
       </ng-template>
       <ng-template pTemplate="footer">
@@ -105,7 +148,7 @@
       <ng-template pTemplate="content">
         <ng-container [ngSwitch]="typeImport">
           <ng-container *ngSwitchCase="TemplateType.Product">
-            <p-table [value]="dataValidated" dataKey="">
+            <p-table [value]="dataValidated">
               <ng-template pTemplate="header">
                 <tr>
                   <th class="p-text-center">Product Number</th>
@@ -116,7 +159,7 @@
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
-                <tr>
+                <tr [ngClass]="item?.valid ? '' : 'p-text-danger'">
                   <td>
                     {{ item?.productNumber }}
                   </td>
@@ -144,10 +187,10 @@
             </p-table>
           </ng-container>
           <ng-container *ngSwitchCase="TemplateType.WorkOrder">
-            <p-table [value]="dataValidated" dataKey="">
+            <p-table [value]="dataValidated">
               <ng-template pTemplate="header">
                 <tr>
-                  <th class="p-text-center">Work Order Id</th>
+                  <th class="p-text-center">Id</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Quantity</th>
                   <th class="p-text-center">Notes</th>
@@ -155,7 +198,7 @@
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
-                <tr>
+                <tr [ngClass]="item?.valid ? '' : 'p-text-danger'">
                   <td>
                     {{ item?.workOrderId }}
                   </td>
@@ -182,7 +225,69 @@
               </ng-template>
             </p-table>
           </ng-container>
-          <ng-container *ngSwitchDefault> </ng-container>
+          <ng-container *ngSwitchCase="TemplateType.ShippingPlan">
+            <p-table [value]="dataValidated">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="p-text-center">Customer Name</th>
+                  <th class="p-text-center">Purchase Order</th>
+                  <th class="p-text-center">Sales ID</th>
+                  <th class="p-text-center">Semline Number</th>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Quantity Order</th>
+                  <th class="p-text-center">Sales Price</th>
+                  <th class="p-text-center">Shipping Mode</th>
+                  <th class="p-text-center">Shipping Date</th>
+                  <th class="p-text-center">Notes</th>
+                  <th class="p-text-center" [style.width.px]="120">Status</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr [ngClass]="item?.valid ? '' : 'p-text-danger'">
+                  <td>
+                    {{ item?.customerName }}
+                  </td>
+                  <td>
+                    {{ item?.purchaseOrder }}
+                  </td>
+                  <td>
+                    {{ item?.salesID }}
+                  </td>
+                  <td>
+                    {{ item?.semlineNumber }}
+                  </td>
+                  <td>
+                    {{ item?.productNumber }}
+                  </td>
+                  <td class="p-text-center">
+                    {{ item?.quantityOrder }}
+                  </td>
+                  <td class="p-text-center">
+                    {{ item?.salesPrice }}
+                  </td>
+                  <td>
+                    {{ item?.shippingMode }}
+                  </td>
+                  <td>
+                    {{ item?.shippingDate | date: 'dd/MM/yyyy' }}
+                  </td>
+                  <td>
+                    {{ item?.notes }}
+                  </td>
+                  <td class="p-text-center">
+                    <button
+                      pButton
+                      pRipple
+                      [ngClass]="item?.valid ? 'p-button-success' : 'p-button-danger'"
+                      type="button"
+                      [icon]="item?.valid ? 'pi pi-check-circle' : 'pi pi-ban'"
+                      class="p-button-rounded p-button-text"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </ng-container>
         </ng-container>
       </ng-template>
       <ng-template pTemplate="footer">
@@ -199,17 +304,14 @@
       <ng-template pTemplate="content">
         <ng-container [ngSwitch]="typeImport">
           <ng-container *ngSwitchCase="TemplateType.Product">
-            <div class="p-text-center p-mb-4">
-              {{ failedToImportItems.length === 0 ? 'All Data have been imported successfully' : 'Some records have not been imported successfully' }}
-            </div>
-            <p-table [value]="failedToImportItems.length > 0 ? failedToImportItems : successfullyImportItems" dataKey="">
+            <div class="p-mb-4">The records have been failed to import</div>
+            <p-table [value]="failedToImportItems">
               <ng-template pTemplate="header">
                 <tr>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
                   <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Notes</th>
-                  <th class="p-text-center" [style.width.px]="120">Status</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
@@ -226,22 +328,92 @@
                   <td>
                     {{ item?.notes }}
                   </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </ng-container>
+          <ng-container *ngSwitchCase="TemplateType.WorkOrder">
+            <div class="p-mb-4">The records have been failed to import</div>
+            <p-table [value]="failedToImportItems">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="p-text-center">Id</th>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Quantity</th>
+                  <th class="p-text-center">Notes</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>
+                    {{ item?.workOrderId }}
+                  </td>
+                  <td>
+                    {{ item?.productNumber }}
+                  </td>
                   <td class="p-text-center">
-                    <button
-                      pButton
-                      pRipple
-                      [ngClass]="failedToImportItems.length === 0 ? 'p-button-success' : 'p-button-danger'"
-                      type="button"
-                      [icon]="failedToImportItems.length === 0 ? 'pi pi-check-circle' : 'pi pi-ban'"
-                      class="p-button-rounded p-button-text"
-                    ></button>
+                    {{ item?.quantity }}
+                  </td>
+                  <td>
+                    {{ item?.notes }}
                   </td>
                 </tr>
               </ng-template>
             </p-table>
           </ng-container>
-          <ng-container *ngSwitchCase="TemplateType.WorkOrder"> </ng-container>
-          <ng-container *ngSwitchDefault> </ng-container>
+          <ng-container *ngSwitchCase="TemplateType.ShippingPlan">
+            <div class="p-mb-4">The records have been failed to import</div>
+            <p-table [value]="failedToImportItems">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="p-text-center">Customer Name</th>
+                  <th class="p-text-center">Purchase Order</th>
+                  <th class="p-text-center">Sales ID</th>
+                  <th class="p-text-center">Semline Number</th>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Quantity Order</th>
+                  <th class="p-text-center">Sales Price</th>
+                  <th class="p-text-center">Shipping Mode</th>
+                  <th class="p-text-center">Shipping Date</th>
+                  <th class="p-text-center">Notes</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>
+                    {{ item?.customerName }}
+                  </td>
+                  <td>
+                    {{ item?.purchaseOrder }}
+                  </td>
+                  <td>
+                    {{ item?.salesID }}
+                  </td>
+                  <td>
+                    {{ item?.semlineNumber }}
+                  </td>
+                  <td>
+                    {{ item?.productNumber }}
+                  </td>
+                  <td class="p-text-center">
+                    {{ item?.quantityOrder }}
+                  </td>
+                  <td class="p-text-center">
+                    {{ item?.salesPrice }}
+                  </td>
+                  <td>
+                    {{ item?.shippingMode }}
+                  </td>
+                  <td>
+                    {{ item?.shippingDate | date: 'dd/MM/yyyy' }}
+                  </td>
+                  <td>
+                    {{ item?.notes }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </ng-container>
         </ng-container>
       </ng-template>
     </p-card>

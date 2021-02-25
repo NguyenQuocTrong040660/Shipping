@@ -46,7 +46,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private filesClient: FilesClient,
     private fb: FormBuilder
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -63,7 +63,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -82,14 +82,14 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       shippingDate: ['', [Validators.required]],
       notes: [''],
       lastModifiedBy: [''],
-      lastModified: [null]
+      lastModified: [null],
     });
   }
 
   openImportSection() {
     this.ref = this.dialogService.open(ImportComponent, {
       header: 'IMPORT SHIPPING PLANS',
-      width: '70%',
+      width: '100%',
       contentStyle: { height: '800px', overflow: 'auto' },
       baseZIndex: 10000,
       data: TemplateType.ShippingPlan,
