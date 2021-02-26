@@ -1,5 +1,4 @@
 ﻿using ShippingApp.Domain.CommonEntities;
-using System;
 using System.Collections.Generic;
 
 namespace ShippingApp.Domain.Entities
@@ -7,6 +6,7 @@ namespace ShippingApp.Domain.Entities
     public class Product: AuditableEntity
     {
         public int Id { get; set; }
+        public string Prefix { get; set; }
         public string ProductNumber { get; set; }
         public string ProductName { get; set; }
         public string Notes { get; set; }

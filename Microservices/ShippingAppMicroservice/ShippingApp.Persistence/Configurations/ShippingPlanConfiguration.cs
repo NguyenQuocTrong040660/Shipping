@@ -9,6 +9,7 @@ namespace ShippingApp.Persistence.Configurations
         public void Configure(EntityTypeBuilder<ShippingPlan> builder)
         {
             builder.Property(t => t.Id).UseIdentityColumn();
+            builder.Property(t => t.Prefix).HasDefaultValue("SHIPPL");
         }
     }
 }

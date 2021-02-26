@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Communication.Domain.DTO;
 using Microsoft.Extensions.Logging;
 using Communication.Application.Email.Commands;
+using Communication.Application.Common.Results;
+using Communication.Domain.Models;
 
 namespace Communication.Api.Controllers
 {
@@ -19,12 +20,18 @@ namespace Communication.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        public async Task<ActionResult<bool>> SendEmail([FromBody] EmailItemDTO emailInformationDto)
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(EmailModel), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Result>> SendEmail([FromBody] EmailModel request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(request);
+            }
+
             _logger.LogInformation("Start Send", DateTime.Now.ToString());
 
-            var result = await Mediator.Send(new SendMailCommand { EmailInfoDto = emailInformationDto });
+            var result = await Mediator.Send(new SendMailCommand { Email = request });
 
             _logger.LogInformation("End Send", DateTime.Now.ToString());
 

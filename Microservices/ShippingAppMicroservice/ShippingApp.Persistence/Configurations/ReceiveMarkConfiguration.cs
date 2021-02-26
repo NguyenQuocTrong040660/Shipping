@@ -10,6 +10,8 @@ namespace ShippingApp.Persistence.Configurations
         {
             builder.Property(t => t.Id).UseIdentityColumn();
 
+            builder.Property(t => t.Prefix).HasDefaultValue("REMARK");
+
             builder.Property(t => t.PrintCount).HasDefaultValue(1);
 
             builder.HasOne<Product>(s => s.Product)

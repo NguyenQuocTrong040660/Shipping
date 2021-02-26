@@ -47,11 +47,11 @@ export class MovementRequestComponent implements OnInit {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Id', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.colFields = this.cols.map((i) => i.field);
@@ -85,6 +85,7 @@ export class MovementRequestComponent implements OnInit {
   initForm() {
     this.movementRequestForm = this.fb.group({
       id: [0],
+      prefix: [''],
       notes: [''],
       lastModifiedBy: [''],
       lastModified: [null],

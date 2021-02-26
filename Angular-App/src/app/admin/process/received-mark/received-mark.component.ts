@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MovementRequestClients, MovementRequestModel, ReceivedMarkClients, ReceivedMarkModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MovementRequestClients, MovementRequestModel, ReceivedMarkClients, ReceivedMarkModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -37,14 +37,6 @@ export class ReceivedMarkComponent implements OnInit {
 
   selectedMovementRequest = 0;
 
-  get workOrderControl() {
-    return this.receivedMarkForm.get('workOrderId');
-  }
-
-  get notesControl() {
-    return this.receivedMarkForm.get('notes');
-  }
-
   constructor(
     public printService: PrintService,
     private receivedMarkClients: ReceivedMarkClients,
@@ -56,6 +48,7 @@ export class ReceivedMarkComponent implements OnInit {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Sequence', field: 'sequence', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
       { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Quantity', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
@@ -74,6 +67,7 @@ export class ReceivedMarkComponent implements OnInit {
   initForm() {
     this.receivedMarkForm = new FormGroup({
       id: new FormControl(0),
+      prefix: new FormControl(''),
       sequence: new FormControl(0),
       quantity: new FormControl(0),
       status: new FormControl(''),
@@ -99,7 +93,7 @@ export class ReceivedMarkComponent implements OnInit {
   _mapToSelectItems(movementRequests: MovementRequestModel[]): SelectItem[] {
     return movementRequests.map((i) => ({
       value: i.id,
-      label: `MM${i.id} - ${i.lastModified}`,
+      label: `${i.identifier}`,
     }));
   }
 

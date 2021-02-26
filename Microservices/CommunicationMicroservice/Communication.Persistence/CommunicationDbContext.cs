@@ -4,7 +4,6 @@ using Communication.Domain.CommonEntities;
 using System;
 using System.Threading.Tasks;
 using System.Threading;
-//using Entities = Communication.Domain.Entities;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -17,16 +16,6 @@ namespace Communication.Persistence.DBContext
         public CommunicationDbContext(DbContextOptions<CommunicationDbContext> options, ICurrentUserService currentUserServic) : base(options)
         {
             _currentUserService = currentUserServic ?? throw new ArgumentNullException(nameof(currentUserServic));
-        }
-
-        public DbSet<TEntity> SetEntity<TEntity>() where TEntity : class
-        {
-            return Set<TEntity>();
-        }
-
-        public EntityEntry<T> EntryEntity<T>(T entity) where T : class
-        {
-            return Entry<T>(entity);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,7 +43,6 @@ namespace Communication.Persistence.DBContext
 
             return base.SaveChanges();
         }
-
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             foreach (var entry in ChangeTracker.Entries<AuditableEntity>())

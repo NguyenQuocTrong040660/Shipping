@@ -1,5 +1,4 @@
-﻿
-namespace ShippingApp.Domain.Models
+﻿namespace ShippingApp.Domain.Models
 {
     public class WorkOrderImportModel
     {

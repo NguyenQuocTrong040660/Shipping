@@ -5,15 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20210211090325_UpdateColumn.cs" />
-    <Compile Remove="Migrations\20210211090325_UpdateColumn.Designer.cs" />
-    <Compile Remove="Migrations\20210211165708_UpdateMovementRequesr.cs" />
-    <Compile Remove="Migrations\20210211165708_UpdateMovementRequesr.Designer.cs" />
-    <Compile Remove="Migrations\20210211165907_UpdateMovementRequestRelation.cs" />
-    <Compile Remove="Migrations\20210211165907_UpdateMovementRequestRelation.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />

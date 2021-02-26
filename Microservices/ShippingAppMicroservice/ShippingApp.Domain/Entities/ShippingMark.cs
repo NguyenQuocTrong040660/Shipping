@@ -1,11 +1,11 @@
 ﻿using ShippingApp.Domain.CommonEntities;
-using System;
 
 namespace ShippingApp.Domain.Entities
 {
     public class ShippingMark : AuditableEntity
     {
         public int Id { get; set; }
+        public string Prefix { get; set; }
         public string Revision { get; set; }
         public int Quantity { get; set; }
         public int Sequence { get; set; }

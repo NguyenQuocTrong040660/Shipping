@@ -1859,6 +1859,62 @@ export class ShippingMarkClients {
         return _observableOf<ShippingMarkModel[]>(<any>null);
     }
 
+    generateShippingMark(shippingRequestId: number): Observable<ShippingMarkModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/shippingmark/generate/{shippingRequestId}";
+        if (shippingRequestId === undefined || shippingRequestId === null)
+            throw new Error("The parameter 'shippingRequestId' must be defined.");
+        url_ = url_.replace("{shippingRequestId}", encodeURIComponent("" + shippingRequestId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGenerateShippingMark(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGenerateShippingMark(<any>response_);
+                } catch (e) {
+                    return <Observable<ShippingMarkModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ShippingMarkModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGenerateShippingMark(response: HttpResponseBase): Observable<ShippingMarkModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ShippingMarkModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ShippingMarkModel[]>(<any>null);
+    }
+
     getShippingMarkById(id: number): Observable<ShippingMarkModel> {
         let url_ = this.baseUrl + "/api/shippingapp/shippingmark/{id}";
         if (id === undefined || id === null)
@@ -2477,6 +2533,78 @@ export class ShippingRequestClients {
         return _observableOf<ShippingRequestModel[]>(<any>null);
     }
 
+    addShippingRequestLogistics(movementRequestId: number, shippingRequestLogistic: ShippingRequestLogisticModel): Observable<Result> {
+        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/{movementRequestId}";
+        if (movementRequestId === undefined || movementRequestId === null)
+            throw new Error("The parameter 'movementRequestId' must be defined.");
+        url_ = url_.replace("{movementRequestId}", encodeURIComponent("" + movementRequestId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(shippingRequestLogistic);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddShippingRequestLogistics(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddShippingRequestLogistics(<any>response_);
+                } catch (e) {
+                    return <Observable<Result>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<Result>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processAddShippingRequestLogistics(response: HttpResponseBase): Observable<Result> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result404: any = null;
+            result404 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ShippingRequestLogisticModel>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<Result>(<any>null);
+    }
+
     getShippingRequestById(id: number): Observable<ShippingRequestModel> {
         let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/{id}";
         if (id === undefined || id === null)
@@ -3056,8 +3184,10 @@ export interface CountryModel extends AuditableEntityModel {
 }
 
 export interface MovementRequestModel extends AuditableEntityModel {
+    identifier?: string | undefined;
     id?: number;
     notes?: string | undefined;
+    prefix?: string | undefined;
     movementRequestDetails?: MovementRequestDetailModel[] | undefined;
     receivedMarks?: ReceivedMarkModel[] | undefined;
 }
@@ -3073,7 +3203,9 @@ export interface MovementRequestDetailModel extends AuditableEntityModel {
 }
 
 export interface WorkOrderModel extends AuditableEntityModel {
+    identifier?: string | undefined;
     id?: number;
+    prefix?: string | undefined;
     refId?: string | undefined;
     notes?: string | undefined;
     workOrderDetails?: WorkOrderDetailModel[] | undefined;
@@ -3089,7 +3221,9 @@ export interface WorkOrderDetailModel extends AuditableEntityModel {
 }
 
 export interface ProductModel extends AuditableEntityModel {
+    identifier?: string | undefined;
     id?: number;
+    prefix?: string | undefined;
     productName?: string | undefined;
     productNumber?: string | undefined;
     notes?: string | undefined;
@@ -3103,8 +3237,7 @@ export interface ProductModel extends AuditableEntityModel {
 
 export interface ShippingPlanDetailModel extends AuditableEntityModel {
     id?: number;
-    productNumber?: string | undefined;
-    quantity?: string | undefined;
+    quantity?: number;
     price?: number;
     shippingMode?: string | undefined;
     amount?: number;
@@ -3115,7 +3248,9 @@ export interface ShippingPlanDetailModel extends AuditableEntityModel {
 }
 
 export interface ShippingPlanModel extends AuditableEntityModel {
+    identifier?: string | undefined;
     id?: number;
+    prefix?: string | undefined;
     customerName?: string | undefined;
     shippingDate?: Date;
     salesID?: string | undefined;
@@ -3126,7 +3261,7 @@ export interface ShippingPlanModel extends AuditableEntityModel {
 
 export interface ShippingRequestDetailModel extends AuditableEntityModel {
     id?: number;
-    quantity?: string | undefined;
+    quantity?: number;
     price?: number;
     shippingMode?: string | undefined;
     amount?: number;
@@ -3137,7 +3272,9 @@ export interface ShippingRequestDetailModel extends AuditableEntityModel {
 }
 
 export interface ShippingRequestModel extends AuditableEntityModel {
+    identifier?: string | undefined;
     id?: number;
+    prefix?: string | undefined;
     customerName?: string | undefined;
     shippingDate?: Date;
     salesID?: string | undefined;
@@ -3162,7 +3299,9 @@ export interface ShippingRequestLogisticModel extends AuditableEntityModel {
 }
 
 export interface ShippingMarkModel extends AuditableEntityModel {
+    identifier?: string | undefined;
     id?: number;
+    prefix?: string | undefined;
     revision?: string | undefined;
     quantity?: number;
     sequence?: number;
@@ -3176,7 +3315,9 @@ export interface ShippingMarkModel extends AuditableEntityModel {
 }
 
 export interface ReceivedMarkModel extends AuditableEntityModel {
+    identifier?: string | undefined;
     id?: number;
+    prefix?: string | undefined;
     sequence?: number;
     quantity?: number;
     status?: string | undefined;

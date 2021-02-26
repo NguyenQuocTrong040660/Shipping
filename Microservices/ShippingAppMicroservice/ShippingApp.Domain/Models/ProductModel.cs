@@ -1,11 +1,22 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 
 namespace ShippingApp.Domain.Models
 {
     public class ProductModel : AuditableEntityModel
     {
+        [IgnoreMap]
+        public string Identifier
+        {
+            get
+            {
+                return string.Concat(Prefix, Id);
+            }
+        }
+
         public int Id { get; set; }
+        public string Prefix { get; set; }
         public string ProductName { get; set; }
         public string ProductNumber { get; set; }
         public string Notes { get; set; }

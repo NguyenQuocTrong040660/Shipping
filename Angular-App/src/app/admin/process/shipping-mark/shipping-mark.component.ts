@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ProductClients, ProductModel, ShippingMarkClients, ShippingMarkModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductClients, ProductModel, ShippingMarkClients, ShippingMarkModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -64,16 +64,17 @@ export class ShippingMarkComponent implements OnInit {
     private shippingMarkClients: ShippingMarkClients,
     private productClients: ProductClients,
     private notificationService: NotificationService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Customer', field: 'customerId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Quantity', field: 'quantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      { header: 'Sequence', field: 'sequence', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
+      { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Quantity', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
+      { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Revision', field: 'revision', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Carton Number', field: 'cartonNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Product', field: 'product', subField: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
@@ -89,6 +90,7 @@ export class ShippingMarkComponent implements OnInit {
   initForm() {
     this.shippingMarkForm = new FormGroup({
       id: new FormControl(0),
+      prefix: new FormControl(''),
       productId: new FormControl(0, Validators.required),
       notes: new FormControl(''),
       revision: new FormControl('', [Validators.required]),
@@ -106,17 +108,22 @@ export class ShippingMarkComponent implements OnInit {
     this.productClients.getProducts().subscribe(
       (i) => {
         this.products = i;
-        this.selectItems = this._mapToSelectItem(i);
       },
       (_) => (this.products = [])
     );
   }
 
-  _mapToSelectItem(products: ProductModel[]): SelectItem[] {
-    return products.map((p) => ({
-      value: p.id,
-      label: `${p.productNumber}-${p.productName}`,
+  _mapToSelectItems(shippingRequests: ShippingRequestModel[]): SelectItem[] {
+    return shippingRequests.map((i) => ({
+      value: i.id,
+      label: `${i.identifier}`,
     }));
+  }
+
+  initShippingMarks(shippingRequestId: number) {}
+
+  handleOnChange(selectedShippingRequestId) {
+    this.initShippingMarks(selectedShippingRequestId);
   }
 
   initDataSource() {
@@ -126,7 +133,6 @@ export class ShippingMarkComponent implements OnInit {
     );
   }
 
-  // Create Shipping Marks
   openCreateDialog() {
     this.shippingMarkForm.reset();
     this.titleDialog = 'Create Shipping Mark';
@@ -164,7 +170,6 @@ export class ShippingMarkComponent implements OnInit {
     this.isEdit ? this.onEdit() : this.onCreate();
   }
 
-  // Edit Shipping Mark
   openEditDialog(shippingMark: ShippingMarkModel) {
     this.isShowDialog = true;
     this.titleDialog = 'Create Shipping Mark';
@@ -198,7 +203,6 @@ export class ShippingMarkComponent implements OnInit {
     );
   }
 
-  // Delete Shipping Marks
   openDeleteDialog(shippingMark: ShippingMarkModel) {
     this.shippingMarkClients.deleteShippingMarkAysnc(shippingMark.id).subscribe(
       (result) => {

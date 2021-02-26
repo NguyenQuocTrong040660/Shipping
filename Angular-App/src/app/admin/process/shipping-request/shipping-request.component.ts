@@ -88,11 +88,12 @@ export class ShippingRequestComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
     private notificationService: NotificationService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Qty Order', field: 'quantityOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
@@ -130,6 +131,7 @@ export class ShippingRequestComponent implements OnInit {
   initForm() {
     this.shippingRequestForm = new FormGroup({
       id: new FormControl(0),
+      prefix: new FormControl('', Validators.required),
       purchaseOrder: new FormControl('', Validators.required),
       customerName: new FormControl('', Validators.required),
       quantityOrder: new FormControl(0, Validators.required),

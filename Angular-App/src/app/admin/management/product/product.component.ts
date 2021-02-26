@@ -65,7 +65,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Id', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
+      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
       { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Product Name', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Qty/ Pkg', field: 'qtyPerPackage', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
@@ -85,7 +85,6 @@ export class ProductComponent implements OnInit, OnDestroy {
       width: '70%',
       contentStyle: { height: '800px', overflow: 'auto' },
       baseZIndex: 10000,
-
       data: TemplateType.Product,
     });
 
@@ -113,6 +112,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   initForm() {
     this.productForm = this.fb.group({
       id: [0],
+      prefix: [''],
       productName: ['', [Validators.required]],
       productNumber: ['', [Validators.required]],
       notes: [''],
