@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ShippingApp.Domain.Enumerations;
 using System;
 
 namespace ShippingApp.Domain.Models
@@ -15,7 +16,13 @@ namespace ShippingApp.Domain.Models
         }
 
         public int Id { get; set; }
-        public string Prefix { get; set; }
+        public string Prefix
+        {
+            get
+            {
+                return PrefixTable.ReceivedMark;
+            }
+        }
         public int Sequence { get; set; }
         public int Quantity { get; set; }
         public string Status { get; set; }

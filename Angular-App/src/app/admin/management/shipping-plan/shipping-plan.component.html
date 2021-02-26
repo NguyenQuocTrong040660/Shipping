@@ -93,7 +93,7 @@
               <p-tableRadioButton [value]="shippingPlan"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ 'WO' + shippingPlan[col.field] }}
+              {{ shippingPlan[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               {{ shippingPlan[col.field] | date: 'dd/MM/yyyy' }}
@@ -120,35 +120,37 @@
       </tr>
     </ng-template>
 
-    <!-- TODO: implement when have data -->
-    <!-- <ng-template pTemplate="rowexpansion" let-shippingPlan>
+    <ng-template pTemplate="rowexpansion" let-shippingPlan>
       <tr>
-        <td colspan="7" class="work-order__expaned">
+        <td [attr.colspan]="cols.length" class="shipping-plan__expaned">
           <div>
-            <p-table class="work-order__expaned-table" [value]="shippingPlan.shippingPlanDetails">
+            <p-table class="shipping-plan__expaned-table" [value]="shippingPlan.shippingPlanDetails">
               <ng-template pTemplate="header">
-      <tr>
-        <th>Product Number</th>
-        <th>Product Name</th>
-        <th>Quantity</th>
+                <tr>
+                  <th>Product Number</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Amount</th>
+                  <th>Shipping Mode</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>{{ item?.product?.productNumber }}</td>
+                  <td>{{ item?.quantity }}</td>
+                  <td>{{ item?.price }}</td>
+                  <td>{{ item?.amount }}</td>
+                  <td>{{ item?.shippingMode }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-detail>
-      <tr>
-        <td>{{ detail?.product?.productNumber }}</td>
-        <td>{{ detail?.product?.productName }}</td>
-        <td>{{ detail?.quantity }}</td>
-      </tr>
-    </ng-template>
-  </p-table>
-</div>
-</td>
-</tr>
-</ng-template> -->
   </p-table>
 </div>
 
-<!-- Create Shipping Plans Dialog -->
 <app-shipping-plan-create
   [shippingPlanForm]="shippingPlanForm"
   [products]="products"

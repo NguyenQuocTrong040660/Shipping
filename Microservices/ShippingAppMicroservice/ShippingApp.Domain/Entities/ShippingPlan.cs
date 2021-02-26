@@ -8,6 +8,7 @@ namespace ShippingApp.Domain.Entities
     {
         public int Id { get; set; }
         public string Prefix { get; set; }
+        public string PurchaseOrder { get; set; }
         public string CustomerName { get; set; }
         public DateTime ShippingDate { get; set; }
         public string SalesID { get; set; }

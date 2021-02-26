@@ -16,7 +16,7 @@ namespace ShippingApp.Persistence.Configurations
 
             builder.HasOne<ShippingRequest>(s => s.ShippingRequest)
                  .WithMany(g => g.ShippingRequestDetails)
-                 .HasForeignKey(s => s.ShippingPlanId);
+                 .HasForeignKey(s => s.ShippingRequestId);
         }
     }
 }

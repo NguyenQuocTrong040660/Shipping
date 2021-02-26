@@ -67,7 +67,6 @@ export class ReceivedMarkComponent implements OnInit {
   initForm() {
     this.receivedMarkForm = new FormGroup({
       id: new FormControl(0),
-      prefix: new FormControl(''),
       sequence: new FormControl(0),
       quantity: new FormControl(0),
       status: new FormControl(''),
@@ -108,7 +107,6 @@ export class ReceivedMarkComponent implements OnInit {
     this.initReceivedMarks(selectedMovementRequest);
   }
 
-  // Create Received Marks
   openCreateDialog() {
     this.receivedMarkForm.reset();
     this.titleDialog = 'Create Received Mark';
@@ -170,7 +168,6 @@ export class ReceivedMarkComponent implements OnInit {
     this.isEdit ? this.onEdit() : this.onCreate();
   }
 
-  // Edit Received Mark
   openEditDialog(receivedMark: ReceivedMarkModel) {
     this.isShowDialog = true;
     this.titleDialog = 'Edit Received Mark';
@@ -178,7 +175,6 @@ export class ReceivedMarkComponent implements OnInit {
     this.receivedMarkForm.patchValue(receivedMark);
   }
 
-  // Delete Received Marks
   openDeleteDialog(receivedMark: ReceivedMarkModel) {
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete this items?',

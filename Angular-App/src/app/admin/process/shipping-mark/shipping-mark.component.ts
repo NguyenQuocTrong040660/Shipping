@@ -90,15 +90,12 @@ export class ShippingMarkComponent implements OnInit {
   initForm() {
     this.shippingMarkForm = new FormGroup({
       id: new FormControl(0),
-      prefix: new FormControl(''),
       productId: new FormControl(0, Validators.required),
       notes: new FormControl(''),
       revision: new FormControl('', [Validators.required]),
       quantity: new FormControl(0, [Validators.required, Validators.min(1)]),
       cartonNumber: new FormControl('', [Validators.required]),
       customerId: new FormControl('', [Validators.required]),
-      createdBy: new FormControl(''),
-      created: new FormControl(null),
       lastModifiedBy: new FormControl(''),
       lastModified: new FormControl(null),
     });

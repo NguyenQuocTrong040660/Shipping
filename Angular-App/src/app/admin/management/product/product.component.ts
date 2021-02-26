@@ -112,7 +112,6 @@ export class ProductComponent implements OnInit, OnDestroy {
   initForm() {
     this.productForm = this.fb.group({
       id: [0],
-      prefix: [''],
       productName: ['', [Validators.required]],
       productNumber: ['', [Validators.required]],
       notes: [''],

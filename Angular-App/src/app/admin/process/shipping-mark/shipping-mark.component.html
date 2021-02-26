@@ -30,16 +30,19 @@
   </p-toolbar>
 
   <p-card>
-    <p-dropdown
-      styleClass="p-dropdown-custom"
-      [options]="selectItems"
-      [filter]="true"
-      filterBy="label"
-      [showClear]="true"
-      (onChange)="handleOnChange($event.value)"
-      placeholder="Please select a Shipping Request"
-    >
-    </p-dropdown>
+    <div class="p-field">
+      <label for="customerName">Shipping Request</label>
+      <p-dropdown
+        styleClass="p-dropdown-custom"
+        [options]="selectItems"
+        [filter]="true"
+        filterBy="label"
+        [showClear]="true"
+        (onChange)="handleOnChange($event.value)"
+        placeholder="Please select a Shipping Request"
+      >
+      </p-dropdown>
+    </div>
   </p-card>
 
   <p-table
@@ -105,7 +108,7 @@
               <p-tableRadioButton [value]="receivedMark"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ 'WO' + receivedMark[col.field] }}
+              {{ receivedMark[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               {{ receivedMark[col.field] | date: 'dd/MM/yyyy' }}

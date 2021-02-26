@@ -5,7 +5,34 @@
     <ng-container *ngIf="stepIndex === 0">
       <p-card>
         <ng-template pTemplate="content">
-          <form [formGroup]="shippingPlanForm">
+          <div class="p-field">
+            <label for="customerName">Shipping Plan</label>
+            <p-dropdown
+              styleClass="p-dropdown-custom"
+              [options]="_mapToSelectShippingPlanItem(shippingPlans)"
+              [filter]="true"
+              filterBy="label"
+              [showClear]="true"
+              (onChange)="handleOnSelectShippingPlan($event.value)"
+              placeholder="Please select a Shipping Plan"
+            >
+            </p-dropdown>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Next" (onClick)="nextPage(stepIndex)" icon="pi pi-angle-right" iconPos="right"></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+
+    <ng-container *ngIf="stepIndex === 1">
+      <p-card>
+        <ng-template pTemplate="content">
+          <form [formGroup]="shippingRequestForm">
             <div class="p-grid p-fluid">
               <div class="p-col-12">
                 <div class="p-field">
@@ -99,9 +126,9 @@
 
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
-              [disabled]="shippingPlanForm.invalid"
+              [disabled]="shippingRequestForm.invalid"
               styleClass="p-button-text"
               label="Next"
               (onClick)="nextPage(stepIndex)"
@@ -113,7 +140,7 @@
       </p-card>
     </ng-container>
 
-    <ng-container *ngIf="stepIndex === 1">
+    <ng-container *ngIf="stepIndex === 2">
       <p-card>
         <ng-template pTemplate="content">
           <p-table
@@ -187,10 +214,10 @@
       </p-card>
     </ng-container>
 
-    <ng-container *ngIf="stepIndex === 2">
+    <ng-container *ngIf="stepIndex === 3">
       <p-card>
         <ng-template pTemplate="content">
-          <p-table [value]="shippingDetailModels" dataKey="product.id" editMode="row">
+          <p-table [value]="shippingRequestDetails" dataKey="product.id" editMode="row">
             <ng-template pTemplate="header">
               <tr>
                 <th>Product Number</th>
@@ -297,7 +324,7 @@
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
-              [disabled]="!checkModifiedQuantity(shippingDetailModels)"
+              [disabled]="!checkModifiedQuantity(shippingRequestDetails)"
               styleClass="p-button-text"
               label="Next"
               (onClick)="nextPage(stepIndex)"
@@ -309,10 +336,10 @@
       </p-card>
     </ng-container>
 
-    <ng-container *ngIf="stepIndex === 3">
+    <ng-container *ngIf="stepIndex === 4">
       <p-card>
         <ng-template pTemplate="content">
-          <p-table dataKey="id" [value]="shippingDetailModels">
+          <p-table dataKey="id" [value]="shippingRequestDetails">
             <ng-template pTemplate="header" let-columns>
               <tr>
                 <th>Product Number</th>
@@ -347,7 +374,14 @@
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
-            <p-button [disabled]="shippingPlanForm.invalid" styleClass="p-button-text" label="Confirm" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
+            <p-button
+              [disabled]="shippingRequestForm.invalid"
+              styleClass="p-button-text"
+              label="Confirm"
+              (onClick)="onSubmit()"
+              icon="pi pi-angle-right"
+              iconPos="right"
+            ></p-button>
           </div>
         </ng-template>
       </p-card>

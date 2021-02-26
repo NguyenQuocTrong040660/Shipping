@@ -1,20 +1,11 @@
-<p-dialog header="History" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog"
-  (onHide)="hideDialog()">
+<p-dialog header="History" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <div class="p-field history__search-group">
       <label for="search">Search Id: </label>
       <input id="search" type="text" pInputText [(ngModel)]="searchText" (keydown.enter)="search()" />
     </div>
 
-    <p-table
-      #historyDataTable
-      [value]="histories"
-      [columns]="cols"
-      [paginator]="true"
-      [rows]="10"
-      [lazy]="true"
-      [loading]="loading">
-
+    <p-table #historyDataTable [value]="histories" [columns]="cols" [paginator]="true" [rows]="10" [lazy]="true" [loading]="loading">
       <ng-template pTemplate="header" let-columns>
         <tr>
           <ng-container *ngFor="let col of columns">
@@ -37,9 +28,7 @@
 
       <ng-template pTemplate="emptymessage" let-columns>
         <tr>
-          <td [attr.colspan]="columns.length" class="text-center">
-            No records found
-          </td>
+          <td [attr.colspan]="columns.length" class="text-center">No records found</td>
         </tr>
       </ng-template>
 
@@ -51,7 +40,7 @@
                 <p-tableRadioButton [value]="shippingRequest"></p-tableRadioButton>
               </ng-container>
               <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-                {{ 'WO' + shippingRequest[col.field] }}
+                {{ shippingRequest[col.field] }}
               </ng-container>
               <ng-container *ngSwitchCase="TypeColumn.DateColumn">
                 {{ shippingRequest[col.field] | date: 'dd/MM/yyyy' }}

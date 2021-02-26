@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
-import { ConfirmationService, SelectItem } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -19,7 +19,6 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
 
   shippingPlans: ShippingPlanModel[] = [];
   selectedShippingPlan: ShippingPlanModel;
-  selectItems: SelectItem[] = [];
   products: ProductModel[] = [];
 
   shippingPlanForm: FormGroup;
@@ -52,14 +51,10 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
-      { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Qty Order', field: 'quantityOrder', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Sales Price', field: 'salesPrice', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Sales Id', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Shipping Mode', field: 'shippingMode', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
@@ -77,15 +72,15 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   initForm() {
     this.shippingPlanForm = this.fb.group({
       id: [''],
-      prefix: [''],
       customerName: ['', [Validators.required]],
       salesID: [0, [Validators.required]],
       semlineNumber: [0, [Validators.required]],
-      shippingMode: ['', [Validators.required]],
+      purchaseOrder: ['', [Validators.required]],
       shippingDate: ['', [Validators.required]],
       notes: [''],
       lastModifiedBy: [''],
       lastModified: [null],
+      shippingPlanDetails: this.fb.array([]),
     });
   }
 
@@ -130,20 +125,11 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     this.productClients.getProducts().subscribe(
       (i) => {
         this.products = i;
-        this.selectItems = this._mapToSelectItem(i);
       },
       (_) => (this.products = [])
     );
   }
 
-  _mapToSelectItem(products: ProductModel[]): SelectItem[] {
-    return products.map((p) => ({
-      value: p.id,
-      label: `${p.productNumber}-${p.productName}`,
-    }));
-  }
-
-  // Create Shipping Plan
   openCreateDialog() {
     this.shippingPlanForm.reset();
     this.titleDialog = 'Create Shipping Plan';
@@ -179,11 +165,9 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     }
 
     this.hideDialog();
-    // TODO: Do this later with api
-    // this.isEdit ? this.onEdit() : this.onCreate();
+    this.isEdit ? this.onEdit() : this.onCreate();
   }
 
-  // Edit Shipping Mark
   openEditDialog(shippingPlan: ShippingPlanModel) {
     this.isShowDialog = true;
     this.titleDialog = 'Create Shipping Plan';
@@ -194,6 +178,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   hideDialog() {
     this.isShowDialog = false;
     this.isShowDialogHistory = false;
+    this.isShowDialog = false;
+    this.shippingPlanForm.reset();
   }
 
   onEdit() {
@@ -239,7 +225,16 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   getDetailShippingPlan(shippingPlan: ShippingPlanModel) {
-    // TODO: show shipping plan Detail
+    const shippingPlanSelected = this.shippingPlans.find((i) => i.id === shippingPlan.id);
+
+    if (shippingPlanSelected && shippingPlanSelected.shippingPlanDetails && shippingPlanSelected.shippingPlanDetails.length > 0) {
+      return;
+    }
+
+    this.shippingPlanClients.getShippingPlanById(shippingPlan.id).subscribe(
+      (i: ShippingPlanModel) => (shippingPlanSelected.shippingPlanDetails = i.shippingPlanDetails),
+      (_) => (shippingPlanSelected.shippingPlanDetails = [])
+    );
   }
 
   openHistoryDialog() {

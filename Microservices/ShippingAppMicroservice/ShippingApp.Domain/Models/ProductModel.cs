@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ShippingApp.Domain.Enumerations;
 using System;
 using System.Collections.Generic;
 
@@ -16,7 +17,13 @@ namespace ShippingApp.Domain.Models
         }
 
         public int Id { get; set; }
-        public string Prefix { get; set; }
+        public string Prefix
+        {
+            get
+            {
+                return PrefixTable.Product;
+            }
+        }
         public string ProductName { get; set; }
         public string ProductNumber { get; set; }
         public string Notes { get; set; }

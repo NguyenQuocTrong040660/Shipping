@@ -78,14 +78,13 @@ export class MovementRequestComponent implements OnInit {
   _mapToSelectItems(workOrders: WorkOrderModel[]): SelectItem[] {
     return workOrders.map((p) => ({
       value: p,
-      label: `WO${p.id}`,
+      label: `${p.identifier}`,
     }));
   }
 
   initForm() {
     this.movementRequestForm = this.fb.group({
       id: [0],
-      prefix: [''],
       notes: [''],
       lastModifiedBy: [''],
       lastModified: [null],

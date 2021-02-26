@@ -83,7 +83,7 @@
               <p-tableRadioButton [value]="workOrder"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ 'WO' + workOrder[col.field] }}
+              {{ workOrder[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}

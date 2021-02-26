@@ -98,7 +98,6 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   initWorkOrderForm() {
     this.workOrderForm = this.fb.group({
       id: [0],
-      prefix: [''],
       refId: [''],
       notes: [''],
       lastModifiedBy: [''],

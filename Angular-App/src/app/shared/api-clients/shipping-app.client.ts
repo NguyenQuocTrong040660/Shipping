@@ -3256,6 +3256,7 @@ export interface ShippingPlanModel extends AuditableEntityModel {
     salesID?: string | undefined;
     semlineNumber?: number;
     notes?: string | undefined;
+    purchaseOrder?: string | undefined;
     shippingPlanDetails?: ShippingPlanDetailModel[] | undefined;
 }
 
@@ -3265,7 +3266,7 @@ export interface ShippingRequestDetailModel extends AuditableEntityModel {
     price?: number;
     shippingMode?: string | undefined;
     amount?: number;
-    shippingPlanId?: number;
+    shippingRequestId?: number;
     productId?: number;
     product?: ProductModel | undefined;
     shippingRequest?: ShippingRequestModel | undefined;
@@ -3280,6 +3281,7 @@ export interface ShippingRequestModel extends AuditableEntityModel {
     salesID?: string | undefined;
     semlineNumber?: number;
     notes?: string | undefined;
+    purchaseOrder?: string | undefined;
     shippingRequestLogistics?: ShippingRequestLogisticModel[] | undefined;
     shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
     shippingMarks?: ShippingMarkModel[] | undefined;

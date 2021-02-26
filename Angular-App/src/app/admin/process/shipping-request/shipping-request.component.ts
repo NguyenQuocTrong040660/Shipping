@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
 import { NotificationService } from 'app/shared/services/notification.service';
-import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 
 @Component({
   templateUrl: './shipping-request.component.html',
@@ -25,95 +25,42 @@ export class ShippingRequestComponent implements OnInit {
   shippingRequestForm: FormGroup;
 
   isEdit = false;
-  isShowDialogCreate = false;
-  isShowDialogEdit = false;
+  isShowDialog = false;
   isShowDialogHistory = false;
-  HistoryDialogType = HistoryDialogType;
   titleDialog = '';
 
-  stepItems: MenuItem[] = [];
   cols: any[] = [];
-  colShippingPlans: any[] = [];
   fields: any[] = [];
-  fieldShippingPlans: any[] = [];
-
-  activeIndex = 0;
 
   WidthColumn = WidthColumn;
   TypeColumn = TypeColumn;
-
-  get purchaseOrderControl() {
-    return this.shippingRequestForm.get('purchaseOrder');
-  }
-
-  get semlineNumberControl() {
-    return this.shippingRequestForm.get('semlineNumber');
-  }
-
-  get customerNameControl() {
-    return this.shippingRequestForm.get('customerName');
-  }
-
-  get salesPriceControl() {
-    return this.shippingRequestForm.get('salesPrice');
-  }
-
-  get salesIdControl() {
-    return this.shippingRequestForm.get('salesID');
-  }
-
-  get quantityControl() {
-    return this.shippingRequestForm.get('quantityOrder');
-  }
-
-  get shippingDateControl() {
-    return this.shippingRequestForm.get('shippingDate');
-  }
-
-  get shippingModeControl() {
-    return this.shippingRequestForm.get('shippingMode');
-  }
-
-  get productControl() {
-    return this.shippingRequestForm.get('productId');
-  }
-
-  get notesControl() {
-    return this.shippingRequestForm.get('notes');
-  }
+  HistoryDialogType = HistoryDialogType;
 
   constructor(
     private shippingRequestClients: ShippingRequestClients,
     private shippingPlanClients: ShippingPlanClients,
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
-      { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Qty Order', field: 'quantityOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Sales Price', field: 'salesPrice', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Sales Id', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Shipping Mode', field: 'shippingMode', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.NormalColumn, type: TypeColumn.DateColumn },
+      { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
-    this.colShippingPlans = this.cols.filter((i) => i.field !== 'created' && i.field !== 'createBy' && i.field !== 'lastModified' && i.field !== 'lastModifiedBy');
-    this.fieldShippingPlans = this.colShippingPlans.map((i) => i.field);
-
-    this.stepItems = [{ label: 'Shipping Plan' }, { label: 'Confirmation' }];
 
     this.initForm();
     this.initShippingPlan();
@@ -129,23 +76,17 @@ export class ShippingRequestComponent implements OnInit {
   }
 
   initForm() {
-    this.shippingRequestForm = new FormGroup({
-      id: new FormControl(0),
-      prefix: new FormControl('', Validators.required),
-      purchaseOrder: new FormControl('', Validators.required),
-      customerName: new FormControl('', Validators.required),
-      quantityOrder: new FormControl(0, Validators.required),
-      salesPrice: new FormControl(0, Validators.required),
-      salesID: new FormControl(0, Validators.required),
-      semlineNumber: new FormControl(0, Validators.required),
-      shippingMode: new FormControl('', Validators.required),
-      shippingDate: new FormControl(null, Validators.required),
-      notes: new FormControl(''),
-      productId: new FormControl(0, Validators.required),
-      created: new FormControl(null),
-      createBy: new FormControl(''),
-      lastModified: new FormControl(null),
-      lastModifiedBy: new FormControl(''),
+    this.shippingRequestForm = this.fb.group({
+      id: [0],
+      customerName: ['', [Validators.required]],
+      salesID: [0, [Validators.required]],
+      semlineNumber: [0, [Validators.required]],
+      purchaseOrder: ['', [Validators.required]],
+      shippingDate: ['', [Validators.required]],
+      notes: [''],
+      lastModifiedBy: [''],
+      lastModified: [null],
+      shippingRequestDetails: this.fb.array([]),
     });
   }
 
@@ -173,11 +114,21 @@ export class ShippingRequestComponent implements OnInit {
     }));
   }
 
-  // Create Shipping Request
+  handleSelectedShippingPlanEvent(shippingPlanId) {
+    if (shippingPlanId) {
+      this.shippingPlanClients.getShippingPlanById(shippingPlanId).subscribe(
+        (shippingPlan) => (this.selectedShippingPlan = shippingPlan),
+        (_) => this.notificationService.error('Failed to retrieve Shipping Plan')
+      );
+    }
+
+    this.selectedShippingPlan = null;
+  }
+
   openCreateDialog() {
     this.shippingRequestForm.reset();
     this.titleDialog = 'Create Shipping Request';
-    this.isShowDialogCreate = true;
+    this.isShowDialog = true;
     this.isEdit = false;
   }
 
@@ -194,11 +145,11 @@ export class ShippingRequestComponent implements OnInit {
           this.notificationService.error(result?.error);
         }
 
-        this.hideDialogCreate();
+        this.hideDialog();
       },
       (_) => {
         this.notificationService.error('Create Shipping Request Failed. Please try again');
-        this.hideDialogCreate();
+        this.hideDialog();
       }
     );
   }
@@ -211,22 +162,18 @@ export class ShippingRequestComponent implements OnInit {
     this.isEdit ? this.onEdit() : this.onCreate();
   }
 
-  // Edit Shipping Mark
   openEditDialog(shippingRequest: ShippingRequestModel) {
-    this.isShowDialogEdit = true;
+    this.isShowDialog = true;
     this.titleDialog = 'Create Shipping Request';
     this.isEdit = true;
     this.shippingRequestForm.patchValue(shippingRequest);
   }
 
-  hideDialogEdit() {
-    this.isShowDialogEdit = false;
-  }
-
-  hideDialogCreate() {
-    this.activeIndex = 0;
-    this.selectedShippingPlan = null;
-    this.isShowDialogCreate = false;
+  hideDialog() {
+    this.isShowDialog = false;
+    this.isShowDialogHistory = false;
+    this.isShowDialog = false;
+    this.shippingRequestForm.reset();
   }
 
   onEdit() {
@@ -241,11 +188,11 @@ export class ShippingRequestComponent implements OnInit {
           this.notificationService.error(result?.error);
         }
 
-        this.hideDialogEdit();
+        this.hideDialog();
       },
       (_) => {
         this.notificationService.error('Edit Shipping Request Failed. Please try again');
-        this.hideDialogEdit();
+        this.hideDialog();
       }
     );
   }
@@ -271,40 +218,7 @@ export class ShippingRequestComponent implements OnInit {
     });
   }
 
-  nextPage(currentIndex: number) {
-    switch (currentIndex) {
-      case 0: {
-        if (!this.selectedShippingPlan) {
-          this.confirmationService.confirm({
-            message: 'Are you sure you want to create shipping request without selecting shipping plan?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => (this.activeIndex += 1),
-          });
-
-          return;
-        }
-
-        const shippingPlan = this.shippingPlans.find((i) => i.id === this.selectedShippingPlan.id);
-        shippingPlan.shippingDate = new Date(shippingPlan.shippingDate);
-        this.shippingRequestForm.patchValue(shippingPlan);
-        this.activeIndex += 1;
-        break;
-      }
-    }
-  }
-
-  prevPage() {
-    this.activeIndex -= 1;
-  }
-
-  getDetailShippingRequest(shippingRequest: ShippingRequestModel) {
-    // TODO: show Shipping Request Detail
-  }
-
-  hideDialog() {
-    this.isShowDialogHistory = false;
-  }
+  getDetailShippingRequest(shippingRequest: ShippingRequestModel) {}
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;

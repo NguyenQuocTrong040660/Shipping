@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { ProductModel, WorkOrderDetailModel } from 'app/shared/api-clients/shipping-app.client';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ProductModel, ShippingPlanDetailModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { MenuItem } from 'primeng/api';
@@ -8,7 +8,7 @@ import { MenuItem } from 'primeng/api';
 @Component({
   selector: 'app-shipping-plan-create',
   templateUrl: './shipping-plan-create.component.html',
-  styleUrls: ['./shipping-plan-create.component.scss']
+  styleUrls: ['./shipping-plan-create.component.scss'],
 })
 export class ShippingPlanCreateComponent implements OnInit {
   @Input() shippingPlanForm: FormGroup;
@@ -23,11 +23,10 @@ export class ShippingPlanCreateComponent implements OnInit {
   stepIndex = 0;
 
   productCols: any[] = [];
-  productFields: any[] = [];
   selectedProducts: ProductModel[] = [];
 
-  workOrderDetails: WorkOrderDetailWithPriceModel[] = [];
-  clonedWorkOrderDetailModels: { [s: string]: WorkOrderDetailWithPriceModel } = {};
+  shippingDetailModels: ShippingPlanDetailModel[] = [];
+  clonedshippingDetailModels: { [s: string]: ShippingPlanDetailModel } = {};
 
   TypeColumn = TypeColumn;
 
@@ -39,8 +38,8 @@ export class ShippingPlanCreateComponent implements OnInit {
     return this.shippingPlanForm.get('semlineNumber');
   }
 
-  get shippingModeControl() {
-    return this.shippingPlanForm.get('shippingMode');
+  get purchaseOrderControl() {
+    return this.shippingPlanForm.get('purchaseOrder');
   }
 
   get shippingDateControl() {
@@ -55,7 +54,11 @@ export class ShippingPlanCreateComponent implements OnInit {
     return this.shippingPlanForm.get('notes');
   }
 
-  constructor() { }
+  get shippingPlanDetailsControl() {
+    return this.shippingPlanForm.get('shippingPlanDetails') as FormArray;
+  }
+
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.stepItems = [{ label: 'Shipping Plan Info' }, { label: 'Products' }, { label: 'Price' }, { label: 'Complete' }];
@@ -69,13 +72,17 @@ export class ShippingPlanCreateComponent implements OnInit {
   }
 
   hideDialog() {
+    this.selectedProducts = [];
+    this.shippingDetailModels = [];
+    this.stepIndex = 0;
+    this.shippingPlanForm.reset();
     this.hideDialogEvent.emit();
   }
 
   nextPage(currentIndex: number) {
     switch (currentIndex) {
       case 1: {
-        this.workOrderDetails = this._mapToProductsToWorkOrderDetails(this.selectedProducts);
+        this.shippingDetailModels = this._mapToProductsToShippingDetailModels(this.selectedProducts);
         break;
       }
     }
@@ -86,52 +93,64 @@ export class ShippingPlanCreateComponent implements OnInit {
     this.stepIndex -= 1;
   }
 
-  onRowEditInit(workOrderDetail: WorkOrderDetailWithPriceModel) {
-    this.clonedWorkOrderDetailModels[workOrderDetail.productId] = { ...workOrderDetail };
+  onRowEditInit(shippingDetailModel: ShippingPlanDetailModel) {
+    this.clonedshippingDetailModels[shippingDetailModel.productId] = { ...shippingDetailModel };
   }
 
-  onRowDelete(workOrderDetail: WorkOrderDetailWithPriceModel) {
-    this.selectedProducts = this.selectedProducts.filter((i) => i.id !== workOrderDetail.productId);
-    this.workOrderDetails = this.workOrderDetails.filter((i) => i.productId !== workOrderDetail.productId);
+  onRowDelete(shippingDetailModel: ShippingPlanDetailModel) {
+    this.selectedProducts = this.selectedProducts.filter((i) => i.id !== shippingDetailModel.productId);
+    this.shippingDetailModels = this.shippingDetailModels.filter((i) => i.productId !== shippingDetailModel.productId);
   }
 
-  onRowEditSave(workOrderDetail: WorkOrderDetailWithPriceModel) {
-    const entity = this.workOrderDetails.find((i) => i.productId === workOrderDetail.productId);
-    entity.quantity = workOrderDetail.quantity;
-    entity.amount = workOrderDetail.quantity * workOrderDetail.price;
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
+  onRowEditSave(shippingDetailModel: ShippingPlanDetailModel) {
+    const entity = this.shippingDetailModels.find((i) => i.productId === shippingDetailModel.productId);
+    entity.quantity = shippingDetailModel.quantity;
+    entity.amount = shippingDetailModel.quantity * shippingDetailModel.price;
+    delete this.clonedshippingDetailModels[shippingDetailModel.productId];
   }
 
-  onRowEditCancel(workOrderDetail: WorkOrderDetailWithPriceModel, index: number) {
-    this.workOrderDetails[index] = this.clonedWorkOrderDetailModels[workOrderDetail.productId];
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
+  onRowEditCancel(shippingDetailModel: ShippingPlanDetailModel, index: number) {
+    this.shippingDetailModels[index] = this.clonedshippingDetailModels[shippingDetailModel.productId];
+    delete this.clonedshippingDetailModels[shippingDetailModel.productId];
   }
 
-  checkModifiedQuantity(workOrderDetails: WorkOrderDetailWithPriceModel[]) {
-    return workOrderDetails.filter((i) => i.quantity === 0).length === 0;
+  checkModifiedQuantity(shippingDetailModels: ShippingPlanDetailModel[]) {
+    return shippingDetailModels.filter((i) => i.quantity === 0 || !!i.shippingMode === false).length === 0;
   }
 
   onSubmit() {
+    this.shippingPlanDetailsControl.clear();
+
+    this.shippingDetailModels.forEach((i) => {
+      this.shippingPlanDetailsControl.push(this.initShippingPlanDetailsForm(i));
+    });
+
     this.submitEvent.emit();
   }
 
-  _mapToProductsToWorkOrderDetails(products: ProductModel[]): WorkOrderDetailWithPriceModel[] {
+  initShippingPlanDetailsForm(shippingPlanDetailModel: ShippingPlanDetailModel) {
+    return this.fb.group({
+      quantity: [shippingPlanDetailModel.quantity],
+      productId: [shippingPlanDetailModel.productId],
+      amount: [shippingPlanDetailModel.quantity * shippingPlanDetailModel.price],
+      price: [shippingPlanDetailModel.price],
+      shippingPlanId: [shippingPlanDetailModel.shippingPlanId],
+      shippingMode: [shippingPlanDetailModel.shippingMode],
+    });
+  }
+
+  _mapToProductsToShippingDetailModels(products: ProductModel[]): ShippingPlanDetailModel[] {
     return products.map((item, index) => {
       return {
         id: index + 1,
         productId: item.id,
         product: item,
-        workOrder: null,
-        workOrderId: 0,
+        shippingPlan: null,
+        shippingPlanId: 0,
         quantity: 0,
         price: 0,
-        amount: 0
+        amount: 0,
       };
     });
   }
-}
-
-export interface WorkOrderDetailWithPriceModel extends WorkOrderDetailModel {
-  price?: number;
-  amount?: number;
 }
