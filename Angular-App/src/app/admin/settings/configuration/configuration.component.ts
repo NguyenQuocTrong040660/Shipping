@@ -1,15 +1,17 @@
+import { takeUntil } from 'rxjs/operators';
 import { NotificationService } from 'app/shared/services/notification.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfigClients, ConfigModel } from 'app/shared/api-clients/shipping-app.client';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
+import { Subject } from 'rxjs';
 
 @Component({
   templateUrl: './configuration.component.html',
   styleUrls: ['./configuration.component.scss'],
 })
-export class ConfigurationComponent implements OnInit {
+export class ConfigurationComponent implements OnInit, OnDestroy {
   title = 'Configurations';
 
   configurations: ConfigModel[] = [];
@@ -35,11 +37,11 @@ export class ConfigurationComponent implements OnInit {
     return this.configurationForm.get('value');
   }
 
-  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) { }
+  private destroyed$ = new Subject<void>();
+
+  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) {}
 
   ngOnInit() {
-    this.getConfigurations();
-
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Key', field: 'key', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
@@ -51,6 +53,7 @@ export class ConfigurationComponent implements OnInit {
 
     this.colFields = this.cols.map((i) => i.field);
 
+    this.getConfigurations();
     this.initForm();
   }
 
@@ -63,16 +66,18 @@ export class ConfigurationComponent implements OnInit {
   }
 
   getConfigurations() {
-    this.configsClients.getConfigs().subscribe(
-      (configs) => (this.configurations = configs),
-      (_) => (this.configurations = [])
-    );
+    this.configsClients
+      .getConfigs()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (configs) => (this.configurations = configs),
+        (_) => (this.configurations = [])
+      );
   }
 
-  // Edit Configuration
   openEditDialog(config: ConfigModel) {
     this.isShowEditDialog = true;
-    this.configurationForm.setValue(config);
+    this.configurationForm.patchValue(config);
   }
 
   hideEditDialog() {
@@ -89,21 +94,29 @@ export class ConfigurationComponent implements OnInit {
       descriptions,
     };
 
-    this.configsClients.updateConfig(key, model).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.getConfigurations();
-          this.notifiactionService.success('Edit Config Successfully');
-        } else {
-          this.notifiactionService.success(result.error);
-        }
+    this.configsClients
+      .updateConfig(key, model)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notifiactionService.success('Edit Config Successfully');
+            this.getConfigurations();
+          } else {
+            this.notifiactionService.success(result.error);
+          }
 
-        this.hideEditDialog();
-      },
-      (_) => {
-        this.notifiactionService.error('Edit Config Falied. Please try again');
-        this.hideEditDialog();
-      }
-    );
+          this.hideEditDialog();
+        },
+        (_) => {
+          this.notifiactionService.error('Edit Config Falied. Please try again');
+          this.hideEditDialog();
+        }
+      );
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }

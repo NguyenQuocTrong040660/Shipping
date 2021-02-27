@@ -9,6 +9,8 @@ import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.e
 import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
 import { ImportComponent } from 'app/shared/components/import/import.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   templateUrl: './shipping-plan.component.html',
@@ -36,6 +38,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   HistoryDialogType = HistoryDialogType;
 
   ref: DynamicDialogRef;
+
+  private destroyed$ = new Subject<void>();
 
   constructor(
     private shippingPlanClients: ShippingPlanClients,
@@ -115,19 +119,25 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   initShippingPlans() {
-    this.shippingPlanClients.getAllShippingPlan().subscribe(
-      (i) => (this.shippingPlans = i),
-      (_) => (this.shippingPlans = [])
-    );
+    this.shippingPlanClients
+      .getAllShippingPlan()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => (this.shippingPlans = i),
+        (_) => (this.shippingPlans = [])
+      );
   }
 
   initProducts() {
-    this.productClients.getProducts().subscribe(
-      (i) => {
-        this.products = i;
-      },
-      (_) => (this.products = [])
-    );
+    this.productClients
+      .getProducts()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => {
+          this.products = i;
+        },
+        (_) => (this.products = [])
+      );
   }
 
   openCreateDialog() {
@@ -185,22 +195,26 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   onEdit() {
     const { id } = this.shippingPlanForm.value;
 
-    this.shippingPlanClients.updateShippingPlan(id, this.shippingPlanForm.value).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.notificationService.success('Edit Shipping Plan Successfully');
-          this.initShippingPlans();
-        } else {
-          this.notificationService.error(result?.error);
-        }
+    this.shippingPlanClients
+      .updateShippingPlan(id, this.shippingPlanForm.value)
+      .pipe(takeUntil(this.destroyed$))
 
-        this.hideDialog();
-      },
-      (_) => {
-        this.notificationService.error('Edit Shipping Plan Failed. Please try again');
-        this.hideDialog();
-      }
-    );
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Edit Shipping Plan Successfully');
+            this.initShippingPlans();
+          } else {
+            this.notificationService.error(result?.error);
+          }
+
+          this.hideDialog();
+        },
+        (_) => {
+          this.notificationService.error('Edit Shipping Plan Failed. Please try again');
+          this.hideDialog();
+        }
+      );
   }
 
   openDeleteDialog(shippingPlan: ShippingPlanModel) {
@@ -209,17 +223,20 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.shippingPlanClients.deletedShippingPlan(shippingPlan.id).subscribe(
-          (result) => {
-            if (result && result.succeeded) {
-              this.notificationService.success('Delete Shipping Plan Successfully');
-              this.initShippingPlans();
-            } else {
-              this.notificationService.error(result?.error);
-            }
-          },
-          (_) => this.notificationService.error('Delete Shipping Plan Failed. Please try again')
-        );
+        this.shippingPlanClients
+          .deletedShippingPlan(shippingPlan.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.notificationService.success('Delete Shipping Plan Successfully');
+                this.initShippingPlans();
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => this.notificationService.error('Delete Shipping Plan Failed. Please try again')
+          );
       },
     });
   }
@@ -231,10 +248,13 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.shippingPlanClients.getShippingPlanById(shippingPlan.id).subscribe(
-      (i: ShippingPlanModel) => (shippingPlanSelected.shippingPlanDetails = i.shippingPlanDetails),
-      (_) => (shippingPlanSelected.shippingPlanDetails = [])
-    );
+    this.shippingPlanClients
+      .getShippingPlanById(shippingPlan.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: ShippingPlanModel) => (shippingPlanSelected.shippingPlanDetails = i.shippingPlanDetails),
+        (_) => (shippingPlanSelected.shippingPlanDetails = [])
+      );
   }
 
   openHistoryDialog() {
@@ -242,6 +262,9 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+
     if (this.ref) {
       this.ref.close();
     }

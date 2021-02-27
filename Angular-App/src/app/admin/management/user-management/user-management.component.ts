@@ -43,7 +43,7 @@ export class UserManagementComponent implements OnInit {
 
   private destroyed$ = new Subject<void>();
 
-  constructor(private userClient: UserClient, private notificationService: NotificationService, private confirmationService: ConfirmationService) { }
+  constructor(private userClient: UserClient, private notificationService: NotificationService, private confirmationService: ConfirmationService) {}
 
   ngOnInit() {
     this.cols = [
@@ -64,20 +64,26 @@ export class UserManagementComponent implements OnInit {
   }
 
   initUsers() {
-    this.userClient.apiUserAdminUsersGet().subscribe(
-      (users) => (this.users = users),
-      (_) => (this.users = [])
-    );
+    this.userClient
+      .apiUserAdminUsersGet()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (users) => (this.users = users),
+        (_) => (this.users = [])
+      );
   }
 
   initRoles() {
-    this.userClient.apiUserAdminRoles().subscribe(
-      (roles) => {
-        this.roles = roles;
-        this.selectItems = this._mapRoleModelToSelectItem(roles);
-      },
-      (_) => (this.roles = [])
-    );
+    this.userClient
+      .apiUserAdminRoles()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (roles) => {
+          this.roles = roles;
+          this.selectItems = this._mapRoleModelToSelectItem(roles);
+        },
+        (_) => (this.roles = [])
+      );
   }
 
   initSetNewPasswordForm() {
@@ -158,8 +164,6 @@ export class UserManagementComponent implements OnInit {
     this.createUserForm.disable();
     this.userClient.apiUserAdminUsersPost(createUserRequets).subscribe(
       (i: CreateUserResult[]) => {
-        console.log(i);
-
         this.hideCreateDialog();
         this.initUsers();
       },
@@ -203,7 +207,6 @@ export class UserManagementComponent implements OnInit {
     // this.hideSetNewPasswordDialog();
   }
 
-  // Lock Users
   openLockDialog() {
     this.confirmationService.confirm({
       message: 'Are you sure you want to lock this user?',
@@ -234,7 +237,6 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  // Lock Users
   openUnlockDialog() {
     this.confirmationService.confirm({
       message: 'Are you sure you want to unlock this user?',

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MovementRequestClients, MovementRequestModel, ReceivedMarkClients, ReceivedMarkModel, UnstuffReceivedMarkRequest } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -7,12 +7,14 @@ import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.e
 import { NotificationService } from 'app/shared/services/notification.service';
 import { PrintService } from 'app/shared/services/print.service';
 import { SelectItem, ConfirmationService } from 'primeng/api';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   templateUrl: './received-mark.component.html',
   styleUrls: ['./received-mark.component.scss'],
 })
-export class ReceivedMarkComponent implements OnInit {
+export class ReceivedMarkComponent implements OnInit, OnDestroy {
   title = 'Received Mark';
 
   receivedMarks: ReceivedMarkModel[] = [];
@@ -35,6 +37,8 @@ export class ReceivedMarkComponent implements OnInit {
 
   selectedMovementRequest = 0;
   rowGroupMetadata: any;
+
+  private destroyed$ = new Subject<void>();
 
   constructor(
     public printService: PrintService,
@@ -76,32 +80,41 @@ export class ReceivedMarkComponent implements OnInit {
   }
 
   intMovementRequest() {
-    this.movementRequestClients.getMovementRequests().subscribe(
-      (i) => {
-        this.movementRequests = i;
-      },
-      (_) => (this.movementRequests = [])
-    );
+    this.movementRequestClients
+      .getMovementRequests()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => {
+          this.movementRequests = i;
+        },
+        (_) => (this.movementRequests = [])
+      );
   }
 
   initReceivedMarks() {
-    this.receivedMarkClients.getReceivedMarks().subscribe(
-      (i) => {
-        this.receivedMarks = i;
-        this.updateRowGroupMetaData();
-      },
-      (_) => (this.receivedMarks = [])
-    );
+    this.receivedMarkClients
+      .getReceivedMarks()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => {
+          this.receivedMarks = i;
+          this.updateRowGroupMetaData();
+        },
+        (_) => (this.receivedMarks = [])
+      );
   }
 
   initReceivedMarksByMovementRequest(momentRequestId: number) {
-    this.receivedMarkClients.getReceivedMarksByMovementRequestId(momentRequestId).subscribe(
-      (i) => {
-        this.receivedMarks = i;
-        this.updateRowGroupMetaData();
-      },
-      (_) => (this.receivedMarks = [])
-    );
+    this.receivedMarkClients
+      .getReceivedMarksByMovementRequestId(momentRequestId)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => {
+          this.receivedMarks = i;
+          this.updateRowGroupMetaData();
+        },
+        (_) => (this.receivedMarks = [])
+      );
   }
 
   handleOnChange(selectedMovementRequest) {
@@ -125,42 +138,48 @@ export class ReceivedMarkComponent implements OnInit {
   onEdit() {
     const { id } = this.receivedMarkForm.value;
 
-    this.receivedMarkClients.updateReceivedMark(id, this.receivedMarkForm.value).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.notificationService.success('Edit Received Mark Successfully');
-        } else {
-          this.notificationService.error(result?.error);
-        }
+    this.receivedMarkClients
+      .updateReceivedMark(id, this.receivedMarkForm.value)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Edit Received Mark Successfully');
+          } else {
+            this.notificationService.error(result?.error);
+          }
 
-        this.hideDialog();
-      },
-      (_) => {
-        this.notificationService.error('Edit Received Mark Failed. Please try again');
-        this.hideDialog();
-      }
-    );
+          this.hideDialog();
+        },
+        (_) => {
+          this.notificationService.error('Edit Received Mark Failed. Please try again');
+          this.hideDialog();
+        }
+      );
   }
 
   onCreate() {
     const model = this.receivedMarkForm.value as ReceivedMarkModel;
     model.id = 0;
 
-    this.receivedMarkClients.addReceivedMark(model).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.notificationService.success('Create Received Mark Successfully');
-        } else {
-          this.notificationService.error(result?.error);
-        }
+    this.receivedMarkClients
+      .addReceivedMark(model)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Create Received Mark Successfully');
+          } else {
+            this.notificationService.error(result?.error);
+          }
 
-        this.hideDialog();
-      },
-      (_) => {
-        this.notificationService.error('Create Received Mark Failed. Please try again');
-        this.hideDialog();
-      }
-    );
+          this.hideDialog();
+        },
+        (_) => {
+          this.notificationService.error('Create Received Mark Failed. Please try again');
+          this.hideDialog();
+        }
+      );
   }
 
   onSubmit() {
@@ -184,18 +203,21 @@ export class ReceivedMarkComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.receivedMarkClients.deleteReceivedMarkAysnc(receivedMark.id).subscribe(
-          (result) => {
-            if (result && result.succeeded) {
-              this.notificationService.success('Delete Received Mark Successfully');
-            } else {
-              this.notificationService.error(result?.error);
+        this.receivedMarkClients
+          .deleteReceivedMarkAysnc(receivedMark.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.notificationService.success('Delete Received Mark Successfully');
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => {
+              this.notificationService.error('Delete Received Mark Failed. Please try again');
             }
-          },
-          (_) => {
-            this.notificationService.error('Delete Received Mark Failed. Please try again');
-          }
-        );
+          );
       },
     });
   }
@@ -277,19 +299,22 @@ export class ReceivedMarkComponent implements OnInit {
       unstuffQuantity: unstuffQuantity,
     };
 
-    this.receivedMarkClients.unstuffReceivedMark(unstuffRequest).subscribe(
-      (result) => {
-        if (result.succeeded) {
-          this.notificationService.success('Unstuff Received Mark Successfully');
-          this.initReceivedMarksByMovementRequest(this.selectedMovementRequest);
-          this.hideDialog();
-          return;
-        }
+    this.receivedMarkClients
+      .unstuffReceivedMark(unstuffRequest)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result.succeeded) {
+            this.notificationService.success('Unstuff Received Mark Successfully');
+            this.initReceivedMarksByMovementRequest(this.selectedMovementRequest);
+            this.hideDialog();
+            return;
+          }
 
-        this.notificationService.error(result.error);
-      },
-      (_) => this.notificationService.error('Unstuff Received Mark Failed')
-    );
+          this.notificationService.error(result.error);
+        },
+        (_) => this.notificationService.error('Unstuff Received Mark Failed')
+      );
   }
 
   printReceivedMark(receivedMark: ReceivedMarkModel) {
@@ -298,19 +323,27 @@ export class ReceivedMarkComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.receivedMarkClients.printReceivedMark(receivedMark.id).subscribe(
-          (result) => {
-            if (result && result.succeeded) {
-              this.onPrint();
-            } else {
-              this.notificationService.error(result?.error);
+        this.receivedMarkClients
+          .printReceivedMark(receivedMark.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.onPrint();
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => {
+              this.notificationService.error('Print Received Mark Failed. Please try again');
             }
-          },
-          (_) => {
-            this.notificationService.error('Print Received Mark Failed. Please try again');
-          }
-        );
+          );
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }

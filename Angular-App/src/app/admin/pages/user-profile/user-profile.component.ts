@@ -15,7 +15,6 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
-  private destroyed$ = new Subject<void>();
   user: ApplicationUser;
 
   changePasswordForm: FormGroup;
@@ -34,6 +33,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return this.changePasswordForm.get('confirmPassword');
   }
 
+  private destroyed$ = new Subject<void>();
+
   constructor(
     private fb: FormBuilder,
     private authenticationService: AuthenticationService,
@@ -45,9 +46,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initForm();
 
-    this.authenticationService.user$
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe((user: ApplicationUser) => (this.user = user));
+    this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
   }
 
   initForm() {
@@ -97,9 +96,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       if (confirmPassword.length > 5) {
         return password === confirmPassword
           ? null
-          : formGroup
-              .get('confirmPassword')
-              .setErrors({ invalidConfirmPassword: 'Confirm password does not match with your new password' });
+          : formGroup.get('confirmPassword').setErrors({ invalidConfirmPassword: 'Confirm password does not match with your new password' });
       }
     }
 

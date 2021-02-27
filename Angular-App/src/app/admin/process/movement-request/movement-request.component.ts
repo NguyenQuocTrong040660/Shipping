@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { MovementRequestClients, MovementRequestDetailModel, MovementRequestModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
@@ -6,13 +6,14 @@ import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   templateUrl: './movement-request.component.html',
   styleUrls: ['./movement-request.component.scss'],
 })
-export class MovementRequestComponent implements OnInit {
+export class MovementRequestComponent implements OnInit, OnDestroy {
   title = 'Movement Request';
 
   movementRequests: MovementRequestModel[] = [];
@@ -35,6 +36,8 @@ export class MovementRequestComponent implements OnInit {
   HistoryDialogType = HistoryDialogType;
 
   selectItems: SelectItem[] = [];
+
+  private destroyed$ = new Subject<void>();
 
   constructor(
     private workOrderClients: WorkOrderClients,
@@ -62,17 +65,23 @@ export class MovementRequestComponent implements OnInit {
   }
 
   initWorkOrders() {
-    this.workOrderClients.getWorkOrders().subscribe(
-      (i) => (this.selectItems = this._mapToSelectItems(i)),
-      (_) => (this.selectItems = [])
-    );
+    this.workOrderClients
+      .getWorkOrders()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => (this.selectItems = this._mapToSelectItems(i)),
+        (_) => (this.selectItems = [])
+      );
   }
 
   initMovementRequests() {
-    this.movementRequestClients.getMovementRequests().subscribe(
-      (i) => (this.movementRequests = i),
-      (_) => (this.movementRequests = [])
-    );
+    this.movementRequestClients
+      .getMovementRequests()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => (this.movementRequests = i),
+        (_) => (this.movementRequests = [])
+      );
   }
 
   _mapToSelectItems(workOrders: WorkOrderModel[]): SelectItem[] {
@@ -97,46 +106,51 @@ export class MovementRequestComponent implements OnInit {
     const { workOrders } = this.movementRequestForm.value;
 
     if (workOrders && workOrders.length > 0) {
-      forkJoin(workOrders.map((workOrder: WorkOrderModel) => this.workOrderClients.getWorkOrderById(workOrder.id))).subscribe((results) => {
-        results.map((workOder: WorkOrderModel) => {
-          workOder.workOrderDetails.map((item) => {
-            const movementRequestDetail: MovementRequestDetailModel = {
-              product: item.product,
-              productId: item.productId,
-              workOrder: workOder,
-              workOrderId: workOder.id,
-              quantity: item.quantity,
-              movementRequestId: 0,
-            };
+      forkJoin(workOrders.map((workOrder: WorkOrderModel) => this.workOrderClients.getWorkOrderById(workOrder.id)))
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe((results) => {
+          results.map((workOder: WorkOrderModel) => {
+            workOder.workOrderDetails.map((item) => {
+              const movementRequestDetail: MovementRequestDetailModel = {
+                product: item.product,
+                productId: item.productId,
+                workOrder: workOder,
+                workOrderId: workOder.id,
+                quantity: item.quantity,
+                movementRequestId: 0,
+              };
 
-            this.movementRequestDetails.push(movementRequestDetail);
+              this.movementRequestDetails.push(movementRequestDetail);
+            });
           });
-        });
 
-        this.movementRequestDetails.forEach((i, index) => (i['id'] = ++index));
-      });
+          this.movementRequestDetails.forEach((i, index) => (i['id'] = ++index));
+        });
     }
   }
 
   onCreate() {
     const model = this.movementRequestForm.value as MovementRequestModel;
 
-    this.movementRequestClients.addMovementRequest(model).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.notificationService.success('Create Movement Request Successfully');
-          this.initMovementRequests();
-        } else {
-          this.notificationService.error(result?.error);
-        }
+    this.movementRequestClients
+      .addMovementRequest(model)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Create Movement Request Successfully');
+            this.initMovementRequests();
+          } else {
+            this.notificationService.error(result?.error);
+          }
 
-        this.hideDialog();
-      },
-      (_) => {
-        this.notificationService.error('Create Movement Request Failed. Please try again');
-        this.hideDialog();
-      }
-    );
+          this.hideDialog();
+        },
+        (_) => {
+          this.notificationService.error('Create Movement Request Failed. Please try again');
+          this.hideDialog();
+        }
+      );
   }
 
   openCreateDialog() {
@@ -164,34 +178,40 @@ export class MovementRequestComponent implements OnInit {
     this.titleDialog = 'Edit Movement Request';
     this.isEdit = true;
 
-    this.movementRequestClients.getMovementRequestById(movementRequest.id).subscribe(
-      (i: MovementRequestModel) => {
-        this.selectedMovementRequest = i;
-        this.isShowDialogEdit = true;
-      },
-      (_) => (this.selectedMovementRequest.movementRequestDetails = [])
-    );
+    this.movementRequestClients
+      .getMovementRequestById(movementRequest.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: MovementRequestModel) => {
+          this.selectedMovementRequest = i;
+          this.isShowDialogEdit = true;
+        },
+        (_) => (this.selectedMovementRequest.movementRequestDetails = [])
+      );
   }
 
   onEdit() {
     const { id } = this.movementRequestForm.value;
 
-    this.movementRequestClients.updateMovementRequest(id, this.movementRequestForm.value).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.notificationService.success('Edit Movement Request Successfully');
-          this.initMovementRequests();
-        } else {
-          this.notificationService.error(result?.error);
-        }
+    this.movementRequestClients
+      .updateMovementRequest(id, this.movementRequestForm.value)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Edit Movement Request Successfully');
+            this.initMovementRequests();
+          } else {
+            this.notificationService.error(result?.error);
+          }
 
-        this.hideDialog();
-      },
-      (_) => {
-        this.notificationService.error('Edit Movement Request Failed. Please try again');
-        this.hideDialog();
-      }
-    );
+          this.hideDialog();
+        },
+        (_) => {
+          this.notificationService.error('Edit Movement Request Failed. Please try again');
+          this.hideDialog();
+        }
+      );
   }
 
   openDeleteDialog(movementRequest: MovementRequestModel) {
@@ -200,17 +220,20 @@ export class MovementRequestComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.movementRequestClients.deleteMovementRequestAysnc(movementRequest.id).subscribe(
-          (result) => {
-            if (result && result.succeeded) {
-              this.notificationService.success('Delete Movement Request Successfully');
-              this.initMovementRequests();
-            } else {
-              this.notificationService.error(result?.error);
-            }
-          },
-          (_) => this.notificationService.error('Delete Movement Request Failed. Please try again')
-        );
+        this.movementRequestClients
+          .deleteMovementRequestAysnc(movementRequest.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.notificationService.success('Delete Movement Request Successfully');
+                this.initMovementRequests();
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => this.notificationService.error('Delete Movement Request Failed. Please try again')
+          );
       },
     });
   }
@@ -226,9 +249,17 @@ export class MovementRequestComponent implements OnInit {
       return;
     }
 
-    this.movementRequestClients.getMovementRequestById(movementRequest.id).subscribe(
-      (i: MovementRequestModel) => (movementRequests.movementRequestDetails = i.movementRequestDetails),
-      (_) => (movementRequests.movementRequestDetails = [])
-    );
+    this.movementRequestClients
+      .getMovementRequestById(movementRequest.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: MovementRequestModel) => (movementRequests.movementRequestDetails = i.movementRequestDetails),
+        (_) => (movementRequests.movementRequestDetails = [])
+      );
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }

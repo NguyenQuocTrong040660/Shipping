@@ -92,21 +92,24 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   exportTemplate() {
-    this.filesClient.apiFilesExportTemplate(TemplateType.Product).subscribe(
-      (i) => {
-        const aTag = document.createElement('a');
-        aTag.id = 'downloadButton';
-        aTag.style.display = 'none';
-        aTag.href = i;
-        aTag.download = 'ProductTemplate';
-        document.body.appendChild(aTag);
-        aTag.click();
-        window.URL.revokeObjectURL(i);
+    this.filesClient
+      .apiFilesExportTemplate(TemplateType.Product)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => {
+          const aTag = document.createElement('a');
+          aTag.id = 'downloadButton';
+          aTag.style.display = 'none';
+          aTag.href = i;
+          aTag.download = 'ProductTemplate';
+          document.body.appendChild(aTag);
+          aTag.click();
+          window.URL.revokeObjectURL(i);
 
-        aTag.remove();
-      },
-      (_) => this.notificationService.error('Failed to export template')
-    );
+          aTag.remove();
+        },
+        (_) => this.notificationService.error('Failed to export template')
+      );
   }
 
   initForm() {

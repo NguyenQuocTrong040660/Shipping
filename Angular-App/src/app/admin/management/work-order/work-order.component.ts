@@ -9,6 +9,8 @@ import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.e
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
 import { ImportComponent } from 'app/shared/components/import/import.component';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-work-order',
@@ -38,6 +40,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   fields: any[] = [];
 
   ref: DynamicDialogRef;
+  private destroyed$ = new Subject<void>();
 
   constructor(
     private workOrderClients: WorkOrderClients,
@@ -78,21 +81,24 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   }
 
   exportTemplate() {
-    this.filesClient.apiFilesExportTemplate(TemplateType.WorkOrder).subscribe(
-      (i) => {
-        const aTag = document.createElement('a');
-        aTag.id = 'downloadButton';
-        aTag.style.display = 'none';
-        aTag.href = i;
-        aTag.download = 'WorkOderTemplate';
-        document.body.appendChild(aTag);
-        aTag.click();
-        window.URL.revokeObjectURL(i);
+    this.filesClient
+      .apiFilesExportTemplate(TemplateType.WorkOrder)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => {
+          const aTag = document.createElement('a');
+          aTag.id = 'downloadButton';
+          aTag.style.display = 'none';
+          aTag.href = i;
+          aTag.download = 'WorkOderTemplate';
+          document.body.appendChild(aTag);
+          aTag.click();
+          window.URL.revokeObjectURL(i);
 
-        aTag.remove();
-      },
-      (_) => this.notificationService.error('Failed to export template')
-    );
+          aTag.remove();
+        },
+        (_) => this.notificationService.error('Failed to export template')
+      );
   }
 
   initWorkOrderForm() {
@@ -107,17 +113,23 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   }
 
   initWorkOrders() {
-    this.workOrderClients.getWorkOrders().subscribe(
-      (i) => (this.workOrders = i),
-      (_) => (this.workOrders = [])
-    );
+    this.workOrderClients
+      .getWorkOrders()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => (this.workOrders = i),
+        (_) => (this.workOrders = [])
+      );
   }
 
   initProducts() {
-    this.productClients.getProducts().subscribe(
-      (i) => (this.products = i),
-      (_) => (this.products = [])
-    );
+    this.productClients
+      .getProducts()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => (this.products = i),
+        (_) => (this.products = [])
+      );
   }
 
   getDetailWorkOrder(workOrder: WorkOrderModel) {
@@ -127,12 +139,15 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.workOrderClients.getWorkOrderById(workOrder.id).subscribe(
-      (i: WorkOrderModel) => {
-        workOrderSelected.workOrderDetails = i.workOrderDetails;
-      },
-      (_) => (workOrderSelected.workOrderDetails = [])
-    );
+    this.workOrderClients
+      .getWorkOrderById(workOrder.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: WorkOrderModel) => {
+          workOrderSelected.workOrderDetails = i.workOrderDetails;
+        },
+        (_) => (workOrderSelected.workOrderDetails = [])
+      );
   }
 
   openCreateDialog() {
@@ -160,56 +175,65 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     const model = this.workOrderForm.value as WorkOrderModel;
     model.id = 0;
 
-    this.workOrderClients.addWorkOrder(model).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.notificationService.success('Create Work Order Successfully');
-          this.initWorkOrders();
-        } else {
-          this.notificationService.error(result?.error);
-        }
+    this.workOrderClients
+      .addWorkOrder(model)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Create Work Order Successfully');
+            this.initWorkOrders();
+          } else {
+            this.notificationService.error(result?.error);
+          }
 
-        this.hideDialog();
-      },
-      (_) => {
-        this.notificationService.error('Create Work Order Failed. Please try again');
-        this.hideDialog();
-      }
-    );
+          this.hideDialog();
+        },
+        (_) => {
+          this.notificationService.error('Create Work Order Failed. Please try again');
+          this.hideDialog();
+        }
+      );
   }
 
   openEditDialog(workOrder: WorkOrderModel) {
     this.titleDialog = 'Edit Work Order';
     this.isEdit = true;
 
-    this.workOrderClients.getWorkOrderById(workOrder.id).subscribe(
-      (i: WorkOrderModel) => {
-        this.selectedWorkOrder = i;
-        this.isShowDialogEdit = true;
-      },
-      (_) => (this.selectedWorkOrder.workOrderDetails = [])
-    );
+    this.workOrderClients
+      .getWorkOrderById(workOrder.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: WorkOrderModel) => {
+          this.selectedWorkOrder = i;
+          this.isShowDialogEdit = true;
+        },
+        (_) => (this.selectedWorkOrder.workOrderDetails = [])
+      );
   }
 
   onEdit() {
     const { id } = this.workOrderForm.value;
 
-    this.workOrderClients.updateWorkOrder(id, this.workOrderForm.value).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.notificationService.success('Edit Work Order Successfully');
-          this.initWorkOrders();
-        } else {
-          this.notificationService.error(result?.error);
-        }
+    this.workOrderClients
+      .updateWorkOrder(id, this.workOrderForm.value)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Edit Work Order Successfully');
+            this.initWorkOrders();
+          } else {
+            this.notificationService.error(result?.error);
+          }
 
-        this.hideDialog();
-      },
-      (_) => {
-        this.notificationService.error('Edit Work Order Failed. Please try again');
-        this.hideDialog();
-      }
-    );
+          this.hideDialog();
+        },
+        (_) => {
+          this.notificationService.error('Edit Work Order Failed. Please try again');
+          this.hideDialog();
+        }
+      );
   }
 
   openDeleteDialog(singleWorkOrder: WorkOrderModel) {
@@ -218,17 +242,20 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.workOrderClients.deleteWorkOrderAysnc(singleWorkOrder.id).subscribe(
-          (result) => {
-            if (result && result.succeeded) {
-              this.notificationService.success('Delete Work Order Successfully');
-              this.initWorkOrders();
-            } else {
-              this.notificationService.error(result?.error);
-            }
-          },
-          (_) => this.notificationService.error('Delete Work Order Failed. Please try again')
-        );
+        this.workOrderClients
+          .deleteWorkOrderAysnc(singleWorkOrder.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.notificationService.success('Delete Work Order Successfully');
+                this.initWorkOrders();
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => this.notificationService.error('Delete Work Order Failed. Please try again')
+          );
       },
     });
   }
@@ -238,6 +265,9 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
+
     if (this.ref) {
       this.ref.close();
     }

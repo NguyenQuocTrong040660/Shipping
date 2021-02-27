@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -6,12 +6,14 @@ import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService, SelectItem } from 'primeng/api';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   templateUrl: './shipping-request.component.html',
   styleUrls: ['./shipping-request.component.scss'],
 })
-export class ShippingRequestComponent implements OnInit {
+export class ShippingRequestComponent implements OnInit, OnDestroy {
   title = 'Shipping Request Management';
 
   shippingRequests: ShippingRequestModel[] = [];
@@ -35,6 +37,8 @@ export class ShippingRequestComponent implements OnInit {
   WidthColumn = WidthColumn;
   TypeColumn = TypeColumn;
   HistoryDialogType = HistoryDialogType;
+
+  private destroyed$ = new Subject<void>();
 
   constructor(
     private shippingRequestClients: ShippingRequestClients,
@@ -69,10 +73,13 @@ export class ShippingRequestComponent implements OnInit {
   }
 
   initShippingPlan() {
-    this.shippingPlanClients.getAllShippingPlan().subscribe(
-      (i) => (this.shippingPlans = i),
-      (_) => (this.shippingPlans = [])
-    );
+    this.shippingPlanClients
+      .getAllShippingPlan()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => (this.shippingPlans = i),
+        (_) => (this.shippingPlans = [])
+      );
   }
 
   initForm() {
@@ -91,20 +98,26 @@ export class ShippingRequestComponent implements OnInit {
   }
 
   initDataSource() {
-    this.shippingRequestClients.getShippingRequests().subscribe(
-      (i) => (this.shippingRequests = i),
-      (_) => (this.shippingRequests = [])
-    );
+    this.shippingRequestClients
+      .getShippingRequests()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => (this.shippingRequests = i),
+        (_) => (this.shippingRequests = [])
+      );
   }
 
   initProducts() {
-    this.productClients.getProducts().subscribe(
-      (i) => {
-        this.products = i;
-        this.selectItems = this._mapToSelectItem(i);
-      },
-      (_) => (this.products = [])
-    );
+    this.productClients
+      .getProducts()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => {
+          this.products = i;
+          this.selectItems = this._mapToSelectItem(i);
+        },
+        (_) => (this.products = [])
+      );
   }
 
   _mapToSelectItem(products: ProductModel[]): SelectItem[] {
@@ -116,10 +129,13 @@ export class ShippingRequestComponent implements OnInit {
 
   handleSelectedShippingPlanEvent(shippingPlanId) {
     if (shippingPlanId) {
-      this.shippingPlanClients.getShippingPlanById(shippingPlanId).subscribe(
-        (shippingPlan) => (this.selectedShippingPlan = shippingPlan),
-        (_) => this.notificationService.error('Failed to retrieve Shipping Plan')
-      );
+      this.shippingPlanClients
+        .getShippingPlanById(shippingPlanId)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          (shippingPlan) => (this.selectedShippingPlan = shippingPlan),
+          (_) => this.notificationService.error('Failed to retrieve Shipping Plan')
+        );
     }
 
     this.selectedShippingPlan = null;
@@ -136,22 +152,25 @@ export class ShippingRequestComponent implements OnInit {
     const model = this.shippingRequestForm.value as ShippingRequestModel;
     model.id = 0;
 
-    this.shippingRequestClients.addShippingRequest(model).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.notificationService.success('Create Shipping Request Successfully');
-          this.initDataSource();
-        } else {
-          this.notificationService.error(result?.error);
-        }
+    this.shippingRequestClients
+      .addShippingRequest(model)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Create Shipping Request Successfully');
+            this.initDataSource();
+          } else {
+            this.notificationService.error(result?.error);
+          }
 
-        this.hideDialog();
-      },
-      (_) => {
-        this.notificationService.error('Create Shipping Request Failed. Please try again');
-        this.hideDialog();
-      }
-    );
+          this.hideDialog();
+        },
+        (_) => {
+          this.notificationService.error('Create Shipping Request Failed. Please try again');
+          this.hideDialog();
+        }
+      );
   }
 
   onSubmit() {
@@ -179,22 +198,25 @@ export class ShippingRequestComponent implements OnInit {
   onEdit() {
     const { id } = this.shippingRequestForm.value;
 
-    this.shippingRequestClients.updateShippingRequest(id, this.shippingRequestForm.value).subscribe(
-      (result) => {
-        if (result && result.succeeded) {
-          this.notificationService.success('Edit Shipping Request Successfully');
-          this.initDataSource();
-        } else {
-          this.notificationService.error(result?.error);
-        }
+    this.shippingRequestClients
+      .updateShippingRequest(id, this.shippingRequestForm.value)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Edit Shipping Request Successfully');
+            this.initDataSource();
+          } else {
+            this.notificationService.error(result?.error);
+          }
 
-        this.hideDialog();
-      },
-      (_) => {
-        this.notificationService.error('Edit Shipping Request Failed. Please try again');
-        this.hideDialog();
-      }
-    );
+          this.hideDialog();
+        },
+        (_) => {
+          this.notificationService.error('Edit Shipping Request Failed. Please try again');
+          this.hideDialog();
+        }
+      );
   }
 
   openDeleteDialog(singleShippingRequest: ShippingRequestModel) {
@@ -203,17 +225,20 @@ export class ShippingRequestComponent implements OnInit {
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.shippingRequestClients.deleteShippingRequestAysnc(singleShippingRequest.id).subscribe(
-          (result) => {
-            if (result && result.succeeded) {
-              this.notificationService.success('Delete Shipping Request Successfully');
-              this.initDataSource();
-            } else {
-              this.notificationService.error(result?.error);
-            }
-          },
-          (_) => this.notificationService.error('Delete Shipping Request Failed. Please try again')
-        );
+        this.shippingRequestClients
+          .deleteShippingRequestAysnc(singleShippingRequest.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.notificationService.success('Delete Shipping Request Successfully');
+                this.initDataSource();
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => this.notificationService.error('Delete Shipping Request Failed. Please try again')
+          );
       },
     });
   }
@@ -221,19 +246,25 @@ export class ShippingRequestComponent implements OnInit {
   getDetailShippingRequest(shippingRequest: ShippingRequestModel) {
     const shippingRequestSelected = this.shippingRequests.find((i) => i.id === shippingRequest.id);
 
-    console.log(shippingRequestSelected);
-
     if (shippingRequestSelected && shippingRequestSelected.shippingRequestDetails && shippingRequestSelected.shippingRequestDetails.length > 0) {
       return;
     }
 
-    this.shippingRequestClients.getShippingRequestById(shippingRequest.id).subscribe(
-      (i: ShippingRequestModel) => (shippingRequestSelected.shippingRequestDetails = i.shippingRequestDetails),
-      (_) => (shippingRequestSelected.shippingRequestDetails = [])
-    );
+    this.shippingRequestClients
+      .getShippingRequestById(shippingRequest.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: ShippingRequestModel) => (shippingRequestSelected.shippingRequestDetails = i.shippingRequestDetails),
+        (_) => (shippingRequestSelected.shippingRequestDetails = [])
+      );
   }
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next();
+    this.destroyed$.complete();
   }
 }
