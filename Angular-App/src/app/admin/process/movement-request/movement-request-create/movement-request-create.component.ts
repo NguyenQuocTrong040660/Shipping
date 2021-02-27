@@ -13,9 +13,9 @@ import { MenuItem, SelectItem } from 'primeng/api';
 export class MovementRequestCreateComponent implements OnInit {
   @Input() movementRequestForm: FormGroup;
   @Input() titleDialog = '';
-  @Input() selectItems: SelectItem[] = [];
   @Input() isShowDialog = false;
   @Input() movementRequestDetails: MovementRequestDetailModel[] = [];
+  @Input() selectItems: SelectItem[] = [];
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();

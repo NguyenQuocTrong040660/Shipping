@@ -93,5 +93,14 @@ namespace ShippingApp.Api.Controllers
             var result = await Mediator.Send(new DeleteShippingMarkCommand { Id = id });
             return Ok(result);
         }
+
+        [HttpPut("Print/{id}")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> PrintShippingMarkAsync(int id)
+        {
+            var result = await Mediator.Send(new PrintShippingMarkCommand { Id = id });
+            return Ok(result);
+        }
     }
 }

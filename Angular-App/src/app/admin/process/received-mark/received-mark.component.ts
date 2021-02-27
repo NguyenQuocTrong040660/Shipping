@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MovementRequestClients, MovementRequestModel, ReceivedMarkClients, ReceivedMarkModel } from 'app/shared/api-clients/shipping-app.client';
+import { MovementRequestClients, MovementRequestModel, ReceivedMarkClients, ReceivedMarkModel, UnstuffReceivedMarkRequest } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -19,14 +19,13 @@ export class ReceivedMarkComponent implements OnInit {
   selectedReceivedMark: ReceivedMarkModel;
   movementRequests: MovementRequestModel[] = [];
 
-  isShowDeleteDialog: boolean;
   currentSelectedReceivedMark: ReceivedMarkModel[] = [];
-  isDeleteMany: boolean;
   receivedMarkForm: FormGroup;
 
   isEdit = false;
   isShowDialog = false;
   isShowDialogHistory = false;
+  isShowDialogUnstuff = false;
   titleDialog = '';
 
   cols: any[] = [];
@@ -35,7 +34,6 @@ export class ReceivedMarkComponent implements OnInit {
   HistoryDialogType = HistoryDialogType;
 
   selectedMovementRequest = 0;
-
   rowGroupMetadata: any;
 
   constructor(
@@ -86,7 +84,17 @@ export class ReceivedMarkComponent implements OnInit {
     );
   }
 
-  initReceivedMarks(momentRequestId: number) {
+  initReceivedMarks() {
+    this.receivedMarkClients.getReceivedMarks().subscribe(
+      (i) => {
+        this.receivedMarks = i;
+        this.updateRowGroupMetaData();
+      },
+      (_) => (this.receivedMarks = [])
+    );
+  }
+
+  initReceivedMarksByMovementRequest(momentRequestId: number) {
     this.receivedMarkClients.getReceivedMarksByMovementRequestId(momentRequestId).subscribe(
       (i) => {
         this.receivedMarks = i;
@@ -97,7 +105,8 @@ export class ReceivedMarkComponent implements OnInit {
   }
 
   handleOnChange(selectedMovementRequest) {
-    this.initReceivedMarks(selectedMovementRequest);
+    this.selectedMovementRequest = selectedMovementRequest;
+    this.initReceivedMarksByMovementRequest(selectedMovementRequest);
   }
 
   openCreateDialog() {
@@ -110,6 +119,7 @@ export class ReceivedMarkComponent implements OnInit {
   hideDialog() {
     this.isShowDialog = false;
     this.isShowDialogHistory = false;
+    this.isShowDialogUnstuff = false;
   }
 
   onEdit() {
@@ -252,5 +262,55 @@ export class ReceivedMarkComponent implements OnInit {
       value: i.id,
       label: `${i.identifier}`,
     }));
+  }
+
+  openUnstuffDialog() {
+    this.isShowDialogUnstuff = true;
+    this.titleDialog = 'Unstuff Received Mark';
+  }
+
+  handleSubmitEventUnstuff(event) {
+    const { unstuffQuantity } = event;
+
+    const unstuffRequest: UnstuffReceivedMarkRequest = {
+      id: this.selectedReceivedMark.id,
+      unstuffQuantity: unstuffQuantity,
+    };
+
+    this.receivedMarkClients.unstuffReceivedMark(unstuffRequest).subscribe(
+      (result) => {
+        if (result.succeeded) {
+          this.notificationService.success('Unstuff Received Mark Successfully');
+          this.initReceivedMarksByMovementRequest(this.selectedMovementRequest);
+          this.hideDialog();
+          return;
+        }
+
+        this.notificationService.error(result.error);
+      },
+      (_) => this.notificationService.error('Unstuff Received Mark Failed')
+    );
+  }
+
+  printReceivedMark(receivedMark: ReceivedMarkModel) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to print mark for this item?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.receivedMarkClients.printReceivedMark(receivedMark.id).subscribe(
+          (result) => {
+            if (result && result.succeeded) {
+              this.onPrint();
+            } else {
+              this.notificationService.error(result?.error);
+            }
+          },
+          (_) => {
+            this.notificationService.error('Print Received Mark Failed. Please try again');
+          }
+        );
+      },
+    });
   }
 }

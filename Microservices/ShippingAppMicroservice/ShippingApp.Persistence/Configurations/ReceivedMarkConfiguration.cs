@@ -5,7 +5,7 @@ using ShippingApp.Domain.Enumerations;
 
 namespace ShippingApp.Persistence.Configurations
 {
-    public class ReceiveMarkConfiguration : IEntityTypeConfiguration<ReceivedMark>
+    public class ReceivedMarkConfiguration : IEntityTypeConfiguration<ReceivedMark>
     {
         public void Configure(EntityTypeBuilder<ReceivedMark> builder)
         {
@@ -13,7 +13,7 @@ namespace ShippingApp.Persistence.Configurations
 
             builder.Property(t => t.Prefix).HasDefaultValue(PrefixTable.ReceivedMark);
 
-            builder.Property(t => t.PrintCount).HasDefaultValue(1);
+            builder.Property(t => t.PrintCount).HasDefaultValue(0);
 
             builder.HasOne<Product>(s => s.Product)
                     .WithMany(g => g.ReceivedMarks)

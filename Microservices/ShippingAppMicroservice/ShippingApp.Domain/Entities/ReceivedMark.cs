@@ -1,4 +1,5 @@
 ﻿using ShippingApp.Domain.CommonEntities;
+using System;
 
 namespace ShippingApp.Domain.Entities
 {
@@ -13,6 +14,12 @@ namespace ShippingApp.Domain.Entities
         public int PrintCount { get; set; }
         public int ProductId { get; set; }
         public int MovementRequestId { get; set; }
+
+
+        public string LastPrePrintBy { get; set; }
+        public DateTime? LastPrePrint { get; set; }
+        public string ParentId { get; set; }
+
         public virtual MovementRequest MovementRequest { get; set; }
         public virtual Product Product { get; set; }
     }

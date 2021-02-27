@@ -31,6 +31,10 @@ namespace ShippingApp.Domain.Models
         public int ProductId { get; set; }
         public int PrintCount { get; set; }
         public int ShippingRequestId { get; set; }
+
+        public string LastPrePrintBy { get; set; }
+        public DateTime? LastPrePrint { get; set; }
+
         public virtual ShippingRequestModel ShippingRequest { get; set; }
         public virtual ProductModel Product { get; set; }
     }

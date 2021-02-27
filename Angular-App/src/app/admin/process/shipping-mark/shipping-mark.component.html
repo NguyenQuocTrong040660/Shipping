@@ -24,8 +24,17 @@
         (click)="openEditDialog(selectedShippingMark)"
       ></button>
 
-      <button class="p-button-warning p-mr-2" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
-      <button class="p-button-primary" pButton pRipple icon="pi pi-print" label="Print" (click)="onPrint()"></button>
+      <button
+        class="p-button-help p-mr-2"
+        pButton
+        pRipple
+        icon="pi pi-print"
+        label="Print"
+        [disabled]="!selectedShippingMark"
+        (click)="printShippingMark(selectedShippingMark)"
+      ></button>
+
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
 
@@ -100,10 +109,10 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-shippingMark let-columns="columns" let-rowIndex="rowIndex">
-      <tr *ngIf="rowGroupMetadata[shippingMark.product.productNumber].index === rowIndex">
+    <ng-template pTemplate="body" let-item let-columns="columns" let-rowIndex="rowIndex">
+      <tr *ngIf="rowGroupMetadata[item.product.productNumber].index === rowIndex">
         <td [attr.colspan]="columns.length">
-          <span class="p-text-bold p-ml-2">{{ shippingMark.product.productNumber }} - {{ shippingMark.product.productName }}</span>
+          <span class="p-text-bold p-ml-2">{{ item.product.productNumber }} - {{ item.product.productName }}</span>
         </td>
       </tr>
 
@@ -112,32 +121,32 @@
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
               <td>
-                <p-tableRadioButton [value]="shippingMark"></p-tableRadioButton>
+                <p-tableRadioButton [value]="item"></p-tableRadioButton>
               </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
               <td>
-                {{ shippingMark[col.field] }}
+                {{ item[col.field] }}
               </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
               <td class="p-text-center">
-                {{ shippingMark[col.field] | date: 'dd/MM/yyyy' }}
+                {{ item[col.field] | date: 'dd/MM/yyyy' }}
               </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
               <td>
-                {{ shippingMark[col.field][col.subField] }}
+                {{ item[col.field][col.subField] }}
               </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
               <td class="p-text-center">
-                {{ shippingMark[col.field] }}
+                {{ item[col.field] }}
               </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
               <td class="p-text-center">
-                {{ shippingMark[col.field] }}
+                {{ item[col.field] }}
               </td>
             </ng-container>
           </ng-container>

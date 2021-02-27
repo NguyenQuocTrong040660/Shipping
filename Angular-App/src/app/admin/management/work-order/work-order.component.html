@@ -75,32 +75,32 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-workOrder let-columns="columns" let-expanded="expanded">
+    <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
       <tr>
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <p-tableRadioButton [value]="workOrder"></p-tableRadioButton>
+              <p-tableRadioButton [value]="item"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ workOrder[col.field] }}
+              {{ item[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-              {{ workOrder[col.field] | date: 'dd/MM/yyyy' }}
+              {{ item[col.field] | date: 'dd/MM/yyyy' }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-              {{ workOrder[col.field][col.subField] }}
+              {{ item[col.field][col.subField] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              {{ workOrder[col.field] }}
+              {{ item[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
               <button
                 type="button"
                 pButton
                 pRipple
-                (click)="getDetailWorkOrder(workOrder)"
-                [pRowToggler]="workOrder"
+                (click)="getDetailWorkOrder(item)"
+                [pRowToggler]="item"
                 class="p-button-text p-button-rounded p-button-plain"
                 [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
               ></button>

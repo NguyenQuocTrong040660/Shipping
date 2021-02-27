@@ -5,9 +5,10 @@ import { SharedModule } from 'app/shared/shared.module';
 import { ShippingRequestComponent } from './shipping-request.component';
 import { shippingRequestRoutes } from './shipping-request.routes';
 import { ShippingRequestCreateComponent } from './shipping-request-create/shipping-request-create.component';
+import { ShippingRequestDocumentsComponent } from './shipping-request-documents/shipping-request-documents.component';
 
 @NgModule({
-  declarations: [ShippingRequestComponent, ShippingRequestCreateComponent],
+  declarations: [ShippingRequestComponent, ShippingRequestCreateComponent, ShippingRequestDocumentsComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(shippingRequestRoutes)],
   exports: [ShippingRequestComponent, ShippingRequestCreateComponent],
 })

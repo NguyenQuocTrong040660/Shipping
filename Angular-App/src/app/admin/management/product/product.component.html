@@ -1,19 +1,14 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <button (click)="openImportSection()" pButton pRipple label="Import" icon="pi pi-upload"
-        class="p-button-primary p-mr-2"></button>
-      <button (click)="exportTemplate()" pButton pRipple label="Export Template" icon="pi pi-download"
-        class="p-button-help"></button>
+      <button (click)="openImportSection()" pButton pRipple label="Import" icon="pi pi-upload" class="p-button-primary p-mr-2"></button>
+      <button (click)="exportTemplate()" pButton pRipple label="Export Template" icon="pi pi-download" class="p-button-help"></button>
     </ng-template>
 
     <ng-template pTemplate="right">
-      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
-        (click)="openCreateDialog()"></button>
-      <button class="p-button-danger p-mr-2" pButton pRipple icon="pi pi-trash" label="Delete"
-        [disabled]="!selectedItem" (click)="deleteProduct(selectedItem)"></button>
-      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil"
-        [disabled]="!selectedItem" (click)="editProduct(selectedItem)"></button>
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
+      <button class="p-button-danger p-mr-2" pButton pRipple icon="pi pi-trash" label="Delete" [disabled]="!selectedItem" (click)="deleteProduct(selectedItem)"></button>
+      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil" [disabled]="!selectedItem" (click)="editProduct(selectedItem)"></button>
     </ng-template>
   </p-toolbar>
 
@@ -27,14 +22,14 @@
     [paginator]="true"
     [scrollable]="true"
     [globalFilterFields]="fields"
-    [(selection)]="selectedItem">
+    [(selection)]="selectedItem"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">{{ title | uppercase }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="productsDataTable.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search..." />
+          <input pInputText type="text" (input)="productsDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -53,8 +48,7 @@
               <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"> </p-sortIcon>
-              </th>
+              <th [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"> </p-sortIcon></th>
             </ng-container>
           </ng-container>
         </ng-container>
@@ -67,21 +61,21 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-product let-columns="columns">
+    <ng-template pTemplate="body" let-item let-columns="columns">
       <tr>
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <p-tableRadioButton [value]="product"></p-tableRadioButton>
+              <p-tableRadioButton [value]="item"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-              {{ product[col.field] | date: 'dd/MM/yyyy' }}
+              {{ item[col.field] | date: 'dd/MM/yyyy' }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-              {{ product[col.field][col.subField] }}
+              {{ item[col.field][col.subField] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              {{ product[col.field] }}
+              {{ item[col.field] }}
             </ng-container>
           </ng-container>
         </td>
@@ -100,7 +94,8 @@
           pInputText
           id="productName"
           [formControl]="productNameControl"
-          type="text" />
+          type="text"
+        />
         <ng-container *ngIf="productNameControl.invalid && (productNameControl.dirty || productNameControl.touched)">
           <small class="p-invalid p-error">Please enter a valid product name</small>
         </ng-container>
@@ -113,9 +108,9 @@
           pInputText
           id="productNumber"
           [formControl]="productNumberControl"
-          type="text" />
-        <ng-container
-          *ngIf="productNumberControl.invalid && (productNumberControl.dirty || productNumberControl.touched)">
+          type="text"
+        />
+        <ng-container *ngIf="productNumberControl.invalid && (productNumberControl.dirty || productNumberControl.touched)">
           <small class="p-invalid p-error">Please enter a valid product number</small>
         </ng-container>
       </div>
@@ -125,10 +120,10 @@
         <p-inputNumber
           [ngClass]="{ 'ng-dirty': qtyPerPackageControl.invalid && (qtyPerPackageControl.dirty || qtyPerPackageControl.touched) }"
           inputId="qtyPerPackage"
-          [formControl]="qtyPerPackageControl">
+          [formControl]="qtyPerPackageControl"
+        >
         </p-inputNumber>
-        <ng-container
-          *ngIf="qtyPerPackageControl.invalid && (qtyPerPackageControl.dirty || qtyPerPackageControl.touched)">
+        <ng-container *ngIf="qtyPerPackageControl.invalid && (qtyPerPackageControl.dirty || qtyPerPackageControl.touched)">
           <small class="p-invalid p-error">Please enter a valid number</small>
         </ng-container>
       </div>
@@ -142,7 +137,6 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="productForm.invalid"
-      (click)="onSubmit()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="productForm.invalid" (click)="onSubmit()"></button>
   </ng-template>
 </p-dialog>

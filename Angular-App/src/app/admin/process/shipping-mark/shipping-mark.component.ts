@@ -6,7 +6,7 @@ import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { PrintService } from 'app/shared/services/print.service';
-import { SelectItem } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 
 @Component({
   templateUrl: './shipping-mark.component.html',
@@ -67,7 +67,8 @@ export class ShippingMarkComponent implements OnInit {
     private shippingMarkClients: ShippingMarkClients,
     private productClients: ProductClients,
     private notificationService: NotificationService,
-    private shippingRequestClients: ShippingRequestClients
+    private shippingRequestClients: ShippingRequestClients,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit() {
@@ -289,5 +290,27 @@ export class ShippingMarkComponent implements OnInit {
       value: i.id,
       label: `${i.identifier}`,
     }));
+  }
+
+  printShippingMark(shippingMark: ShippingMarkModel) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to print mark for this item?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.shippingMarkClients.printShippingMark(shippingMark.id).subscribe(
+          (result) => {
+            if (result && result.succeeded) {
+              this.onPrint();
+            } else {
+              this.notificationService.error(result?.error);
+            }
+          },
+          (_) => {
+            this.notificationService.error('Print Shipping Mark Failed. Please try again');
+          }
+        );
+      },
+    });
   }
 }

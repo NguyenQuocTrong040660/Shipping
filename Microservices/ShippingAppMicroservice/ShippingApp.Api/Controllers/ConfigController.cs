@@ -28,12 +28,12 @@ namespace ShippingApp.Api.Controllers
             return await Mediator.Send(new GetConfigsQuery { });
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{key}")]
         [ProducesResponseType(typeof(ConfigModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<ConfigModel>> GetConfigsByIdAsync(int id)
+        public async Task<ActionResult<ConfigModel>> GetConfigsByKeyAsync(string key)
         {
-            var result = await Mediator.Send(new GetConfigByIdQuery { Id = id });
+            var result = await Mediator.Send(new GetConfigByKeyQuery { Key = key });
             return Ok(result);
         }
 

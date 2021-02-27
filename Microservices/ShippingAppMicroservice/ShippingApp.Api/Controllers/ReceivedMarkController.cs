@@ -93,5 +93,29 @@ namespace ShippingApp.Api.Controllers
             var result = await Mediator.Send(new DeleteReceivedMarkCommand { Id = id });
             return Ok(result);
         }
+
+        [HttpPost("Unstuff")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UnstuffReceivedMarkRequest), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> UnstuffReceivedMark([FromBody] UnstuffReceivedMarkRequest model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(model);
+            }
+
+            var result = await Mediator.Send(new UnstuffReceivedMarkCommand { UnstuffReceivedMark = model });
+            return Ok(result);
+        }
+
+        [HttpPut("Print/{id}")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> PrintReceivedMarkAsync(int id)
+        {
+            var result = await Mediator.Send(new PrintReceivedMarkCommand { Id = id });
+            return Ok(result);
+        }
     }
 }

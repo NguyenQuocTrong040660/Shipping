@@ -1,0 +1,23 @@
+<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+  <ng-template pTemplate="content">
+    <form [formGroup]="receivedMarkUnstuffForm">
+      <div class="p-field">
+        <label for="quantity">Quantity</label>
+        <p-inputNumber
+          [ngClass]="{ 'ng-dirty': unstuffQuantityControl.invalid && (unstuffQuantityControl.dirty || unstuffQuantityControl.touched) }"
+          [formControl]="unstuffQuantityControl"
+          id="quantity"
+        ></p-inputNumber>
+
+        <ng-container *ngIf="unstuffQuantityControl.invalid && (unstuffQuantityControl.dirty || unstuffQuantityControl.touched)">
+          <small class="p-invalid p-error">Please specify a quantity to unstuff</small>
+        </ng-container>
+      </div>
+    </form>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button [disabled]="receivedMarkUnstuffForm.invalid" pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onSubmit()"></button>
+  </ng-template>
+</p-dialog>

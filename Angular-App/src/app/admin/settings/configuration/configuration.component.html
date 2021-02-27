@@ -10,7 +10,8 @@
         label="Edit"
         icon="pi pi-pencil"
         [disabled]="!selectedConfiguration"
-        (click)="openEditDialog(selectedConfiguration)"></button>
+        (click)="openEditDialog(selectedConfiguration)"
+      ></button>
     </ng-template>
   </p-toolbar>
 
@@ -23,16 +24,22 @@
     [(selection)]="selectedConfiguration"
     [paginator]="true"
     [rows]="20"
-    styleClass="p-datatable-custom">
+    styleClass="p-datatable-custom"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">{{ title | uppercase }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="configurationDataTable.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search..." />
+          <input pInputText type="text" (input)="configurationDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
+    </ng-template>
+
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col *ngFor="let col of columns" [style.width.px]="col.width" />
+      </colgroup>
     </ng-template>
 
     <ng-template pTemplate="header" let-columns>
@@ -40,10 +47,10 @@
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
-              <th [style.width.px]="col.width"></th>
+              <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th [style.width.px]="col.width" [pSortableColumn]="col.field">
+              <th [pSortableColumn]="col.field">
                 {{ col.header }}
                 <ng-container *ngIf="col.field">
                   <p-sortIcon [field]="col.field"></p-sortIcon>
@@ -61,24 +68,24 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-configuration let-columns="columns">
+    <ng-template pTemplate="body" let-item let-columns="columns">
       <tr>
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <p-tableRadioButton [value]="configuration"></p-tableRadioButton>
+              <p-tableRadioButton [value]="item"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ configuration[col.field] }}
+              {{ item[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-              {{ configuration[col.field] | date: 'dd/MM/yyyy' }}
+              {{ item[col.field] | date: 'dd/MM/yyyy' }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-              {{ configuration[col.field][col.subField] }}
+              {{ item[col.field][col.subField] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              {{ configuration[col.field] }}
+              {{ item[col.field] }}
             </ng-container>
           </ng-container>
         </td>
@@ -88,14 +95,12 @@
 </div>
 
 <!-- Edit Configuration Dialog -->
-<p-dialog header="Edit Configuration" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog"
-  (onHide)="hideEditDialog()">
+<p-dialog header="Edit Configuration" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="configurationForm">
       <div class="p-field">
         <label for="key">Key</label>
-        <input [ngClass]="{ 'ng-dirty': keyControl.invalid && (keyControl.dirty || keyControl.touched) }" pInputText
-          id="key" [formControl]="keyControl" type="text" disabled />
+        <input [ngClass]="{ 'ng-dirty': keyControl.invalid && (keyControl.dirty || keyControl.touched) }" pInputText id="key" [formControl]="keyControl" type="text" disabled />
         <ng-container *ngIf="keyControl.invalid && (keyControl.dirty || keyControl.touched)">
           <small *ngIf="keyControl && keyControl.errors?.required" class="p-invalid p-error">Key is required.</small>
         </ng-container>
@@ -108,16 +113,15 @@
           pInputText
           id="descriptions"
           [formControl]="descriptionsControl"
-          type="text" />
+          type="text"
+        />
       </div>
 
       <div class="p-field">
         <label for="value">Value</label>
-        <input [ngClass]="{ 'ng-dirty': valueControl.invalid && (valueControl.dirty || valueControl.touched) }"
-          pInputText id="value" [formControl]="valueControl" type="text" />
+        <input [ngClass]="{ 'ng-dirty': valueControl.invalid && (valueControl.dirty || valueControl.touched) }" pInputText id="value" [formControl]="valueControl" type="text" />
         <ng-container *ngIf="valueControl.invalid && (valueControl.dirty || valueControl.touched)">
-          <small *ngIf="valueControl && valueControl.errors?.required" class="p-invalid p-error">Please specify a
-            value</small>
+          <small *ngIf="valueControl && valueControl.errors?.required" class="p-invalid p-error">Please specify a value</small>
         </ng-container>
       </div>
     </form>
@@ -125,7 +129,6 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideEditDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="configurationForm.invalid"
-      (click)="onEdit()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="configurationForm.invalid" (click)="onEdit()"></button>
   </ng-template>
 </p-dialog>

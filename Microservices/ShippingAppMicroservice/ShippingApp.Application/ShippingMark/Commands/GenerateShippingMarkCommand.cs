@@ -86,6 +86,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                     });
 
                     //receivedMark.Status = nameof(ReceiveMarkStatus.Shipping);
+
                     remainQty -= product.QtyPerPackage;
                     sequence++;
                 }

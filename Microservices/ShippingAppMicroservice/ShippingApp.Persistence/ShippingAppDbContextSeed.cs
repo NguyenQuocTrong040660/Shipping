@@ -4,6 +4,7 @@ using System.Linq;
 using ShippingApp.Domain.Entities;
 using System.Collections.Generic;
 using Bogus;
+using ShippingApp.Domain.Enumerations;
 
 namespace ShippingApp.Persistence
 {
@@ -17,19 +18,19 @@ namespace ShippingApp.Persistence
                 {
                     new Config
                     {
-                        Key = "MinShippingDay",
+                        Key = ConfigKey.MinShippingDay,
                         Value = "2",
                         Descriptions = "Shipping Request should be submitted before (n) days"
                     },
                     new Config
                     {
-                        Key = "ShippingDeptEmail",
+                        Key = ConfigKey.ShippingDeptEmail,
                         Value = "shipping@gmail.com",
                         Descriptions = "To Email of Shipping Department"
                     },
                     new Config
                     {
-                        Key = "LogisticDeptEmail",
+                        Key = ConfigKey.LogisticDeptEmail,
                         Value = "logistic@gmail.com",
                         Descriptions = "To Email of Logistic Department"
                     }

@@ -13,7 +13,7 @@ namespace ShippingApp.Persistence.Configurations
 
             builder.Property(t => t.Prefix).HasDefaultValue(PrefixTable.ShippingMark);
 
-            builder.Property(t => t.PrintCount).HasDefaultValue(1);
+            builder.Property(t => t.PrintCount).HasDefaultValue(0);
 
             builder.HasOne<Product>(s => s.Product)
                    .WithMany(g => g.ShippingMarks)

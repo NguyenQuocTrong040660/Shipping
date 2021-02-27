@@ -65,17 +65,32 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 var product = group.Product;
                 int sequence = 1;
 
-                while(remainQty >= product.QtyPerPackage)
+                while(remainQty > 0)
                 {
-                    receivedMark.Add(new Entities.ReceivedMark
+                    if (remainQty >= product.QtyPerPackage)
                     {
-                        MovementRequestId = request.MovementRequestId,
-                        Notes = string.Empty,
-                        ProductId = product.Id,
-                        Quantity = product.QtyPerPackage,
-                        Sequence = sequence,
-                        Status = nameof(ReceiveMarkStatus.Storage),
-                    });
+                        receivedMark.Add(new Entities.ReceivedMark
+                        {
+                            MovementRequestId = request.MovementRequestId,
+                            Notes = string.Empty,
+                            ProductId = product.Id,
+                            Quantity = product.QtyPerPackage,
+                            Sequence = sequence,
+                            Status = nameof(ReceiveMarkStatus.Storage),
+                        });
+                    }
+                    else
+                    {
+                        receivedMark.Add(new Entities.ReceivedMark
+                        {
+                            MovementRequestId = request.MovementRequestId,
+                            Notes = string.Empty,
+                            ProductId = product.Id,
+                            Quantity = remainQty,
+                            Sequence = sequence,
+                            Status = nameof(ReceiveMarkStatus.Storage),
+                        });
+                    }
 
                     remainQty -= product.QtyPerPackage;
                     sequence++;

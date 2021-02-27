@@ -85,32 +85,32 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-shippingPlan let-columns="columns" let-expanded="expanded">
+    <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
       <tr>
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <p-tableRadioButton [value]="shippingPlan"></p-tableRadioButton>
+              <p-tableRadioButton [value]="item"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ shippingPlan[col.field] }}
+              {{ item[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-              {{ shippingPlan[col.field] | date: 'dd/MM/yyyy' }}
+              {{ item[col.field] | date: 'dd/MM/yyyy' }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-              {{ shippingPlan[col.field][col.subField] }}
+              {{ item[col.field][col.subField] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              {{ shippingPlan[col.field] }}
+              {{ item[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
               <button
                 type="button"
                 pButton
                 pRipple
-                (click)="getDetailShippingPlan(shippingPlan)"
-                [pRowToggler]="shippingPlan"
+                (click)="getDetailShippingPlan(item)"
+                [pRowToggler]="item"
                 class="p-button-text p-button-rounded p-button-plain"
                 [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
               ></button>

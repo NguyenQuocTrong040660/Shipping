@@ -24,6 +24,16 @@
         (click)="openEditDialog(selectedShippingRequest)"
       ></button>
 
+      <button
+        class="p-button-help p-mr-2"
+        pButton
+        pRipple
+        label="Documents"
+        icon="pi pi-folder"
+        [disabled]="!selectedShippingRequest"
+        (click)="openEditDialog(selectedShippingRequest)"
+      ></button>
+
       <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
@@ -82,32 +92,32 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-shippingRequest let-columns="columns" let-expanded="expanded">
+    <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
       <tr>
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <p-tableRadioButton [value]="shippingRequest"></p-tableRadioButton>
+              <p-tableRadioButton [value]="item"></p-tableRadioButton>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ shippingRequest[col.field] }}
+              {{ item[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-              {{ shippingRequest[col.field] | date: 'dd/MM/yyyy' }}
+              {{ item[col.field] | date: 'dd/MM/yyyy' }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-              {{ shippingRequest[col.field][col.subField] }}
+              {{ item[col.field][col.subField] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              {{ shippingRequest[col.field] }}
+              {{ item[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
               <button
                 type="button"
                 pButton
                 pRipple
-                (click)="getDetailShippingRequest(shippingRequest)"
-                [pRowToggler]="shippingRequest"
+                (click)="getDetailShippingRequest(item)"
+                [pRowToggler]="item"
                 class="p-button-text p-button-rounded p-button-plain"
                 [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
               ></button>
