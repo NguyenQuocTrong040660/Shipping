@@ -158,6 +158,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
 
   onCreate() {
     const model = this.workOrderForm.value as WorkOrderModel;
+    model.id = 0;
 
     this.workOrderClients.addWorkOrder(model).subscribe(
       (result) => {

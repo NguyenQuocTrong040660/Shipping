@@ -118,6 +118,10 @@ export class ShippingRequestCreateComponent implements OnInit {
         break;
       }
       case 1: {
+        this.stepIndex += 1;
+        break;
+      }
+      case 2:
         const { shippingPlanDetails } = this.selectedShippingPlan;
 
         this.shippingRequestDetails = this._mapToProductsToShippingRequestDetailModels(this.selectedProducts);
@@ -134,8 +138,6 @@ export class ShippingRequestCreateComponent implements OnInit {
 
         this.stepIndex += 1;
         break;
-      }
-      case 2:
       case 3:
       case 4: {
         this.stepIndex += 1;

@@ -28,11 +28,10 @@ namespace ShippingApp.Application.ShippingRequest.Queries
 
         public async Task<ShippingRequestModel> Handle(GetShippingRequestByIdQuery request, CancellationToken cancellationToken)
         {
-            var requests = await _shippingAppRepository.GetDbSet()
+            var entity = await _shippingAppRepository.GetDbSet()
                 .Include(x => x.ShippingRequestDetails)
-                .ToListAsync();
-
-            var entity = requests.FirstOrDefault(x => x.Id == request.Id);
+                .ThenInclude(x => x.Product)
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
 
             return _mapper.Map<ShippingRequestModel>(entity);
         }

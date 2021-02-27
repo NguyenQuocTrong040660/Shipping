@@ -1,0 +1,16 @@
+.shipping-request {
+  &__expaned-table {
+    th,
+    td {
+      border: none;
+    }
+
+    th {
+      background-color: #bbe7fc;
+    }
+
+    td {
+      background-color: #e0f5ff;
+    }
+  }
+}

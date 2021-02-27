@@ -9,6 +9,7 @@ using ShippingApp.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Collections.Generic;
+using ShippingApp.Application.ReceivedMark.Commands;
 
 namespace ShippingApp.Application.ReceivedMark.Queries
 {
@@ -21,10 +22,14 @@ namespace ShippingApp.Application.ReceivedMark.Queries
     {
         private readonly IMapper _mapper;
         private readonly IShippingAppRepository<Entities.ReceivedMark> _shippingAppRepository;
+        private readonly IMediator _mediator;
 
-        public GetReceivedMarkByMovementRequestIdQueryHandler(IMapper mapper, IShippingAppRepository<Entities.ReceivedMark> shippingAppRepository)
+        public GetReceivedMarkByMovementRequestIdQueryHandler(IMapper mapper,
+            IMediator mediator,
+            IShippingAppRepository<Entities.ReceivedMark> shippingAppRepository)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
         }
 
@@ -34,6 +39,12 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                  .Include(x => x.Product)
                  .Where(x => x.MovementRequestId == request.MovementRequestId)
                  .ToListAsync();
+
+            if (receivedMarks.Count == 0)
+            {
+                var generatedReceivedMarks = await _mediator.Send(new GenerateReceivedMarkCommand { MovementRequestId = request.MovementRequestId });
+                return _mapper.Map<List<ReceivedMarkModel>>(generatedReceivedMarks);
+            }
 
             return _mapper.Map<List<ReceivedMarkModel>>(receivedMarks);
         }

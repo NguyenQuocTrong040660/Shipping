@@ -34,7 +34,7 @@
       <label for="customerName">Shipping Request</label>
       <p-dropdown
         styleClass="p-dropdown-custom"
-        [options]="selectItems"
+        [options]="_mapToShippingRequestSelectItems(shippingRequests)"
         [filter]="true"
         filterBy="label"
         [showClear]="true"
@@ -47,23 +47,26 @@
 
   <p-table
     *ngIf="shippingMarks && shippingMarks.length > 0"
-    #shippingRequestDataTable
+    #shippingMarkDataTable
     dataKey="id"
-    columnResizeMode="expand"
     [value]="shippingMarks"
     [rows]="20"
     [columns]="cols"
     [paginator]="true"
     [scrollable]="true"
-    [globalFilterFields]="fields"
     [(selection)]="selectedShippingMark"
+    sortField="product.productNumber"
+    sortMode="single"
+    (onSort)="onSort($event)"
+    (sortFunction)="customSort($event)"
+    [customSort]="true"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">{{ title | uppercase }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+          <input pInputText type="text" (input)="shippingMarkDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -79,14 +82,11 @@
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
-              <th></th>
+              <th class="p-text-center"></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th [pSortableColumn]="col.field">
+              <th class="p-text-center">
                 {{ col.header }}
-                <ng-container *ngIf="col.field">
-                  <p-sortIcon [field]="col.field"></p-sortIcon>
-                </ng-container>
               </th>
             </ng-container>
           </ng-container>
@@ -100,27 +100,48 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-receivedMark let-columns="columns">
+    <ng-template pTemplate="body" let-shippingMark let-columns="columns" let-rowIndex="rowIndex">
+      <tr *ngIf="rowGroupMetadata[shippingMark.product.productNumber].index === rowIndex">
+        <td [attr.colspan]="columns.length">
+          <span class="p-text-bold p-ml-2">{{ shippingMark.product.productNumber }} - {{ shippingMark.product.productName }}</span>
+        </td>
+      </tr>
+
       <tr>
-        <td *ngFor="let col of columns">
+        <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <p-tableRadioButton [value]="receivedMark"></p-tableRadioButton>
+              <td>
+                <p-tableRadioButton [value]="shippingMark"></p-tableRadioButton>
+              </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              {{ receivedMark[col.field] }}
+              <td>
+                {{ shippingMark[col.field] }}
+              </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-              {{ receivedMark[col.field] | date: 'dd/MM/yyyy' }}
+              <td class="p-text-center">
+                {{ shippingMark[col.field] | date: 'dd/MM/yyyy' }}
+              </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-              {{ receivedMark[col.field][col.subField] }}
+              <td>
+                {{ shippingMark[col.field][col.subField] }}
+              </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              {{ receivedMark[col.field] }}
+              <td class="p-text-center">
+                {{ shippingMark[col.field] }}
+              </td>
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
+              <td class="p-text-center">
+                {{ shippingMark[col.field] }}
+              </td>
             </ng-container>
           </ng-container>
-        </td>
+        </ng-container>
       </tr>
     </ng-template>
   </p-table>

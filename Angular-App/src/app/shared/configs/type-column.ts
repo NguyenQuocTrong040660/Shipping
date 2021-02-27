@@ -5,4 +5,5 @@ export const TypeColumn = {
   CheckBoxColumn: 3,
   ExpandColumn: 4,
   IdentityColumn: 5,
+  NumberColumn: 6,
 };

@@ -18,7 +18,6 @@ export class ReceivedMarkComponent implements OnInit {
   receivedMarks: ReceivedMarkModel[] = [];
   selectedReceivedMark: ReceivedMarkModel;
   movementRequests: MovementRequestModel[] = [];
-  selectItems: SelectItem[] = [];
 
   isShowDeleteDialog: boolean;
   currentSelectedReceivedMark: ReceivedMarkModel[] = [];
@@ -37,6 +36,8 @@ export class ReceivedMarkComponent implements OnInit {
 
   selectedMovementRequest = 0;
 
+  rowGroupMetadata: any;
+
   constructor(
     public printService: PrintService,
     private receivedMarkClients: ReceivedMarkClients,
@@ -48,14 +49,11 @@ export class ReceivedMarkComponent implements OnInit {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
-      { header: 'Sequence', field: 'sequence', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
-      { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Quantity', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
+      { header: 'Sequence', field: 'sequence', width: WidthColumn.QuantityColumn, type: TypeColumn.NumberColumn },
+      { header: 'Quantity', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NumberColumn },
+      { header: 'Print By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Print Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -83,22 +81,17 @@ export class ReceivedMarkComponent implements OnInit {
     this.movementRequestClients.getMovementRequests().subscribe(
       (i) => {
         this.movementRequests = i;
-        this.selectItems = this._mapToSelectItems(i);
       },
       (_) => (this.movementRequests = [])
     );
   }
 
-  _mapToSelectItems(movementRequests: MovementRequestModel[]): SelectItem[] {
-    return movementRequests.map((i) => ({
-      value: i.id,
-      label: `${i.identifier}`,
-    }));
-  }
-
   initReceivedMarks(momentRequestId: number) {
     this.receivedMarkClients.getReceivedMarksByMovementRequestId(momentRequestId).subscribe(
-      (i) => (this.receivedMarks = i),
+      (i) => {
+        this.receivedMarks = i;
+        this.updateRowGroupMetaData();
+      },
       (_) => (this.receivedMarks = [])
     );
   }
@@ -203,5 +196,61 @@ export class ReceivedMarkComponent implements OnInit {
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;
+  }
+
+  onSort() {
+    this.updateRowGroupMetaData();
+  }
+
+  customSort() {
+    this.receivedMarks.sort((a, b) => {
+      const aGroup = a.product.productNumber.toLowerCase();
+      const bGroup = b.product.productNumber.toLowerCase();
+
+      if (aGroup > bGroup) {
+        return 1;
+      }
+      if (aGroup < bGroup) {
+        return -1;
+      }
+
+      const aSequence = a.sequence;
+      const bSequene = b.sequence;
+
+      if (aSequence > bSequene) {
+        return 1;
+      }
+      if (aSequence < bSequene) {
+        return -1;
+      }
+      return 0;
+    });
+  }
+
+  updateRowGroupMetaData() {
+    this.rowGroupMetadata = {};
+
+    if (this.receivedMarks) {
+      for (let i = 0; i < this.receivedMarks.length; i++) {
+        let rowData = this.receivedMarks[i];
+        let representativeName = rowData.product.productNumber;
+
+        if (i == 0) {
+          this.rowGroupMetadata[representativeName] = { index: 0, size: 1 };
+        } else {
+          let previousRowData = this.receivedMarks[i - 1];
+          let previousRowGroup = previousRowData.product.productNumber;
+          if (representativeName === previousRowGroup) this.rowGroupMetadata[representativeName].size++;
+          else this.rowGroupMetadata[representativeName] = { index: i, size: 1 };
+        }
+      }
+    }
+  }
+
+  _mapToMovementRequestSelectItems(movementRequests: MovementRequestModel[]): SelectItem[] {
+    return movementRequests.map((i) => ({
+      value: i.id,
+      label: `${i.identifier}`,
+    }));
   }
 }

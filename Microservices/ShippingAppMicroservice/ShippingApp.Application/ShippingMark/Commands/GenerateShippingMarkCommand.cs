@@ -34,20 +34,23 @@ namespace ShippingApp.Application.ShippingMark.Commands
         public async Task<List<ShippingMarkModel>> Handle(GenerateShippingMarkCommand request, CancellationToken cancellationToken)
         {
             var shippingRequest = await _context.ShippingRequests
-                .Include(x => x.ShippingRequestDetails)
-                .ThenInclude(x => x.Product)
-                .ThenInclude(x => x.ShippingMarks)
-                .FirstOrDefaultAsync(i => i.Id == request.ShippingRequestId);
+               .Include(x => x.ShippingRequestDetails)
+               .ThenInclude(x => x.Product)
+               .ThenInclude(x => x.ShippingMarks)
+               .FirstOrDefaultAsync(i => i.Id == request.ShippingRequestId);
 
             if (shippingRequest == null)
             {
                 throw new ArgumentNullException(nameof(shippingRequest));
             }
 
-            if (shippingRequest.ShippingMarks.Any())
+            if (shippingRequest.ShippingMarks != null && shippingRequest.ShippingMarks.Any())
             {
                 return new List<ShippingMarkModel>();
             }
+
+            var getReceivedMarksQuery = _context.ReceivedMarks;
+                //.Where(x => x.Status.Equals(nameof(ReceiveMarkStatus.Storage)));
 
             var groupProducts = shippingRequest.ShippingRequestDetails
                 .GroupBy(i => i.Product)
@@ -55,7 +58,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                 {
                     Product = x.Key,
                     TotalQuantity = x.ToList().Sum(i => i.Quantity),
-                    ReceivedMarks = x.Key.ReceivedMarks.Where(i => i.Status.Equals(nameof(ReceiveMarkStatus.Storage)))
+                    ReceivedMarks = getReceivedMarksQuery.Where(i => i.ProductId == x.Key.Id)
                 }).ToList();
 
             var shippingMarks = new List<Entities.ShippingMark>();
@@ -82,7 +85,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                         Revision = string.Empty,
                     });
 
-                    receivedMark.Status = nameof(ReceiveMarkStatus.Shipping);
+                    //receivedMark.Status = nameof(ReceiveMarkStatus.Shipping);
                     remainQty -= product.QtyPerPackage;
                     sequence++;
                 }

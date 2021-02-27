@@ -5,16 +5,33 @@
       <input id="search" type="text" pInputText [(ngModel)]="searchText" (keydown.enter)="search()" />
     </div>
 
-    <p-table #historyDataTable [value]="histories" [columns]="cols" [paginator]="true" [rows]="10" [lazy]="true" [loading]="loading">
+    <p-table
+      #historyDataTable
+      dataKey="id"
+      columnResizeMode="expand"
+      [value]="histories"
+      [columns]="cols"
+      [paginator]="true"
+      [scrollable]="true"
+      [rows]="10"
+      [lazy]="true"
+      [loading]="loading"
+    >
+      <ng-template pTemplate="colgroup" let-columns>
+        <colgroup>
+          <col *ngFor="let col of columns" [style.width.px]="col.width" />
+        </colgroup>
+      </ng-template>
+
       <ng-template pTemplate="header" let-columns>
         <tr>
           <ng-container *ngFor="let col of columns">
             <ng-container [ngSwitch]="col.type">
               <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
-                <th [style.width.px]="col.width"></th>
+                <th></th>
               </ng-container>
               <ng-container *ngSwitchDefault>
-                <th [style.width.px]="col.width" [pSortableColumn]="col.field">
+                <th [pSortableColumn]="col.field">
                   {{ col.header }}
                   <ng-container *ngIf="col.field">
                     <p-sortIcon [field]="col.field"></p-sortIcon>

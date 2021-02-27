@@ -44,7 +44,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 throw new ArgumentNullException(nameof(movementRequest));
             }
 
-            if (movementRequest.ReceivedMarks.Any())
+            if (movementRequest.ReceivedMarks != null && movementRequest.ReceivedMarks.Any())
             {
                 return new List<ReceivedMarkModel>();
             }

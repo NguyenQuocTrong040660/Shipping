@@ -117,31 +117,34 @@
       </tr>
     </ng-template>
 
-    <!-- TODO: implement when have data -->
-    <!-- <ng-template pTemplate="rowexpansion" let-shippingRequest>
+    <ng-template pTemplate="rowexpansion" let-shippingRequest>
       <tr>
-        <td colspan="7" class="work-order__expaned">
+        <td [attr.colspan]="cols.length" class="shipping-request__expaned">
           <div>
-            <p-table class="work-order__expaned-table" [value]="shippingRequest.shippingRequestDetails">
+            <p-table class="shipping-request__expaned-table" [value]="shippingRequest.shippingRequestDetails">
               <ng-template pTemplate="header">
-      <tr>
-        <th>Product Number</th>
-        <th>Product Name</th>
-        <th>Quantity</th>
+                <tr>
+                  <th>Product Number</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Amount</th>
+                  <th>Shipping Mode</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>{{ item?.product?.productNumber }}</td>
+                  <td>{{ item?.quantity }}</td>
+                  <td>{{ item?.price }}</td>
+                  <td>{{ item?.amount }}</td>
+                  <td>{{ item?.shippingMode }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-detail>
-      <tr>
-        <td>{{ detail?.product?.productNumber }}</td>
-        <td>{{ detail?.product?.productName }}</td>
-        <td>{{ detail?.quantity }}</td>
-      </tr>
-    </ng-template>
-  </p-table>
-</div>
-</td>
-</tr>
-</ng-template> -->
   </p-table>
 </div>
 

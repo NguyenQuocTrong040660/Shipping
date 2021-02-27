@@ -218,7 +218,20 @@ export class ShippingRequestComponent implements OnInit {
     });
   }
 
-  getDetailShippingRequest(shippingRequest: ShippingRequestModel) {}
+  getDetailShippingRequest(shippingRequest: ShippingRequestModel) {
+    const shippingRequestSelected = this.shippingRequests.find((i) => i.id === shippingRequest.id);
+
+    console.log(shippingRequestSelected);
+
+    if (shippingRequestSelected && shippingRequestSelected.shippingRequestDetails && shippingRequestSelected.shippingRequestDetails.length > 0) {
+      return;
+    }
+
+    this.shippingRequestClients.getShippingRequestById(shippingRequest.id).subscribe(
+      (i: ShippingRequestModel) => (shippingRequestSelected.shippingRequestDetails = i.shippingRequestDetails),
+      (_) => (shippingRequestSelected.shippingRequestDetails = [])
+    );
+  }
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;
