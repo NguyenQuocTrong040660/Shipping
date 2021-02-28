@@ -27,7 +27,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
   titleDialog = '';
 
   workOrders: WorkOrderModel[] = [];
-  movementRequestDetails: MovementRequestModel[] = [];
+  movementRequestDetails: MovementRequestDetailModel[] = [];
 
   cols: any[] = [];
   colFields = [];
@@ -36,6 +36,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
   HistoryDialogType = HistoryDialogType;
 
   selectItems: SelectItem[] = [];
+  expandedItems: any[] = [];
 
   private destroyed$ = new Subject<void>();
 
@@ -75,6 +76,8 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
   }
 
   initMovementRequests() {
+    this.expandedItems = [];
+
     this.movementRequestClients
       .getMovementRequests()
       .pipe(takeUntil(this.destroyed$))

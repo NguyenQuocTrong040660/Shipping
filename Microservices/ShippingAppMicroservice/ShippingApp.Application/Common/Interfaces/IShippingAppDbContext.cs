@@ -18,6 +18,9 @@ namespace ShippingApp.Application.Interfaces
         DbSet<Entities.WorkOrderDetail> WorkOrderDetails { get; }
         DbSet<Entities.Config> Configs { get; }
         DbSet<Entities.ReceivedMark> ReceivedMarks { get; }
+        DbSet<Entities.ReceivedMarkMovement> ReceivedMarkMovements { get; }
+        DbSet<Entities.ReceivedMarkPrinting> ReceivedMarkPrintings { get; }
+        DbSet<Entities.ReceivedMarkSummary> ReceivedMarkSummaries { get; }
         DbSet<Entities.ShippingMark> ShippingMarks { get; }
         DbSet<Entities.ShippingRequest> ShippingRequests { get; }
         DbSet<Entities.ShippingRequestDetail> ShippingRequestDetails { get; }

@@ -13,7 +13,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 {
     public class PrintReceivedMarkCommand : IRequest<Result>
     {
-        public int Id { get; set; }
+        public int ReceivedMarkPrintingId { get; set; }
     }
 
     public class PrintReceivedMarkCommandHandler : IRequestHandler<PrintReceivedMarkCommand, Result>
@@ -27,14 +27,14 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
         public async Task<Result> Handle(PrintReceivedMarkCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.ReceivedMarks.FindAsync(request.Id);
+            var entity = await _context.ReceivedMarkPrintings.FindAsync(request.ReceivedMarkPrintingId);
 
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            if (!entity.Status.Equals(nameof(ReceiveMarkStatus.Storage)))
+            if (!entity.Status.Equals(nameof(ReceivedMarkStatus.Storage)))
             {
                 return Result.Failure("Could not print Receive Mark");
             }

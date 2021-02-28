@@ -7,6 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Application.Common.Results;
+using System.Linq;
+using System.Collections.Generic;
+using ShippingApp.Domain.Enumerations;
 
 namespace ShippingApp.Application.ReceivedMark.Commands
 {
@@ -19,17 +22,101 @@ namespace ShippingApp.Application.ReceivedMark.Commands
     {
         private readonly IMapper _mapper;
         private readonly IShippingAppRepository<Entities.ReceivedMark> _shippingAppRepository;
+        private readonly IShippingAppDbContext _context;
 
-        public CreateReceiveMarkCommandHandler(IMapper mapper, IShippingAppRepository<Entities.ReceivedMark> shippingAppRepository)
+        public CreateReceiveMarkCommandHandler(IMapper mapper,
+            IShippingAppDbContext context,
+            IShippingAppRepository<Entities.ReceivedMark> shippingAppRepository)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
         }
 
         public async Task<Result> Handle(CreateReceivedMarkCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Entities.ReceivedMark>(request.ReceivedMark);
-            return await _shippingAppRepository.AddAsync(entity);
+            if (request.ReceivedMark.ReceivedMarkMovements == null || !request.ReceivedMark.ReceivedMarkMovements.Any())
+            {
+                return Result.Failure("");
+            }
+
+            var receivedMarkPrintings = new List<Entities.ReceivedMarkPrinting>();
+            var receivedMarkSummaries  = new List<Entities.ReceivedMarkSummary>();
+
+            var groupByProducts = request.ReceivedMark.ReceivedMarkMovements
+                .GroupBy(x => x.ProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    ReceivedMarkMovements = g.ToList(),
+                    ReceivedQty = g.ToList().Sum(i => i.Quantity)
+                });
+
+            foreach (var group in groupByProducts)
+            {
+                int remainQty = group.ReceivedQty;
+                var product = await _context.Products.FindAsync(group.ProductId);
+                int sequence = 1;
+
+                while (remainQty > 0)
+                {
+                    if (remainQty >= product.QtyPerPackage)
+                    {
+                        receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
+                        {
+                            ProductId = product.Id,
+                            Quantity = product.QtyPerPackage,
+                            Sequence = sequence,
+                            Status = nameof(ReceivedMarkStatus.New),
+                        });
+                    }
+                    else
+                    {
+                        receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
+                        {
+                            ProductId = product.Id,
+                            Quantity = product.QtyPerPackage,
+                            Sequence = sequence,
+                            Status = nameof(ReceivedMarkStatus.New),
+                        });
+                    }
+
+                    remainQty -= product.QtyPerPackage;
+                    sequence++;
+                }
+
+                receivedMarkSummaries.Add(new Entities.ReceivedMarkSummary
+                {
+                    ProductId = group.ProductId,
+                    TotalPackage = sequence - 1,
+                    TotalQuantity = group.ReceivedQty
+                });
+            }
+
+            var receivedMark = new Entities.ReceivedMark
+            {
+                Notes = request.ReceivedMark.Notes,
+                ReceivedMarkPrintings = receivedMarkPrintings,
+                ReceivedMarkMovements = BuildReceivedMarkMovements(request.ReceivedMark.ReceivedMarkMovements),
+                ReceivedMarkSummaries = receivedMarkSummaries
+            };
+
+            await _context.ReceivedMarks.AddAsync(receivedMark);
+
+            return await _context.SaveChangesAsync() > 0
+                ? Result.Success()
+                : Result.Failure("");
+        }
+
+        private List<Entities.ReceivedMarkMovement> BuildReceivedMarkMovements(ICollection<ReceivedMarkMovementModel> receivedMarkMovements)
+        {
+            return receivedMarkMovements.Select(x => new Entities.ReceivedMarkMovement
+            {
+                MovementRequestId = x.MovementRequestId,
+                ProductId = x.ProductId,
+                Quantity = x.Quantity,
+                ReceivedMarkId = x.ReceivedMarkId,
+            }).ToList();
         }
     }
 }

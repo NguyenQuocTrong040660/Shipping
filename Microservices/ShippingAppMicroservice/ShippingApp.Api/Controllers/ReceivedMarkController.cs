@@ -35,30 +35,13 @@ namespace ShippingApp.Api.Controllers
             var result = await Mediator.Send(new CreateReceivedMarkCommand { ReceivedMark = model });
             return Ok(result);
         }
-
-        [HttpPut("Generate/{movementRequestId}")]
-        [ProducesResponseType(typeof(List<ReceivedMarkModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ReceivedMarkModel>>> GenerateReceivedMarkAsync(int movementRequestId)
-        {
-            var result = await Mediator.Send(new GenerateReceivedMarkCommand {  MovementRequestId = movementRequestId });
-            return Ok(result);
-        }
-
+     
         [HttpGet]
         [ProducesResponseType(typeof(List<ReceivedMarkModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<ReceivedMarkModel>>> GetReceivedMarks()
         {
             return await Mediator.Send(new GetReceivedMarksQuery { });
-        }
-
-        [HttpGet("MovementRequest/{movementRequestId}")]
-        [ProducesResponseType(typeof(List<ReceivedMarkModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ReceivedMarkModel>>> GetReceivedMarksByMovementRequestId(int movementRequestId)
-        {
-            return await Mediator.Send(new GetReceivedMarkByMovementRequestIdQuery { MovementRequestId = movementRequestId });
         }
 
         [HttpGet("{id}")]
@@ -109,12 +92,12 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("Print/{id}")]
+        [HttpPut("Print/{receivedMarkPrintingId}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> PrintReceivedMarkAsync(int id)
+        public async Task<ActionResult<Result>> PrintReceivedMarkAsync(int receivedMarkPrintingId)
         {
-            var result = await Mediator.Send(new PrintReceivedMarkCommand { Id = id });
+            var result = await Mediator.Send(new PrintReceivedMarkCommand { ReceivedMarkPrintingId = receivedMarkPrintingId });
             return Ok(result);
         }
     }

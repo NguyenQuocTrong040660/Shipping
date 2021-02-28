@@ -10,6 +10,8 @@ import { TypeColumn } from 'app/shared/configs/type-column';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ImportComponent } from 'app/shared/components/import/import.component';
 import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
+import { ImportService } from 'app/shared/services/import.service';
+import { EventType } from 'app/shared/enumerations/import-event-type.enum';
 
 @Component({
   selector: 'app-product',
@@ -33,6 +35,9 @@ export class ProductComponent implements OnInit, OnDestroy {
   cols: any[] = [];
   fields: any[] = [];
 
+  ref: DynamicDialogRef;
+  destroyed$ = new Subject<void>();
+
   get productNameControl() {
     return this.productForm.get('productName');
   }
@@ -49,17 +54,14 @@ export class ProductComponent implements OnInit, OnDestroy {
     return this.productForm.get('qtyPerPackage');
   }
 
-  ref: DynamicDialogRef;
-
-  private destroyed$ = new Subject<void>();
-
   constructor(
     private fb: FormBuilder,
     private notificationService: NotificationService,
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
     private dialogService: DialogService,
-    private filesClient: FilesClient
+    private filesClient: FilesClient,
+    private importService: ImportService
   ) {}
 
   ngOnInit() {
@@ -77,6 +79,18 @@ export class ProductComponent implements OnInit, OnDestroy {
     this.fields = this.cols.map((i) => i.field);
     this.initForm();
     this.initProducts();
+    this.initEventBroadCast();
+  }
+
+  initEventBroadCast() {
+    this.importService.event$.pipe(takeUntil(this.destroyed$)).subscribe((event) => {
+      switch (event) {
+        case EventType.HideDialog:
+          this.ref.close();
+          this.initProducts();
+          break;
+      }
+    });
   }
 
   openImportSection() {

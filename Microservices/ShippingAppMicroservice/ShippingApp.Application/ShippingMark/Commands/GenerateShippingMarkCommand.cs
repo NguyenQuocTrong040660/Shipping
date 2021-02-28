@@ -49,7 +49,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                 return new List<ShippingMarkModel>();
             }
 
-            var getReceivedMarksQuery = _context.ReceivedMarks;
+            var getReceivedMarksQuery = _context.ReceivedMarkPrintings;
                 //.Where(x => x.Status.Equals(nameof(ReceiveMarkStatus.Storage)));
 
             var groupProducts = shippingRequest.ShippingRequestDetails
@@ -76,12 +76,11 @@ namespace ShippingApp.Application.ShippingMark.Commands
 
                     shippingMarks.Add(new Entities.ShippingMark
                     {
-                        Notes = receivedMark.Notes,
                         ProductId = receivedMark.ProductId,
                         Quantity = receivedMark.Quantity,
                         Sequence = sequence,
                         ShippingRequestId = shippingRequest.Id,
-                        Status = nameof(ShippingMarkStatus.Storage),
+                        Status = nameof(ShippingMarkStatus.New),
                         Revision = string.Empty,
                     });
 

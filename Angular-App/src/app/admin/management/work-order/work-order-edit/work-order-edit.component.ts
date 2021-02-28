@@ -27,6 +27,10 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
   WidthColumn = WidthColumn;
   TypeColumn = TypeColumn;
 
+  get refIdControl() {
+    return this.workOrderForm.get('refId');
+  }
+
   get notesControl() {
     return this.workOrderForm.get('notes');
   }

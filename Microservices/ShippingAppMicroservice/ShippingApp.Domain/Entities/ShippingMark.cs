@@ -1,5 +1,4 @@
 ﻿using ShippingApp.Domain.CommonEntities;
-using System;
 
 namespace ShippingApp.Domain.Entities
 {
@@ -14,11 +13,7 @@ namespace ShippingApp.Domain.Entities
         public int ProductId { get; set; }
         public int PrintCount { get; set; }
         public int ShippingRequestId { get; set; }
-
         public string Notes { get; set; }
-
-        public string LastPrePrintBy { get; set; }
-        public DateTime? LastPrePrint { get; set; }
 
         public virtual ShippingRequest ShippingRequest { get; set; }
         public virtual Product Product { get; set; }

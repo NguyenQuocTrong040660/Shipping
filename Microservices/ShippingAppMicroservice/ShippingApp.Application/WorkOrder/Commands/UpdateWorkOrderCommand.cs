@@ -54,6 +54,7 @@ namespace ShippingApp.Application.WorkOrder.Commands
             }
 
             workOrder.Notes = request.WorkOrder.Notes;
+            workOrder.RefId = request.WorkOrder.RefId;
 
             return await _context.SaveChangesAsync() > 0
                 ? Result.Success()

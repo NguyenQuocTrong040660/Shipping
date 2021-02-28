@@ -51,7 +51,7 @@
             <p-table dataKey="id" [value]="movementRequestDetails" editMode="row">
               <ng-template pTemplate="header" let-columns>
                 <tr>
-                  <th class="p-text-center">WO-ID</th>
+                  <th class="p-text-center">Work Order</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
                   <th class="p-text-center">Quantity</th>
@@ -61,7 +61,7 @@
 
               <ng-template pTemplate="body" let-movementRequestDetail let-editing="editing" let-ri="rowIndex">
                 <tr [pEditableRow]="movementRequestDetail">
-                  <td>WO{{ movementRequestDetail?.workOrder?.id }}</td>
+                  <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
                   <td>
                     {{ movementRequestDetail?.product?.productNumber }}
                   </td>
@@ -151,7 +151,7 @@
             <p-table dataKey="id" [value]="movementRequestDetails">
               <ng-template pTemplate="header" let-columns>
                 <tr>
-                  <th class="p-text-center">WO-ID</th>
+                  <th class="p-text-center">Work Order</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
                   <th class="p-text-center">Quantity</th>
@@ -160,7 +160,7 @@
 
               <ng-template pTemplate="body" let-movementRequestDetail>
                 <tr>
-                  <td>WO{{ movementRequestDetail?.workOrder?.id }}</td>
+                  <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
                   <td>
                     {{ movementRequestDetail?.product?.productNumber }}
                   </td>

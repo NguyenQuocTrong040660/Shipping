@@ -34,7 +34,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            if (!entity.Status.Equals(nameof(ShippingMarkStatus.Storage)))
+            if (!entity.Status.Equals(nameof(ShippingMarkStatus.New)))
             {
                 return Result.Failure("Could not print Shipping Mark");
             }

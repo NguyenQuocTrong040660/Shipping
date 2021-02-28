@@ -19,6 +19,7 @@ import { AuthorizeInterceptor } from './shared/interceptors/authorize.intercepto
 import { ApiClientModule } from './shared/api-clients/api-client.module';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ImportService } from './shared/services/import.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,6 +42,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     MessageService,
     ConfirmationService,
     DialogService,
+    ImportService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,

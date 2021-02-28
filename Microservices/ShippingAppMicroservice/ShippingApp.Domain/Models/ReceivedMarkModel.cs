@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ShippingApp.Domain.Enumerations;
 using System;
+using System.Collections.Generic;
 
 namespace ShippingApp.Domain.Models
 {
@@ -23,19 +24,11 @@ namespace ShippingApp.Domain.Models
                 return PrefixTable.ReceivedMark;
             }
         }
-        public int Sequence { get; set; }
-        public int Quantity { get; set; }
-        public string Status { get; set; }
         public string Notes { get; set; }
-        public int PrintCount { get; set; }
-        public int ProductId { get; set; }
-        public int MovementRequestId { get; set; }
 
-        public string LastPrePrintBy { get; set; }
-        public DateTime? LastPrePrint { get; set; }
-        public string ParentId { get; set; }
 
-        public virtual MovementRequestModel MovementRequest { get; set; }
-        public virtual ProductModel Product { get; set; }
+        public virtual ICollection<ReceivedMarkMovementModel> ReceivedMarkMovements { get; set; }
+        public virtual ICollection<ReceivedMarkPrintingModel> ReceivedMarkPrintings { get; set; }
+        public virtual ICollection<ReceivedMarkSummaryModel> ReceivedMarkSummaries { get; set; }
     }
 }

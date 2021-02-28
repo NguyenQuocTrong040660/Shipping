@@ -11,6 +11,8 @@ import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
 import { ImportComponent } from 'app/shared/components/import/import.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { EventType } from 'app/shared/enumerations/import-event-type.enum';
+import { ImportService } from 'app/shared/services/import.service';
 
 @Component({
   selector: 'app-work-order',
@@ -39,6 +41,8 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   cols: any[] = [];
   fields: any[] = [];
 
+  expandedItems: any[] = [];
+
   ref: DynamicDialogRef;
   private destroyed$ = new Subject<void>();
 
@@ -49,7 +53,8 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private fb: FormBuilder,
     private dialogService: DialogService,
-    private filesClient: FilesClient
+    private filesClient: FilesClient,
+    private importService: ImportService
   ) {}
 
   ngOnInit() {
@@ -68,6 +73,18 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     this.initWorkOrders();
     this.initProducts();
     this.initWorkOrderForm();
+    this.initEventBroadCast();
+  }
+
+  initEventBroadCast() {
+    this.importService.event$.pipe(takeUntil(this.destroyed$)).subscribe((event) => {
+      switch (event) {
+        case EventType.HideDialog:
+          this.ref.close();
+          this.initWorkOrders();
+          break;
+      }
+    });
   }
 
   openImportSection() {
@@ -113,6 +130,8 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   }
 
   initWorkOrders() {
+    this.expandedItems = [];
+
     this.workOrderClients
       .getWorkOrders()
       .pipe(takeUntil(this.destroyed$))

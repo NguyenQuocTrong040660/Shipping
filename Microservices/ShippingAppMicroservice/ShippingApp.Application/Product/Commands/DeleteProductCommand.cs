@@ -16,10 +16,12 @@ namespace ShippingApp.Application.Product.Commands
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Result>
     {
         private readonly IShippingAppRepository<Entities.Product> _shippingAppRepository;
+        private readonly IShippingAppDbContext _context;
 
-        public DeleteProductCommandHandler(IShippingAppRepository<Entities.Product> shippingAppRepository)
+        public DeleteProductCommandHandler(IShippingAppRepository<Entities.Product> shippingAppRepository, IShippingAppDbContext context)
         {
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<Result> Handle(DeleteProductCommand request, CancellationToken cancellationToken)

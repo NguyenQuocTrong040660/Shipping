@@ -102,6 +102,11 @@
         <p-card>
           <ng-template pTemplate="content">
             <div class="p-field">
+              <label for="refId">Reference Id</label>
+              <input pInputText id="refId" [formControl]="refIdControl" type="text" />
+            </div>
+
+            <div class="p-field">
               <label for="notes">Notes</label>
               <input pInputText id="notes" [formControl]="notesControl" type="text" />
             </div>

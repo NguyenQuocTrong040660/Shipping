@@ -304,7 +304,7 @@
       <ng-template pTemplate="content">
         <ng-container [ngSwitch]="typeImport">
           <ng-container *ngSwitchCase="TemplateType.Product">
-            <div class="p-mb-4">The records have been failed to import</div>
+            <div class="p-mb-4">Some records have been failed to import:</div>
             <p-table [value]="failedToImportItems">
               <ng-template pTemplate="header">
                 <tr>
@@ -333,7 +333,7 @@
             </p-table>
           </ng-container>
           <ng-container *ngSwitchCase="TemplateType.WorkOrder">
-            <div class="p-mb-4">The records have been failed to import</div>
+            <div class="p-mb-4">Some records have been failed to import:</div>
             <p-table [value]="failedToImportItems">
               <ng-template pTemplate="header">
                 <tr>
@@ -415,6 +415,16 @@
             </p-table>
           </ng-container>
         </ng-container>
+      </ng-template>
+
+      <ng-template pTemplate="footer">
+        <div class="p-grid p-nogutter p-justify-center">
+          Total items completed:&nbsp;<span class="p-text-bold">{{ itemCompleted }} / {{ data.length }}</span>
+        </div>
+
+        <div class="p-grid p-nogutter p-justify-end">
+          <p-button styleClass="p-button-text" label="Complete" (onClick)="nextPage(stepIndex)" icon="pi pi-angle-right" iconPos="right"></p-button>
+        </div>
       </ng-template>
     </p-card>
   </ng-container>

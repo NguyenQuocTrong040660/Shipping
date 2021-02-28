@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FilesClient, TemplateType, ValidateDataRequest } from 'app/shared/api-clients/files.client';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, WorkOrderClients, WorkOrderImportModel } from 'app/shared/api-clients/shipping-app.client';
+import { EventType } from 'app/shared/enumerations/import-event-type.enum';
+import { ImportService } from 'app/shared/services/import.service';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService, MenuItem } from 'primeng/api';
 import { DynamicDialogConfig } from 'primeng/dynamicdialog';
@@ -17,10 +19,11 @@ export class ImportComponent implements OnInit {
   stepIndex = 0;
 
   uploadedFiles: any[] = [];
+
   data: any[] = [];
   dataValidated: any[] = [];
   failedToImportItems: any[] = [];
-  successfullyImportItems: any[] = [];
+  itemCompleted = 0;
 
   TemplateType = TemplateType;
 
@@ -31,7 +34,8 @@ export class ImportComponent implements OnInit {
     private config: DynamicDialogConfig,
     private notificationService: NotificationService,
     private confirmationService: ConfirmationService,
-    private shippingPlanClients: ShippingPlanClients
+    private shippingPlanClients: ShippingPlanClients,
+    private importService: ImportService
   ) {
     this.typeImport = this.config.data;
   }
@@ -78,6 +82,7 @@ export class ImportComponent implements OnInit {
         break;
       }
       case 1: {
+        this.dataValidated = [];
         this.handleValidationDataImport(this.data, this.typeImport);
         this.stepIndex += 1;
         break;
@@ -100,6 +105,10 @@ export class ImportComponent implements OnInit {
           this.stepIndex += 1;
         }
 
+        break;
+      }
+      case 3: {
+        this.importService.dispactEvent(EventType.HideDialog);
         break;
       }
     }
@@ -166,16 +175,19 @@ export class ImportComponent implements OnInit {
             productName: i.productName,
             productNumber: i.productNumber,
             qtyPerPackage: i.qtyPerPackage,
+            notes: i.notes,
           };
         });
 
         this.productClients.addProductsAll(products).subscribe(
           (invalidProducts) => {
+            this.itemCompleted = products.length - invalidProducts.length;
             this.failedToImportItems = invalidProducts;
           },
           (_) => {
             this.notificationService.error('Failed to import data');
             this.failedToImportItems = products;
+            this.itemCompleted = 0;
           }
         );
         break;
@@ -191,11 +203,13 @@ export class ImportComponent implements OnInit {
 
         this.workOrderClients.addWorkOrderAll(workOders).subscribe(
           (invalidWorkOrders) => {
+            this.itemCompleted = workOders.length - invalidWorkOrders.length;
             this.failedToImportItems = invalidWorkOrders;
           },
           (_) => {
             this.notificationService.error('Failed to import data');
             this.failedToImportItems = workOders;
+            this.itemCompleted = 0;
           }
         );
 

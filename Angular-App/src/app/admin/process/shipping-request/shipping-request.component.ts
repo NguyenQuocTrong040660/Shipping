@@ -34,6 +34,8 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   cols: any[] = [];
   fields: any[] = [];
 
+  expandedItems: any[] = [];
+
   WidthColumn = WidthColumn;
   TypeColumn = TypeColumn;
   HistoryDialogType = HistoryDialogType;
@@ -73,6 +75,8 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   }
 
   initShippingPlan() {
+    this.expandedItems = [];
+
     this.shippingPlanClients
       .getAllShippingPlan()
       .pipe(takeUntil(this.destroyed$))

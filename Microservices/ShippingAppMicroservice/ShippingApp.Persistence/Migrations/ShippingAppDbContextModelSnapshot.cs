@@ -169,19 +169,7 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("LastPrePrint")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastPrePrintBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MovementRequestId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Notes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ParentId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Prefix")
@@ -189,10 +177,68 @@ namespace ShippingApp.Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("REMARK");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("ReceivedMarks");
+                });
+
+            modelBuilder.Entity("ShippingApp.Domain.Entities.ReceivedMarkMovement", b =>
+                {
+                    b.Property<int>("ReceivedMarkId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MovementRequestId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReceivedMarkId", "MovementRequestId", "ProductId");
+
+                    b.HasIndex("MovementRequestId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ReceivedMarkMovements");
+                });
+
+            modelBuilder.Entity("ShippingApp.Domain.Entities.ReceivedMarkPrinting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PrintCount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
+
+                    b.Property<string>("PrintingBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PrintingDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -200,19 +246,57 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("RePrintingBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RePrintingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ReceivedMarkId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Sequence")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("New");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MovementRequestId");
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ReceivedMarkId");
+
+                    b.ToTable("ReceivedMarkPrintings");
+                });
+
+            modelBuilder.Entity("ShippingApp.Domain.Entities.ReceivedMarkSummary", b =>
+                {
+                    b.Property<int>("ReceivedMarkId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalPackage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReceivedMarkId", "ProductId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ReceivedMarks");
+                    b.ToTable("ReceivedMarkSummaries");
                 });
 
             modelBuilder.Entity("ShippingApp.Domain.Entities.ShippingMark", b =>
@@ -228,12 +312,6 @@ namespace ShippingApp.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LastPrePrint")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastPrePrintBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Notes")
@@ -600,17 +678,53 @@ namespace ShippingApp.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShippingApp.Domain.Entities.ReceivedMark", b =>
+            modelBuilder.Entity("ShippingApp.Domain.Entities.ReceivedMarkMovement", b =>
                 {
                     b.HasOne("ShippingApp.Domain.Entities.MovementRequest", "MovementRequest")
-                        .WithMany("ReceivedMarks")
+                        .WithMany("ReceivedMarkMovements")
                         .HasForeignKey("MovementRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ShippingApp.Domain.Entities.Product", "Product")
-                        .WithMany("ReceivedMarks")
+                        .WithMany("ReceivedMarkMovements")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShippingApp.Domain.Entities.ReceivedMark", "ReceivedMark")
+                        .WithMany("ReceivedMarkMovements")
+                        .HasForeignKey("ReceivedMarkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ShippingApp.Domain.Entities.ReceivedMarkPrinting", b =>
+                {
+                    b.HasOne("ShippingApp.Domain.Entities.Product", "Product")
+                        .WithMany("ReceivedMarkPrintings")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShippingApp.Domain.Entities.ReceivedMark", "ReceivedMark")
+                        .WithMany("ReceivedMarkPrintings")
+                        .HasForeignKey("ReceivedMarkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ShippingApp.Domain.Entities.ReceivedMarkSummary", b =>
+                {
+                    b.HasOne("ShippingApp.Domain.Entities.Product", "Product")
+                        .WithMany("ReceivedMarkSummaries")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShippingApp.Domain.Entities.ReceivedMark", "ReceivedMark")
+                        .WithMany("ReceivedMarkSummaries")
+                        .HasForeignKey("ReceivedMarkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

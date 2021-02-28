@@ -5,7 +5,8 @@ namespace Files.Domain.Template
 {
     public class ShippingPlanTemplate
     {
-        public Guid Key { get; set; }
+        [ValidateDataType(IsRequired = true)]
+        public string ShippingPlanId { get; set; }
         
         [ValidateDataType(IsRequired = true)]
         public string CustomerName { get; set; }

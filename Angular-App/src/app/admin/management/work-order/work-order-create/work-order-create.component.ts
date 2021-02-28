@@ -37,6 +37,10 @@ export class WorkOrderCreateComponent implements OnInit {
     return this.workOrderForm.get('notes');
   }
 
+  get refIdControl() {
+    return this.workOrderForm.get('refId');
+  }
+
   get workOrderDetailsControl() {
     return this.workOrderForm.get('workOrderDetails') as FormArray;
   }

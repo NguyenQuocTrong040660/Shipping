@@ -17,6 +17,8 @@ namespace ShippingApp.Domain.Entities
         public virtual ICollection<ShippingRequestDetail> ShippingRequestDetails { get; set; }
         public virtual ICollection<WorkOrderDetail> WorkOrderDetails { get; set; }
         public virtual ICollection<ShippingMark> ShippingMarks { get; set; }
-        public virtual ICollection<ReceivedMark> ReceivedMarks { get; set; }
+        public virtual ICollection<ReceivedMarkMovement> ReceivedMarkMovements { get; set; }
+        public virtual ICollection<ReceivedMarkPrinting> ReceivedMarkPrintings { get; set; }
+        public virtual ICollection<ReceivedMarkSummary> ReceivedMarkSummaries { get; set; }
     }
 }

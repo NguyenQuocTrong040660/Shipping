@@ -40,24 +40,7 @@
     </ng-template>
   </p-toolbar>
 
-  <p-card>
-    <div class="p-field">
-      <label for="customerName">Movement Request</label>
-      <p-dropdown
-        styleClass="p-dropdown-custom"
-        [options]="_mapToMovementRequestSelectItems(movementRequests)"
-        [filter]="true"
-        filterBy="label"
-        [showClear]="true"
-        (onChange)="handleOnChange($event.value)"
-        placeholder="Please select a Movement Request"
-      >
-      </p-dropdown>
-    </div>
-  </p-card>
-
   <p-table
-    *ngIf="receivedMarks && receivedMarks.length > 0"
     #shippingRequestDataTable
     dataKey="id"
     columnResizeMode="expand"
@@ -67,11 +50,6 @@
     [paginator]="true"
     [scrollable]="true"
     [(selection)]="selectedReceivedMark"
-    sortField="product.productNumber"
-    sortMode="single"
-    (onSort)="onSort($event)"
-    (sortFunction)="customSort($event)"
-    [customSort]="true"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
@@ -180,5 +158,17 @@
   (submitEvent)="handleSubmitEventUnstuff($event)"
   (hideDialogEvent)="hideDialog()"
 ></app-received-mark-unstuff>
+
+<app-received-mark-create
+  [receivedMarkForm]="receivedMarkForm"
+  [titleDialog]="titleDialog"
+  [movementRequests]="movementRequests"
+  [receivedMarkMovements]="receivedMarkMovements"
+  [isShowDialog]="isShowDialogCreate"
+  (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
+  (selectedMovementRequestsEvent)="handleSelectedWorkOrders()"
+>
+</app-received-mark-create>
 
 <app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ReceivedMark" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

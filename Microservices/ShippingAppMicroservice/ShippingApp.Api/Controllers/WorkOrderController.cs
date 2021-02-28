@@ -30,21 +30,24 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpPost("BulkInsert")]
-        [ProducesResponseType(typeof(List<WorkOrderModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<WorkOrderImportModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(List<WorkOrderImportModel>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<WorkOrderModel>>> AddWorkOrderAsync([FromBody] List<WorkOrderImportModel> workOrderImports)
+        public async Task<ActionResult<List<WorkOrderImportModel>>> AddWorkOrderAsync([FromBody] List<WorkOrderImportModel> workOrderImports)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(workOrderImports);
             }
 
-            var groupWorkOrders = from w in workOrderImports
-                             group w by w.WorkOrderId into g
-                             select new { WorkOrderId = g.Key, WorkOrderDetails = g.ToList() };
+            var invalidworkOrders = new List<WorkOrderImportModel>();
 
-            var invalidworkOrders = new List<WorkOrderModel>();
+            var groupWorkOrders = workOrderImports.GroupBy(x => x.WorkOrderId)
+                                                  .Select(g => new
+                                                  {
+                                                      WorkOrderId = g.Key,
+                                                      WorkOrderDetails = g.ToList()
+                                                  });
 
             foreach (var group in groupWorkOrders)
             {
@@ -60,10 +63,12 @@ namespace ShippingApp.Api.Controllers
 
                 foreach (var workOderDetail in group.WorkOrderDetails)
                 {
-                    var product = await _context.Products.FirstOrDefaultAsync(e => e.ProductNumber.Equals(workOderDetail.ProductNumber));
+                    var product = await _context.Products
+                                                .FirstOrDefaultAsync(e => e.ProductNumber.Equals(workOderDetail.ProductNumber));
 
                     if (product == null)
                     {
+                        invalidworkOrders.Add(workOderDetail);
                         continue;
                     }
 
@@ -81,11 +86,11 @@ namespace ShippingApp.Api.Controllers
 
                 if (!result.Succeeded)
                 {
-                    invalidworkOrders.Add(workOrder);
+                    invalidworkOrders.AddRange(group.WorkOrderDetails);
                 }
             }
 
-            return Ok(invalidworkOrders);
+            return Ok(invalidworkOrders.Distinct());
         }
 
 

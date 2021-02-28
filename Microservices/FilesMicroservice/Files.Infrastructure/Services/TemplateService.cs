@@ -41,7 +41,7 @@ namespace Files.Infrastructure.Services
 
                 var types = typeof(T).GetProperties();
 
-                worksheet.Protection.IsProtected = true;
+                //worksheet.Protection.IsProtected = true;
 
                 for (int i = 1; i <= types.Length; i++)
                 {
@@ -54,6 +54,7 @@ namespace Files.Infrastructure.Services
                     column.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                     column.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     column.Width = 30;
+                    column.Style.Numberformat.Format = "@";
 
                     var cell = worksheet.Cells[1, i];
 

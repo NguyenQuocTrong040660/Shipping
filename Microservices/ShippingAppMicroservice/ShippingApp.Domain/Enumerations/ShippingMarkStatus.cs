@@ -1,9 +1,8 @@
 ﻿namespace ShippingApp.Domain.Enumerations
 {
-    public enum ReceiveMarkStatus
+    public enum ShippingMarkStatus
     {
-        Storage,
-        Shipping,
-        Unstuff,
+        New,
+        Shipping
     }
 }

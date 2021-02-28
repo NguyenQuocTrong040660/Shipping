@@ -11,6 +11,8 @@ import { ImportComponent } from 'app/shared/components/import/import.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { EventType } from 'app/shared/enumerations/import-event-type.enum';
+import { ImportService } from 'app/shared/services/import.service';
 
 @Component({
   templateUrl: './shipping-plan.component.html',
@@ -39,6 +41,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
 
   ref: DynamicDialogRef;
 
+  expandedItems: any[] = [];
   private destroyed$ = new Subject<void>();
 
   constructor(
@@ -48,7 +51,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private dialogService: DialogService,
     private filesClient: FilesClient,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private importService: ImportService
   ) {}
 
   ngOnInit() {
@@ -71,6 +75,18 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     this.initForm();
     this.initShippingPlans();
     this.initProducts();
+    this.initEventBroadCast;
+  }
+
+  initEventBroadCast() {
+    this.importService.event$.pipe(takeUntil(this.destroyed$)).subscribe((event) => {
+      switch (event) {
+        case EventType.HideDialog:
+          this.ref.close();
+          this.initShippingPlans();
+          break;
+      }
+    });
   }
 
   initForm() {
@@ -119,6 +135,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   initShippingPlans() {
+    this.expandedItems = [];
+
     this.shippingPlanClients
       .getAllShippingPlan()
       .pipe(takeUntil(this.destroyed$))

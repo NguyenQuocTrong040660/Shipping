@@ -8,7 +8,6 @@ import { Roles } from '../enumerations/roles.enum';
 import { ApplicationUser } from '../models/application-user';
 import { NotificationService } from './notification.service';
 import { States, StateService } from './state.service';
-
 @Injectable({
   providedIn: 'root',
 })

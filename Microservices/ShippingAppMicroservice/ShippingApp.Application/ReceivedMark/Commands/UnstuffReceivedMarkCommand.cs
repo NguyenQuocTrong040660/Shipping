@@ -28,58 +28,56 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
         public async Task<Result> Handle(UnstuffReceivedMarkCommand request, CancellationToken cancellationToken)
         {
-            var receivedMark = await _context.ReceivedMarks.FindAsync(request.UnstuffReceivedMark.Id);
+            var receivedMarkPrinting = await _context.ReceivedMarkPrintings.FindAsync(request.UnstuffReceivedMark.ReceivedMarkPrintingId);
 
-            if (receivedMark == null)
+            if (receivedMarkPrinting == null)
             {
-                throw new ArgumentNullException(nameof(receivedMark));
+                throw new ArgumentNullException(nameof(receivedMarkPrinting));
             }
 
-            if (receivedMark.Status.Equals(nameof(ReceiveMarkStatus.Unstuff)))
+            if (receivedMarkPrinting.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))
             {
                 return Result.Failure("Received mark has already been unstuffed. Please select another received mark");
             }
 
-            if (receivedMark.Quantity <= request.UnstuffReceivedMark.UnstuffQuantity)
+            if (receivedMarkPrinting.Quantity <= request.UnstuffReceivedMark.UnstuffQuantity)
             {
                 return Result.Failure("Not enough quantity of Received Mark to unstuff");
             }
 
-            var lastReceivedMark = _context.ReceivedMarks.Where(x => x.MovementRequestId == receivedMark.MovementRequestId
-                                                     && x.ProductId == receivedMark.ProductId)
-                                                 .OrderByDescending(x => x.Sequence)
-                                                 .FirstOrDefault();
+            var lastReceivedMark = _context.ReceivedMarkPrintings.Where(x => x.ReceivedMarkId == receivedMarkPrinting.ReceivedMarkId
+                                                     && x.ProductId == receivedMarkPrinting.ProductId)
+                                                                 .OrderByDescending(x => x.Sequence)
+                                                                 .FirstOrDefault();
 
             if (lastReceivedMark == null)
             {
                 throw new ArgumentNullException(nameof(lastReceivedMark));
             }
 
-            var firstReceivedMark = new Entities.ReceivedMark
+            var firstReceivedMark = new Entities.ReceivedMarkPrinting
             {
                 Quantity = request.UnstuffReceivedMark.UnstuffQuantity,
-                MovementRequestId = receivedMark.MovementRequestId,
-                Notes = string.Empty,
-                ProductId = receivedMark.ProductId,
+                ReceivedMarkId = receivedMarkPrinting.ReceivedMarkId,
+                ProductId = receivedMarkPrinting.ProductId,
                 Sequence = lastReceivedMark.Sequence + 1,
-                Status = nameof(ReceiveMarkStatus.Storage)
+                Status = nameof(ReceivedMarkStatus.New),
             };
 
-            var secondReceivedMark = new Entities.ReceivedMark
+            var secondReceivedMark = new Entities.ReceivedMarkPrinting
             {
-                Quantity = receivedMark.Quantity - request.UnstuffReceivedMark.UnstuffQuantity,
-                MovementRequestId = receivedMark.MovementRequestId,
-                Notes = string.Empty,
-                ProductId = receivedMark.ProductId,
+                Quantity = receivedMarkPrinting.Quantity - request.UnstuffReceivedMark.UnstuffQuantity,
+                ReceivedMarkId = receivedMarkPrinting.ReceivedMarkId,
+                ProductId = receivedMarkPrinting.ProductId,
                 Sequence = lastReceivedMark.Sequence + 2,
-                Status = nameof(ReceiveMarkStatus.Storage)
+                Status = nameof(ReceivedMarkStatus.New),
             };
 
-            receivedMark.Status = nameof(ReceiveMarkStatus.Unstuff);
-            receivedMark.ParentId = request.UnstuffReceivedMark.Identifier;
+            receivedMarkPrinting.Status = nameof(ReceivedMarkStatus.Unstuff);
+            receivedMarkPrinting.ParentId = request.UnstuffReceivedMark.ReceivedMarkPrintingId;
 
-            await _context.ReceivedMarks.AddAsync(firstReceivedMark);
-            await _context.ReceivedMarks.AddAsync(secondReceivedMark);
+            await _context.ReceivedMarkPrintings.AddAsync(firstReceivedMark);
+            await _context.ReceivedMarkPrintings.AddAsync(secondReceivedMark);
 
             return await  _context.SaveChangesAsync() > 0 
                 ? Result.Success() 

@@ -53,6 +53,15 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id}/WithoutWorkOrder")]
+        [ProducesResponseType(typeof(MovementRequestModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<MovementRequestModel>> GetMovementRequestByIdWithoutWOAsync(int id)
+        {
+            var result = await Mediator.Send(new GetMovementRequestByIdWithoutWorkOderQuery { Id = id });
+            return Ok(result);
+        }
+
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(MovementRequestModel), StatusCodes.Status400BadRequest)]

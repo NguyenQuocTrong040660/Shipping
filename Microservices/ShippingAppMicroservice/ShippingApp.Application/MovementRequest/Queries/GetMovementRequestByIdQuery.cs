@@ -7,13 +7,12 @@ using AutoMapper;
 using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace ShippingApp.Application.MovementRequest.Queries
 {
     public class GetMovementRequestByIdQuery : IRequest<MovementRequestModel>
     {
-        public int Id;
+        public int Id { get; set; }
     }
     public class GetMovementRequestByIdQueryHandler : IRequestHandler<GetMovementRequestByIdQuery, MovementRequestModel>
     {
@@ -34,7 +33,6 @@ namespace ShippingApp.Application.MovementRequest.Queries
                .ThenInclude(i => i.WorkOrder)
                .ThenInclude(i => i.WorkOrderDetails)
                .ThenInclude(i => i.Product)
-               .OrderByDescending(i => i.LastModified)
                .FirstOrDefaultAsync(i => i.Id == request.Id);
 
             return _mapper.Map<MovementRequestModel>(entity);
