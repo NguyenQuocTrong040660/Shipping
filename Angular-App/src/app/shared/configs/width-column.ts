@@ -1,5 +1,5 @@
 export const WidthColumn = {
-  CheckBoxColumn: 50,
+  CheckBoxColumn: 60,
   QuantityColumn: 150,
   IdentityColumn: 100,
   DateColumn: 250,

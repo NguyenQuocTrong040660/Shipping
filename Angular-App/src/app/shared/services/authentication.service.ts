@@ -4,6 +4,7 @@ import { environment } from 'environments/environment';
 import { BehaviorSubject, Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, delay, finalize, tap } from 'rxjs/operators';
 import { LoginRequest, IdentityResult, RefreshTokenRequest, UserClient } from '../api-clients/user.client';
+import { Roles } from '../enumerations/roles.enum';
 import { ApplicationUser } from '../models/application-user';
 import { NotificationService } from './notification.service';
 import { States, StateService } from './state.service';
@@ -36,8 +37,16 @@ export class AuthenticationService implements OnDestroy {
     if (!environment.production) {
       const mockIdentityResult: IdentityResult = {
         succeeded: true,
+        userName: 'admin',
+        roles: [Roles.SystemAdministrator],
+        originalUserName: 'admin',
       };
 
+      this._user.next({
+        userName: mockIdentityResult.userName,
+        roles: mockIdentityResult.roles,
+        originalUserName: mockIdentityResult.originalUserName,
+      });
       return of(mockIdentityResult);
     }
 

@@ -4,6 +4,9 @@ import { MovementRequestClients, MovementRequestModel, ReceivedMarkClients, Rece
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
+import { Roles } from 'app/shared/enumerations/roles.enum';
+import { ApplicationUser } from 'app/shared/models/application-user';
+import { AuthenticationService } from 'app/shared/services/authentication.service';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { PrintService } from 'app/shared/services/print.service';
 import { SelectItem, ConfirmationService } from 'primeng/api';
@@ -17,6 +20,7 @@ import { takeUntil } from 'rxjs/operators';
 export class ReceivedMarkComponent implements OnInit, OnDestroy {
   title = 'Received Mark';
 
+  user: ApplicationUser;
   receivedMarks: ReceivedMarkModel[] = [];
   selectedReceivedMark: ReceivedMarkModel;
   movementRequests: MovementRequestModel[] = [];
@@ -45,7 +49,8 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     private receivedMarkClients: ReceivedMarkClients,
     private notificationService: NotificationService,
     private confirmationService: ConfirmationService,
-    private movementRequestClients: MovementRequestClients
+    private movementRequestClients: MovementRequestClients,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -62,6 +67,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
 
     this.initForm();
     this.intMovementRequest();
+    this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
   }
 
   initForm() {
@@ -325,6 +331,51 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       accept: () => {
         this.receivedMarkClients
           .printReceivedMark(receivedMark.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.onPrint();
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => {
+              this.notificationService.error('Print Received Mark Failed. Please try again');
+            }
+          );
+      },
+    });
+  }
+
+  getHelpText() {
+    if (this.user && this.user.roles && this.user.roles.length > 0 && this.user.roles.includes(Roles.Manager)) {
+      return '';
+    }
+
+    return 'Receive Mark has been printed. Please contact your manager to re-print';
+  }
+
+  canRePrint() {
+    if (this.user && this.user.roles && this.user.roles.length > 0) {
+      return this.user.roles.includes(Roles.Manager);
+    }
+
+    return false;
+  }
+
+  handleRePrintMark(item: ReceivedMarkModel) {
+    if (!this.canRePrint()) {
+      return;
+    }
+
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to re-print this mark ?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.receivedMarkClients
+          .printReceivedMark(item.id)
           .pipe(takeUntil(this.destroyed$))
           .subscribe(
             (result) => {

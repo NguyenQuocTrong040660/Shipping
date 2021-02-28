@@ -41,7 +41,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             if (entity.PrintCount != 0)
             {
-                return Result.Failure("Receive Mark has already been printed. Please contact your manager to re-print");
+                return Result.Failure("Receive Mark has been printed. Please contact your manager to re-print");
             }
 
             entity.PrintCount += 1;
