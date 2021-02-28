@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://api-gatewayapi.spatronics.com",
+    "target": "https://api-gatewayapi.spartronics.com",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

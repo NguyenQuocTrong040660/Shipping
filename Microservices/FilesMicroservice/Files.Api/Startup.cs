@@ -48,10 +48,10 @@ namespace Files.Api
                                   builder =>
                                   {
                                       builder.WithOrigins(
-                                                "http://api-gatewayapi.spatronics.com.vn/",
-                                                "https://api-gatewayapi.spatronics.com.vn/",
-                                                "http://www.api-gatewayapi.spatronics.com.vn/",
-                                                "https://www.api-gatewayapi.spatronics.com.vn/"
+                                                "http://api-gatewayapi.spartronics.com.vn/",
+                                                "https://api-gatewayapi.spartronics.com.vn/",
+                                                "http://www.api-gatewayapi.spartronics.com.vn/",
+                                                "https://www.api-gatewayapi.spartronics.com.vn/"
                                             )
                                             .AllowAnyHeader()
                                             .AllowAnyMethod()
