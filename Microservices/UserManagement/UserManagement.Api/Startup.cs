@@ -119,22 +119,22 @@ namespace UserManagement.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory)
         {
-            //if (!env.IsProduction())
-            //{
+            if (!env.IsProduction())
+            {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+            }
 
-                // Enable middleware to serve generated Swagger as a JSON endpoint.
-                app.UseOpenApi();
-                app.UseSwaggerUi3();
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
-                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-                // specifying the Swagger JSON endpoint.
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserManagement API V1");
-                });
-            //}
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserManagement API V1");
+            });
 
             loggerfactory.AddSerilog();
 

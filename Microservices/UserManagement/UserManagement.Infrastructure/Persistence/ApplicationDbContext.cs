@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
@@ -27,13 +26,13 @@ namespace UserManagement.Infrastructure.Persistence
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            foreach (EntityEntry<AuditableEntity> entry in ChangeTracker.Entries<AuditableEntity>())
+            foreach (EntityEntry<ApplicationUser> entry in ChangeTracker.Entries<ApplicationUser>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy = _currentUserService.UserName;
-                        entry.Entity.Created = _dateTime.Now;
+                        entry.Entity.LastModifiedBy = _currentUserService.UserName;
+                        entry.Entity.LastModified = _dateTime.Now;
                         break;
 
                     case EntityState.Modified:
@@ -43,19 +42,18 @@ namespace UserManagement.Infrastructure.Persistence
                 }
             }
 
-            var result = await base.SaveChangesAsync(cancellationToken);
-            return result;
+            return await base.SaveChangesAsync(cancellationToken);
         }
 
         public override int SaveChanges()
         {
-            foreach (EntityEntry<AuditableEntity> entry in ChangeTracker.Entries<AuditableEntity>())
+            foreach (EntityEntry<ApplicationUser> entry in ChangeTracker.Entries<ApplicationUser>())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        entry.Entity.CreatedBy = _currentUserService.UserName;
-                        entry.Entity.Created = _dateTime.Now;
+                        entry.Entity.LastModifiedBy = _currentUserService.UserName;
+                        entry.Entity.LastModified = _dateTime.Now;
                         break;
 
                     case EntityState.Modified:

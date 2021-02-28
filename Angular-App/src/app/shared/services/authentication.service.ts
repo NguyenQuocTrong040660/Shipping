@@ -1,6 +1,6 @@
-import { environment } from './../../../environments/environment.dev';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from 'environments/environment';
 import { BehaviorSubject, Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, delay, finalize, tap } from 'rxjs/operators';
 import { LoginRequest, IdentityResult, RefreshTokenRequest, UserClient } from '../api-clients/user.client';
@@ -23,7 +23,6 @@ export class AuthenticationService implements OnDestroy {
 
   handleError(error) {
     const errorMessage = error.error instanceof ErrorEvent ? `Error: ${error.error.message}` : `Error Code: ${error.status}\n Message: ${error.message}`;
-
     return throwError(errorMessage);
   }
 

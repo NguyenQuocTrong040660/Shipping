@@ -1,8 +1,7 @@
 import { NotificationService } from 'app/shared/services/notification.service';
-import { CreateUserRequest, CreateUserResult, LockRequest } from './../../../shared/api-clients/user.client';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
+import { CreateUserRequest, CreateUserResult, LockRequest, RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -17,25 +16,22 @@ export class UserManagementComponent implements OnInit {
   title = 'Users Management';
 
   users: UserResult[] = [];
+  newUsers: UserResult[] = [];
+  selectRoleItems: SelectItem[] = [];
   roles: RoleModel[] = [];
 
-  selectItems: SelectItem[] = [];
+  clonedNewUsers: { [s: string]: UserResult } = {};
 
   selectedUsers: UserResult[] = [];
   isShowCreateDialog: boolean;
   isShowSetNewPassworDialog: boolean;
-  isShowDeleteDialog: boolean;
-  createUserForm: FormGroup;
+
   setNewPasswordForm: FormGroup;
 
   cols: any[] = [];
   fields: any[] = [];
 
   TypeColumn = TypeColumn;
-
-  get userForms() {
-    return this.createUserForm.get('userForms') as FormArray;
-  }
 
   get newPasswordForms() {
     return this.setNewPasswordForm.get('newPasswordForms') as FormArray;
@@ -59,7 +55,6 @@ export class UserManagementComponent implements OnInit {
 
     this.initUsers();
     this.initRoles();
-    this.initCreateUserForm();
     this.initSetNewPasswordForm();
   }
 
@@ -80,7 +75,7 @@ export class UserManagementComponent implements OnInit {
       .subscribe(
         (roles) => {
           this.roles = roles;
-          this.selectItems = this._mapRoleModelToSelectItem(roles);
+          this.selectRoleItems = this._mapRoleModelToSelectItem(roles);
         },
         (_) => (this.roles = [])
       );
@@ -92,78 +87,57 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  initCreateUserForm() {
-    this.createUserForm = new FormGroup({
-      userForms: new FormArray([this.userFormsInit()]),
-    });
+  handleOnInputEmail(item: UserResult) {
+    if (item.email.includes('@')) {
+      item.userName = item.email.split('@')[0];
+      return;
+    }
+
+    item.userName = item.email;
   }
 
   _mapRoleModelToSelectItem(roles: RoleModel[]): SelectItem[] {
     return roles.map((role) => ({
-      value: role.id,
+      value: role.name,
       label: role.name,
     }));
   }
 
-  getControlByNameAndIndex(name: string, index: number) {
-    return this.userForms.controls[index].get(name);
-  }
-
-  // Create Users
   openCreateDialog() {
     this.isShowCreateDialog = true;
   }
 
   hideCreateDialog() {
     this.isShowCreateDialog = false;
-    this.resetCreateUserForm();
   }
 
   addUser() {
-    this.userForms.push(this.userFormsInit());
-  }
+    const user: UserResult = {
+      id: this.createUUID(),
+      userName: 'email',
+      email: 'email@example.com',
+      roleName: this.roles && this.roles.length > 0 ? this.roles[0].name : '',
+    };
 
-  userFormsInit(): FormGroup {
-    return new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      roleId: new FormControl('', [Validators.required]),
-    });
-  }
-
-  setUserName(index: number) {
-    const email = this.userForms.controls[index].get('email').value;
-    this.userForms.controls[index].get('userName').setValue(email);
-  }
-
-  resetCreateUserForm() {
-    this.userForms.clear();
-    this.addUser();
+    this.newUsers = [...this.newUsers, user];
   }
 
   onCreate() {
-    if (this.createUserForm.invalid) {
-      return;
-    }
-
-    const { userForms } = this.createUserForm.value;
-
     const createUserRequets: CreateUserResult[] = [];
 
-    userForms.forEach((item: { email: string; roleId: string }) => {
-      const { email, roleId } = item;
-
+    this.newUsers.forEach((item) => {
       const request: CreateUserRequest = {
-        userName: email,
-        email,
-        roleId,
+        userName: item.userName,
+        email: item.email,
+        roleId: this._mapRoleNameToRoleId(item.roleName),
       };
 
       createUserRequets.push(request);
     });
 
-    this.createUserForm.disable();
     this.userClient.apiUserAdminUsersPost(createUserRequets).subscribe(
       (i: CreateUserResult[]) => {
+        //!TODO: Call Communication API
         this.hideCreateDialog();
         this.initUsers();
       },
@@ -188,13 +162,10 @@ export class UserManagementComponent implements OnInit {
   }
 
   newPasswordFormsInit(email: string): FormGroup {
-    return new FormGroup(
-      {
-        email: new FormControl(email, [Validators.required, Validators.email]),
-        confirmEmail: new FormControl('', [Validators.required, Validators.email]),
-      },
-      this.matchContent('email', 'confirmEmail')
-    );
+    return new FormGroup({
+      email: new FormControl(email, [Validators.required, Validators.email]),
+      confirmEmail: new FormControl('', [Validators.required, Validators.email]),
+    });
   }
 
   resetSetNewPasswordForm() {
@@ -203,16 +174,13 @@ export class UserManagementComponent implements OnInit {
 
   onSetNewPassword() {
     console.log('this.setNewPasswordForm: ', this.setNewPasswordForm.value);
-
-    // this.hideSetNewPasswordDialog();
   }
 
   openLockDialog() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to lock this user?',
+      message: `Are you sure you want to lock ${this.selectedUsers.length > 0 ? 'these users' : 'this user'} ?`,
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
-
       accept: () => {
         this.selectedUsers.forEach((u) => {
           const lockRequest: LockRequest = {
@@ -239,10 +207,9 @@ export class UserManagementComponent implements OnInit {
 
   openUnlockDialog() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to unlock this user?',
+      message: `Are you sure you want to ${this.selectedUsers.length > 0 ? 'these users' : 'this user'}?`,
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
-
       accept: () => {
         this.selectedUsers.forEach((u) => {
           const lockRequest: LockRequest = {
@@ -267,20 +234,47 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  removeUser(index: number, formArray: FormArray) {
-    formArray.removeAt(index);
+  createUUID(): string {
+    let dt = new Date().getTime();
+    let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      let r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16);
+    });
+
+    return uuid;
   }
 
-  private matchContent(controlName: string, matchingControlName: string) {
-    return (formGroup: FormGroup) => {
-      const control = formGroup.controls[controlName];
-      const matchingControl = formGroup.controls[matchingControlName];
+  onRowEditInit(user: UserResult): void {
+    this.clonedNewUsers[user.id] = { ...user };
+  }
 
-      if (control.value !== matchingControl.value) {
-        return { matchContent: true };
-      } else {
-        return null;
-      }
-    };
+  onRowDelete(user: UserResult): void {
+    this.newUsers = this.newUsers.filter((i) => i.id !== user.id);
+  }
+
+  onRowEditSave(user: UserResult): void {
+    if (!user.email && !user.userName) {
+      this.notificationService.error('Please specify a email to register new user');
+    }
+
+    delete this.clonedNewUsers[user.id];
+  }
+
+  onRowEditCancel(user: UserResult, index: number): void {
+    this.newUsers[index] = this.clonedNewUsers[user.id];
+    delete this.clonedNewUsers[user.id];
+  }
+
+  canCreateUsers(newsUser: UserResult[]): boolean {
+    if (newsUser.length === 0) {
+      return false;
+    }
+
+    return newsUser.filter((i) => !!i.email === false).length === 0;
+  }
+
+  _mapRoleNameToRoleId(roleName: string): string {
+    return this.roles.find((x) => x.name.toLowerCase() === roleName.toLowerCase()).id;
   }
 }

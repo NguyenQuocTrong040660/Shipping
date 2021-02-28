@@ -51,8 +51,10 @@
               ]
             },
             "dev": {
-              "optimization": true,
-              "aot": true,
+              "outputHashing": "all",
+              "namedChunks": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

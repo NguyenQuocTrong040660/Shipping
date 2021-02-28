@@ -5,7 +5,6 @@ namespace UserManagement.Application.Common.Models
     public class LoginRequest
     {
         [Required]
-        [EmailAddress]
         public string UserName { get; set; }
 
         [Required]

@@ -1,3 +1,4 @@
+import { environment } from 'environments/environment';
 import { IdentityResult } from './../shared/api-clients/user.client';
 import { takeUntil } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -42,8 +43,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   initForm() {
     this.loginForm = this.fb.group({
-      userName: ['admin@gmail.com', [Validators.required, Validators.email]],
-      password: ['ad@123456', [Validators.required, Validators.minLength(6)]],
+      userName: [environment.production ? '' : 'admin@gmail.com', [Validators.required]],
+      password: [environment.production ? '' : 'ad@123456', [Validators.required, Validators.minLength(6)]],
     });
   }
 

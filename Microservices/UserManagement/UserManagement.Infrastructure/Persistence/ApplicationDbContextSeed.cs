@@ -12,7 +12,7 @@ namespace UserManagement.Infrastructure.Persistence
     {
         public static async Task SeedDefaultUserAsync(UserManager<ApplicationUser> userManager)
         {
-            var defaultUser = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com" };
+            var defaultUser = new ApplicationUser { UserName = "admin", Email = "admin@gmail.com" };
 
             if (userManager.Users.All(u => u.UserName != defaultUser.UserName))
             {
@@ -21,7 +21,7 @@ namespace UserManagement.Infrastructure.Persistence
                 await userManager.CreateAsync(defaultUser, "ad@123456");
             }
 
-            var user = await userManager.FindByNameAsync("admin@gmail.com");
+            var user = await userManager.FindByNameAsync("admin");
 
             if (user != null)
             {

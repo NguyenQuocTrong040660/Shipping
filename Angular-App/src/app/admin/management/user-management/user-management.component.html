@@ -115,83 +115,100 @@
   </p-table>
 </div>
 
-<!-- Create Users Dialog -->
 <p-dialog header="Create Users" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowCreateDialog" (onHide)="hideCreateDialog()">
   <ng-template pTemplate="content">
-    <form [formGroup]="createUserForm">
-      <div formArrayName="userForms">
-        <button class="p-button-primary create-user-form__button-create" label="New User" pButton pRipple icon="pi pi-plus" (click)="addUser()"></button>
-        <div *ngFor="let user of createUserForm.get('userForms')['controls']; let i = index">
-          <div [formGroupName]="i">
-            <div class="create-user-form__group-inline p-grid">
-              <div class="p-field p-col-4">
-                <label for="email">Email</label>
-                <input
-                  [ngClass]="{
-                    'ng-dirty': getControlByNameAndIndex('email', i).invalid && (getControlByNameAndIndex('email', i).dirty || getControlByNameAndIndex('email', i).touched)
-                  }"
-                  [formControl]="getControlByNameAndIndex('email', i)"
-                  id="email"
-                  type="email"
-                  pInputText
-                  aria-describedby="email-error"
-                />
+    <p-toolbar styleClass="p-mb-2">
+      <ng-template pTemplate="left">
+        <button class="p-button-primary" label="Add User" pButton pRipple icon="pi pi-plus" (click)="addUser()"></button>
+      </ng-template>
+      <ng-template pTemplate="right"> </ng-template>
+    </p-toolbar>
 
-                <ng-container *ngIf="getControlByNameAndIndex('email', i).invalid && (getControlByNameAndIndex('email', i).dirty || getControlByNameAndIndex('email', i).touched)">
-                  <small class="p-invalid p-error">Please specify a valid email</small>
-                </ng-container>
-              </div>
-              <div class="p-field p-col-3">
-                <label for="userName">User Name</label>
-                <input id="userName" type="text" pInputText disabled [value]="userForms.value[i].email" />
-              </div>
-              <div class="p-field p-col-4">
-                <label for="role">Role</label>
-                <p-dropdown
-                  [ngClass]="{
-                    'ng-dirty': getControlByNameAndIndex('roleId', i).invalid && (getControlByNameAndIndex('roleId', i).dirty || getControlByNameAndIndex('roleId', i).touched)
-                  }"
-                  [options]="selectItems"
-                  [formControl]="getControlByNameAndIndex('roleId', i)"
-                  id="role"
-                  placeholder="Select a Role"
-                  appendTo="body"
-                ></p-dropdown>
+    <p-table [value]="newUsers" dataKey="id" editMode="row">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Email</th>
+          <th>UserName</th>
+          <th>Role</th>
+          <th style="width: 8rem"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item let-editing="editing" let-ri="rowIndex">
+        <tr [pEditableRow]="item">
+          <td>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="item.email" (ngModelChange)="handleOnInputEmail(item)" />
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ item.email }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
+          <td>
+            {{ item.userName }}
+          </td>
+          <td>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <p-dropdown [options]="selectRoleItems" appendTo="body" [(ngModel)]="item.roleName" [style]="{ width: '100%' }"></p-dropdown>
+              </ng-template>
+              <ng-template pTemplate="output">
+                {{ item.roleName }}
+              </ng-template>
+            </p-cellEditor>
+          </td>
 
-                <ng-container
-                  *ngIf="getControlByNameAndIndex('roleId', i).invalid && (getControlByNameAndIndex('roleId', i).dirty || getControlByNameAndIndex('roleId', i).touched)"
-                >
-                  <small *ngIf="getControlByNameAndIndex('roleId', i).errors.required" class="p-invalid p-error"> Please specify a role </small>
-                </ng-container>
-              </div>
-              <div class="p-field p-col-1 create-user-form__button-container">
-                <ng-container *ngIf="i !== 0">
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    icon="pi pi-times"
-                    class="p-button-rounded p-button-danger create-user-form__button-remove"
-                    icon="pi pi-times"
-                    (click)="removeUser(i, userForms)"
-                  ></button>
-                </ng-container>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
+          <td style="text-align: center">
+            <button
+              *ngIf="!editing"
+              pButton
+              pRipple
+              type="button"
+              pInitEditableRow
+              icon="pi pi-pencil"
+              (click)="onRowEditInit(item)"
+              class="p-button-rounded p-button-text p-mr-2"
+            ></button>
+
+            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-times" (click)="onRowDelete(item)" class="p-button-rounded p-button-text"></button>
+
+            <button
+              *ngIf="editing"
+              pButton
+              pRipple
+              type="button"
+              pSaveEditableRow
+              icon="pi pi-check"
+              (click)="onRowEditSave(item)"
+              class="p-button-rounded p-button-text p-button-success p-mr-2"
+            ></button>
+
+            <button
+              *ngIf="editing"
+              pButton
+              pRipple
+              type="button"
+              pCancelEditableRow
+              icon="pi pi-times"
+              (click)="onRowEditCancel(item, ri)"
+              class="p-button-rounded p-button-text p-button-danger"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <div class="p-text-left p-mt-4">Notes: <span class="p-text-bold"> Please change the example email to specific email.</span></div>
   </ng-template>
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideCreateDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="createUserForm.invalid" (click)="onCreate()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="!canCreateUsers(newUsers)" (click)="onCreate()"></button>
   </ng-template>
 </p-dialog>
 
-<!-- Set New Password Dialog -->
-<p-dialog header="Set New Password" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowSetNewPassworDialog" (onHide)="hideSetNewPasswordDialog()">
+<p-dialog header="Reset user password" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowSetNewPassworDialog" (onHide)="hideSetNewPasswordDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="setNewPasswordForm">
       <div formArrayName="newPasswordForms">
@@ -217,7 +234,7 @@
                     newPasswordForms.controls[i].get('email').invalid && (newPasswordForms.controls[i].get('email').dirty || newPasswordForms.controls[i].get('email').touched)
                   "
                 >
-                  <small class="p-invalid p-error">Invalid Email.</small>
+                  <small class="p-invalid p-error">Please specify a valid email</small>
                 </ng-container>
               </div>
               <div class="p-field p-col-6">
@@ -235,25 +252,10 @@
                 />
                 <ng-container
                   *ngIf="
-                    newPasswordForms.controls[i].errors &&
-                    newPasswordForms.controls[i].errors.matchContent &&
-                    (newPasswordForms.controls[i].get('confirmEmail').dirty || newPasswordForms.controls[i].get('confirmEmail').touched)
+                    newPasswordForms.controls[i].invalid && (newPasswordForms.controls[i].get('confirmEmail').dirty || newPasswordForms.controls[i].get('confirmEmail').touched)
                   "
                 >
-                  <small class="p-invalid p-error">Email not match.</small>
-                </ng-container>
-              </div>
-              <div class="p-field p-col-1 create-user-form__button-container">
-                <ng-container *ngIf="i !== 0">
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    icon="pi pi-times"
-                    class="p-button-rounded p-button-danger create-user-form__button-remove"
-                    icon="pi pi-times"
-                    (click)="removeUser(i, newPasswordForms)"
-                  ></button>
+                  <small class="p-invalid p-error">Please confirm the email you want to reset password</small>
                 </ng-container>
               </div>
             </div>

@@ -39,7 +39,10 @@ namespace UserManagement.Infrastructure.Services
             return user.Id;
         }
 
-        public async Task<(Result, string)> CreateUserAsync(string userName, string password, bool mustChangePassword = false, string email = null)
+        public async Task<(Result, string)> CreateUserAsync(string userName, 
+            string password, 
+            bool mustChangePassword = false, 
+            string email = null)
         {
             var user = new ApplicationUser
             {
@@ -93,6 +96,7 @@ namespace UserManagement.Infrastructure.Services
         public async Task<Result> GenerateNewPasswordAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+
             if (user == null)
             {
                 return Result.Failure("Can not be found the user");
