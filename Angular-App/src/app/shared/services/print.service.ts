@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { Roles } from '../enumerations/roles.enum';
+import { ApplicationUser } from '../models/application-user';
 
 @Injectable({
   providedIn: 'root',
@@ -27,5 +29,13 @@ export class PrintService {
     window.print();
     this.isPrinting = false;
     this.router.navigate(['/' + this.componentSelector, { outlets: { print: null } }]);
+  }
+
+  canRePrint(user: ApplicationUser) {
+    if (user && user.roles && user.roles.length > 0 && user.roles.includes(Roles.Manager)) {
+      return true;
+    }
+
+    return false;
   }
 }

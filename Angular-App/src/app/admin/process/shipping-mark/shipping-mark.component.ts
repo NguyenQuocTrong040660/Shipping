@@ -4,6 +4,8 @@ import { ProductClients, ProductModel, ShippingMarkClients, ShippingMarkModel, S
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
+import { ApplicationUser } from 'app/shared/models/application-user';
+import { AuthenticationService } from 'app/shared/services/authentication.service';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { PrintService } from 'app/shared/services/print.service';
 import { ConfirmationService, SelectItem } from 'primeng/api';
@@ -17,6 +19,7 @@ import { takeUntil } from 'rxjs/operators';
 export class ShippingMarkComponent implements OnInit, OnDestroy {
   title = 'Shipping Mark';
 
+  user: ApplicationUser;
   shippingMarks: ShippingMarkModel[] = [];
   products: ProductModel[] = [];
   selectedShippingMark: ShippingMarkModel;
@@ -72,7 +75,8 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     private productClients: ProductClients,
     private notificationService: NotificationService,
     private shippingRequestClients: ShippingRequestClients,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private authenticationService: AuthenticationService
   ) {}
 
   ngOnInit() {
@@ -91,6 +95,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     this.initForm();
     this.initProducts();
     this.intMovementRequest();
+    this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
   }
 
   initForm() {
@@ -337,6 +342,41 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
             (_) => {
               this.notificationService.error('Print Shipping Mark Failed. Please try again');
             }
+          );
+      },
+    });
+  }
+
+  getHelpText() {
+    return this.printService.canRePrint(this.user) ? '' : 'Shipping Mark has been printed. Please contact your manager to re-print';
+  }
+
+  canRePrint() {
+    return this.printService.canRePrint(this.user) ? true : false;
+  }
+
+  handleRePrintMark(item: ShippingMarkModel) {
+    if (!this.canRePrint()) {
+      return;
+    }
+
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to re-print this mark ?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.shippingMarkClients
+          .printShippingMark(item.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.onPrint();
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => this.notificationService.error('Print Shipping Mark Failed. Please try again')
           );
       },
     });

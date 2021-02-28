@@ -4,7 +4,6 @@ import { MovementRequestClients, MovementRequestModel, ReceivedMarkClients, Rece
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
-import { Roles } from 'app/shared/enumerations/roles.enum';
 import { ApplicationUser } from 'app/shared/models/application-user';
 import { AuthenticationService } from 'app/shared/services/authentication.service';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -349,19 +348,11 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   getHelpText() {
-    if (this.user && this.user.roles && this.user.roles.length > 0 && this.user.roles.includes(Roles.Manager)) {
-      return '';
-    }
-
-    return 'Receive Mark has been printed. Please contact your manager to re-print';
+    return this.printService.canRePrint(this.user) ? '' : 'Receive Mark has been printed. Please contact your manager to re-print';
   }
 
   canRePrint() {
-    if (this.user && this.user.roles && this.user.roles.length > 0) {
-      return this.user.roles.includes(Roles.Manager);
-    }
-
-    return false;
+    return this.printService.canRePrint(this.user) ? true : false;
   }
 
   handleRePrintMark(item: ReceivedMarkModel) {
