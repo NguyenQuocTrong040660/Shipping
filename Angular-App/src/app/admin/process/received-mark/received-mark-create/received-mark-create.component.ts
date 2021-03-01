@@ -26,10 +26,8 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
   stepItems: MenuItem[];
   stepIndex = 0;
 
-  WidthColumn = WidthColumn;
-  TypeColumn = TypeColumn;
-
   selecteMovementRequestItems: SelectItem[] = [];
+  dataGroupByProduct = [];
 
   get notesControl() {
     return this.receivedMarkForm.get('notes');
@@ -118,6 +116,21 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
         break;
       }
       case 1: {
+        this.dataGroupByProduct = [];
+
+        const products = this.receivedMarkMovements.map((i) => i.product);
+        const productNumbers = this.receivedMarkMovements.map((i) => i.product.productNumber);
+        let uniqueProducts = [...new Set(productNumbers)];
+        uniqueProducts.forEach((item) => {
+          const product = {
+            productNumber: item,
+            productName: products.find((i) => i.productNumber === item).productName,
+            quantity: this.receivedMarkMovements.map((i) => i.product.productNumber === item && i.quantity).reduce((a: number, b: number) => a + b, 0),
+          };
+
+          this.dataGroupByProduct.push(product);
+        });
+
         break;
       }
     }

@@ -4,7 +4,6 @@ using ShippingApp.Application.Common.Results;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Domain.Models;
 using System;
-using Entities = ShippingApp.Domain.Entities;
 using System.Threading;
 using System.Threading.Tasks;
 using ShippingApp.Domain.Enumerations;
@@ -34,21 +33,21 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            if (!entity.Status.Equals(nameof(ReceivedMarkStatus.Storage)))
+            if (!entity.Status.Equals(nameof(ReceivedMarkStatus.New)))
             {
-                return Result.Failure("Could not print Receive Mark");
+                return Result.Failure("Could not print mark");
             }
 
             if (entity.PrintCount != 0)
             {
-                return Result.Failure("Receive Mark has been printed. Please contact your manager to re-print");
+                return Result.Failure("This mark has been printed. Please contact your manager to re-print");
             }
 
             entity.PrintCount += 1;
 
             return await _context.SaveChangesAsync() > 0
                 ? Result.Success()
-                : Result.Failure("Failed to print Received Mark");
+                : Result.Failure("Failed to print mark");
         }
     }
 }

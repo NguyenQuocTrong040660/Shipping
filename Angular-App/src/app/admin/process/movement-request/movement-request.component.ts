@@ -6,7 +6,7 @@ import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
-import { forkJoin, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -109,26 +109,13 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
     const { workOrders } = this.movementRequestForm.value;
 
     if (workOrders && workOrders.length > 0) {
-      forkJoin(workOrders.map((workOrder: WorkOrderModel) => this.workOrderClients.getWorkOrderById(workOrder.id)))
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe((results) => {
-          results.map((workOder: WorkOrderModel) => {
-            workOder.workOrderDetails.map((item) => {
-              const movementRequestDetail: MovementRequestDetailModel = {
-                product: item.product,
-                productId: item.productId,
-                workOrder: workOder,
-                workOrderId: workOder.id,
-                quantity: item.quantity,
-                movementRequestId: 0,
-              };
-
-              this.movementRequestDetails.push(movementRequestDetail);
-            });
-          });
-
+      this.movementRequestClients.generateMovementRequests(workOrders).subscribe(
+        (movementRequestDetails) => {
+          this.movementRequestDetails = movementRequestDetails;
           this.movementRequestDetails.forEach((i, index) => (i['id'] = ++index));
-        });
+        },
+        (_) => (this.movementRequestDetails = [])
+      );
     }
   }
 

@@ -13,7 +13,7 @@ namespace ShippingApp.Application.WorkOrder.Queries
 {
     public class GetWorkOrderByIdQuery : IRequest<WorkOrderModel>
     {
-        public int Id;
+        public int Id { get; set; }
     }
     public class GetWorkOrderByIdQueryHandler : IRequestHandler<GetWorkOrderByIdQuery, WorkOrderModel>
     {

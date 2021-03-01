@@ -10,6 +10,7 @@ using ShippingApp.Application.Common.Results;
 using System.Linq;
 using System.Collections.Generic;
 using ShippingApp.Domain.Enumerations;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShippingApp.Application.ReceivedMark.Commands
 {
@@ -37,7 +38,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
         {
             if (request.ReceivedMark.ReceivedMarkMovements == null || !request.ReceivedMark.ReceivedMarkMovements.Any())
             {
-                return Result.Failure("");
+                return Result.Failure("Failed to create received mark");
             }
 
             var receivedMarkPrintings = new List<Entities.ReceivedMarkPrinting>();
@@ -55,7 +56,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             foreach (var group in groupByProducts)
             {
                 int remainQty = group.ReceivedQty;
-                var product = await _context.Products.FindAsync(group.ProductId);
+                var product = await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == group.ProductId);
                 int sequence = 1;
 
                 while (remainQty > 0)
@@ -75,7 +76,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                         receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
                         {
                             ProductId = product.Id,
-                            Quantity = product.QtyPerPackage,
+                            Quantity = remainQty,
                             Sequence = sequence,
                             Status = nameof(ReceivedMarkStatus.New),
                         });
@@ -105,7 +106,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             return await _context.SaveChangesAsync() > 0
                 ? Result.Success()
-                : Result.Failure("");
+                : Result.Failure("Failed to create received mark");
         }
 
         private List<Entities.ReceivedMarkMovement> BuildReceivedMarkMovements(ICollection<ReceivedMarkMovementModel> receivedMarkMovements)
@@ -115,7 +116,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 MovementRequestId = x.MovementRequestId,
                 ProductId = x.ProductId,
                 Quantity = x.Quantity,
-                ReceivedMarkId = x.ReceivedMarkId,
+                ReceivedMarkId = 0,
             }).ToList();
         }
     }

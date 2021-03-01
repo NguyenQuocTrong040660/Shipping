@@ -1,0 +1,105 @@
+<p-dialog [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+  <ng-template pTemplate="content">
+    <p-toolbar styleClass="p-mb-4">
+      <ng-template pTemplate="left"></ng-template>
+      <ng-template pTemplate="right">
+        <button (click)="printMark(item)" label="Print Mark" pButton pRipple type="button" icon="pi pi-print" class="p-button-help"></button>
+      </ng-template>
+    </p-toolbar>
+
+    <p-table dataKey="id" [value]="receivedMarkPrintings" [rows]="20" [columns]="cols" [paginator]="true">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <ng-container *ngFor="let col of columns">
+            <ng-container [ngSwitch]="col.type">
+              <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+                <th class="p-text-center" style="width: 8rem">
+                  {{ col.header }}
+                </th>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
+                <th class="p-text-center" style="width: 8rem"></th>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <th class="p-text-center">
+                  {{ col.header }}
+                </th>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length" class="text-center">No records found</td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-item let-columns="columns">
+        <tr>
+          <ng-container *ngFor="let col of columns">
+            <ng-container [ngSwitch]="col.type">
+              <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] | date: 'dd/MM/yyyy' }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+                <td>
+                  {{ item[col.field][col.subField] }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] | number }}
+                </td>
+              </ng-container>
+
+              <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
+                <td class="p-text-center">
+                  <ng-container *ngIf="item['printCount'] !== 0; else canUnSutff">
+                    <button
+                      [disabled]="!canRePrint"
+                      [pTooltip]="getHelpText()"
+                      pButton
+                      pRipple
+                      tooltipPosition="left"
+                      type="button"
+                      icon="pi pi-lock"
+                      class="p-button-rounded p-button-danger p-button-text"
+                      (click)="handleRePrintMark(item)"
+                    ></button>
+                  </ng-container>
+                  <ng-template #canUnSutff>
+                    <button
+                      *ngIf="item['printCount'] === 0"
+                      (click)="handleUnStuffMark(item)"
+                      pButton
+                      pRipple
+                      tooltipPosition="left"
+                      type="button"
+                      pTooltip="Unstuff Mark"
+                      icon="pi pi-clone"
+                      class="p-button-rounded p-button-secondary p-button-text"
+                    ></button>
+                  </ng-template>
+                </td>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+</p-dialog>

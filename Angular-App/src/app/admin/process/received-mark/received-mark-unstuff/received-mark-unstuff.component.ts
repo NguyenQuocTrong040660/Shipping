@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReceivedMarkPrintingModel } from 'app/shared/api-clients/shipping-app.client';
 
 @Component({
   selector: 'app-received-mark-unstuff',
@@ -9,7 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class ReceivedMarkUnstuffComponent implements OnInit {
   @Input() titleDialog = '';
   @Input() isShowDialog = false;
-  @Input() receivedMark = null;
+  @Input() selectedReceivedMarkPrinting: ReceivedMarkPrintingModel;
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
@@ -33,12 +34,14 @@ export class ReceivedMarkUnstuffComponent implements OnInit {
 
   initForm() {
     this.receivedMarkUnstuffForm = this.fb.group({
-      id: [0],
+      receivedMarkPrintingId: [0],
       unstuffQuantity: [0, [Validators.required]],
     });
   }
 
   onSubmit() {
+    let { receivedMarkPrintingId } = this.receivedMarkUnstuffForm.value;
+    receivedMarkPrintingId = this.selectedReceivedMarkPrinting.id;
     this.submitEvent.emit(this.receivedMarkUnstuffForm.value);
   }
 }

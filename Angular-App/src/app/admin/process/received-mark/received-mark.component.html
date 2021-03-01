@@ -24,18 +24,6 @@
         (click)="openEditDialog(selectedReceivedMark)"
       ></button>
 
-      <button class="p-button-secondary p-mr-2" pButton pRipple label="Unstuff" icon="pi pi-clone" [disabled]="!selectedReceivedMark" (click)="openUnstuffDialog()"></button>
-
-      <button
-        class="p-button-help p-mr-2"
-        pButton
-        pRipple
-        icon="pi pi-print"
-        label="Print"
-        [disabled]="!selectedReceivedMark"
-        (click)="printReceivedMark(selectedReceivedMark)"
-      ></button>
-
       <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
@@ -50,6 +38,7 @@
     [paginator]="true"
     [scrollable]="true"
     [(selection)]="selectedReceivedMark"
+    [expandedRowKeys]="expandedItems"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
@@ -90,13 +79,7 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-item let-columns="columns" let-rowIndex="rowIndex">
-      <tr *ngIf="rowGroupMetadata[item.product.productNumber].index === rowIndex">
-        <td [attr.colspan]="columns.length">
-          <span class="p-text-bold p-ml-2">{{ item.product.productNumber }} - {{ item.product.productName }}</span>
-        </td>
-      </tr>
-
+    <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
@@ -141,22 +124,74 @@
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
               <td class="p-text-center">
-                {{ item[col.field] }}
+                {{ item[col.field] | number }}
+              </td>
+            </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
+              <td class="p-text-center">
+                <button
+                  type="button"
+                  pButton
+                  pRipple
+                  (click)="getReceivedMarkSummaries(item)"
+                  [pRowToggler]="item"
+                  class="p-button-text p-button-rounded p-button-plain"
+                  [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
+                ></button>
               </td>
             </ng-container>
           </ng-container>
         </ng-container>
       </tr>
     </ng-template>
+
+    <ng-template pTemplate="rowexpansion" let-receivedMark>
+      <tr>
+        <td colspan="6" class="movement-request__expaned">
+          <div>
+            <p-table class="movement-request__expaned-table" [value]="receivedMark.receivedMarkSummaries">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Total Quantity</th>
+                  <th class="p-text-center">Total Package</th>
+                  <th class="p-text-center"></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>{{ item?.product?.productNumber }}</td>
+                  <td>{{ item?.product?.productName }}</td>
+                  <td class="p-text-center">{{ item?.totalQuantity }}</td>
+                  <td class="p-text-center">{{ item?.totalPackage }}</td>
+                  <td class="p-text-center">
+                    <button
+                      pButton
+                      pRipple
+                      pTooltip="Printing Details"
+                      tooltipPosition="left"
+                      icon="pi pi-briefcase"
+                      class="p-button-rounded p-button-text"
+                      (click)="showDetailReceivedMarkSummary(receivedMark, item)"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
   </p-table>
 </div>
 
 <app-received-mark-unstuff
-  [titleDialog]="titleDialog"
+  [titleDialog]="titleDialogUnstufff"
   [isShowDialog]="isShowDialogUnstuff"
-  [receivedMark]="selectedReceivedMark"
+  [selectedReceivedMarkPrinting]="selectedReceivedMarkPrinting"
   (submitEvent)="handleSubmitEventUnstuff($event)"
-  (hideDialogEvent)="hideDialog()"
+  (hideDialogEvent)="hideDialogUnStuff()"
 ></app-received-mark-unstuff>
 
 <app-received-mark-create
@@ -170,5 +205,18 @@
   (selectedMovementRequestsEvent)="handleSelectedWorkOrders()"
 >
 </app-received-mark-create>
+
+<app-received-mark-details
+  [titleDialog]="titleDialog"
+  [isShowDialog]="isShowDialogDetail"
+  [user]="user"
+  [canRePrint]="canRePrint"
+  [receivedMarkPrintings]="receivedMarkPrintings"
+  (hideDialogEvent)="hideDialog()"
+  (printMarkEvent)="printReceivedMark($event)"
+  (rePrintMarkEvent)="handleRePrintMark($event)"
+  (unstuffMarkEvent)="openUnstuffDialog($event)"
+>
+</app-received-mark-details>
 
 <app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ReceivedMark" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

@@ -135,7 +135,7 @@
             <p-button
               [disabled]="receivedMarkForm.invalid"
               styleClass="p-button-text"
-              label="Submit"
+              label="Next"
               (onClick)="nextPage(stepIndex)"
               icon="pi pi-angle-right"
               iconPos="right"
@@ -149,10 +149,9 @@
       <p-card>
         <ng-template pTemplate="content">
           <p-card styleClass="p-card-custom">
-            <p-table dataKey="id" [value]="receivedMarkMovements">
+            <p-table dataKey="id" [value]="dataGroupByProduct">
               <ng-template pTemplate="header" let-columns>
                 <tr>
-                  <th class="p-text-center">Movement Request</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
                   <th class="p-text-center">Quantity</th>
@@ -161,12 +160,11 @@
 
               <ng-template pTemplate="body" let-item>
                 <tr>
-                  <td>{{ item?.movementRequest?.identifier }}</td>
                   <td>
-                    {{ item?.product?.productNumber }}
+                    {{ item?.productNumber }}
                   </td>
                   <td>
-                    {{ item?.product?.productName }}
+                    {{ item?.productName }}
                   </td>
                   <td class="p-text-center">
                     {{ item?.quantity | number}}
@@ -179,7 +177,7 @@
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
-            <p-button [disabled]="receivedMarkForm.invalid" styleClass="p-button-text" label="Submit" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
+            <p-button [disabled]="receivedMarkForm.invalid" styleClass="p-button-text" label="Complete" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
           </div>
         </ng-template>
       </p-card>

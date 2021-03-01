@@ -57,7 +57,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ReceivedMarkModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> UpdateReceivedMarkAsync(int id, [FromBody]ReceivedMarkModel model)
+        public async Task<ActionResult<Result>> UpdateReceivedMarkAsync(int id, [FromBody] ReceivedMarkModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -98,6 +98,48 @@ namespace ShippingApp.Api.Controllers
         public async Task<ActionResult<Result>> PrintReceivedMarkAsync(int receivedMarkPrintingId)
         {
             var result = await Mediator.Send(new PrintReceivedMarkCommand { ReceivedMarkPrintingId = receivedMarkPrintingId });
+            return Ok(result);
+        }
+
+        [HttpPost("Generate/ReceivedMarkMovements")]
+        [ProducesResponseType(typeof(List<ReceivedMarkMovementModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReceivedMarkMovementModel>>> GenerateReceivedMarkMovements([FromBody] List<MovementRequestModel> movementRequests)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(movementRequests);
+            }
+
+            var result = await Mediator.Send(new GenerateReceivedMarkMovementsByMovementRequestsQuery 
+            { 
+                MovementRequests = movementRequests 
+            });
+
+            return Ok(result);
+        }
+
+        [HttpGet("ReceivedMarkSummaries/{receivedMarkId}")]
+        [ProducesResponseType(typeof(List<ReceivedMarkSummaryModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReceivedMarkSummaryModel>>> GetReceivedMarkSummariesAsync(int receivedMarkId)
+        {
+            var result = await Mediator.Send(new GetReceivedMarkSummariesByIdQuery { ReceivedMarkId = receivedMarkId });
+            return Ok(result);
+        }
+
+        [HttpGet("ReceivedMarkPrintings/{receivedMarkId}/{productId}")]
+        [ProducesResponseType(typeof(List<ReceivedMarkPrintingModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReceivedMarkPrintingModel>>> GetReceivedMarkPrintingsAsync(
+            int receivedMarkId, int productId)
+        {
+            var result = await Mediator.Send(new GetReceivedMarkPrintingsByIdQuery 
+            { 
+                ReceivedMarkId = receivedMarkId, 
+                ProductId = productId 
+            });
+
             return Ok(result);
         }
     }

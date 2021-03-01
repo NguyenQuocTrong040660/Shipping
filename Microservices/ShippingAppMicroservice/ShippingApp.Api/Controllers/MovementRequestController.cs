@@ -85,5 +85,19 @@ namespace ShippingApp.Api.Controllers
             var result = await Mediator.Send(new DeleteMovementRequestCommand { Id = id });
             return Ok(result);
         }
+
+        [HttpPost("Generate/MovementRequests")]
+        [ProducesResponseType(typeof(List<MovementRequestModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<MovementRequestModel>>> GenerateMovementRequests([FromBody] List<WorkOrderModel> workOrders)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(workOrders);
+            }
+
+            var result = await Mediator.Send(new GenerateMovementRequestDetailsByWorkOdersQuery { WorkOrderModels = workOrders });
+            return Ok(result);
+        }
     }
 }

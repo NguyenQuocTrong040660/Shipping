@@ -957,6 +957,63 @@ export class MovementRequestClients {
         }
         return _observableOf<MovementRequestModel>(<any>null);
     }
+
+    generateMovementRequests(workOrders: WorkOrderModel[]): Observable<MovementRequestModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/movementrequest/generate/movementrequests";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(workOrders);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGenerateMovementRequests(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGenerateMovementRequests(<any>response_);
+                } catch (e) {
+                    return <Observable<MovementRequestModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<MovementRequestModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGenerateMovementRequests(response: HttpResponseBase): Observable<MovementRequestModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <MovementRequestModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<MovementRequestModel[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -1786,6 +1843,178 @@ export class ReceivedMarkClients {
             }));
         }
         return _observableOf<Result>(<any>null);
+    }
+
+    generateReceivedMarkMovements(movementRequests: MovementRequestModel[]): Observable<ReceivedMarkMovementModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/generate/receivedmarkmovements";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(movementRequests);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGenerateReceivedMarkMovements(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGenerateReceivedMarkMovements(<any>response_);
+                } catch (e) {
+                    return <Observable<ReceivedMarkMovementModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ReceivedMarkMovementModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGenerateReceivedMarkMovements(response: HttpResponseBase): Observable<ReceivedMarkMovementModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ReceivedMarkMovementModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ReceivedMarkMovementModel[]>(<any>null);
+    }
+
+    getReceivedMarkSummaries(receivedMarkId: number): Observable<ReceivedMarkSummaryModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/receivedmarksummaries/{receivedMarkId}";
+        if (receivedMarkId === undefined || receivedMarkId === null)
+            throw new Error("The parameter 'receivedMarkId' must be defined.");
+        url_ = url_.replace("{receivedMarkId}", encodeURIComponent("" + receivedMarkId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetReceivedMarkSummaries(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetReceivedMarkSummaries(<any>response_);
+                } catch (e) {
+                    return <Observable<ReceivedMarkSummaryModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ReceivedMarkSummaryModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetReceivedMarkSummaries(response: HttpResponseBase): Observable<ReceivedMarkSummaryModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ReceivedMarkSummaryModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ReceivedMarkSummaryModel[]>(<any>null);
+    }
+
+    getReceivedMarkPrintings(receivedMarkId: number, productId: number): Observable<ReceivedMarkPrintingModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/receivedmarkprintings/{receivedMarkId}/{productId}";
+        if (receivedMarkId === undefined || receivedMarkId === null)
+            throw new Error("The parameter 'receivedMarkId' must be defined.");
+        url_ = url_.replace("{receivedMarkId}", encodeURIComponent("" + receivedMarkId));
+        if (productId === undefined || productId === null)
+            throw new Error("The parameter 'productId' must be defined.");
+        url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetReceivedMarkPrintings(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetReceivedMarkPrintings(<any>response_);
+                } catch (e) {
+                    return <Observable<ReceivedMarkPrintingModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ReceivedMarkPrintingModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetReceivedMarkPrintings(response: HttpResponseBase): Observable<ReceivedMarkPrintingModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ReceivedMarkPrintingModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ReceivedMarkPrintingModel[]>(<any>null);
     }
 }
 
