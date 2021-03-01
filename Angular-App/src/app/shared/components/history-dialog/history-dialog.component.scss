@@ -1,5 +1,18 @@
 .history {
   &__search-group {
+    margin-top: 20px;
     margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__search-input {
+    width: 30%;
+    margin-left: 10px;
+  }
+
+  &__search-button {
+    width: 10%;
+    margin-left: 10px;
   }
 }

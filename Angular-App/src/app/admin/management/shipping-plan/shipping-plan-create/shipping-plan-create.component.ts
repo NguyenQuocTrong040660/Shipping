@@ -16,7 +16,7 @@ export class ShippingPlanCreateComponent implements OnInit {
   @Input() isShowDialog: boolean;
   @Input() products: ProductModel[] = [];
 
-  @Output() submitEvent = new EventEmitter<any>();
+  @Output() submitEvent = new EventEmitter<FormGroup>();
   @Output() hideDialogEvent = new EventEmitter<any>();
 
   stepItems: MenuItem[];
@@ -75,7 +75,6 @@ export class ShippingPlanCreateComponent implements OnInit {
     this.selectedProducts = [];
     this.shippingDetailModels = [];
     this.stepIndex = 0;
-    this.shippingPlanForm.reset();
     this.hideDialogEvent.emit();
   }
 
@@ -115,12 +114,10 @@ export class ShippingPlanCreateComponent implements OnInit {
   }
 
   checkModifiedQuantity(shippingDetailModels: ShippingPlanDetailModel[]) {
-    return shippingDetailModels.filter((i) => i.quantity === 0 || !!i.shippingMode === false).length === 0;
+    return shippingDetailModels.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
   }
 
   onSubmit() {
-    this.shippingPlanDetailsControl.clear();
-
     this.shippingDetailModels.forEach((i) => {
       this.shippingPlanDetailsControl.push(this.initShippingPlanDetailsForm(i));
     });

@@ -29,6 +29,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   isEdit = false;
   isShowDialog = false;
   isShowDialogHistory = false;
+  isShowDialogDocuments = false;
   titleDialog = '';
 
   cols: any[] = [];
@@ -58,12 +59,12 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Sales Id', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NumberColumn },
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -196,6 +197,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.isShowDialog = false;
     this.isShowDialogHistory = false;
     this.isShowDialog = false;
+    this.isShowDialogDocuments = false;
     this.shippingRequestForm.reset();
   }
 
@@ -265,6 +267,11 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;
+  }
+
+  openDocumentsDialog() {
+    this.isShowDialogDocuments = true;
+    this.titleDialog = 'Shipping Request Documents'
   }
 
   ngOnDestroy(): void {

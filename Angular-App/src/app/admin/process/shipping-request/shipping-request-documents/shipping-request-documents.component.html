@@ -1,65 +1,79 @@
-<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog
+  styleClass="p-fluid p-w-1000"
+  [position]="'center'"
+  [header]="titleDialog"
+  [modal]="true"
+  [(visible)]="isShowDialog"
+  (onHide)="hideDialog()">
   <ng-template pTemplate="content">
-    <p-toolbar styleClass="p-mb-4">
-      <ng-template pTemplate="left"> </ng-template>
+    <form [formGroup]="shippingRequestDocumentsForm">
+      <div class="p-field">
+        <label for="id">Shipping plan id</label>
+        <input
+          disabled
+          pInputText
+          id="id"
+          [formControl]="idControl"
+          type="text"
+        />
+        <ng-container *ngIf="idControl.invalid && (idControl.dirty || idControl.touched)">
+          <small class="p-invalid p-error">Please enter a valid product name</small>
+        </ng-container>
+      </div>
 
-      <ng-template pTemplate="right"> </ng-template>
-    </p-toolbar>
+      <div class="p-field">
+        <label for="customDeclarationNumber">customDeclarationNumber</label>
+        <input
+          pInputText
+          id="customDeclarationNumber"
+          [formControl]="customDeclarationNumberControl"
+          type="text" />
+      </div>
 
-    <p-table dataKey="id" columnResizeMode="expand" [value]="" [rows]="10" [columns]="cols" [scrollable]="true">
-      <ng-template pTemplate="colgroup" let-columns>
-        <colgroup>
-          <col *ngFor="let col of columns" [style.width.px]="col.width" />
-        </colgroup>
-      </ng-template>
+      <div class="p-field">
+        <label for="grossWeight">grossWeight</label>
+        <p-inputNumber
+          inputId="grossWeight"
+          [formControl]="grossWeightControl" >
+        </p-inputNumber>
+      </div>
 
-      <ng-template pTemplate="header" let-columns>
-        <tr>
-          <ng-container *ngFor="let col of columns">
-            <ng-container [ngSwitch]="col.type">
-              <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
-                <th></th>
-              </ng-container>
-              <ng-container *ngSwitchDefault>
-                <th>
-                  {{ col.header }}
-                </th>
-              </ng-container>
-            </ng-container>
-          </ng-container>
-        </tr>
-      </ng-template>
+      <div class="p-field">
+        <label for="billToCustomer">billToCustomer</label>
+        <p-inputNumber
+          inputId="billToCustomer"
+          [formControl]="billToCustomerControl" >
+        </p-inputNumber>
+      </div>
 
-      <ng-template pTemplate="emptymessage" let-columns>
-        <tr>
-          <td [attr.colspan]="columns.length" class="text-center">No records found</td>
-        </tr>
-      </ng-template>
+      <div class="p-field">
+        <label for="receiverCustomer">receiverCustomer</label>
+        <p-inputNumber
+          inputId="receiverCustomer"
+          [formControl]="receiverCustomerControl" >
+        </p-inputNumber>
+      </div>
 
-      <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
-        <tr>
-          <td *ngFor="let col of columns">
-            <ng-container [ngSwitch]="col.type">
-              <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-                <p-tableRadioButton [value]="item"></p-tableRadioButton>
-              </ng-container>
-              <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-                {{ item[col.field] }}
-              </ng-container>
-              <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-                {{ item[col.field] | date: 'dd/MM/yyyy' }}
-              </ng-container>
-              <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-                {{ item[col.field][col.subField] }}
-              </ng-container>
-              <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-                {{ item[col.field] }}
-              </ng-container>
-            </ng-container>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+      <div class="p-field">
+        <label for="receiverAddress">receiverAddress</label>
+        <p-inputNumber
+          inputId="receiverAddress"
+          [formControl]="receiverAddressControl" >
+        </p-inputNumber>
+      </div>
+
+      <div class="p-field">
+        <label for="notes">notes</label>
+        <p-inputNumber
+          inputId="notes"
+          [formControl]="notesControl" >
+        </p-inputNumber>
+      </div>
+    </form>
   </ng-template>
-  <ng-template pTemplate="footer"> </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingRequestDocumentsForm.invalid" (click)="onSubmit()"></button>
+  </ng-template>
 </p-dialog>

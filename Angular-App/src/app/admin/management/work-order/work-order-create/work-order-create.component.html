@@ -100,7 +100,7 @@
                       <p-inputNumber [(ngModel)]="workOrderDetail.quantity" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ workOrderDetail?.quantity }}
+                      {{ workOrderDetail?.quantity | number}}
                     </ng-template>
                   </p-cellEditor>
                 </td>

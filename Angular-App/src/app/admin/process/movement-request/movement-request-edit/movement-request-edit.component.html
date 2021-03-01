@@ -32,7 +32,7 @@
                         <p-inputNumber [(ngModel)]="movementRequestDetail.quantity" required></p-inputNumber>
                       </ng-template>
                       <ng-template pTemplate="output">
-                        {{ movementRequestDetail?.quantity }}
+                        {{ movementRequestDetail?.quantity | number}}
                       </ng-template>
                     </p-cellEditor>
                   </td>
@@ -126,7 +126,7 @@
                     {{ movementRequestDetail?.product?.productName }}
                   </td>
                   <td class="p-text-center">
-                    {{ movementRequestDetail?.quantity }}
+                    {{ movementRequestDetail?.quantity | number}}
                   </td>
                 </tr>
               </ng-template>

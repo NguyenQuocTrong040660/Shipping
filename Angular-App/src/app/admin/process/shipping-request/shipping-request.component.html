@@ -31,7 +31,7 @@
         label="Documents"
         icon="pi pi-folder"
         [disabled]="!selectedShippingRequest"
-        (click)="openEditDialog(selectedShippingRequest)"
+        (click)="openDocumentsDialog(selectedShippingRequest)"
       ></button>
 
       <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
@@ -112,6 +112,9 @@
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
               {{ item[col.field] }}
             </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
+              {{ item[col.field] | number }}
+            </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
               <button
                 type="button"
@@ -145,9 +148,9 @@
               <ng-template pTemplate="body" let-item>
                 <tr>
                   <td>{{ item?.product?.productNumber }}</td>
-                  <td>{{ item?.quantity }}</td>
-                  <td>{{ item?.price }}</td>
-                  <td>{{ item?.amount }}</td>
+                  <td>{{ item?.quantity | number }}</td>
+                  <td>{{ item?.price | number }}</td>
+                  <td>{{ item?.amount | number }}</td>
                   <td>{{ item?.shippingMode }}</td>
                 </tr>
               </ng-template>
@@ -172,4 +175,15 @@
 >
 </app-shipping-request-create>
 
-<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingRequest" (hideDialogEvent)="hideDialog()"> </app-history-dialog>
+<app-history-dialog
+  [isShowDialog]="isShowDialogHistory"
+  [type]="HistoryDialogType.ShippingRequest"
+  (hideDialogEvent)="hideDialog()">
+</app-history-dialog>
+
+<app-shipping-request-documents
+  [selectedShippingRequest]="selectedShippingRequest"
+  [titleDialog]="titleDialog"
+  [isShowDialog]="isShowDialogDocuments"
+  (hideDialogEvent)="hideDialog()">
+</app-shipping-request-documents>

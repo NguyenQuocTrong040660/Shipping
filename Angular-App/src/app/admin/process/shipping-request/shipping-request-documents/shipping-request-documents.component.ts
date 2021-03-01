@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 
@@ -8,72 +9,76 @@ import { WidthColumn } from 'app/shared/configs/width-column';
   templateUrl: './shipping-request-documents.component.html',
   styleUrls: ['./shipping-request-documents.component.scss'],
 })
-export class ShippingRequestDocumentsComponent implements OnInit {
-  @Input() titleDialog = '';
-  @Input() isShowDialog = false;
-  @Input() shippingRequest = null;
+export class ShippingRequestDocumentsComponent implements OnInit, OnChanges {
+  @Input() selectedShippingRequest: ShippingRequestModel;
+  @Input() titleDialog: string;
+  @Input() isShowDialog: boolean;
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
 
-  isViewDocuments = true;
-
-  shippingRequestLogisticForm: FormGroup;
+  shippingRequestDocumentsForm: FormGroup;
 
   WidthColumn = WidthColumn;
   TypeColumn = TypeColumn;
 
-  get notesControl() {
-    return this.shippingRequestLogisticForm.get('notes');
-  }
-
-  get receiverAddressControl() {
-    return this.shippingRequestLogisticForm.get('receiverAddressControl');
-  }
-
-  get trackingNumberControl() {
-    return this.shippingRequestLogisticForm.get('trackingNumber');
+  get idControl() {
+    return this.shippingRequestDocumentsForm.get('id');
   }
 
   get customDeclarationNumberControl() {
-    return this.shippingRequestLogisticForm.get('customDeclarationNumber');
-  }
-
-  get receiverCustomerControl() {
-    return this.shippingRequestLogisticForm.get('receiverCustomer');
+    return this.shippingRequestDocumentsForm.get('customDeclarationNumber');
   }
 
   get grossWeightControl() {
-    return this.shippingRequestLogisticForm.get('grossWeight');
+    return this.shippingRequestDocumentsForm.get('grossWeight');
   }
 
-  get unstuffQuantityControl() {
-    return this.shippingRequestLogisticForm.get('unstuffQuantity');
+  get billToCustomerControl() {
+    return this.shippingRequestDocumentsForm.get('billToCustomer');
   }
 
-  constructor(private fb: FormBuilder) {}
+  get receiverCustomerControl() {
+    return this.shippingRequestDocumentsForm.get('receiverCustomer');
+  }
 
-  ngOnInit(): void {
+  get receiverAddressControl() {
+    return this.shippingRequestDocumentsForm.get('receiverAddress');
+  }
+
+  get trackingNumberControl() {
+    return this.shippingRequestDocumentsForm.get('trackingNumber');
+  }
+
+  get notesControl() {
+    return this.shippingRequestDocumentsForm.get('notes');
+  }
+
+  constructor(private fb: FormBuilder) { }
+
+  ngOnInit() {
     this.initForm();
   }
 
-  hideDialog() {
-    this.shippingRequestLogisticForm.reset();
-    this.hideDialogEvent.emit();
+  ngOnChanges() {
+
   }
 
   initForm() {
-    this.shippingRequestLogisticForm = this.fb.group({
-      id: [0],
-      grossWeight: [0, [Validators.required]],
-      billToCustomer: ['', [Validators.required]],
-      receiverCustomer: ['', [Validators.required]],
-      customDeclarationNumber: ['', [Validators.required]],
-      trackingNumber: ['', [Validators.required]],
-      shippingRequestId: [0],
-      receiverAddress: ['', [Validators.required]],
-      notes: [''],
+    this.shippingRequestDocumentsForm = this.fb.group({
+      id: [0, [Validators.required]],
+      customDeclarationNumber: [''],
+      grossWeight: [0],
+      billToCustomer: [''],
+      receiverCustomer: [''],
+      trackingNumber: [''],
+      receiverAddress: [''],
+      notes: ['']
     });
+  }
+
+  hideDialog() {
+    this.hideDialogEvent.emit();
   }
 
   onSubmit() {

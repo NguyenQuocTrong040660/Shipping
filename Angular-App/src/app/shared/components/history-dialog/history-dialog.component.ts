@@ -27,7 +27,7 @@ export class HistoryDialogComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.cols = [
       { header: 'Id', field: 'id', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
-      { header: 'Ref Id', field: 'refId', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      { header: 'Ref Id', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Action Type', field: 'actionType', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Old Value', field: 'oldValue', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'New Value', field: 'newValue', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },

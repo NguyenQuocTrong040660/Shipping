@@ -62,12 +62,12 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Sales Id', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NumberColumn },
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -167,6 +167,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
 
   onCreate() {
     const model = this.shippingPlanForm.value as ShippingPlanModel;
+    console.log('shipping plan model: ', this.shippingPlanForm);
     model.id = 0;
 
     this.shippingPlanClients.addShippingPlan(model).subscribe(
@@ -192,8 +193,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.hideDialog();
     this.isEdit ? this.onEdit() : this.onCreate();
+    this.hideDialog();
   }
 
   openEditDialog(shippingPlan: ShippingPlanModel) {

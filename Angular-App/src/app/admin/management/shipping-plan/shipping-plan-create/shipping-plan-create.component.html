@@ -120,7 +120,6 @@
             dataKey="id"
             [columns]="productCols"
             [value]="products"
-            [globalFilterFields]="productFields"
             [(selection)]="selectedProducts"
             [paginator]="true"
             [rows]="10"
@@ -216,7 +215,7 @@
                       <p-inputNumber [(ngModel)]="item.quantity" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ item?.quantity }}
+                      {{ item?.quantity | number}}
                     </ng-template>
                   </p-cellEditor>
                 </td>
@@ -226,7 +225,7 @@
                       <p-inputNumber [(ngModel)]="item.price" required mode="decimal"></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ item?.price }}
+                      {{ item?.price | number }}
                     </ng-template>
                   </p-cellEditor>
                 </td>
@@ -237,7 +236,7 @@
                 <td>
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                      <input type="text" pInputText [(ngModel)]="item.shippingMode" required />
+                      <input type="text" pInputText [(ngModel)]="item.shippingMode" />
                     </ng-template>
                     <ng-template pTemplate="output">
                       {{ item?.shippingMode }}

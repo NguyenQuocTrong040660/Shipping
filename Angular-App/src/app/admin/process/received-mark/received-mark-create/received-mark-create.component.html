@@ -75,7 +75,7 @@
                         <p-inputNumber [(ngModel)]="item.quantity" required></p-inputNumber>
                       </ng-template>
                       <ng-template pTemplate="output">
-                        {{ item?.quantity }}
+                        {{ item?.quantity | number}}
                       </ng-template>
                     </p-cellEditor>
                   </td>
@@ -169,7 +169,7 @@
                     {{ item?.product?.productName }}
                   </td>
                   <td class="p-text-center">
-                    {{ item?.quantity }}
+                    {{ item?.quantity | number}}
                   </td>
                 </tr>
               </ng-template>
