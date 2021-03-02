@@ -9,12 +9,13 @@
             <label for="customerName">Shipping Plan</label>
             <p-dropdown
               styleClass="p-dropdown-custom"
-              [options]="_mapToSelectShippingPlanItem(shippingPlans)"
-              [filter]="true"
+              appendTo="body"
               filterBy="label"
-              [showClear]="true"
-              (onChange)="handleOnSelectShippingPlan($event.value)"
               placeholder="Please select a Shipping Plan"
+              [filter]="true"
+              [showClear]="true"
+              [options]="_mapToSelectShippingPlanItem(shippingPlans)"
+              (onChange)="handleOnSelectShippingPlan($event.value)"
             >
             </p-dropdown>
           </div>

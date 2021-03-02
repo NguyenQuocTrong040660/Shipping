@@ -175,15 +175,12 @@
 >
 </app-shipping-request-create>
 
-<app-history-dialog
-  [isShowDialog]="isShowDialogHistory"
-  [type]="HistoryDialogType.ShippingRequest"
-  (hideDialogEvent)="hideDialog()">
-</app-history-dialog>
+<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingRequest" (hideDialogEvent)="hideDialog()"> </app-history-dialog>
 
 <app-shipping-request-documents
   [selectedShippingRequest]="selectedShippingRequest"
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialogDocuments"
-  (hideDialogEvent)="hideDialog()">
+  (hideDialogEvent)="hideDialog()"
+>
 </app-shipping-request-documents>

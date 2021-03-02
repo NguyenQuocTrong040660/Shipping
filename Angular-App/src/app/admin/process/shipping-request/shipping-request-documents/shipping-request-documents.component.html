@@ -1,73 +1,55 @@
-<p-dialog
-  styleClass="p-fluid p-w-1000"
-  [position]="'center'"
-  [header]="titleDialog"
-  [modal]="true"
-  [(visible)]="isShowDialog"
-  (onHide)="hideDialog()">
+<p-dialog styleClass="p-fluid p-w-1000" [position]="'center'" [header]="titleDialog" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="shippingRequestDocumentsForm">
-      <div class="p-field">
-        <label for="id">Shipping plan id</label>
-        <input
-          disabled
-          pInputText
-          id="id"
-          [formControl]="idControl"
-          type="text"
-        />
-        <ng-container *ngIf="idControl.invalid && (idControl.dirty || idControl.touched)">
-          <small class="p-invalid p-error">Please enter a valid product name</small>
-        </ng-container>
+      <div class="p-grid">
+        <div class="p-field p-col-3">
+          <div>Purchase Order</div>
+          <div>{{ this.selectedShippingRequest.purchaseOrder }}</div>
+        </div>
+        <div class="p-field p-col-3">
+          <div>Customer Name</div>
+          <div>{{ this.selectedShippingRequest.customerName }}</div>
+        </div>
+        <div class="p-field p-col-3">
+          <div>Semline Number</div>
+          <div>{{ this.selectedShippingRequest.semlineNumber }}</div>
+        </div>
+        <div class="p-field p-col-3">
+          <div>Shipping Date</div>
+          <div>{{ this.selectedShippingRequest.shippingDate | date: 'dd/MM/yyyy' }}</div>
+        </div>
       </div>
 
-      <div class="p-field">
-        <label for="customDeclarationNumber">customDeclarationNumber</label>
-        <input
-          pInputText
-          id="customDeclarationNumber"
-          [formControl]="customDeclarationNumberControl"
-          type="text" />
-      </div>
+      <div class="shipping-request-document__border-top-group">
+        <div class="p-field p-mt-20">
+          <label for="customDeclarationNumber">Custom Declaration Number</label>
+          <p-inputNumber id="customDeclarationNumber" [formControl]="customDeclarationNumberControl"> </p-inputNumber>
+        </div>
 
-      <div class="p-field">
-        <label for="grossWeight">grossWeight</label>
-        <p-inputNumber
-          inputId="grossWeight"
-          [formControl]="grossWeightControl" >
-        </p-inputNumber>
-      </div>
+        <div class="p-field">
+          <label for="grossWeight">Gross Weight</label>
+          <p-inputNumber id="grossWeight" [formControl]="grossWeightControl"> </p-inputNumber>
+        </div>
 
-      <div class="p-field">
-        <label for="billToCustomer">billToCustomer</label>
-        <p-inputNumber
-          inputId="billToCustomer"
-          [formControl]="billToCustomerControl" >
-        </p-inputNumber>
-      </div>
+        <div class="p-field">
+          <label for="billToCustomer">Bill To</label>
+          <input pInputText id="billToCustomer" [formControl]="billToCustomerControl" type="text" />
+        </div>
 
-      <div class="p-field">
-        <label for="receiverCustomer">receiverCustomer</label>
-        <p-inputNumber
-          inputId="receiverCustomer"
-          [formControl]="receiverCustomerControl" >
-        </p-inputNumber>
-      </div>
+        <div class="p-field">
+          <label for="receiverCustomer">Receiver</label>
+          <input pInputText id="receiverCustomer" [formControl]="receiverCustomerControl" type="text" />
+        </div>
 
-      <div class="p-field">
-        <label for="receiverAddress">receiverAddress</label>
-        <p-inputNumber
-          inputId="receiverAddress"
-          [formControl]="receiverAddressControl" >
-        </p-inputNumber>
-      </div>
+        <div class="p-field">
+          <label for="receiverAddress">Receiver Address</label>
+          <input pInputText id="receiverAddress" [formControl]="receiverAddressControl" type="text" />
+        </div>
 
-      <div class="p-field">
-        <label for="notes">notes</label>
-        <p-inputNumber
-          inputId="notes"
-          [formControl]="notesControl" >
-        </p-inputNumber>
+        <div class="p-field">
+          <label for="notes">Notes</label>
+          <input pInputText id="notes" [formControl]="notesControl" type="text" />
+        </div>
       </div>
     </form>
   </ng-template>

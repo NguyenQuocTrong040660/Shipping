@@ -26,6 +26,10 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges {
     return this.shippingRequestDocumentsForm.get('id');
   }
 
+  get shippingRequestIdentifierControl() {
+    return this.shippingRequestDocumentsForm.get('shippingRequestIdentifier');
+  }
+
   get customDeclarationNumberControl() {
     return this.shippingRequestDocumentsForm.get('customDeclarationNumber');
   }
@@ -61,13 +65,17 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-
+    if(this.selectedShippingRequest) {
+      this.idControl.setValue(this.selectedShippingRequest.id);
+      this.shippingRequestIdentifierControl.setValue(this.selectedShippingRequest.identifier);
+    }
   }
 
   initForm() {
     this.shippingRequestDocumentsForm = this.fb.group({
       id: [0, [Validators.required]],
-      customDeclarationNumber: [''],
+      shippingRequestIdentifier: ['', [Validators.required]],
+      customDeclarationNumber: [0],
       grossWeight: [0],
       billToCustomer: [''],
       receiverCustomer: [''],
@@ -82,6 +90,6 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges {
   }
 
   onSubmit() {
-    this.submitEvent.emit();
+    this.hideDialogEvent.emit();
   }
 }
