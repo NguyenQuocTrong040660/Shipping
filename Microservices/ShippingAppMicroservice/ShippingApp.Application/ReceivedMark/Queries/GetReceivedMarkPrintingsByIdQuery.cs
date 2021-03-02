@@ -8,6 +8,7 @@ using ShippingApp.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Collections.Generic;
+using ShippingApp.Domain.Enumerations;
 
 namespace ShippingApp.Application.ReceivedMark.Queries
 {
@@ -33,6 +34,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
             var receivedMarkPrintings = await _context.ReceivedMarkPrintings
                 .AsNoTracking()
                 .Where(x => x.ReceivedMarkId == request.ReceivedMarkId && x.ProductId == request.ProductId)
+                .Where(x => !x.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))
                 .OrderBy(x => x.Sequence)
                 .ToListAsync();
 

@@ -40,8 +40,10 @@ export class ReceivedMarkUnstuffComponent implements OnInit {
   }
 
   onSubmit() {
-    let { receivedMarkPrintingId } = this.receivedMarkUnstuffForm.value;
-    receivedMarkPrintingId = this.selectedReceivedMarkPrinting.id;
+    this.receivedMarkUnstuffForm.patchValue({
+      receivedMarkPrintingId: this.selectedReceivedMarkPrinting.id,
+    });
+
     this.submitEvent.emit(this.receivedMarkUnstuffForm.value);
   }
 }

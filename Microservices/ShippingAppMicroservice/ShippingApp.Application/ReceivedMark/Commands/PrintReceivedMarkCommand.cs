@@ -7,47 +7,70 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using ShippingApp.Domain.Enumerations;
+using Microsoft.EntityFrameworkCore;
+using Entities = ShippingApp.Domain.Entities;
+using System.Linq;
 
 namespace ShippingApp.Application.ReceivedMark.Commands
 {
-    public class PrintReceivedMarkCommand : IRequest<Result>
+    public class PrintReceivedMarkCommand : IRequest<ReceivedMarkPrintingModel>
     {
-        public int ReceivedMarkPrintingId { get; set; }
+        public PrintReceivedMarkRequest PrintReceivedMarkRequest { get; set; }
     }
 
-    public class PrintReceivedMarkCommandHandler : IRequestHandler<PrintReceivedMarkCommand, Result>
+    public class PrintReceivedMarkCommandHandler : IRequestHandler<PrintReceivedMarkCommand, ReceivedMarkPrintingModel>
     {
         private readonly IShippingAppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PrintReceivedMarkCommandHandler(IShippingAppDbContext context)
+        public PrintReceivedMarkCommandHandler(IShippingAppDbContext context, IMapper mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<Result> Handle(PrintReceivedMarkCommand request, CancellationToken cancellationToken)
+        public async Task<ReceivedMarkPrintingModel> Handle(PrintReceivedMarkCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.ReceivedMarkPrintings.FindAsync(request.ReceivedMarkPrintingId);
+            var receivedMarkPrintings = await _context.ReceivedMarkPrintings
+                .Include(x => x.Product)
+                .Where(x => x.ReceivedMarkId == request.PrintReceivedMarkRequest.ReceivedMarkId 
+                         && x.ProductId == request.PrintReceivedMarkRequest.ProductId)
+                .Where(x => !x.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))
+                .OrderBy(x => x.Sequence)
+                .ToListAsync();
 
-            if (entity == null)
+            if (receivedMarkPrintings == null || !receivedMarkPrintings.Any())
             {
-                throw new ArgumentNullException(nameof(entity));
+                return null;
             }
 
-            if (!entity.Status.Equals(nameof(ReceivedMarkStatus.New)))
+            Entities.ReceivedMarkPrinting printItem = null;
+
+            for (int i = 0; i < receivedMarkPrintings.Count; i++)
             {
-                return Result.Failure("Could not print mark");
+                var itemPrint = receivedMarkPrintings[i];
+
+                if (!itemPrint.Status.Equals(nameof(ReceivedMarkStatus.New)))
+                {
+                    continue;
+                }
+
+                if (itemPrint.PrintCount != 0)
+                {
+                    continue;
+                }
+
+                itemPrint.PrintCount += 1;
+                itemPrint.PrintingBy = request.PrintReceivedMarkRequest.PrintedBy;
+                itemPrint.PrintingDate = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+
+                printItem = itemPrint;
+                break;
             }
 
-            if (entity.PrintCount != 0)
-            {
-                return Result.Failure("This mark has been printed. Please contact your manager to re-print");
-            }
-
-            entity.PrintCount += 1;
-
-            return await _context.SaveChangesAsync() > 0
-                ? Result.Success()
-                : Result.Failure("Failed to print mark");
+            return _mapper.Map<ReceivedMarkPrintingModel>(printItem);
         }
     }
 }

@@ -92,19 +92,36 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("Print/{receivedMarkPrintingId}")]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [HttpPut("Print")]
+        [ProducesResponseType(typeof(ReceivedMarkPrintingModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ReceivedMarkPrintingModel), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(PrintReceivedMarkRequest), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> PrintReceivedMarkAsync(int receivedMarkPrintingId)
+        public async Task<ActionResult<ReceivedMarkPrintingModel>> PrintReceivedMarkAsync([FromBody] PrintReceivedMarkRequest request)
         {
-            var result = await Mediator.Send(new PrintReceivedMarkCommand { ReceivedMarkPrintingId = receivedMarkPrintingId });
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(request);
+            }
+
+            var result = await Mediator.Send(new PrintReceivedMarkCommand
+            {
+                PrintReceivedMarkRequest = request
+            });
+
+            if (result == null)
+            {
+                return NoContent();
+            }
+            
             return Ok(result);
         }
 
         [HttpPost("Generate/ReceivedMarkMovements")]
         [ProducesResponseType(typeof(List<ReceivedMarkMovementModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ReceivedMarkMovementModel>>> GenerateReceivedMarkMovements([FromBody] List<MovementRequestModel> movementRequests)
+        public async Task<ActionResult<List<ReceivedMarkMovementModel>>> GenerateReceivedMarkMovements(
+            [FromBody] List<MovementRequestModel> movementRequests)
         {
             if (!ModelState.IsValid)
             {

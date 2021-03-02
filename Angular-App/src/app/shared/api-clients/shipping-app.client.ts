@@ -1789,17 +1789,18 @@ export class ReceivedMarkClients {
         return _observableOf<Result>(<any>null);
     }
 
-    printReceivedMark(receivedMarkPrintingId: number): Observable<Result> {
-        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/print/{receivedMarkPrintingId}";
-        if (receivedMarkPrintingId === undefined || receivedMarkPrintingId === null)
-            throw new Error("The parameter 'receivedMarkPrintingId' must be defined.");
-        url_ = url_.replace("{receivedMarkPrintingId}", encodeURIComponent("" + receivedMarkPrintingId));
+    printReceivedMark(request: PrintReceivedMarkRequest): Observable<ReceivedMarkPrintingModel> {
+        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/print";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(request);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
@@ -1811,14 +1812,14 @@ export class ReceivedMarkClients {
                 try {
                     return this.processPrintReceivedMark(<any>response_);
                 } catch (e) {
-                    return <Observable<Result>><any>_observableThrow(e);
+                    return <Observable<ReceivedMarkPrintingModel>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<Result>><any>_observableThrow(response_);
+                return <Observable<ReceivedMarkPrintingModel>><any>_observableThrow(response_);
         }));
     }
 
-    protected processPrintReceivedMark(response: HttpResponseBase): Observable<Result> {
+    protected processPrintReceivedMark(response: HttpResponseBase): Observable<ReceivedMarkPrintingModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1828,8 +1829,20 @@ export class ReceivedMarkClients {
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <ReceivedMarkPrintingModel>JSON.parse(_responseText, this.jsonParseReviver);
             return _observableOf(result200);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result204: any = null;
+            result204 = _responseText === "" ? null : <ReceivedMarkPrintingModel>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result204);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <PrintReceivedMarkRequest>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             }));
         } else if (status === 401) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -1842,7 +1855,7 @@ export class ReceivedMarkClients {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<Result>(<any>null);
+        return _observableOf<ReceivedMarkPrintingModel>(<any>null);
     }
 
     generateReceivedMarkMovements(movementRequests: MovementRequestModel[]): Observable<ReceivedMarkMovementModel[]> {
@@ -3774,6 +3787,12 @@ export interface ReceivedMarkSummaryModel extends AuditableEntityModel {
 export interface UnstuffReceivedMarkRequest {
     receivedMarkPrintingId?: number;
     unstuffQuantity?: number;
+}
+
+export interface PrintReceivedMarkRequest {
+    receivedMarkId: number;
+    productId: number;
+    printedBy: string;
 }
 
 export interface WorkOrderImportModel {

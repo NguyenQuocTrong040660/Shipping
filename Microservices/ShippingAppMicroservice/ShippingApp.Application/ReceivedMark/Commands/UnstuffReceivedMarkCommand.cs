@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using ShippingApp.Domain.Enumerations;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShippingApp.Application.ReceivedMark.Commands
 {
@@ -78,6 +79,9 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             await _context.ReceivedMarkPrintings.AddAsync(firstReceivedMark);
             await _context.ReceivedMarkPrintings.AddAsync(secondReceivedMark);
+
+            var receivedMarkSummary = await _context.ReceivedMarkSummaries.FirstOrDefaultAsync(x => x.ProductId == receivedMarkPrinting.ProductId);
+            receivedMarkSummary.TotalPackage += 1;
 
             return await  _context.SaveChangesAsync() > 0 
                 ? Result.Success() 

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MovementRequestClients,
   MovementRequestModel,
+  PrintReceivedMarkRequest,
   ReceivedMarkClients,
   ReceivedMarkModel,
   ReceivedMarkMovementModel,
@@ -40,7 +41,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   receivedMarkPrintings: ReceivedMarkPrintingModel[] = [];
   selectedReceivedMarkPrinting: ReceivedMarkPrintingModel;
 
-  currentPrintReceivedMark: ReceivedMarkModel;
+  currentReceivedMark: ReceivedMarkModel;
   currentPrintReceivedMarkSummary: ReceivedMarkSummaryModel;
   receivedMarkForm: FormGroup;
 
@@ -262,6 +263,8 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   handleSubmitEventUnstuff(event) {
+    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkSummary) return;
+
     const { unstuffQuantity, receivedMarkPrintingId } = event;
 
     const unstuffRequest: UnstuffReceivedMarkRequest = {
@@ -276,6 +279,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
         (result) => {
           if (result.succeeded) {
             this.notificationService.success('Unstuff Received Mark Successfully');
+            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
             this.hideDialogUnStuff();
             return;
           }
@@ -290,42 +294,46 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   printReceivedMark() {
-    if(!this.currentPrintReceivedMark || !this.currentPrintReceivedMarkSummary) return;
+    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkSummary) return;
+
+    const requestPrint: PrintReceivedMarkRequest = {
+      productId: this.currentPrintReceivedMarkSummary.productId,
+      receivedMarkId: this.currentReceivedMark.id,
+      printedBy: this.user.userName,
+    };
 
     this.receivedMarkClients
-      .printReceivedMark(this.currentPrintReceivedMark.id)
+      .printReceivedMark(requestPrint)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (result) => {
-          if (result && result.succeeded) {
+          if (result) {
             this.onPrint();
-            this.reLoadReceivedMarkPrintings(this.currentPrintReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
+            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
           } else {
-            this.notificationService.error(result?.error);
+            this.notificationService.error('Print Received Mark Failed. Please try again');
           }
         },
-        (_) => {
-          this.notificationService.error('Print Received Mark Failed. Please try again');
-        }
+        (_) => this.notificationService.error('Print Received Mark Failed. Please try again')
       );
   }
 
   handleRePrintMark(item: ReceivedMarkModel) {
-    this.receivedMarkClients
-      .printReceivedMark(item.id)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (result) => {
-          if (result && result.succeeded) {
-            this.onPrint();
-          } else {
-            this.notificationService.error(result?.error);
-          }
-        },
-        (_) => {
-          this.notificationService.error('Print Received Mark Failed. Please try again');
-        }
-      );
+    // this.receivedMarkClients
+    //   .printReceivedMark(item.id)
+    //   .pipe(takeUntil(this.destroyed$))
+    //   .subscribe(
+    //     (result) => {
+    //       if (result && result.succeeded) {
+    //         this.onPrint();
+    //       } else {
+    //         this.notificationService.error(result?.error);
+    //       }
+    //     },
+    //     (_) => {
+    //       this.notificationService.error('Print Received Mark Failed. Please try again');
+    //     }
+    //   );
   }
 
   getReceivedMarkSummaries(item: ReceivedMarkModel) {
@@ -356,8 +364,8 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   showDetailReceivedMarkSummary(receivedMark: ReceivedMarkModel, receivedMarkSummaryModel: ReceivedMarkSummaryModel) {
-    if(!receivedMark || !receivedMarkSummaryModel) return;
-    this.currentPrintReceivedMark = receivedMark;
+    if (!receivedMark || !receivedMarkSummaryModel) return;
+    this.currentReceivedMark = receivedMark;
     this.currentPrintReceivedMarkSummary = receivedMarkSummaryModel;
 
     this.receivedMarkPrintings = [];
