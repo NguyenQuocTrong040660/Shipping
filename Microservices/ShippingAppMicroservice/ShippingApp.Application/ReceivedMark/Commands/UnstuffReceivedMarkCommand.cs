@@ -56,12 +56,15 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 throw new ArgumentNullException(nameof(lastReceivedMark));
             }
 
+            receivedMarkPrinting.Status = nameof(ReceivedMarkStatus.Unstuff);
+            receivedMarkPrinting.ParentId = request.UnstuffReceivedMark.ReceivedMarkPrintingId;
+
             var firstReceivedMark = new Entities.ReceivedMarkPrinting
             {
                 Quantity = request.UnstuffReceivedMark.UnstuffQuantity,
                 ReceivedMarkId = receivedMarkPrinting.ReceivedMarkId,
                 ProductId = receivedMarkPrinting.ProductId,
-                Sequence = lastReceivedMark.Sequence + 1,
+                Sequence = receivedMarkPrinting.Sequence,
                 Status = nameof(ReceivedMarkStatus.New),
             };
 
@@ -70,12 +73,9 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 Quantity = receivedMarkPrinting.Quantity - request.UnstuffReceivedMark.UnstuffQuantity,
                 ReceivedMarkId = receivedMarkPrinting.ReceivedMarkId,
                 ProductId = receivedMarkPrinting.ProductId,
-                Sequence = lastReceivedMark.Sequence + 2,
+                Sequence = lastReceivedMark.Sequence + 1,
                 Status = nameof(ReceivedMarkStatus.New),
             };
-
-            receivedMarkPrinting.Status = nameof(ReceivedMarkStatus.Unstuff);
-            receivedMarkPrinting.ParentId = request.UnstuffReceivedMark.ReceivedMarkPrintingId;
 
             await _context.ReceivedMarkPrintings.AddAsync(firstReceivedMark);
             await _context.ReceivedMarkPrintings.AddAsync(secondReceivedMark);

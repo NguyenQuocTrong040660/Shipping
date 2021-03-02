@@ -4,6 +4,7 @@
     {
         New,
         Storage,
+        Reserved,
         Shipping,
         Unstuff,
     }

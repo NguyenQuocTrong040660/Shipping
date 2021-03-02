@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ProductModel, ShippingPlanModel, ShippingRequestDetailModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
+import Utilities from 'app/shared/helpers/utilities';
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 
 @Component({
@@ -76,7 +77,7 @@ export class ShippingRequestCreateComponent implements OnInit {
     this.stepItems = [{ label: 'Select Shipping Plan' }, { label: 'Shipping Request Info' }, { label: 'Products' }, { label: 'Price' }, { label: 'Complete' }];
   }
 
-  handleOnSelectShippingPlan(shippingPlanId) {
+  handleOnSelectShippingPlan(shippingPlanId: number) {
     this.selectedShippingPlanEvent.emit(shippingPlanId);
   }
 
@@ -107,7 +108,7 @@ export class ShippingRequestCreateComponent implements OnInit {
         this.customerNameControl.patchValue(customerName);
         this.semlineNumberControl.patchValue(semlineNumber);
         this.purchaseOrderControl.patchValue(purchaseOrder);
-        this.shippingDateControl.patchValue(new Date(shippingDate));
+        this.shippingDateControl.patchValue(shippingDate);
         this.salesIdControl.patchValue(salesID);
         this.notesControl.patchValue(notes);
 
@@ -122,19 +123,22 @@ export class ShippingRequestCreateComponent implements OnInit {
         break;
       }
       case 2:
-        const { shippingPlanDetails } = this.selectedShippingPlan;
-
         this.shippingRequestDetails = this._mapToProductsToShippingRequestDetailModels(this.selectedProducts);
-        this.shippingRequestDetails.forEach((item) => {
-          const shippingPlanDetail = shippingPlanDetails.find((i) => item.productId === i.productId);
 
-          if (shippingPlanDetail) {
-            item.amount = shippingPlanDetail.amount;
-            item.quantity = shippingPlanDetail.quantity;
-            item.price = shippingPlanDetail.price;
-            item.shippingMode = shippingPlanDetail.shippingMode;
-          }
-        });
+        if (this.selectedShippingPlan) {
+          const { shippingPlanDetails } = this.selectedShippingPlan;
+
+          this.shippingRequestDetails.forEach((item) => {
+            const shippingPlanDetail = shippingPlanDetails.find((i) => item.productId === i.productId);
+
+            if (shippingPlanDetail) {
+              item.amount = shippingPlanDetail.amount;
+              item.quantity = shippingPlanDetail.quantity;
+              item.price = shippingPlanDetail.price;
+              item.shippingMode = shippingPlanDetail.shippingMode;
+            }
+          });
+        }
 
         this.stepIndex += 1;
         break;

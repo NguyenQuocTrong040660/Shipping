@@ -4,6 +4,7 @@ import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, S
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
+import Utilities from 'app/shared/helpers/utilities';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { Subject } from 'rxjs';
@@ -21,7 +22,6 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   selectedShippingRequest: ShippingRequestModel;
   selectedShippingPlan: ShippingPlanModel;
 
-  selectItems: SelectItem[] = [];
   products: ProductModel[] = [];
 
   shippingRequestForm: FormGroup;
@@ -117,19 +117,9 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       .getProducts()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => {
-          this.products = i;
-          this.selectItems = this._mapToSelectItem(i);
-        },
+        (i) => (this.products = i),
         (_) => (this.products = [])
       );
-  }
-
-  _mapToSelectItem(products: ProductModel[]): SelectItem[] {
-    return products.map((p) => ({
-      value: p.id,
-      label: `${p.productNumber}-${p.productName}`,
-    }));
   }
 
   handleSelectedShippingPlanEvent(shippingPlanId) {
@@ -156,6 +146,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   onCreate() {
     const model = this.shippingRequestForm.value as ShippingRequestModel;
     model.id = 0;
+    model.shippingDate = Utilities.ConvertDateBeforeSendToServer(model.shippingDate);
 
     this.shippingRequestClients
       .addShippingRequest(model)
@@ -202,7 +193,8 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   }
 
   onEdit() {
-    const { id } = this.shippingRequestForm.value;
+    const { id, shippingDate } = this.shippingRequestForm.value;
+    this.shippingRequestForm.value.shippingDate = Utilities.ConvertDateBeforeSendToServer(shippingDate);
 
     this.shippingRequestClients
       .updateShippingRequest(id, this.shippingRequestForm.value)
@@ -270,10 +262,10 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   }
 
   openDocumentsDialog() {
-    if(!this.selectedShippingRequest) return;
+    if (!this.selectedShippingRequest) return;
 
     this.isShowDialogDocuments = true;
-    this.titleDialog = 'Shipping Request Documents: ' + this.selectedShippingRequest.identifier
+    this.titleDialog = 'Shipping Request Documents: ' + this.selectedShippingRequest.identifier;
   }
 
   ngOnDestroy(): void {

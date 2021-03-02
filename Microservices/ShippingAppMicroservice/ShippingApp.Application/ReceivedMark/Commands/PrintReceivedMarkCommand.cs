@@ -35,7 +35,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 .Include(x => x.Product)
                 .Where(x => x.ReceivedMarkId == request.PrintReceivedMarkRequest.ReceivedMarkId 
                          && x.ProductId == request.PrintReceivedMarkRequest.ProductId)
-                .Where(x => !x.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))
+                .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.New)))
                 .OrderBy(x => x.Sequence)
                 .ToListAsync();
 
@@ -50,17 +50,13 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             {
                 var itemPrint = receivedMarkPrintings[i];
 
-                if (!itemPrint.Status.Equals(nameof(ReceivedMarkStatus.New)))
-                {
-                    continue;
-                }
-
                 if (itemPrint.PrintCount != 0)
                 {
                     continue;
                 }
 
                 itemPrint.PrintCount += 1;
+                itemPrint.Status = nameof(ReceivedMarkStatus.Storage);
                 itemPrint.PrintingBy = request.PrintReceivedMarkRequest.PrintedBy;
                 itemPrint.PrintingDate = DateTime.UtcNow;
 

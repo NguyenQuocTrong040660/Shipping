@@ -16,10 +16,13 @@ namespace ShippingApp.Application.MovementRequest.Commands
     public class DeleteMovementRequestCommandHandler : IRequestHandler<DeleteMovementRequestCommand, Result>
     {
         private readonly IShippingAppRepository<Entities.MovementRequest> _shippingAppRepository;
+        private readonly IShippingAppDbContext _context;
 
-        public DeleteMovementRequestCommandHandler(IShippingAppRepository<Entities.MovementRequest> shippingAppRepository)
+        public DeleteMovementRequestCommandHandler(IShippingAppRepository<Entities.MovementRequest> shippingAppRepository,
+           IShippingAppDbContext context)
         {
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<Result> Handle(DeleteMovementRequestCommand request, CancellationToken cancellationToken)

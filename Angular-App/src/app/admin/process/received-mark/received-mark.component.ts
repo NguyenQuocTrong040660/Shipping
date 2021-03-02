@@ -9,6 +9,7 @@ import {
   ReceivedMarkMovementModel,
   ReceivedMarkPrintingModel,
   ReceivedMarkSummaryModel,
+  RePrintReceivedMarkRequest,
   UnstuffReceivedMarkRequest,
 } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -318,22 +319,28 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  handleRePrintMark(item: ReceivedMarkModel) {
-    // this.receivedMarkClients
-    //   .printReceivedMark(item.id)
-    //   .pipe(takeUntil(this.destroyed$))
-    //   .subscribe(
-    //     (result) => {
-    //       if (result && result.succeeded) {
-    //         this.onPrint();
-    //       } else {
-    //         this.notificationService.error(result?.error);
-    //       }
-    //     },
-    //     (_) => {
-    //       this.notificationService.error('Print Received Mark Failed. Please try again');
-    //     }
-    //   );
+  handleRePrintMark(item: ReceivedMarkPrintingModel) {
+    if (!item) return;
+
+    const request: RePrintReceivedMarkRequest = {
+      receivedMarkPrintingId: item.id,
+      rePrintedBy: this.user.userName,
+    };
+
+    this.receivedMarkClients
+      .rePrintReceivedMark(request)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result) {
+            this.onPrint();
+            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
+          } else {
+            this.notificationService.error('RePrint Received Mark Failed. Please try again');
+          }
+        },
+        (_) => this.notificationService.error('RePrint Received Mark Failed. Please try again')
+      );
   }
 
   getReceivedMarkSummaries(item: ReceivedMarkModel) {
@@ -365,6 +372,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
 
   showDetailReceivedMarkSummary(receivedMark: ReceivedMarkModel, receivedMarkSummaryModel: ReceivedMarkSummaryModel) {
     if (!receivedMark || !receivedMarkSummaryModel) return;
+
     this.currentReceivedMark = receivedMark;
     this.currentPrintReceivedMarkSummary = receivedMarkSummaryModel;
 

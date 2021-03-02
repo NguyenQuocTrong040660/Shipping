@@ -13,6 +13,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { EventType } from 'app/shared/enumerations/import-event-type.enum';
 import { ImportService } from 'app/shared/services/import.service';
+import Utilities from 'app/shared/helpers/utilities';
 
 @Component({
   templateUrl: './shipping-plan.component.html',
@@ -20,6 +21,7 @@ import { ImportService } from 'app/shared/services/import.service';
 })
 export class ShippingPlanComponent implements OnInit, OnDestroy {
   title = 'Shipping Plan Management';
+  titleDialog = '';
 
   shippingPlans: ShippingPlanModel[] = [];
   selectedShippingPlan: ShippingPlanModel;
@@ -30,7 +32,6 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   isEdit = false;
   isShowDialog = false;
   isShowDialogHistory = false;
-  titleDialog = '';
 
   cols: any[] = [];
   fields: any[] = [];
@@ -151,9 +152,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       .getProducts()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => {
-          this.products = i;
-        },
+        (i) => (this.products = i),
         (_) => (this.products = [])
       );
   }
@@ -167,8 +166,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
 
   onCreate() {
     const model = this.shippingPlanForm.value as ShippingPlanModel;
-    console.log('shipping plan model: ', this.shippingPlanForm);
     model.id = 0;
+    model.shippingDate = Utilities.ConvertDateBeforeSendToServer(model.shippingDate);
 
     this.shippingPlanClients.addShippingPlan(model).subscribe(
       (result) => {
@@ -194,7 +193,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     }
 
     this.isEdit ? this.onEdit() : this.onCreate();
-    this.hideDialog();
+
+    // this.hideDialog();
   }
 
   openEditDialog(shippingPlan: ShippingPlanModel) {
@@ -212,12 +212,12 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   onEdit() {
-    const { id } = this.shippingPlanForm.value;
+    let { id, shippingDate } = this.shippingPlanForm.value;
+    this.shippingPlanForm.value.shippingDate = Utilities.ConvertDateBeforeSendToServer(shippingDate);
 
     this.shippingPlanClients
       .updateShippingPlan(id, this.shippingPlanForm.value)
       .pipe(takeUntil(this.destroyed$))
-
       .subscribe(
         (result) => {
           if (result && result.succeeded) {

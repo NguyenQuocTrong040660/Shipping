@@ -59,6 +59,7 @@
                 <div class="p-field">
                   <label for="shippingDate">Shipping Date</label>
                   <p-calendar
+                    [utc]="true"
                     [ngClass]="{ 'ng-dirty': shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched) }"
                     id="shippingDate"
                     [formControl]="shippingDateControl"
@@ -116,15 +117,7 @@
     <ng-container *ngIf="stepIndex === 1">
       <p-card>
         <ng-template pTemplate="content">
-          <p-table
-            dataKey="id"
-            [columns]="productCols"
-            [value]="products"
-            [(selection)]="selectedProducts"
-            [paginator]="true"
-            [rows]="10"
-            scrollHeight="350px"
-          >
+          <p-table dataKey="id" [columns]="productCols" [value]="products" [(selection)]="selectedProducts" [paginator]="true" [rows]="10" scrollHeight="350px">
             <ng-template pTemplate="colgroup" let-columns>
               <colgroup>
                 <col [style.width.px]="col.width" *ngFor="let col of columns" />
@@ -215,7 +208,7 @@
                       <p-inputNumber [(ngModel)]="item.quantity" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ item?.quantity | number}}
+                      {{ item?.quantity | number }}
                     </ng-template>
                   </p-cellEditor>
                 </td>
