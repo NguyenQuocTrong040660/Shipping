@@ -42,12 +42,12 @@ export class ReceivedMarkDetailsComponent implements OnInit {
     this.hideDialogEvent.emit();
   }
 
-  printMark(receivedMarkPrinting: ReceivedMarkPrintingModel) {
+  printMark() {
     this.confirmationService.confirm({
       message: 'Are you sure you want to print mark for this item?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
-      accept: () => this.printMarkEvent.emit(receivedMarkPrinting),
+      accept: () => this.printMarkEvent.emit()
     });
   }
 

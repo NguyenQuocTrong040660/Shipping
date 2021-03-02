@@ -4,7 +4,7 @@ import { Roles } from '../enumerations/roles.enum';
 import { ApplicationUser } from '../models/application-user';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class PrintService {
   isPrinting = false;

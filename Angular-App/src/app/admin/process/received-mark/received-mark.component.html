@@ -1,5 +1,8 @@
-<div class="card" [class.isPrinting]="printService.isPrinting">
+<div [class.isPrinting]="printService.isPrinting">
   <app-print [title]="'receive-mark Componnet'"></app-print>
+</div>
+
+<div class="card" [class.isPrinting]="printService.isPrinting">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left"></ng-template>
     <ng-template pTemplate="right">
@@ -207,13 +210,14 @@
 </app-received-mark-create>
 
 <app-received-mark-details
+  [class.isPrinting]="printService.isPrinting"
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialogDetail"
   [user]="user"
   [canRePrint]="canRePrint"
   [receivedMarkPrintings]="receivedMarkPrintings"
   (hideDialogEvent)="hideDialog()"
-  (printMarkEvent)="printReceivedMark($event)"
+  (printMarkEvent)="printReceivedMark()"
   (rePrintMarkEvent)="handleRePrintMark($event)"
   (unstuffMarkEvent)="openUnstuffDialog($event)"
 >

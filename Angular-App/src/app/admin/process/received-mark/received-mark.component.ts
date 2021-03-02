@@ -40,7 +40,8 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   receivedMarkPrintings: ReceivedMarkPrintingModel[] = [];
   selectedReceivedMarkPrinting: ReceivedMarkPrintingModel;
 
-  currentSelectedReceivedMark: ReceivedMarkModel[] = [];
+  currentPrintReceivedMark: ReceivedMarkModel;
+  currentPrintReceivedMarkSummary: ReceivedMarkSummaryModel;
   receivedMarkForm: FormGroup;
 
   isEdit = false;
@@ -288,15 +289,17 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  printReceivedMark(receivedMarkPrinting: ReceivedMarkPrintingModel) {
+  printReceivedMark() {
+    if(!this.currentPrintReceivedMark || !this.currentPrintReceivedMarkSummary) return;
+
     this.receivedMarkClients
-      .printReceivedMark(receivedMarkPrinting.id)
+      .printReceivedMark(this.currentPrintReceivedMark.id)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (result) => {
           if (result && result.succeeded) {
             this.onPrint();
-            this.reLoadReceivedMarkPrintings(receivedMarkPrinting.receivedMarkId, receivedMarkPrinting.productId);
+            this.reLoadReceivedMarkPrintings(this.currentPrintReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
           } else {
             this.notificationService.error(result?.error);
           }
@@ -352,10 +355,13 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     );
   }
 
-  showDetailReceivedMarkSummary(item: ReceivedMarkModel, receivedMarkSummaryModel: ReceivedMarkSummaryModel) {
-    this.receivedMarkPrintings = [];
+  showDetailReceivedMarkSummary(receivedMark: ReceivedMarkModel, receivedMarkSummaryModel: ReceivedMarkSummaryModel) {
+    if(!receivedMark || !receivedMarkSummaryModel) return;
+    this.currentPrintReceivedMark = receivedMark;
+    this.currentPrintReceivedMarkSummary = receivedMarkSummaryModel;
 
-    this.receivedMarkClients.getReceivedMarkPrintings(item.id, receivedMarkSummaryModel.productId).subscribe(
+    this.receivedMarkPrintings = [];
+    this.receivedMarkClients.getReceivedMarkPrintings(receivedMark.id, receivedMarkSummaryModel.productId).subscribe(
       (receivedMarkPrintings) => {
         this.receivedMarkPrintings = receivedMarkPrintings;
         this.isShowDialogDetail = true;
