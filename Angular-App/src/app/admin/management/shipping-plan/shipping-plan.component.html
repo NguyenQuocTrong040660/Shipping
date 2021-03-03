@@ -17,15 +17,7 @@
         (click)="openDeleteDialog(selectedShippingPlan)"
       ></button>
 
-      <button
-        class="p-button-success p-mr-2"
-        pButton
-        pRipple
-        label="Edit"
-        icon="pi pi-pencil"
-        [disabled]="!selectedShippingPlan"
-        (click)="openEditDialog(selectedShippingPlan)"
-      ></button>
+      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil" [disabled]="!selectedShippingPlan" (click)="openEditDialog()"></button>
 
       <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
     </ng-template>
@@ -43,6 +35,7 @@
     [globalFilterFields]="fields"
     [(selection)]="selectedShippingPlan"
     [expandedRowKeys]="expandedItems"
+    (onRowSelect)="onSelectedShippingPlan()"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
@@ -160,6 +153,8 @@
   [products]="products"
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialog"
+  [selectedShippingPlan]="selectedShippingPlan"
+  [isEdit]="isEdit"
   (submitEvent)="onSubmit()"
   (hideDialogEvent)="hideDialog()"
 >

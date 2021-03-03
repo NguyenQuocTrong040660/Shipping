@@ -195,11 +195,11 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     this.isEdit ? this.onEdit() : this.onCreate();
   }
 
-  openEditDialog(shippingPlan: ShippingPlanModel) {
+  openEditDialog() {
     this.isShowDialog = true;
     this.titleDialog = 'Edit Shipping Plan';
     this.isEdit = true;
-    this.shippingPlanForm.patchValue(shippingPlan);
+    this.shippingPlanForm.patchValue(this.selectedShippingPlan);
   }
 
   hideDialog() {
@@ -275,6 +275,18 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;
+  }
+
+  onSelectedShippingPlan() {
+    if (this.selectedShippingPlan && this.selectedShippingPlan.id) {
+      this.shippingPlanClients
+      .getShippingPlanById(this.selectedShippingPlan.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: ShippingPlanModel) => (this.selectedShippingPlan.shippingPlanDetails = i.shippingPlanDetails),
+        (_) => (this.selectedShippingPlan.shippingPlanDetails = [])
+      );
+    }
   }
 
   ngOnDestroy(): void {

@@ -74,7 +74,7 @@ export class ShippingRequestCreateComponent implements OnInit {
 
     this.productFields = this.productCols.map((i) => i.field);
 
-    this.stepItems = [{ label: 'Select Shipping Plan' }, { label: 'Shipping Request Info' }, { label: 'Products' }, { label: 'Details' }, { label: 'Complete' }];
+    this.stepItems = [{ label: 'Select Shipping Plan' }, { label: 'Shipping Plan Info' }, { label: 'Products' }, { label: 'Details' }, { label: 'Complete' }];
   }
 
   handleOnSelectShippingPlan(shippingPlanId: number) {
@@ -97,7 +97,7 @@ export class ShippingRequestCreateComponent implements OnInit {
             message: 'Are you sure you want to create shipping request without selecting shipping plan?',
             header: 'Confirm',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => (this.stepIndex += 1),
+            accept: () => (this.stepIndex += 1)
           });
 
           return;
@@ -108,9 +108,9 @@ export class ShippingRequestCreateComponent implements OnInit {
         this.customerNameControl.patchValue(customerName);
         this.semlineNumberControl.patchValue(semlineNumber);
         this.purchaseOrderControl.patchValue(purchaseOrder);
-        this.shippingDateControl.patchValue(shippingDate);
         this.salesIdControl.patchValue(salesID);
         this.notesControl.patchValue(notes);
+        this.shippingDateControl.patchValue(new Date(shippingDate));
 
         const products = shippingPlanDetails.map((i) => i.product);
         this.selectedProducts = products;
