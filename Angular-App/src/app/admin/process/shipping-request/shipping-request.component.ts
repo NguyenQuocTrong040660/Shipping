@@ -179,7 +179,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
 
   openEditDialog(shippingRequest: ShippingRequestModel) {
     this.isShowDialog = true;
-    this.titleDialog = 'Create Shipping Request';
+    this.titleDialog = 'Edit Shipping Request';
     this.isEdit = true;
     this.shippingRequestForm.patchValue(shippingRequest);
   }

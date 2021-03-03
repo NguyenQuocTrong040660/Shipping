@@ -193,13 +193,11 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     }
 
     this.isEdit ? this.onEdit() : this.onCreate();
-
-    // this.hideDialog();
   }
 
   openEditDialog(shippingPlan: ShippingPlanModel) {
     this.isShowDialog = true;
-    this.titleDialog = 'Create Shipping Plan';
+    this.titleDialog = 'Edit Shipping Plan';
     this.isEdit = true;
     this.shippingPlanForm.patchValue(shippingPlan);
   }
@@ -208,7 +206,6 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     this.isShowDialog = false;
     this.isShowDialogHistory = false;
     this.isShowDialog = false;
-    this.shippingPlanForm.reset();
   }
 
   onEdit() {

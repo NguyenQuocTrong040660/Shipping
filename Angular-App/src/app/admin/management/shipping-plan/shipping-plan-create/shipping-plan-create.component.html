@@ -59,7 +59,6 @@
                 <div class="p-field">
                   <label for="shippingDate">Shipping Date</label>
                   <p-calendar
-                    [utc]="true"
                     [ngClass]="{ 'ng-dirty': shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched) }"
                     id="shippingDate"
                     [formControl]="shippingDateControl"
@@ -100,7 +99,7 @@
 
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-times"></p-button>
             <p-button
               [disabled]="shippingPlanForm.invalid"
               styleClass="p-button-text"
@@ -188,8 +187,8 @@
                 <th>Product Number</th>
                 <th>Product Name</th>
                 <th>Quantity</th>
-                <th>Price</th>
-                <th>Amount</th>
+                <th>Price (USD)</th>
+                <th>Amount (USD)</th>
                 <th>Shipping Mode</th>
                 <th style="width: 10rem"></th>
               </tr>
@@ -289,7 +288,7 @@
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
-              [disabled]="!checkModifiedQuantity(shippingDetailModels)"
+              [disabled]="!allowMoveToCompleteStep(shippingDetailModels)"
               styleClass="p-button-text"
               label="Next"
               (onClick)="nextPage(stepIndex)"
@@ -310,8 +309,8 @@
                 <th>Product Number</th>
                 <th>Product Name</th>
                 <th>Quantity</th>
-                <th>Price</th>
-                <th>Amount</th>
+                <th>Price (USD)</th>
+                <th>Amount (USD)</th>
               </tr>
             </ng-template>
 

@@ -30,8 +30,8 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges {
     return this.shippingRequestDocumentsForm.get('shippingRequestIdentifier');
   }
 
-  get customDeclarationNumberControl() {
-    return this.shippingRequestDocumentsForm.get('customDeclarationNumber');
+  get customsDeclarationNumberControl() {
+    return this.shippingRequestDocumentsForm.get('customsDeclarationNumber');
   }
 
   get grossWeightControl() {
@@ -75,7 +75,7 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges {
     this.shippingRequestDocumentsForm = this.fb.group({
       id: [0, [Validators.required]],
       shippingRequestIdentifier: ['', [Validators.required]],
-      customDeclarationNumber: [0],
+      customsDeclarationNumber: [''],
       grossWeight: [0],
       billToCustomer: [''],
       receiverCustomer: [''],

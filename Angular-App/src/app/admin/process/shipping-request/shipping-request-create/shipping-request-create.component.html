@@ -224,8 +224,8 @@
                 <th>Product Number</th>
                 <th>Product Name</th>
                 <th>Quantity</th>
-                <th>Price</th>
-                <th>Amount</th>
+                <th>Price (USD)</th>
+                <th>Amount (USD)</th>
                 <th>Shipping Mode</th>
                 <th style="width: 10rem"></th>
               </tr>
@@ -265,7 +265,7 @@
                 <td>
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                      <input type="text" pInputText [(ngModel)]="item.shippingMode" required />
+                      <input type="text" pInputText [(ngModel)]="item.shippingMode" />
                     </ng-template>
                     <ng-template pTemplate="output">
                       {{ item?.shippingMode }}
@@ -325,7 +325,7 @@
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
-              [disabled]="!checkModifiedQuantity(shippingRequestDetails)"
+              [disabled]="!allowMoveToCompleteStep(shippingRequestDetails)"
               styleClass="p-button-text"
               label="Next"
               (onClick)="nextPage(stepIndex)"
@@ -346,8 +346,8 @@
                 <th>Product Number</th>
                 <th>Product Name</th>
                 <th>Quantity</th>
-                <th>Price</th>
-                <th>Amount</th>
+                <th>Price (USD)</th>
+                <th>Amount (USD)</th>
               </tr>
             </ng-template>
 

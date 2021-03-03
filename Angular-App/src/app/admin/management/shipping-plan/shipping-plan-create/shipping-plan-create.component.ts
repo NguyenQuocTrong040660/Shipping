@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ProductModel, ShippingPlanDetailModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -10,7 +10,7 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './shipping-plan-create.component.html',
   styleUrls: ['./shipping-plan-create.component.scss'],
 })
-export class ShippingPlanCreateComponent implements OnInit {
+export class ShippingPlanCreateComponent implements OnInit, OnChanges {
   @Input() shippingPlanForm: FormGroup;
   @Input() titleDialog: string;
   @Input() isShowDialog: boolean;
@@ -61,7 +61,7 @@ export class ShippingPlanCreateComponent implements OnInit {
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.stepItems = [{ label: 'Shipping Plan Info' }, { label: 'Products' }, { label: 'Price' }, { label: 'Complete' }];
+    this.stepItems = [{ label: 'Shipping Plan Info' }, { label: 'Products' }, { label: 'Details' }, { label: 'Complete' }];
 
     this.productCols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
@@ -69,6 +69,12 @@ export class ShippingPlanCreateComponent implements OnInit {
       { header: 'Product Name', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Qty Per Package', field: 'qtyPerPackage', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
     ];
+  }
+
+  ngOnChanges() {
+    if (this.shippingDateControl && this.shippingDateControl.value) {
+      this.shippingDateControl.setValue(new Date(this.shippingDateControl.value))
+    }
   }
 
   hideDialog() {
@@ -92,29 +98,34 @@ export class ShippingPlanCreateComponent implements OnInit {
     this.stepIndex -= 1;
   }
 
-  onRowEditInit(shippingDetailModel: ShippingPlanDetailModel) {
+  onRowEditInit(shippingDetailModel: ShippingPlanDetails) {
+    shippingDetailModel.isEditRow = true;
     this.clonedshippingDetailModels[shippingDetailModel.productId] = { ...shippingDetailModel };
   }
 
-  onRowDelete(shippingDetailModel: ShippingPlanDetailModel) {
+  onRowDelete(shippingDetailModel: ShippingPlanDetails) {
     this.selectedProducts = this.selectedProducts.filter((i) => i.id !== shippingDetailModel.productId);
     this.shippingDetailModels = this.shippingDetailModels.filter((i) => i.productId !== shippingDetailModel.productId);
   }
 
-  onRowEditSave(shippingDetailModel: ShippingPlanDetailModel) {
+  onRowEditSave(shippingDetailModel: ShippingPlanDetails) {
+    shippingDetailModel.isEditRow = false;
     const entity = this.shippingDetailModels.find((i) => i.productId === shippingDetailModel.productId);
     entity.quantity = shippingDetailModel.quantity;
     entity.amount = shippingDetailModel.quantity * shippingDetailModel.price;
     delete this.clonedshippingDetailModels[shippingDetailModel.productId];
   }
 
-  onRowEditCancel(shippingDetailModel: ShippingPlanDetailModel, index: number) {
+  onRowEditCancel(shippingDetailModel: ShippingPlanDetails, index: number) {
     this.shippingDetailModels[index] = this.clonedshippingDetailModels[shippingDetailModel.productId];
     delete this.clonedshippingDetailModels[shippingDetailModel.productId];
   }
 
-  checkModifiedQuantity(shippingDetailModels: ShippingPlanDetailModel[]) {
-    return shippingDetailModels.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
+  allowMoveToCompleteStep(shippingDetailModels: ShippingPlanDetails[]): boolean {
+    const haveFilledDataRows = shippingDetailModels.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
+    const haveNotEditRows = shippingDetailModels.every(d => d.isEditRow === false);
+
+    return haveFilledDataRows && haveNotEditRows;
   }
 
   onSubmit() {
@@ -125,7 +136,7 @@ export class ShippingPlanCreateComponent implements OnInit {
     this.submitEvent.emit();
   }
 
-  initShippingPlanDetailsForm(shippingPlanDetailModel: ShippingPlanDetailModel) {
+  initShippingPlanDetailsForm(shippingPlanDetailModel: ShippingPlanDetails) {
     return this.fb.group({
       quantity: [shippingPlanDetailModel.quantity],
       productId: [shippingPlanDetailModel.productId],
@@ -136,7 +147,7 @@ export class ShippingPlanCreateComponent implements OnInit {
     });
   }
 
-  _mapToProductsToShippingDetailModels(products: ProductModel[]): ShippingPlanDetailModel[] {
+  _mapToProductsToShippingDetailModels(products: ProductModel[]): ShippingPlanDetails[] {
     return products.map((item, index) => {
       return {
         id: index + 1,
@@ -147,7 +158,12 @@ export class ShippingPlanCreateComponent implements OnInit {
         quantity: 0,
         price: 0,
         amount: 0,
+        isEditRow: false
       };
     });
   }
+}
+
+export interface ShippingPlanDetails extends ShippingPlanDetailModel {
+  isEditRow?: boolean
 }

@@ -27,8 +27,8 @@ export class ShippingRequestCreateComponent implements OnInit {
   stepIndex = 0;
 
   selectedProducts: ProductModel[] = [];
-  shippingRequestDetails: ShippingRequestDetailModel[] = [];
-  clonedShippingRequestDetails: { [s: string]: ShippingRequestDetailModel } = {};
+  shippingRequestDetails: ShippingRequestDetails[] = [];
+  clonedShippingRequestDetails: { [s: string]: ShippingRequestDetails } = {};
 
   TypeColumn = TypeColumn;
   productCols: any[] = [];
@@ -74,7 +74,7 @@ export class ShippingRequestCreateComponent implements OnInit {
 
     this.productFields = this.productCols.map((i) => i.field);
 
-    this.stepItems = [{ label: 'Select Shipping Plan' }, { label: 'Shipping Request Info' }, { label: 'Products' }, { label: 'Price' }, { label: 'Complete' }];
+    this.stepItems = [{ label: 'Select Shipping Plan' }, { label: 'Shipping Request Info' }, { label: 'Products' }, { label: 'Details' }, { label: 'Complete' }];
   }
 
   handleOnSelectShippingPlan(shippingPlanId: number) {
@@ -154,29 +154,34 @@ export class ShippingRequestCreateComponent implements OnInit {
     this.stepIndex -= 1;
   }
 
-  onRowEditInit(shippingRequestDetailModel: ShippingRequestDetailModel) {
+  onRowEditInit(shippingRequestDetailModel: ShippingRequestDetails) {
+    shippingRequestDetailModel.isEditRow = true;
     this.clonedShippingRequestDetails[shippingRequestDetailModel.productId] = { ...shippingRequestDetailModel };
   }
 
-  onRowDelete(shippingRequestDetailModel: ShippingRequestDetailModel) {
+  onRowDelete(shippingRequestDetailModel: ShippingRequestDetails) {
     this.selectedProducts = this.selectedProducts.filter((i) => i.id !== shippingRequestDetailModel.productId);
     this.shippingRequestDetails = this.shippingRequestDetails.filter((i) => i.productId !== shippingRequestDetailModel.productId);
   }
 
-  onRowEditSave(shippingRequestDetailModel: ShippingRequestDetailModel) {
+  onRowEditSave(shippingRequestDetailModel: ShippingRequestDetails) {
+    shippingRequestDetailModel.isEditRow = false;
     const entity = this.shippingRequestDetails.find((i) => i.productId === shippingRequestDetailModel.productId);
     entity.quantity = shippingRequestDetailModel.quantity;
     entity.amount = shippingRequestDetailModel.quantity * shippingRequestDetailModel.price;
     delete this.clonedShippingRequestDetails[shippingRequestDetailModel.productId];
   }
 
-  onRowEditCancel(shippingRequestDetailModel: ShippingRequestDetailModel, index: number) {
+  onRowEditCancel(shippingRequestDetailModel: ShippingRequestDetails, index: number) {
     this.shippingRequestDetails[index] = this.clonedShippingRequestDetails[shippingRequestDetailModel.productId];
     delete this.clonedShippingRequestDetails[shippingRequestDetailModel.productId];
   }
 
-  checkModifiedQuantity(shippingRequestDetailModels: ShippingRequestDetailModel[]) {
-    return shippingRequestDetailModels.filter((i) => i.quantity === 0 || !!i.shippingMode === false).length === 0;
+  allowMoveToCompleteStep(shippingRequestDetailModels: ShippingRequestDetails[]): boolean {
+    const haveFilledDataRows = shippingRequestDetailModels.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
+    const haveNotEditRows = shippingRequestDetailModels.every(d => d.isEditRow === false);
+
+    return haveFilledDataRows && haveNotEditRows;
   }
 
   onSubmit() {
@@ -189,7 +194,7 @@ export class ShippingRequestCreateComponent implements OnInit {
     this.submitEvent.emit();
   }
 
-  initShippingRequestDetailForm(shippingRequestDetailModel: ShippingRequestDetailModel) {
+  initShippingRequestDetailForm(shippingRequestDetailModel: ShippingRequestDetails) {
     return this.fb.group({
       quantity: [shippingRequestDetailModel.quantity],
       productId: [shippingRequestDetailModel.productId],
@@ -200,7 +205,7 @@ export class ShippingRequestCreateComponent implements OnInit {
     });
   }
 
-  _mapToProductsToShippingRequestDetailModels(products: ProductModel[]): ShippingRequestDetailModel[] {
+  _mapToProductsToShippingRequestDetailModels(products: ProductModel[]): ShippingRequestDetails[] {
     return products.map((item, index) => {
       return {
         id: index + 1,
@@ -212,6 +217,7 @@ export class ShippingRequestCreateComponent implements OnInit {
         price: 0,
         amount: 0,
         shippingMode: '',
+        isEditRow: false
       };
     });
   }
@@ -222,4 +228,8 @@ export class ShippingRequestCreateComponent implements OnInit {
       label: `${p.identifier} | ${p.purchaseOrder} | ${p.customerName} | ${p.salesID} | ${p.semlineNumber} | ${p.shippingDate}`,
     }));
   }
+}
+
+export interface ShippingRequestDetails extends ShippingRequestDetailModel {
+  isEditRow?: boolean
 }
