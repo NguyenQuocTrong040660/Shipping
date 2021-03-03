@@ -28,10 +28,7 @@ namespace ShippingApp.Application.ShippingMark.Queries
 
         public async Task<List<ShippingMarkModel>> Handle(GetShippingMarksQuery request, CancellationToken cancellationToken)
         {
-            var shippingMarks = await _shippingAppRepository.GetDbSet()
-                .Include(x => x.Product)
-                .ToListAsync();
-
+            var shippingMarks = await _shippingAppRepository.GetDbSet().ToListAsync();
             return _mapper.Map<List<ShippingMarkModel>>(shippingMarks);
         }
     }

@@ -55,6 +55,18 @@ namespace ShippingApp.Application.ShippingRequest.Commands
             }
 
             var entity = _mapper.Map<Entities.ShippingRequest>(request.ShippingRequest);
+
+            entity.ShippingRequestLogistic = new Entities.ShippingRequestLogistic
+            {
+                CustomDeclarationNumber = "",
+                BillToCustomer = string.Empty,
+                Notes = string.Empty,
+                ReceiverCustomer = string.Empty,
+                ReceiverAddress = string.Empty,
+                TrackingNumber = string.Empty,
+                GrossWeight = 0,
+            };
+
             return await _shippingAppRepository.AddAsync(entity);
         }
     }

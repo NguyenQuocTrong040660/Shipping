@@ -25,6 +25,10 @@ namespace ShippingApp.Application.Interfaces
         DbSet<Entities.ShippingRequest> ShippingRequests { get; }
         DbSet<Entities.ShippingRequestDetail> ShippingRequestDetails { get; }
         DbSet<Entities.ShippingRequestLogistic> ShippingRequestLogistics { get; }
+        DbSet<Entities.ShippingMarkShipping> ShippingMarkShippings { get;  }
+        DbSet<Entities.ShippingMarkPrinting> ShippingMarkPrintings { get; }
+        DbSet<Entities.ShippingMarkSummary> ShippingMarkSummaries { get; }
+
         DbSet<TEntity> SetEntity<TEntity>() where TEntity : class;
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken =  new CancellationToken());

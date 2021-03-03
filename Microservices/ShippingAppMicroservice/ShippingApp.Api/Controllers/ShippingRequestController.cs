@@ -36,27 +36,6 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{movementRequestId}")]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ShippingRequestLogisticModel), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> AddShippingRequestLogistics(int movementRequestId, [FromBody] ShippingRequestLogisticModel shippingRequestLogistic)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(shippingRequestLogistic);
-            }
-
-            var result = await Mediator.Send(new CreateShippingRequestLogisticCommand 
-            { 
-                MovementRequestId = movementRequestId,
-                ShippingRequestLogistic = shippingRequestLogistic
-            });
-
-            return Ok(result);
-        }
-
         [HttpGet]
         [ProducesResponseType(typeof(List<ShippingRequestModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -95,6 +74,30 @@ namespace ShippingApp.Api.Controllers
         public async Task<ActionResult<Result>> DeleteShippingRequestAysnc(int id)
         {
             var result = await Mediator.Send(new DeleteShippingRequestCommand { Id = id });
+            return Ok(result);
+        }
+
+        [HttpGet("{shippingRequestId}")]
+        [ProducesResponseType(typeof(ShippingRequestLogisticModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ShippingRequestLogisticModel>> GetShippingRequestLogisticAsync(int shippingRequestId)
+        {
+            var result = await Mediator.Send(new GetShippingRequestLogisticByShippingRequestId { ShippingRequestId = shippingRequestId });
+            return Ok(result);
+        }
+
+        [HttpPut("{shippingRequestId}")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ShippingRequestLogisticModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> UpdateShippingRequestLogisticAsync(int shippingRequestId, [FromBody] ShippingRequestLogisticModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(model);
+            }
+
+            var result = await Mediator.Send(new UpdateShippingRequestLogisticCommand { ShippingRequestId = shippingRequestId, ShippingRequestLogistic = model });
             return Ok(result);
         }
     }

@@ -36,23 +36,6 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("Generate/{shippingRequestId}")]
-        [ProducesResponseType(typeof(List<ShippingMarkModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ShippingMarkModel>>> GenerateShippingMarkAsync(int shippingRequestId)
-        {
-            var result = await Mediator.Send(new GenerateShippingMarkCommand { ShippingRequestId = shippingRequestId });
-            return Ok(result);
-        }
-
-        [HttpGet("ShippingRequest/{shippingRequestId}")]
-        [ProducesResponseType(typeof(List<ReceivedMarkModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ShippingMarkModel>>> GetShippingMarksByShippingRequestId(int shippingRequestId)
-        {
-            return await Mediator.Send(new GetShippingMarkByShippingRequestIdQuery { ShippingRequestId = shippingRequestId });
-        }
-
         [HttpGet]
         [ProducesResponseType(typeof(List<ShippingMarkModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -94,12 +77,53 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("Print/{id}")]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [HttpPost("Print")]
+        [ProducesResponseType(typeof(ShippingMarkPrintingModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ShippingMarkPrintingModel), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(PrintShippingMarkRequest), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> PrintShippingMarkAsync(int id)
+        public async Task<ActionResult<ShippingMarkPrintingModel>> PrintShippingMarkAsync([FromBody] PrintShippingMarkRequest request)
         {
-            var result = await Mediator.Send(new PrintShippingMarkCommand { Id = id });
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(request);
+            }
+
+            var result = await Mediator.Send(new PrintShippingMarkCommand
+            {
+                PrintShippingMarkRequest = request
+            });
+
+            if (result == null)
+            {
+                return NoContent();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("RePrint")]
+        [ProducesResponseType(typeof(ShippingMarkPrintingModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ShippingMarkPrintingModel), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(RePrintShippingMarkRequest), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<ShippingMarkPrintingModel>> RePrintReceivedMarkAsync([FromBody] RePrintShippingMarkRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(request);
+            }
+
+            var result = await Mediator.Send(new RePrintShippingMarkCommand
+            {
+                RePrintShippingMarkRequest = request
+            });
+
+            if (result == null)
+            {
+                return NoContent();
+            }
+
             return Ok(result);
         }
     }

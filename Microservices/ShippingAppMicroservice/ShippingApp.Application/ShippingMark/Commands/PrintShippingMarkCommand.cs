@@ -8,47 +8,65 @@ using Entities = ShippingApp.Domain.Entities;
 using System.Threading;
 using System.Threading.Tasks;
 using ShippingApp.Domain.Enumerations;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ShippingApp.Application.ShippingMark.Commands
 {
-    public class PrintShippingMarkCommand : IRequest<Result>
+    public class PrintShippingMarkCommand : IRequest<ShippingMarkPrintingModel>
     {
-        public int Id { get; set; }
+        public PrintShippingMarkRequest PrintShippingMarkRequest { get; set; }
     }
 
-    public class PrintShippingMarkCommandHandler : IRequestHandler<PrintShippingMarkCommand, Result>
+    public class PrintShippingMarkCommandHandler : IRequestHandler<PrintShippingMarkCommand, ShippingMarkPrintingModel>
     {
         private readonly IShippingAppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PrintShippingMarkCommandHandler(IShippingAppDbContext context)
+        public PrintShippingMarkCommandHandler(IShippingAppDbContext context, IMapper mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<Result> Handle(PrintShippingMarkCommand request, CancellationToken cancellationToken)
+        public async Task<ShippingMarkPrintingModel> Handle(PrintShippingMarkCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.ShippingMarks.FindAsync(request.Id);
+            var shippingMarkShippings = await _context.ShippingMarkPrintings
+                .Include(x => x.Product)
+                .Where(x => x.ShippingMarkId == request.PrintShippingMarkRequest.ShippingMarkId
+                         && x.ProductId == request.PrintShippingMarkRequest.ProductId)
+                .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.New)))
+                .OrderBy(x => x.Sequence)
+                .ToListAsync();
 
-            if (entity == null)
+            if (shippingMarkShippings == null || !shippingMarkShippings.Any())
             {
-                throw new ArgumentNullException(nameof(entity));
+                return null;
             }
 
-            if (!entity.Status.Equals(nameof(ShippingMarkStatus.New)))
+            Entities.ShippingMarkPrinting printItem = null;
+
+            for (int i = 0; i < shippingMarkShippings.Count; i++)
             {
-                return Result.Failure("Could not print Shipping Mark");
+                var itemPrint = shippingMarkShippings[i];
+
+                if (itemPrint.PrintCount != 0)
+                {
+                    continue;
+                }
+
+                itemPrint.PrintCount += 1;
+                itemPrint.Status = nameof(ShippingMarkStatus.Storage);
+                itemPrint.PrintingBy = request.PrintShippingMarkRequest.PrintedBy;
+                itemPrint.PrintingDate = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+
+                printItem = itemPrint;
+                break;
             }
 
-            if (entity.PrintCount != 0)
-            {
-                return Result.Failure("Shipping Mark has already been printed. Please contact your manager to re-print");
-            }
-
-            entity.PrintCount += 1;
-
-            return await _context.SaveChangesAsync() > 0
-                ? Result.Success()
-                : Result.Failure("Failed to print Shipping Mark");
+            return _mapper.Map<ShippingMarkPrintingModel>(printItem);
         }
     }
 }

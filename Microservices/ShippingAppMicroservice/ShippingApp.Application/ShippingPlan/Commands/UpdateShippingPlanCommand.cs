@@ -5,8 +5,9 @@ using ShippingApp.Domain.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Application.Common.Results;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ShippingApp.Application.ShippingPlan.Commands
 {
@@ -18,19 +19,45 @@ namespace ShippingApp.Application.ShippingPlan.Commands
 
     public class UpdateShippingPlanCommandHandler : IRequestHandler<UpdateShippingPlanCommand, Result>
     {
-        private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.ShippingPlan> _shippingAppRepository;
+        private readonly IShippingAppDbContext _context;
 
-        public UpdateShippingPlanCommandHandler(IMapper mapper, IShippingAppRepository<Entities.ShippingPlan> shippingAppRepository)
+        public UpdateShippingPlanCommandHandler(IShippingAppDbContext context)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<Result> Handle(UpdateShippingPlanCommand request, CancellationToken cancellationToken)
         {
-            var shippingPlan = _mapper.Map<Entities.ShippingPlan>(request.ShippingPlan);
-            return await _shippingAppRepository.Update(request.Id, shippingPlan);
+            var shippingPlan = await _context.ShippingPlans
+                .Include(x => x.ShippingPlanDetails)
+                .Where(x => x.Id == request.ShippingPlan.Id)
+                .FirstOrDefaultAsync();
+
+            if (shippingPlan == null)
+            {
+                throw new ArgumentNullException(nameof(shippingPlan));
+            }
+
+            foreach (var item in shippingPlan.ShippingPlanDetails)
+            {
+                var shippingPlanDetail = request.ShippingPlan.ShippingPlanDetails.FirstOrDefault(i => i.ProductId == item.ProductId);
+
+                if (shippingPlanDetail == null)
+                {
+                    _context.ShippingPlanDetails.Remove(item);
+                }
+                else
+                {
+                    item.Quantity = shippingPlanDetail.Quantity;
+                }
+            }
+
+            shippingPlan.Notes = request.ShippingPlan.Notes;
+            shippingPlan.RefId = request.ShippingPlan.RefId;
+
+            return await _context.SaveChangesAsync() > 0
+                ? Result.Success()
+                : Result.Failure($"Failed to update shipping plan");
         }
     }
 }

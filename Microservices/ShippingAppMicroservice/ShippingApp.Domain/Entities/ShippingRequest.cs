@@ -14,8 +14,11 @@ namespace ShippingApp.Domain.Entities
         public string SalesID { get; set; }
         public int SemlineNumber { get; set; }
         public string Notes { get; set; }
-        public virtual ICollection<ShippingRequestLogistic> ShippingRequestLogistics { get; set; }
+        public int ShippingRequestLogisticId { get; set; }
+
+        public virtual ShippingRequestLogistic ShippingRequestLogistic { get; set; }
+
         public virtual ICollection<ShippingRequestDetail> ShippingRequestDetails { get; set; }
-        public virtual ICollection<ShippingMark> ShippingMarks { get; set; }
+        public virtual ICollection<ShippingMarkShipping> ShippingMarkShippings { get; set; }
     }
 }

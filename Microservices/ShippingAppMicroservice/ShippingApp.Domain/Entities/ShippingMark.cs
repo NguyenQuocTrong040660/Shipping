@@ -1,4 +1,5 @@
 ﻿using ShippingApp.Domain.CommonEntities;
+using System.Collections.Generic;
 
 namespace ShippingApp.Domain.Entities
 {
@@ -6,16 +7,10 @@ namespace ShippingApp.Domain.Entities
     {
         public int Id { get; set; }
         public string Prefix { get; set; }
-        public string Revision { get; set; }
-        public int Quantity { get; set; }
-        public int Sequence { get; set; }
-        public string Status { get; set; }
-        public int ProductId { get; set; }
-        public int PrintCount { get; set; }
-        public int ShippingRequestId { get; set; }
         public string Notes { get; set; }
 
-        public virtual ShippingRequest ShippingRequest { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual ICollection<ShippingMarkPrinting> ShippingMarkPrintings { get; set; }
+        public virtual ICollection<ShippingMarkShipping> ShippingMarkShippings { get; set; }
+        public virtual ICollection<ShippingMarkSummary> ShippingMarkSummaries { get; set; }
     }
 }
