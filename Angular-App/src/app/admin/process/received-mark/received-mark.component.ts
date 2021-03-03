@@ -129,7 +129,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  handleSelectedWorkOrders() {
+  handleSelectedMovementRequests() {
     const { movementRequests } = this.receivedMarkForm.value;
 
     if (movementRequests && movementRequests.length > 0) {

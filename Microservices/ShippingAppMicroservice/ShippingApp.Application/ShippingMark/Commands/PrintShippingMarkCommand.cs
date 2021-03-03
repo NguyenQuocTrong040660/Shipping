@@ -56,7 +56,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                 }
 
                 itemPrint.PrintCount += 1;
-                itemPrint.Status = nameof(ShippingMarkStatus.Storage);
+                itemPrint.Status = nameof(ShippingMarkStatus.Shipping);
                 itemPrint.PrintingBy = request.PrintShippingMarkRequest.PrintedBy;
                 itemPrint.PrintingDate = DateTime.UtcNow;
 

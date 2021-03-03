@@ -126,5 +126,24 @@ namespace ShippingApp.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("Generate/ShippingMarkShippings")]
+        [ProducesResponseType(typeof(List<ShippingMarkShippingModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ShippingRequestModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ShippingMarkShippingModel>>> GenerateShippingMarkShippings([FromBody] ShippingRequestModel shippingRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(shippingRequest);
+            }
+
+            var result = await Mediator.Send(new GenerateShippingMarkShippingByShippingRequestQuery
+            {
+                ShippingRequest = shippingRequest
+            });
+
+            return Ok(result);
+        }
     }
 }

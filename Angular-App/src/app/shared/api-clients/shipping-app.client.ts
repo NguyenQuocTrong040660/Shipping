@@ -2098,6 +2098,62 @@ export class ReceivedMarkClients {
         }
         return _observableOf<ReceivedMarkPrintingModel[]>(<any>null);
     }
+
+    getReceivedMarkPrintingsByProduct(productId: number): Observable<ReceivedMarkPrintingModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/receivedmarkprintings/product/{productId}";
+        if (productId === undefined || productId === null)
+            throw new Error("The parameter 'productId' must be defined.");
+        url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetReceivedMarkPrintingsByProduct(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetReceivedMarkPrintingsByProduct(<any>response_);
+                } catch (e) {
+                    return <Observable<ReceivedMarkPrintingModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ReceivedMarkPrintingModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetReceivedMarkPrintingsByProduct(response: HttpResponseBase): Observable<ReceivedMarkPrintingModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ReceivedMarkPrintingModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ReceivedMarkPrintingModel[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -2547,6 +2603,69 @@ export class ShippingMarkClients {
             }));
         }
         return _observableOf<ShippingMarkPrintingModel>(<any>null);
+    }
+
+    generateShippingMarkShippings(shippingRequest: ShippingRequestModel): Observable<ShippingMarkShippingModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/shippingmark/generate/shippingmarkshippings";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(shippingRequest);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGenerateShippingMarkShippings(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGenerateShippingMarkShippings(<any>response_);
+                } catch (e) {
+                    return <Observable<ShippingMarkShippingModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ShippingMarkShippingModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGenerateShippingMarkShippings(response: HttpResponseBase): Observable<ShippingMarkShippingModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ShippingMarkShippingModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ShippingRequestModel>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ShippingMarkShippingModel[]>(<any>null);
     }
 }
 
@@ -3168,7 +3287,7 @@ export class ShippingRequestClients {
     }
 
     getShippingRequestLogistic(shippingRequestId: number): Observable<ShippingRequestLogisticModel> {
-        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/{shippingRequestId}";
+        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/shippingrequestlogistic/{shippingRequestId}";
         if (shippingRequestId === undefined || shippingRequestId === null)
             throw new Error("The parameter 'shippingRequestId' must be defined.");
         url_ = url_.replace("{shippingRequestId}", encodeURIComponent("" + shippingRequestId));
@@ -3224,7 +3343,7 @@ export class ShippingRequestClients {
     }
 
     updateShippingRequestLogistic(shippingRequestId: number, model: ShippingRequestLogisticModel): Observable<Result> {
-        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/{shippingRequestId}";
+        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/shippingrequestlogistic/{shippingRequestId}";
         if (shippingRequestId === undefined || shippingRequestId === null)
             throw new Error("The parameter 'shippingRequestId' must be defined.");
         url_ = url_.replace("{shippingRequestId}", encodeURIComponent("" + shippingRequestId));
@@ -3819,6 +3938,7 @@ export interface ShippingMarkModel extends AuditableEntityModel {
     shippingMarkPrintings?: ShippingMarkPrintingModel[] | undefined;
     shippingMarkShippings?: ShippingMarkShippingModel[] | undefined;
     shippingMarkSummaries?: ShippingMarkSummaryModel[] | undefined;
+    shippingMarkReceiveds?: ShippingMarkReceivedModel[] | undefined;
 }
 
 export interface ShippingMarkPrintingModel extends AuditableEntityModel {
@@ -3857,6 +3977,13 @@ export interface ShippingMarkSummaryModel extends AuditableEntityModel {
     product?: ProductModel | undefined;
 }
 
+export interface ShippingMarkReceivedModel extends AuditableEntityModel {
+    shippingMarkId?: number;
+    shippingRequestId?: number;
+    shippingMark?: ShippingMarkModel | undefined;
+    shippingRequest?: ShippingRequestModel | undefined;
+}
+
 export interface ReceivedMarkModel extends AuditableEntityModel {
     identifier?: string | undefined;
     id?: number;
@@ -3865,6 +3992,7 @@ export interface ReceivedMarkModel extends AuditableEntityModel {
     receivedMarkMovements?: ReceivedMarkMovementModel[] | undefined;
     receivedMarkPrintings?: ReceivedMarkPrintingModel[] | undefined;
     receivedMarkSummaries?: ReceivedMarkSummaryModel[] | undefined;
+    shippingMarkReceiveds?: ShippingMarkReceivedModel[] | undefined;
 }
 
 export interface ReceivedMarkMovementModel extends AuditableEntityModel {

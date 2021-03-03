@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   PrintShippingMarkRequest,
-  ProductClients,
   ProductModel,
   RePrintShippingMarkRequest,
   ShippingMarkClients,
   ShippingMarkModel,
+  ShippingMarkShippingModel,
   ShippingRequestClients,
   ShippingRequestModel,
 } from 'app/shared/api-clients/shipping-app.client';
@@ -27,30 +27,26 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class ShippingMarkComponent implements OnInit, OnDestroy {
   title = 'Shipping Mark';
+  titleDialog = '';
+
+  shippingMarkForm: FormGroup;
 
   user: ApplicationUser;
   shippingMarks: ShippingMarkModel[] = [];
-  products: ProductModel[] = [];
   selectedShippingMark: ShippingMarkModel;
-  selectItems: SelectItem[] = [];
   shippingRequests: ShippingRequestModel[] = [];
 
-  isShowDeleteDialog: boolean;
-  currentSelectedShippingMark: ShippingMarkModel[] = [];
-  isDeleteMany: boolean;
-  shippingMarkForm: FormGroup;
+  shippingMarkShippings: ShippingMarkShippingModel[] = [];
 
   isEdit = false;
   isShowDialog = false;
+  isShowDialogCreate = false;
   isShowDialogHistory = false;
-  titleDialog = '';
 
   cols: any[] = [];
   fields: any[] = [];
   TypeColumn = TypeColumn;
   HistoryDialogType = HistoryDialogType;
-
-  rowGroupMetadata: any;
 
   expandedItems: any[] = [];
 
@@ -59,7 +55,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   constructor(
     public printService: PrintService,
     private shippingMarkClients: ShippingMarkClients,
-    private productClients: ProductClients,
+    private fb: FormBuilder,
     private notificationService: NotificationService,
     private shippingRequestClients: ShippingRequestClients,
     private confirmationService: ConfirmationService,
@@ -67,59 +63,41 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
+
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Sequence', field: 'sequence', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
-      { header: 'Quantity', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
-      { header: 'Revision', field: 'revision', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Print By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Print Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      { header: 'Notes', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NumberColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
 
     this.initForm();
-    this.initProducts();
-    this.intMovementRequest();
-    this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
+    this.initShippingRequests();
   }
 
   initForm() {
-    this.shippingMarkForm = new FormGroup({
-      id: new FormControl(0),
-      productId: new FormControl(0, Validators.required),
-      notes: new FormControl(''),
-      revision: new FormControl('', [Validators.required]),
-      quantity: new FormControl(0, [Validators.required, Validators.min(1)]),
-      cartonNumber: new FormControl('', [Validators.required]),
-      customerId: new FormControl('', [Validators.required]),
-      lastModifiedBy: new FormControl(''),
-      lastModified: new FormControl(null),
+    this.shippingMarkForm = this.fb.group({
+      id: [0],
+      notes: [''],
+      lastModifiedBy: [''],
+      lastModified: [null],
+      shippingRequest: [null, Validators.required],
+      shippingMarkShippings: this.fb.array([]),
     });
   }
 
-  intMovementRequest() {
+  initShippingRequests() {
     this.shippingRequestClients
       .getShippingRequests()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => {
-          this.shippingRequests = i;
-        },
+        (i) => (this.shippingRequests = i),
         (_) => (this.shippingRequests = [])
-      );
-  }
-
-  initProducts() {
-    this.productClients
-      .getProducts()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (i) => {
-          this.products = i;
-        },
-        (_) => (this.products = [])
       );
   }
 
@@ -133,20 +111,10 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  initDataSource() {
-    this.shippingMarkClients
-      .getShippingMarks()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (i) => (this.shippingMarks = i),
-        (_) => (this.shippingMarks = [])
-      );
-  }
-
   openCreateDialog() {
     this.shippingMarkForm.reset();
     this.titleDialog = 'Create Shipping Mark';
-    this.isShowDialog = true;
+    this.isShowDialogCreate = true;
     this.isEdit = false;
   }
 
@@ -161,7 +129,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Create Shipping Mark Successfully');
-            this.initDataSource();
+            this.initShippingMarks();
           } else {
             this.notificationService.error(result?.error);
           }
@@ -185,13 +153,14 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
 
   openEditDialog(shippingMark: ShippingMarkModel) {
     this.isShowDialog = true;
-    this.titleDialog = 'Create Shipping Mark';
+    this.titleDialog = 'Edit Shipping Mark';
     this.isEdit = true;
     this.shippingMarkForm.patchValue(shippingMark);
   }
 
   hideDialog() {
     this.isShowDialog = false;
+    this.isShowDialogCreate = false;
     this.isShowDialogHistory = false;
   }
 
@@ -205,7 +174,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Shipping Mark Successfully');
-            this.initDataSource();
+            this.initShippingMarks();
           } else {
             this.notificationService.error(result?.error);
           }
@@ -227,7 +196,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Delete Shipping Mark Successfully');
-            this.initDataSource();
+            this.initShippingMarks();
           } else {
             this.notificationService.error(result?.error);
           }
@@ -238,19 +207,21 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       );
   }
 
+  handleSelectedShippingRequest(shippingRequest: ShippingRequestModel) {
+    if (shippingRequest) {
+      this.shippingMarkClients.generateShippingMarkShippings(shippingRequest).subscribe(
+        (shippingMarkShippings) => (this.shippingMarkShippings = shippingMarkShippings),
+        (_) => (this.shippingMarkShippings = [])
+      );
+    }
+  }
+
   onPrint() {
     this.printService.printDocument('shipping-mark');
   }
 
   openHistoryDialog() {
     this.isShowDialogHistory = true;
-  }
-
-  _mapToShippingRequestSelectItems(shippingRequests: ShippingRequestModel[]): SelectItem[] {
-    return shippingRequests.map((i) => ({
-      value: i.id,
-      label: `${i.identifier}`,
-    }));
   }
 
   printShippingMark() {

@@ -77,7 +77,7 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{shippingRequestId}")]
+        [HttpGet("ShippingRequestLogistic/{shippingRequestId}")]
         [ProducesResponseType(typeof(ShippingRequestLogisticModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ShippingRequestLogisticModel>> GetShippingRequestLogisticAsync(int shippingRequestId)
@@ -86,7 +86,7 @@ namespace ShippingApp.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPut("{shippingRequestId}")]
+        [HttpPut("ShippingRequestLogistic/{shippingRequestId}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ShippingRequestLogisticModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

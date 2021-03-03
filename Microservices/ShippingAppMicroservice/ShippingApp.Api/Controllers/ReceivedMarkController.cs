@@ -184,5 +184,18 @@ namespace ShippingApp.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("ReceivedMarkPrintings/Product/{productId}")]
+        [ProducesResponseType(typeof(List<ReceivedMarkPrintingModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReceivedMarkPrintingModel>>> GetReceivedMarkPrintingsByProductAsync(int productId)
+        {
+            var result = await Mediator.Send(new GetReceivedMarkPrintingsByProductIdQuery
+            {
+                ProductId = productId
+            });
+
+            return Ok(result);
+        }
     }
 }

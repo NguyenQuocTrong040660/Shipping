@@ -24,16 +24,6 @@
         (click)="openEditDialog(selectedShippingMark)"
       ></button>
 
-      <button
-        class="p-button-help p-mr-2"
-        pButton
-        pRipple
-        icon="pi pi-print"
-        label="Print"
-        [disabled]="!selectedShippingMark"
-        (click)="printShippingMark(selectedShippingMark)"
-      ></button>
-
       <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
@@ -88,33 +78,13 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-item let-columns="columns" let-rowIndex="rowIndex">
-      <tr *ngIf="rowGroupMetadata[item.product.productNumber].index === rowIndex">
-        <td [attr.colspan]="columns.length">
-          <span class="p-text-bold p-ml-2">{{ item.product.productNumber }} - {{ item.product.productName }}</span>
-        </td>
-      </tr>
-
+    <ng-template pTemplate="body" let-item let-columns="columns">
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
             <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
               <td class="p-text-center">
-                <ng-container *ngIf="item['printCount'] && item['printCount'] === 1; else canPrint">
-                  <button
-                    [disabled]="!canRePrint()"
-                    (click)="handleRePrintMark(item)"
-                    pButton
-                    pRipple
-                    [pTooltip]="getHelpText()"
-                    type="button"
-                    icon="pi pi-lock"
-                    class="p-button-rounded p-button-danger p-button-text"
-                  ></button>
-                </ng-container>
-                <ng-template #canPrint>
-                  <p-tableRadioButton [value]="item"></p-tableRadioButton>
-                </ng-template>
+                <p-tableRadioButton [value]="item"></p-tableRadioButton>
               </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
@@ -149,60 +119,16 @@
   </p-table>
 </div>
 
-<p-dialog [header]="titleDialog" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
-  <ng-template pTemplate="content">
-    <form [formGroup]="shippingMarkForm">
-      <div class="form-group">
-        <label for="customerId" class="control-label">Customer</label>
-        <input pInputText inputId="customerId" [formControl]="customerControl" />
-        <ng-container *ngIf="customerControl.invalid && (customerControl.dirty || customerControl.touched)">
-          <small class="p-invalid create-user-form__error">Please specify a customer id</small>
-        </ng-container>
-      </div>
-
-      <div class="form-group">
-        <label for="revision" class="control-label">Revision</label>
-        <input pInputText inputId="revision" [formControl]="revisionControl" />
-        <ng-container *ngIf="revisionControl.invalid && (revisionControl.dirty || revisionControl.touched)">
-          <small class="p-invalid create-user-form__error">Please specify a revision</small>
-        </ng-container>
-      </div>
-
-      <div class="form-group">
-        <label for="cartonNumber" class="control-label">Carton Number</label>
-        <input pInputText inputId="cartonNumber" [formControl]="cartonNumberControl" />
-        <ng-container *ngIf="cartonNumberControl.invalid && (cartonNumberControl.dirty || cartonNumberControl.touched)">
-          <small class="p-invalid create-user-form__error">Please specify a carton number</small>
-        </ng-container>
-      </div>
-
-      <div class="form-group">
-        <label for="quantity" class="control-label">Quantity</label>
-        <p-inputNumber inputId="quantity" [formControl]="quantityControl"> </p-inputNumber>
-        <ng-container *ngIf="quantityControl.invalid && (quantityControl.dirty || quantityControl.touched)">
-          <small class="p-invalid create-user-form__error">Please enter a valid quantity</small>
-        </ng-container>
-      </div>
-
-      <div class="form-group">
-        <label for="product" class="control-label">Product</label>
-        <p-dropdown [options]="selectItems" [formControl]="productControl" id="product" placeholder="Select a Product" appendTo="body"></p-dropdown>
-        <ng-container *ngIf="productControl.invalid && (productControl.dirty || productControl.touched)">
-          <small class="p-invalid create-user-form__error">Please select product</small>
-        </ng-container>
-      </div>
-
-      <div class="form-group">
-        <label for="notes" class="control-label">Notes</label>
-        <input pInputText id="notes" [formControl]="notesControl" type="text" class="form-control" />
-      </div>
-    </form>
-  </ng-template>
-
-  <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingMarkForm.invalid" (click)="onSubmit()"></button>
-  </ng-template>
-</p-dialog>
+<app-shipping-mark-create
+  [shippingMarkForm]="shippingMarkForm"
+  [titleDialog]="titleDialog"
+  [shippingRequests]="shippingRequests"
+  [shippingMarkShippings]="shippingMarkShippings"
+  [isShowDialog]="isShowDialogCreate"
+  (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
+  (selectedShippingRequestEvent)="handleSelectedShippingRequest($event)"
+>
+</app-shipping-mark-create>
 
 <app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingMark" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

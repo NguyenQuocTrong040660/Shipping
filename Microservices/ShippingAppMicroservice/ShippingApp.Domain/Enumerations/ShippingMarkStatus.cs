@@ -3,7 +3,6 @@
     public enum ShippingMarkStatus
     {
         New,
-        Storage,
         Shipping
     }
 }

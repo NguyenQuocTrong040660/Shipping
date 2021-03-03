@@ -30,5 +30,6 @@ namespace ShippingApp.Domain.Models
         public virtual ICollection<ReceivedMarkMovementModel> ReceivedMarkMovements { get; set; }
         public virtual ICollection<ReceivedMarkPrintingModel> ReceivedMarkPrintings { get; set; }
         public virtual ICollection<ReceivedMarkSummaryModel> ReceivedMarkSummaries { get; set; }
+        public virtual ICollection<ShippingMarkReceivedModel> ShippingMarkReceiveds { get; set; }
     }
 }
