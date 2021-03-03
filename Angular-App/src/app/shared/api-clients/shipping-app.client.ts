@@ -2480,7 +2480,7 @@ export class ShippingMarkClients {
         return _observableOf<ShippingMarkPrintingModel>(<any>null);
     }
 
-    rePrintReceivedMark(request: RePrintShippingMarkRequest): Observable<ShippingMarkPrintingModel> {
+    rePrintShippingMark(request: RePrintShippingMarkRequest): Observable<ShippingMarkPrintingModel> {
         let url_ = this.baseUrl + "/api/shippingapp/shippingmark/reprint";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2497,11 +2497,11 @@ export class ShippingMarkClients {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processRePrintReceivedMark(response_);
+            return this.processRePrintShippingMark(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processRePrintReceivedMark(<any>response_);
+                    return this.processRePrintShippingMark(<any>response_);
                 } catch (e) {
                     return <Observable<ShippingMarkPrintingModel>><any>_observableThrow(e);
                 }
@@ -2510,7 +2510,7 @@ export class ShippingMarkClients {
         }));
     }
 
-    protected processRePrintReceivedMark(response: HttpResponseBase): Observable<ShippingMarkPrintingModel> {
+    protected processRePrintShippingMark(response: HttpResponseBase): Observable<ShippingMarkPrintingModel> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :

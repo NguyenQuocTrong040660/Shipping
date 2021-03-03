@@ -38,24 +38,7 @@
     </ng-template>
   </p-toolbar>
 
-  <p-card>
-    <div class="p-field">
-      <label for="customerName">Shipping Request</label>
-      <p-dropdown
-        styleClass="p-dropdown-custom"
-        [options]="_mapToShippingRequestSelectItems(shippingRequests)"
-        [filter]="true"
-        filterBy="label"
-        [showClear]="true"
-        (onChange)="handleOnChange($event.value)"
-        placeholder="Please select a Shipping Request"
-      >
-      </p-dropdown>
-    </div>
-  </p-card>
-
   <p-table
-    *ngIf="shippingMarks && shippingMarks.length > 0"
     #shippingMarkDataTable
     dataKey="id"
     [value]="shippingMarks"
@@ -64,11 +47,7 @@
     [paginator]="true"
     [scrollable]="true"
     [(selection)]="selectedShippingMark"
-    sortField="product.productNumber"
-    sortMode="single"
-    (onSort)="onSort($event)"
-    (sortFunction)="customSort($event)"
-    [customSort]="true"
+    [expandedRowKeys]="expandedItems"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">

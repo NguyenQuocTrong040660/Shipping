@@ -1,6 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ProductClients, ProductModel, ShippingMarkClients, ShippingMarkModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import {
+  PrintShippingMarkRequest,
+  ProductClients,
+  ProductModel,
+  RePrintShippingMarkRequest,
+  ShippingMarkClients,
+  ShippingMarkModel,
+  ShippingRequestClients,
+  ShippingRequestModel,
+} from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -43,29 +52,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
 
   rowGroupMetadata: any;
 
-  get quantityControl() {
-    return this.shippingMarkForm.get('quantity');
-  }
-
-  get productControl() {
-    return this.shippingMarkForm.get('productId');
-  }
-
-  get notesControl() {
-    return this.shippingMarkForm.get('notes');
-  }
-
-  get customerControl() {
-    return this.shippingMarkForm.get('customerId');
-  }
-
-  get revisionControl() {
-    return this.shippingMarkForm.get('revision');
-  }
-
-  get cartonNumberControl() {
-    return this.shippingMarkForm.get('cartonNumber');
-  }
+  expandedItems: any[] = [];
 
   private destroyed$ = new Subject<void>();
 
@@ -136,21 +123,14 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  initShippingMarks(shippingRequestId: number) {
+  initShippingMarks() {
     this.shippingMarkClients
-      .getShippingMarksByShippingRequestId(shippingRequestId)
+      .getShippingMarks()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => {
-          this.shippingMarks = i;
-          this.updateRowGroupMetaData();
-        },
+        (i) => (this.shippingMarks = i),
         (_) => (this.shippingMarks = [])
       );
-  }
-
-  handleOnChange(selectedShippingRequestId) {
-    this.initShippingMarks(selectedShippingRequestId);
   }
 
   initDataSource() {
@@ -266,55 +246,6 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     this.isShowDialogHistory = true;
   }
 
-  onSort() {
-    this.updateRowGroupMetaData();
-  }
-
-  customSort() {
-    this.shippingMarks.sort((a, b) => {
-      const aGroup = a.product.productNumber.toLowerCase();
-      const bGroup = b.product.productNumber.toLowerCase();
-
-      if (aGroup > bGroup) {
-        return 1;
-      }
-      if (aGroup < bGroup) {
-        return -1;
-      }
-
-      const aSequence = a.sequence;
-      const bSequene = b.sequence;
-
-      if (aSequence > bSequene) {
-        return 1;
-      }
-      if (aSequence < bSequene) {
-        return -1;
-      }
-      return 0;
-    });
-  }
-
-  updateRowGroupMetaData() {
-    this.rowGroupMetadata = {};
-
-    if (this.shippingMarks) {
-      for (let i = 0; i < this.shippingMarks.length; i++) {
-        let rowData = this.shippingMarks[i];
-        let representativeName = rowData.product.productNumber;
-
-        if (i == 0) {
-          this.rowGroupMetadata[representativeName] = { index: 0, size: 1 };
-        } else {
-          let previousRowData = this.shippingMarks[i - 1];
-          let previousRowGroup = previousRowData.product.productNumber;
-          if (representativeName === previousRowGroup) this.rowGroupMetadata[representativeName].size++;
-          else this.rowGroupMetadata[representativeName] = { index: i, size: 1 };
-        }
-      }
-    }
-  }
-
   _mapToShippingRequestSelectItems(shippingRequests: ShippingRequestModel[]): SelectItem[] {
     return shippingRequests.map((i) => ({
       value: i.id,
@@ -322,43 +253,40 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     }));
   }
 
-  printShippingMark(shippingMark: ShippingMarkModel) {
+  printShippingMark() {
+    const requestPrint: PrintShippingMarkRequest = {
+      productId: 0,
+      shippingMarkId: 0,
+      printedBy: this.user.userName,
+    };
+
     this.confirmationService.confirm({
       message: 'Are you sure you want to print mark for this item?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.shippingMarkClients
-          .printShippingMark(shippingMark.id)
+          .printShippingMark(requestPrint)
           .pipe(takeUntil(this.destroyed$))
           .subscribe(
             (result) => {
-              if (result && result.succeeded) {
+              if (result) {
                 this.onPrint();
               } else {
-                this.notificationService.error(result?.error);
+                this.notificationService.error('Print Shipping Mark Failed. Please try again');
               }
             },
-            (_) => {
-              this.notificationService.error('Print Shipping Mark Failed. Please try again');
-            }
+            (_) => this.notificationService.error('Print Shipping Mark Failed. Please try again')
           );
       },
     });
   }
 
-  getHelpText() {
-    return this.printService.canRePrint(this.user) ? '' : 'Shipping Mark has been printed. Please contact your manager to re-print';
-  }
-
-  canRePrint() {
-    return this.printService.canRePrint(this.user) ? true : false;
-  }
-
   handleRePrintMark(item: ShippingMarkModel) {
-    if (!this.canRePrint()) {
-      return;
-    }
+    const request: RePrintShippingMarkRequest = {
+      shippingMarkPrintingId: 0,
+      rePrintedBy: this.user.userName,
+    };
 
     this.confirmationService.confirm({
       message: 'Are you sure you want to re-print this mark ?',
@@ -366,14 +294,14 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.shippingMarkClients
-          .printShippingMark(item.id)
+          .rePrintShippingMark(request)
           .pipe(takeUntil(this.destroyed$))
           .subscribe(
             (result) => {
-              if (result && result.succeeded) {
+              if (result) {
                 this.onPrint();
               } else {
-                this.notificationService.error(result?.error);
+                this.notificationService.error('Print Shipping Mark Failed. Please try again');
               }
             },
             (_) => this.notificationService.error('Print Shipping Mark Failed. Please try again')

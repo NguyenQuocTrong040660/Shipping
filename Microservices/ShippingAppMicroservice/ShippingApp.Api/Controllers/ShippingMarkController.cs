@@ -107,7 +107,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(typeof(ShippingMarkPrintingModel), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(RePrintShippingMarkRequest), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<ShippingMarkPrintingModel>> RePrintReceivedMarkAsync([FromBody] RePrintShippingMarkRequest request)
+        public async Task<ActionResult<ShippingMarkPrintingModel>> RePrintShippingMarkAsync([FromBody] RePrintShippingMarkRequest request)
         {
             if (!ModelState.IsValid)
             {

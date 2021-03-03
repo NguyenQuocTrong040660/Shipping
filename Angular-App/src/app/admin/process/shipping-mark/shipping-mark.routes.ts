@@ -5,11 +5,11 @@ import { PrintComponent } from '../../../shared/components/print/print.component
 export const shippingMarkRoutes: Routes = [
   {
     path: '',
-    component: ShippingMarkComponent
+    component: ShippingMarkComponent,
   },
   {
     path: 'print',
     outlet: 'print',
-    component: PrintComponent
-  }
+    component: PrintComponent,
+  },
 ];
