@@ -60,6 +60,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   HistoryDialogType = HistoryDialogType;
 
   expandedItems: any[] = [];
+  printData: any;
 
   private destroyed$ = new Subject<void>();
 
@@ -309,6 +310,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           if (result) {
+            this.printData = result;
             this.onPrint();
             this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
           } else {

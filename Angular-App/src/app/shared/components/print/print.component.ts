@@ -8,6 +8,7 @@ import { PrintService } from 'app/shared/services/print.service';
 })
 export class PrintComponent implements OnInit {
   @Input() title: string;
+  @Input() printData: any;
 
   constructor(private printService: PrintService) { }
 

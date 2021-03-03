@@ -18,31 +18,27 @@
             <table>
               <tr class="print__identity">
                 <td>Received ID:</td>
-                <td class="print__value">RECEIVED0237976</td>
+                <td class="print__value">{{ printData && printData.id ? printData.id : '' }}</td>
               </tr>
               <tr>
                 <td>P/N:</td>
-                <td class="print__value">HGDCV2365427-220000</td>
+                <td class="print__value">{{ printData && printData.product ? printData.product.productName : '' }}</td>
               </tr>
               <tr>
                 <td>Qty:</td>
-                <td class="print__value">9,000</td>
+                <td class="print__value">{{ printData && printData.quantity ? printData.quantity : '' }}</td>
               </tr>
               <tr>
                 <td>Revision:</td>
-                <td class="print__value">2-326-JG32</td>
+                <td class="print__value">{{ printData && printData.revision ? printData.revision : '' }}</td>
               </tr>
               <tr>
                 <td>Carton number:</td>
-                <td class="print__value">#3</td>
+                <td class="print__value">{{ printData && printData.sequence ? printData.sequence : '' }}</td>
               </tr>
               <tr>
                 <td>Date:</td>
-                <td class="print__value">02-16-2021</td>
-              </tr>
-              <tr>
-                <td>Date:</td>
-                <td class="print__value">02-16-2021</td>
+                <td class="print__value">{{ printData && printData.printingDate ? (printData.printingDate | date: 'dd/MM/yyyy') : '' }}</td>
               </tr>
             </table>
           </div>
