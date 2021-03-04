@@ -1,5 +1,6 @@
 ﻿using ShippingApp.Domain.CommonEntities;
 using System;
+using System.Collections.Generic;
 
 namespace ShippingApp.Domain.Entities
 {
@@ -20,8 +21,10 @@ namespace ShippingApp.Domain.Entities
 
         public int ProductId { get; set; }
         public int ReceivedMarkId { get; set; }
+        public int? ShippingMarkId { get; set; }
 
         public virtual ReceivedMark ReceivedMark { get; set; }
         public virtual Product Product { get; set; }
+        public virtual ShippingMark ShippingMark { get; set; }
     }
 }

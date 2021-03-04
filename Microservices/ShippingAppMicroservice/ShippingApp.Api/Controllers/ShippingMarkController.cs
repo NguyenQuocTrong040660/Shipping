@@ -145,5 +145,29 @@ namespace ShippingApp.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("ShippingMarkSummaries/{shippingMarkId}")]
+        [ProducesResponseType(typeof(List<ShippingMarkSummaryModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ShippingMarkSummaryModel>>> GetShippingMarkSummariesAsync(int shippingMarkId)
+        {
+            var result = await Mediator.Send(new GetShippingMarkSummariesByIdQuery { ShippingMarkId = shippingMarkId });
+            return Ok(result);
+        }
+
+        [HttpGet("ShippingMarkPrintings/{shippingMarkId}/{productId}")]
+        [ProducesResponseType(typeof(List<ShippingMarkPrintingModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ShippingMarkPrintingModel>>> GetShippingMarkPrintingsAsync(
+            int shippingMarkId, int productId)
+        {
+            var result = await Mediator.Send(new GetShippingPrintingsByIdQuery
+            {
+                ShippingMarkId = shippingMarkId,
+                ProductId = productId
+            });
+
+            return Ok(result);
+        }
     }
 }

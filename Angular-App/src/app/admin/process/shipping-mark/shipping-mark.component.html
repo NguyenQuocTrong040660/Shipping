@@ -78,7 +78,7 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-item let-columns="columns">
+    <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
@@ -112,8 +112,60 @@
                 {{ item[col.field] }}
               </td>
             </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
+              <td class="p-text-center">
+                <button
+                  type="button"
+                  pButton
+                  pRipple
+                  (click)="getShippingMarkSummaries(item)"
+                  [pRowToggler]="item"
+                  class="p-button-text p-button-rounded p-button-plain"
+                  [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
+                ></button>
+              </td>
+            </ng-container>
           </ng-container>
         </ng-container>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="rowexpansion" let-shippingMark>
+      <tr>
+        <td colspan="6" class="shipping-mark__expaned">
+          <div>
+            <p-table class="shipping-mark__expaned-table" [value]="shippingMark.shippingMarkSummaries">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Total Quantity</th>
+                  <th class="p-text-center">Total Package</th>
+                  <th class="p-text-center"></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>{{ item?.product?.productNumber }}</td>
+                  <td>{{ item?.product?.productName }}</td>
+                  <td class="p-text-center">{{ item?.totalQuantity }}</td>
+                  <td class="p-text-center">{{ item?.totalPackage }}</td>
+                  <td class="p-text-center">
+                    <button
+                      pButton
+                      pRipple
+                      pTooltip="Printing Details"
+                      tooltipPosition="left"
+                      icon="pi pi-briefcase"
+                      class="p-button-rounded p-button-text"
+                      (click)="showDetailShippingMarkSummary(shippingMark, item)"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
       </tr>
     </ng-template>
   </p-table>
@@ -130,5 +182,18 @@
   (selectedShippingRequestEvent)="handleSelectedShippingRequest($event)"
 >
 </app-shipping-mark-create>
+
+<app-shipping-mark-details
+  [class.isPrinting]="printService.isPrinting"
+  [titleDialog]="titleDialog"
+  [isShowDialog]="isShowDialogDetail"
+  [user]="user"
+  [canRePrint]="canRePrint"
+  [shippingMarkPrintings]="shippingMarkPrintings"
+  (hideDialogEvent)="hideDialog()"
+  (printMarkEvent)="printShippingMark()"
+  (rePrintMarkEvent)="handleRePrintMark($event)"
+>
+</app-shipping-mark-details>
 
 <app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingMark" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

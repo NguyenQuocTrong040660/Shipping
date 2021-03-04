@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ShippingMarkShippingModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductModel, ReceivedMarkPrintingModel, ShippingMarkShippingModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { MenuItem, SelectItem } from 'primeng/api';
 
 @Component({
@@ -25,7 +25,7 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
   selecteShippingRequestItems: SelectItem[] = [];
   selectedShippingRequest: ShippingRequestModel;
 
-  selectedItems: any[];
+  dataSummary: any[] = [];
 
   get notesControl() {
     return this.shippingMarkForm.get('notes');
@@ -37,6 +37,10 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
 
   get shippingMarkShippingsControl() {
     return this.shippingMarkForm.get('shippingMarkShippings') as FormArray;
+  }
+
+  get receivedMarkPrintingsControl() {
+    return this.shippingMarkForm.get('receivedMarkPrintings') as FormArray;
   }
 
   constructor(private fb: FormBuilder) {}
@@ -65,31 +69,45 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
     }));
   }
 
+  canNavigateToSummaryStep() {
+    return this.shippingMarkShippings.filter((item) => item['selectedReceivedMarks'] && item['selectedReceivedMarks'].length === 0).length > 0;
+  }
+
   onSubmit() {
     this.shippingMarkShippingsControl.clear();
+    this.receivedMarkPrintingsControl.clear();
 
     this.shippingMarkShippings.forEach((i) => {
-      this.shippingMarkShippingsControl.push(this.initShippingMarkMovementForm(i));
+      this.shippingMarkShippingsControl.push(this.initShippingMarkShippingForm(i));
+      i['selectedReceivedMarks'].forEach((receivedMark: ReceivedMarkPrintingModel) => {
+        this.receivedMarkPrintingsControl.push(this.initReceivedMarkPrintingForm(receivedMark));
+      });
     });
 
     this.submitEvent.emit();
   }
 
-  initShippingMarkMovementForm(shippingMarkShipping: ShippingMarkShippingModel) {
+  initShippingMarkShippingForm(shippingMarkShipping: ShippingMarkShippingModel) {
     return this.fb.group({
       quantity: [shippingMarkShipping.quantity],
       productId: [shippingMarkShipping.productId],
       shippingRequestId: [shippingMarkShipping.shippingRequestId],
-      shippingMarkId: 0,
+      shippingMarkId: [0],
+    });
+  }
+
+  initReceivedMarkPrintingForm(receivedMarkPrinting: ReceivedMarkPrintingModel) {
+    return this.fb.group({
+      id: [receivedMarkPrinting.id],
+      productId: [receivedMarkPrinting.productId],
+      receivedMarkId: [receivedMarkPrinting.receivedMarkId],
+      shippingMarkId: [0],
+      quantity: [receivedMarkPrinting.quantity],
     });
   }
 
   handleSelectedShippingRequest(shippingRequest: ShippingRequestModel) {
     this.selectedShippingRequest = shippingRequest;
-  }
-
-  handleSelectReceivedMarkPrinting($event) {
-    console.log($event);
   }
 
   nextPage(currentIndex: number) {
@@ -100,7 +118,23 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
         break;
       }
       case 1: {
+        this.dataSummary = [];
         this.stepIndex += 1;
+
+        this.shippingMarkShippings.forEach((item: ShippingMarkShippingModel) => {
+          const totalReceivedMarks = this.calculateQuantityReceivedMark(item['selectedReceivedMarks']);
+
+          const record = {
+            productName: item.product.productName,
+            productNumber: item.product.productNumber,
+            quantity: item.quantity,
+            totalReceivedMarks: totalReceivedMarks,
+            totalShippingMarks: this.calculateShippingMarks(item.product, totalReceivedMarks),
+          };
+
+          this.dataSummary.push(record);
+        });
+
         break;
       }
     }
@@ -108,5 +142,27 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
 
   prevPage() {
     this.stepIndex -= 1;
+  }
+
+  calculateQuantityReceivedMark(selectedReceivedMarks: ReceivedMarkPrintingModel[]) {
+    return selectedReceivedMarks.reduce((i, j) => i + j.quantity, 0);
+  }
+
+  calculateShippingMarks(product: ProductModel, totalQuantityOfReceivedMarks: number) {
+    let remainTotal = totalQuantityOfReceivedMarks;
+    let totalShippingMarks = 0;
+    const qtyPerPackageNumber = parseInt(product.qtyPerPackage) * 1;
+
+    while (remainTotal > 0) {
+      if (remainTotal >= qtyPerPackageNumber) {
+        totalShippingMarks++;
+      } else {
+        totalShippingMarks++;
+      }
+
+      remainTotal = remainTotal - qtyPerPackageNumber;
+    }
+
+    return totalShippingMarks;
   }
 }

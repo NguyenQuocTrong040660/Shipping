@@ -20,6 +20,11 @@ namespace ShippingApp.Persistence.Configurations
             builder.HasOne<ReceivedMark>(s => s.ReceivedMark)
                .WithMany(g => g.ReceivedMarkPrintings)
                .HasForeignKey(s => s.ReceivedMarkId);
+
+            builder.HasOne<ShippingMark>(s => s.ShippingMark)
+              .WithMany(g => g.ReceivedMarkPrintings)
+              .HasForeignKey(s => s.ShippingMarkId)
+              .IsRequired(false);
         }
     }
 }

@@ -1,4 +1,4 @@
-<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [position]="'top-right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
@@ -59,6 +59,7 @@
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
                   <th class="p-text-center">Quantity</th>
+                  <th class="p-text-center">Quantity of Received Marks</th>
                   <th style="width: 10rem"></th>
                 </tr>
               </ng-template>
@@ -66,14 +67,21 @@
               <ng-template pTemplate="body" let-item let-expanded="expanded">
                 <tr [pEditableRow]="item">
                   <td>{{ item?.shippingRequest?.identifier }}</td>
+
                   <td>
                     {{ item?.product?.productNumber }}
                   </td>
+
                   <td>
                     {{ item?.product?.productName }}
                   </td>
+
                   <td class="p-text-center">
                     {{ item?.quantity | number }}
+                  </td>
+
+                  <td class="p-text-center">
+                    {{ calculateQuantityReceivedMark(item['selectedReceivedMarks']) | number }} - {{ item['selectedReceivedMarks'].length | number }} packages
                   </td>
 
                   <td class="p-text-center">
@@ -91,20 +99,14 @@
 
               <ng-template pTemplate="rowexpansion" let-item>
                 <tr>
-                  <td colspan="5">
+                  <td colspan="6">
                     <div class="p-p-3">
-                      <p-table
-                        (onRowSelect)="handleSelectReceivedMarkPrinting($event)"
-                        [(selection)]="selectedItems"
-                        selectionMode="multiple"
-                        [value]="item.product.receivedMarkPrintings"
-                        dataKey="id"
-                      >
+                      <p-table [(selection)]="item['selectedReceivedMarks']" selectionMode="multiple" [value]="item.product.receivedMarkPrintings" dataKey="id">
                         <ng-template pTemplate="header">
                           <tr>
-                            <th>Id</th>
-                            <th>Quantity</th>
-                            <th>Status</th>
+                            <th class="p-text-center">Package Received</th>
+                            <th class="p-text-center">Quantity</th>
+                            <th class="p-text-center">Status</th>
                             <th style="width: 4rem">
                               <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
                             </th>
@@ -112,9 +114,9 @@
                         </ng-template>
                         <ng-template pTemplate="body" let-receivedMarkPrinting>
                           <tr>
-                            <td>{{ receivedMarkPrinting.id }}</td>
-                            <td>{{ receivedMarkPrinting.quantity }}</td>
-                            <td>{{ receivedMarkPrinting.status }}</td>
+                            <td class="p-text-center">{{ receivedMarkPrinting.id }}</td>
+                            <td class="p-text-center">{{ receivedMarkPrinting.quantity }}</td>
+                            <td class="p-text-center">{{ receivedMarkPrinting.status }}</td>
                             <td>
                               <p-tableCheckbox [value]="receivedMarkPrinting"></p-tableCheckbox>
                             </td>
@@ -122,7 +124,7 @@
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
                           <tr>
-                            <td colspan="4">There are no recieved mark printing for this product yet.</td>
+                            <td colspan="4" class="p-text-center">There are no recieved mark printing for this product yet.</td>
                           </tr>
                         </ng-template>
                       </p-table>
@@ -138,7 +140,7 @@
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
-              [disabled]="shippingMarkForm.invalid"
+              [disabled]="shippingMarkForm.invalid || canNavigateToSummaryStep()"
               styleClass="p-button-text"
               label="Next"
               (onClick)="nextPage(stepIndex)"
@@ -154,12 +156,14 @@
       <p-card>
         <ng-template pTemplate="content">
           <p-card styleClass="p-card-custom">
-            <p-table dataKey="id" [value]="dataGroupByProduct">
+            <p-table dataKey="id" [value]="dataSummary">
               <ng-template pTemplate="header" let-columns>
                 <tr>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
                   <th class="p-text-center">Quantity</th>
+                  <th class="p-text-center">Total Received Marks Quantity</th>
+                  <th class="p-text-center">Total Shipping Marks (expect)</th>
                 </tr>
               </ng-template>
 
@@ -173,6 +177,12 @@
                   </td>
                   <td class="p-text-center">
                     {{ item?.quantity | number }}
+                  </td>
+                  <td class="p-text-center">
+                    {{ item?.totalReceivedMarks | number }}
+                  </td>
+                  <td class="p-text-center">
+                    {{ item?.totalShippingMarks | number }}
                   </td>
                 </tr>
               </ng-template>

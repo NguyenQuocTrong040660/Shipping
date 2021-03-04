@@ -42,9 +42,6 @@ namespace ShippingApp.Application.Common.Mapping
                .ReverseMap();
             CreateMap<Entities.ShippingMarkSummary, Models.ShippingMarkSummaryModel>()
                .ReverseMap();
-            CreateMap<Entities.ShippingMarkReceived, Models.ShippingMarkReceivedModel>()
-              .ReverseMap();
-
 
             CreateMap<Entities.ShippingRequest, Models.ShippingRequestModel>()
                 .ReverseMap();

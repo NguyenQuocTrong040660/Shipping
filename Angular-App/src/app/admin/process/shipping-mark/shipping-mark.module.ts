@@ -6,10 +6,9 @@ import { ShippingMarkComponent } from './shipping-mark.component';
 import { shippingMarkRoutes } from './shipping-mark.routes';
 import { ShippingMarkCreateComponent } from './shipping-mark-create/shipping-mark-create.component';
 import { ShippingMarkDetailsComponent } from './shipping-mark-details/shipping-mark-details.component';
-import { ShippingMarkReferenceComponent } from './shipping-mark-reference/shipping-mark-reference.component';
 
 @NgModule({
-  declarations: [ShippingMarkComponent, ShippingMarkCreateComponent, ShippingMarkDetailsComponent, ShippingMarkReferenceComponent],
+  declarations: [ShippingMarkComponent, ShippingMarkCreateComponent, ShippingMarkDetailsComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(shippingMarkRoutes)],
   exports: [ShippingMarkComponent],
 })

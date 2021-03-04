@@ -6,7 +6,9 @@ import {
   RePrintShippingMarkRequest,
   ShippingMarkClients,
   ShippingMarkModel,
+  ShippingMarkPrintingModel,
   ShippingMarkShippingModel,
+  ShippingMarkSummaryModel,
   ShippingRequestClients,
   ShippingRequestModel,
 } from 'app/shared/api-clients/shipping-app.client';
@@ -36,11 +38,18 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   selectedShippingMark: ShippingMarkModel;
   shippingRequests: ShippingRequestModel[] = [];
 
+  currentShippingMark: ShippingMarkModel;
+  currentPrintShippingMarkSummary: ShippingMarkSummaryModel;
+
+  shippingMarkPrintings: ShippingMarkPrintingModel[] = [];
   shippingMarkShippings: ShippingMarkShippingModel[] = [];
+
+  canRePrint = false;
 
   isEdit = false;
   isShowDialog = false;
   isShowDialogCreate = false;
+  isShowDialogDetail = false;
   isShowDialogHistory = false;
 
   cols: any[] = [];
@@ -64,6 +73,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
+    this.canRePrint = this.printService.canRePrint(this.user);
 
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
@@ -78,6 +88,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
 
     this.initForm();
     this.initShippingRequests();
+    this.initShippingMarks();
   }
 
   initForm() {
@@ -88,6 +99,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       lastModified: [null],
       shippingRequest: [null, Validators.required],
       shippingMarkShippings: this.fb.array([]),
+      receivedMarkPrintings: this.fb.array([]),
     });
   }
 
@@ -162,6 +174,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     this.isShowDialog = false;
     this.isShowDialogCreate = false;
     this.isShowDialogHistory = false;
+    this.isShowDialogDetail = false;
   }
 
   onEdit() {
@@ -210,7 +223,12 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   handleSelectedShippingRequest(shippingRequest: ShippingRequestModel) {
     if (shippingRequest) {
       this.shippingMarkClients.generateShippingMarkShippings(shippingRequest).subscribe(
-        (shippingMarkShippings) => (this.shippingMarkShippings = shippingMarkShippings),
+        (shippingMarkShippings) => {
+          this.shippingMarkShippings = shippingMarkShippings;
+          this.shippingMarkShippings.forEach((item) => {
+            item['selectedReceivedMarks'] = [];
+          });
+        },
         (_) => (this.shippingMarkShippings = [])
       );
     }
@@ -279,6 +297,39 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           );
       },
     });
+  }
+
+  getShippingMarkSummaries(item: ShippingMarkModel) {
+    const shippingMark = this.shippingMarks.find((i) => i.id === item.id);
+
+    if (shippingMark && shippingMark.shippingMarkSummaries && shippingMark.shippingMarkSummaries.length > 0) {
+      return;
+    }
+
+    this.shippingMarkClients
+      .getShippingMarkSummaries(item.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => (shippingMark.shippingMarkSummaries = i),
+        (_) => (shippingMark.shippingMarkSummaries = [])
+      );
+  }
+
+  showDetailShippingMarkSummary(shippingMark: ShippingMarkModel, shippingMarkSummaryModel: ShippingMarkSummaryModel) {
+    if (!shippingMark || !shippingMarkSummaryModel) return;
+
+    this.currentShippingMark = shippingMark;
+    this.currentPrintShippingMarkSummary = shippingMarkSummaryModel;
+
+    this.shippingMarkPrintings = [];
+    this.shippingMarkClients.getShippingMarkPrintings(shippingMark.id, shippingMarkSummaryModel.productId).subscribe(
+      (shippingMarkPrintings) => {
+        this.shippingMarkPrintings = shippingMarkPrintings;
+        this.isShowDialogDetail = true;
+        this.titleDialog = `Product Number: ${shippingMarkSummaryModel.product.productNumber} - ${shippingMarkSummaryModel.product.productName}`;
+      },
+      (_) => this.notificationService.error('Failed to show detail')
+    );
   }
 
   ngOnDestroy(): void {

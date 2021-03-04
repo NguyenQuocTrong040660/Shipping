@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ShippingApp.Domain.Models
 {
@@ -19,8 +20,10 @@ namespace ShippingApp.Domain.Models
 
         public int ProductId { get; set; }
         public int ReceivedMarkId { get; set; }
+        public int? ShippingMarkId { get; set; }
 
         public virtual ReceivedMarkModel ReceivedMark { get; set; }
         public virtual ProductModel Product { get; set; }
+        public virtual ShippingMarkModel ShippingMark { get; set; }
     }
 }
