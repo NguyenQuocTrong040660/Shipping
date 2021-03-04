@@ -142,7 +142,13 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       .getAllShippingPlan()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => (this.shippingPlans = i),
+        (i) => {
+          this.shippingPlans = i;
+
+          if (this.selectedShippingPlan) {
+            this.selectedShippingPlan = this.shippingPlans.find((s) => s.id === this.selectedShippingPlan.id);
+          }
+        },
         (_) => (this.shippingPlans = [])
       );
   }
@@ -259,15 +265,12 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDetailShippingPlan(shippingPlan: ShippingPlanModel) {
-    const shippingPlanSelected = this.shippingPlans.find((i) => i.id === shippingPlan.id);
-
-    if (shippingPlanSelected && shippingPlanSelected.shippingPlanDetails && shippingPlanSelected.shippingPlanDetails.length > 0) {
-      return;
-    }
+  getDetailShippingPlanById(shippingPlanId: number) {
+    const shippingPlanSelected = this.shippingPlans.find((i) => i.id === shippingPlanId);
+    shippingPlanSelected.shippingPlanDetails = [];
 
     this.shippingPlanClients
-      .getShippingPlanById(shippingPlan.id)
+      .getShippingPlanById(shippingPlanId)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (i: ShippingPlanModel) => (shippingPlanSelected.shippingPlanDetails = i.shippingPlanDetails),
@@ -282,12 +285,12 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   onSelectedShippingPlan() {
     if (this.selectedShippingPlan && this.selectedShippingPlan.id) {
       this.shippingPlanClients
-      .getShippingPlanById(this.selectedShippingPlan.id)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (i: ShippingPlanModel) => (this.selectedShippingPlan.shippingPlanDetails = i.shippingPlanDetails),
-        (_) => (this.selectedShippingPlan.shippingPlanDetails = [])
-      );
+        .getShippingPlanById(this.selectedShippingPlan.id)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          (i: ShippingPlanModel) => (this.selectedShippingPlan.shippingPlanDetails = i.shippingPlanDetails),
+          (_) => (this.selectedShippingPlan.shippingPlanDetails = [])
+        );
     }
   }
 

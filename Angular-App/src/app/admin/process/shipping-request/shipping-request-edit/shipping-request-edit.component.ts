@@ -1,22 +1,24 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ProductModel, ShippingPlanModel, ShippingRequestDetailModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductModel, ShippingPlanModel, ShippingRequestClients, ShippingRequestDetailModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
+import Utilities from 'app/shared/helpers/utilities';
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-shipping-request-create',
-  templateUrl: './shipping-request-create.component.html',
-  styleUrls: ['./shipping-request-create.component.scss'],
+  selector: 'app-shipping-request-edit',
+  templateUrl: './shipping-request-edit.component.html',
+  styleUrls: ['./shipping-request-edit.component.scss'],
 })
-export class ShippingRequestCreateComponent implements OnInit {
+export class ShippingRequestEditComponent implements OnInit, OnChanges {
   @Input() shippingRequestForm: FormGroup;
   @Input() titleDialog: string;
   @Input() isShowDialog: boolean;
   @Input() products: ProductModel[] = [];
-  @Input() selectedShippingPlan: ShippingPlanModel;
-  @Input() shippingPlans: ShippingPlanModel;
+  @Input() selectedShippingRequest: ShippingRequestModel;
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
@@ -32,6 +34,8 @@ export class ShippingRequestCreateComponent implements OnInit {
   TypeColumn = TypeColumn;
   productCols: any[] = [];
   productFields: any[] = [];
+
+  private destroyed$ = new Subject<void>();
 
   get customerNameControl() {
     return this.shippingRequestForm.get('customerName');
@@ -61,7 +65,7 @@ export class ShippingRequestCreateComponent implements OnInit {
     return this.shippingRequestForm.get('shippingRequestDetails') as FormArray;
   }
 
-  constructor(private fb: FormBuilder, private confirmationService: ConfirmationService) {}
+  constructor(private fb: FormBuilder, private shippingRequestClients: ShippingRequestClients) {}
 
   ngOnInit(): void {
     this.productCols = [
@@ -73,7 +77,15 @@ export class ShippingRequestCreateComponent implements OnInit {
 
     this.productFields = this.productCols.map((i) => i.field);
 
-    this.stepItems = [{ label: 'Select Shipping Plan' }, { label: 'Shipping Request Info' }, { label: 'Products' }, { label: 'Details' }, { label: 'Complete' }];
+    this.stepItems = [{ label: 'Shipping Request Info' }, { label: 'Products' }, { label: 'Details' }, { label: 'Complete' }];
+  }
+
+  ngOnChanges() {
+    if (!this.shippingRequestForm) return;
+
+    this.shippingDateControl.patchValue(new Date(this.shippingDateControl.value));
+    const products = this.shippingRequestDetailsControl.value.map((i) => i.product);
+    this.selectedProducts = products;
   }
 
   handleOnSelectShippingPlan(shippingPlanId: number) {
@@ -90,44 +102,15 @@ export class ShippingRequestCreateComponent implements OnInit {
   nextPage(currentIndex: number) {
     switch (currentIndex) {
       case 0: {
-        if (!this.selectedShippingPlan) {
-          this.confirmationService.confirm({
-            message: 'Are you sure you want to create shipping request without selecting shipping plan?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => (this.stepIndex += 1)
-          });
-
-          return;
-        }
-
-        const { customerName, semlineNumber, purchaseOrder, shippingDate, salesID, notes, shippingPlanDetails } = this.selectedShippingPlan;
-
-        this.customerNameControl.patchValue(customerName);
-        this.semlineNumberControl.patchValue(semlineNumber);
-        this.purchaseOrderControl.patchValue(purchaseOrder);
-        this.salesIdControl.patchValue(salesID);
-        this.notesControl.patchValue(notes);
-        this.shippingDateControl.patchValue(new Date(shippingDate));
-
-        const products = shippingPlanDetails.map((i) => i.product);
-        this.selectedProducts = products;
-
-        this.stepIndex += 1;
+        this._getDetailShippingRequest();
         break;
       }
       case 1: {
-        this.stepIndex += 1;
-        break;
-      }
-      case 2:
         this.shippingRequestDetails = this._mapToProductsToShippingRequestDetailModels(this.selectedProducts);
 
-        if (this.selectedShippingPlan) {
-          const { shippingPlanDetails } = this.selectedShippingPlan;
-
+        if (this.selectedShippingRequest.shippingRequestDetails && this.selectedShippingRequest.shippingRequestDetails.length > 0) {
           this.shippingRequestDetails.forEach((item) => {
-            const shippingPlanDetail = shippingPlanDetails.find((i) => item.productId === i.productId);
+            const shippingPlanDetail = this.selectedShippingRequest.shippingRequestDetails.find((i) => item.productId === i.productId);
 
             if (shippingPlanDetail) {
               item.amount = shippingPlanDetail.amount;
@@ -138,14 +121,10 @@ export class ShippingRequestCreateComponent implements OnInit {
           });
         }
 
-        this.stepIndex += 1;
-        break;
-      case 3:
-      case 4: {
-        this.stepIndex += 1;
         break;
       }
     }
+    this.stepIndex += 1;
   }
 
   prevPage() {
@@ -225,6 +204,22 @@ export class ShippingRequestCreateComponent implements OnInit {
       value: p.id,
       label: `${p.identifier} | ${p.purchaseOrder} | ${p.customerName} | ${p.salesID} | ${p.semlineNumber} | ${p.shippingDate}`,
     }));
+  }
+
+  _getDetailShippingRequest() {
+    this.selectedShippingRequest.shippingRequestDetails = [];
+
+    this.shippingRequestClients
+      .getShippingRequestById(this.selectedShippingRequest.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: ShippingRequestModel) => {
+          this.selectedShippingRequest.shippingRequestDetails = i.shippingRequestDetails;
+          const products = this.selectedShippingRequest.shippingRequestDetails.map((i) => i.product);
+          this.selectedProducts = products;
+        },
+        (_) => (this.selectedShippingRequest.shippingRequestDetails = [])
+      );
   }
 }
 

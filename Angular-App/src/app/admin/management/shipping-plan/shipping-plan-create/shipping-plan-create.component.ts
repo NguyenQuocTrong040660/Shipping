@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ProductModel, ShippingPlanDetailModel, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductModel, ShippingPlanClients, ShippingPlanDetailModel, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { MenuItem } from 'primeng/api';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shipping-plan-create',
@@ -31,6 +33,7 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
   clonedshippingDetailModels: { [s: string]: ShippingPlanDetailModel } = {};
 
   TypeColumn = TypeColumn;
+  private destroyed$ = new Subject<void>();
 
   get customerNameControl() {
     return this.shippingPlanForm.get('customerName');
@@ -60,7 +63,7 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
     return this.shippingPlanForm.get('shippingPlanDetails') as FormArray;
   }
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private shippingPlanClients: ShippingPlanClients) {}
 
   ngOnInit(): void {
     this.stepItems = [{ label: 'Shipping Plan Info' }, { label: 'Products' }, { label: 'Details' }, { label: 'Complete' }];
@@ -75,7 +78,7 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.isEdit) {
-      const { customerName, semlineNumber, purchaseOrder, shippingDate, salesID, notes, shippingPlanDetails } = this.selectedShippingPlan;
+      const { customerName, semlineNumber, purchaseOrder, shippingDate, salesID, notes } = this.selectedShippingPlan;
 
       this.customerNameControl.patchValue(customerName);
       this.semlineNumberControl.patchValue(semlineNumber);
@@ -83,11 +86,6 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
       this.salesIdControl.patchValue(salesID);
       this.notesControl.patchValue(notes);
       this.shippingDateControl.patchValue(new Date(shippingDate));
-
-      const products = shippingPlanDetails.map((i) => i.product);
-      this.selectedProducts = products;
-    } else {
-      this.selectedProducts = [];
     }
   }
 
@@ -100,7 +98,17 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
 
   nextPage(currentIndex: number) {
     switch (currentIndex) {
+      case 0: {
+        if (this.isEdit) {
+          this._getDetailShippingPlan();
+        }
+        break;
+      }
       case 1: {
+        if (this.isEdit) {
+          this._getDetailShippingPlan();
+        }
+
         this.shippingDetailModels = this._mapToProductsToShippingDetailModels(this.selectedProducts);
 
         if (this.selectedShippingPlan) {
@@ -153,7 +161,7 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
 
   allowMoveToCompleteStep(shippingDetailModels: ShippingPlanDetails[]): boolean {
     const haveFilledDataRows = shippingDetailModels.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
-    const haveNotEditRows = shippingDetailModels.every(d => d.isEditRow === false);
+    const haveNotEditRows = shippingDetailModels.every((d) => d.isEditRow === false);
 
     return haveFilledDataRows && haveNotEditRows;
   }
@@ -192,12 +200,29 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
         quantity: 0,
         price: 0,
         amount: 0,
-        isEditRow: false
+        isEditRow: false,
       };
     });
+  }
+
+  _getDetailShippingPlan() {
+    let { id, shippingPlanDetails } = this.selectedShippingPlan;
+    shippingPlanDetails = [];
+
+    this.shippingPlanClients
+      .getShippingPlanById(id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: ShippingPlanModel) => {
+          shippingPlanDetails = i.shippingPlanDetails;
+          const products = shippingPlanDetails.map((i) => i.product);
+          this.selectedProducts = products;
+        },
+        (_) => (shippingPlanDetails = [])
+      );
   }
 }
 
 export interface ShippingPlanDetails extends ShippingPlanDetailModel {
-  isEditRow?: boolean
+  isEditRow?: boolean;
 }

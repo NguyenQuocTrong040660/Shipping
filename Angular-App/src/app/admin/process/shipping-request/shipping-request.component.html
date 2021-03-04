@@ -120,7 +120,7 @@
                 type="button"
                 pButton
                 pRipple
-                (click)="getDetailShippingRequest(item)"
+                (click)="getDetailShippingRequestById(item.id)"
                 [pRowToggler]="item"
                 class="p-button-text p-button-rounded p-button-plain"
                 [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
@@ -167,13 +167,24 @@
   [selectedShippingPlan]="selectedShippingPlan"
   [products]="products"
   [titleDialog]="titleDialog"
-  [isShowDialog]="isShowDialog"
+  [isShowDialog]="isShowDialogCreate"
   [shippingPlans]="shippingPlans"
-  (submitEvent)="onSubmit()"
+  (submitEvent)="onCreate()"
   (hideDialogEvent)="hideDialog()"
   (selectedShippingPlanEvent)="handleSelectedShippingPlanEvent($event)"
 >
 </app-shipping-request-create>
+
+<app-shipping-request-edit
+  [shippingRequestForm]="shippingRequestForm"
+  [selectedShippingRequest]="selectedShippingRequest"
+  [products]="products"
+  [titleDialog]="titleDialog"
+  [isShowDialog]="isShowDialogEdit"
+  (submitEvent)="onEdit()"
+  (hideDialogEvent)="hideDialog()"
+>
+</app-shipping-request-edit>
 
 <app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingRequest" (hideDialogEvent)="hideDialog()"> </app-history-dialog>
 

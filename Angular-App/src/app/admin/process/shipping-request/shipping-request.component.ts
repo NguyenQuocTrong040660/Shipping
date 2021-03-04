@@ -26,10 +26,11 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
 
   shippingRequestForm: FormGroup;
 
-  isEdit = false;
-  isShowDialog = false;
-  isShowDialogHistory = false;
-  isShowDialogDocuments = false;
+  isEdit: boolean;
+  isShowDialogCreate: boolean;
+  isShowDialogEdit: boolean;
+  isShowDialogHistory: boolean;
+  isShowDialogDocuments: boolean;
   titleDialog = '';
 
   cols: any[] = [];
@@ -71,13 +72,11 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
 
     this.initForm();
     this.initShippingPlan();
-    this.initDataSource();
+    this.initShippingRequest();
     this.initProducts();
   }
 
   initShippingPlan() {
-    this.expandedItems = [];
-
     this.shippingPlanClients
       .getAllShippingPlan()
       .pipe(takeUntil(this.destroyed$))
@@ -102,7 +101,9 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     });
   }
 
-  initDataSource() {
+  initShippingRequest() {
+    this.expandedItems = [];
+
     this.shippingRequestClients
       .getShippingRequests()
       .pipe(takeUntil(this.destroyed$))
@@ -137,13 +138,18 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   }
 
   openCreateDialog() {
+    this.isEdit = false;
+    this.selectedShippingRequest = null;
     this.shippingRequestForm.reset();
     this.titleDialog = 'Create Shipping Request';
-    this.isShowDialog = true;
-    this.isEdit = false;
+    this.isShowDialogCreate = true;
   }
 
   onCreate() {
+    if (this.shippingRequestForm.invalid) {
+      return;
+    }
+
     const model = this.shippingRequestForm.value as ShippingRequestModel;
     model.id = 0;
     model.shippingDate = Utilities.ConvertDateBeforeSendToServer(model.shippingDate);
@@ -155,7 +161,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Create Shipping Request Successfully');
-            this.initDataSource();
+            this.initShippingRequest();
           } else {
             this.notificationService.error(result?.error);
           }
@@ -169,30 +175,25 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       );
   }
 
-  onSubmit() {
+  openEditDialog(selectedShippingRequest: ShippingRequestModel) {
+    this.titleDialog = 'Edit Shipping Request';
+    this.isEdit = true;
+    this.isShowDialogEdit = true;
+    this.shippingRequestForm.patchValue(selectedShippingRequest);
+  }
+
+  hideDialog() {
+    this.isShowDialogCreate = false;
+    this.isShowDialogEdit = false;
+    this.isShowDialogHistory = false;
+    this.isShowDialogDocuments = false;
+  }
+
+  onEdit() {
     if (this.shippingRequestForm.invalid) {
       return;
     }
 
-    this.isEdit ? this.onEdit() : this.onCreate();
-  }
-
-  openEditDialog(shippingRequest: ShippingRequestModel) {
-    this.isShowDialog = true;
-    this.titleDialog = 'Edit Shipping Request';
-    this.isEdit = true;
-    this.shippingRequestForm.patchValue(shippingRequest);
-  }
-
-  hideDialog() {
-    this.isShowDialog = false;
-    this.isShowDialogHistory = false;
-    this.isShowDialog = false;
-    this.isShowDialogDocuments = false;
-    this.shippingRequestForm.reset();
-  }
-
-  onEdit() {
     const { id, shippingDate } = this.shippingRequestForm.value;
     this.shippingRequestForm.value.shippingDate = Utilities.ConvertDateBeforeSendToServer(shippingDate);
 
@@ -203,7 +204,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Shipping Request Successfully');
-            this.initDataSource();
+            this.initShippingRequest();
           } else {
             this.notificationService.error(result?.error);
           }
@@ -230,7 +231,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
             (result) => {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Shipping Request Successfully');
-                this.initDataSource();
+                this.initShippingRequest();
               } else {
                 this.notificationService.error(result?.error);
               }
@@ -241,15 +242,15 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDetailShippingRequest(shippingRequest: ShippingRequestModel) {
-    const shippingRequestSelected = this.shippingRequests.find((i) => i.id === shippingRequest.id);
+  getDetailShippingRequestById(shippingRequestId: number) {
+    const shippingRequestSelected = this.shippingRequests.find((i) => i.id === shippingRequestId);
 
     if (shippingRequestSelected && shippingRequestSelected.shippingRequestDetails && shippingRequestSelected.shippingRequestDetails.length > 0) {
       return;
     }
 
     this.shippingRequestClients
-      .getShippingRequestById(shippingRequest.id)
+      .getShippingRequestById(shippingRequestId)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (i: ShippingRequestModel) => (shippingRequestSelected.shippingRequestDetails = i.shippingRequestDetails),
