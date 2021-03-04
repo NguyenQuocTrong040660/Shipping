@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ShippingApp.Application.Common.Results;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Entities = ShippingApp.Domain.Entities;
 
 namespace ShippingApp.Application.ShippingPlan.Commands
 {
@@ -20,9 +21,11 @@ namespace ShippingApp.Application.ShippingPlan.Commands
     public class UpdateShippingPlanCommandHandler : IRequestHandler<UpdateShippingPlanCommand, Result>
     {
         private readonly IShippingAppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public UpdateShippingPlanCommandHandler(IShippingAppDbContext context)
+        public UpdateShippingPlanCommandHandler(IShippingAppDbContext context, IMapper mapper)
         {
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
@@ -51,6 +54,19 @@ namespace ShippingApp.Application.ShippingPlan.Commands
                     item.Quantity = shippingPlanDetail.Quantity;
                     item.Price = shippingPlanDetail.Price;
                     item.Amount = shippingPlanDetail.Amount;
+                    item.ShippingMode = shippingPlanDetail.ShippingMode;
+                }
+            }
+
+            foreach (var item in request.ShippingPlan.ShippingPlanDetails)
+            {
+                var shippingPlanDetail = shippingPlan.ShippingPlanDetails.FirstOrDefault(i => i.ProductId == item.ProductId);
+
+                if (shippingPlanDetail == null)
+                {
+                    var shippingPlanDetailEntity = _mapper.Map<Entities.ShippingPlanDetail>(item);
+                    shippingPlanDetailEntity.ShippingPlanId = shippingPlan.Id;
+                    _context.ShippingPlanDetails.Add(shippingPlanDetailEntity);
                 }
             }
 
