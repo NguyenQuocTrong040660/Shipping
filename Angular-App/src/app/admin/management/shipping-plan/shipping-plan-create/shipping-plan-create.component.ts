@@ -163,7 +163,7 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
     const haveFilledDataRows = shippingDetailModels.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
     const haveNotEditRows = shippingDetailModels.every((d) => d.isEditRow === false);
 
-    return haveFilledDataRows && haveNotEditRows;
+    return haveFilledDataRows && haveNotEditRows && this.shippingDetailModels.length > 0;
   }
 
   onSubmit() {

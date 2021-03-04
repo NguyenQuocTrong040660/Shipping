@@ -158,7 +158,7 @@ export class ShippingRequestEditComponent implements OnInit, OnChanges {
     const haveFilledDataRows = shippingRequestDetailModels.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
     const haveNotEditRows = shippingRequestDetailModels.every((d) => d.isEditRow === false);
 
-    return haveFilledDataRows && haveNotEditRows;
+    return haveFilledDataRows && haveNotEditRows && this.shippingRequestDetails.length > 0;
   }
 
   onSubmit() {
