@@ -158,6 +158,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   openCreateDialog() {
+    this.selectedShippingPlan = null;
     this.shippingPlanForm.reset();
     this.titleDialog = 'Create Shipping Plan';
     this.isShowDialog = true;
@@ -174,6 +175,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
         if (result && result.succeeded) {
           this.notificationService.success('Create Shipping Plan Successfully');
           this.initShippingPlans();
+          this.selectedShippingPlan = null;
         } else {
           this.notificationService.error(result?.error);
         }

@@ -49,9 +49,16 @@ namespace ShippingApp.Application.ShippingPlan.Commands
                 else
                 {
                     item.Quantity = shippingPlanDetail.Quantity;
+                    item.Price = shippingPlanDetail.Price;
+                    item.Amount = shippingPlanDetail.Amount;
                 }
             }
 
+            shippingPlan.CustomerName = request.ShippingPlan.CustomerName;
+            shippingPlan.SemlineNumber = request.ShippingPlan.SemlineNumber;
+            shippingPlan.PurchaseOrder = request.ShippingPlan.PurchaseOrder;
+            shippingPlan.ShippingDate = request.ShippingPlan.ShippingDate;
+            shippingPlan.SalesID = request.ShippingPlan.SalesID;
             shippingPlan.Notes = request.ShippingPlan.Notes;
             shippingPlan.RefId = request.ShippingPlan.RefId;
 

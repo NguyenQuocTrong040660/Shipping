@@ -86,6 +86,8 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
 
       const products = shippingPlanDetails.map((i) => i.product);
       this.selectedProducts = products;
+    } else {
+      this.selectedProducts = [];
     }
   }
 
@@ -157,9 +159,13 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
   }
 
   onSubmit() {
-    this.shippingDetailModels.forEach((i) => {
-      this.shippingPlanDetailsControl.push(this.initShippingPlanDetailsForm(i));
-    });
+    this.shippingPlanDetailsControl.clear();
+
+    if (this.shippingDetailModels && this.shippingDetailModels.length > 0) {
+      this.shippingDetailModels.forEach((i) => {
+        this.shippingPlanDetailsControl.push(this.initShippingPlanDetailsForm(i));
+      });
+    }
 
     this.submitEvent.emit();
   }
