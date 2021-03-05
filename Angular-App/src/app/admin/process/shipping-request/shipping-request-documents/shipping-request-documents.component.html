@@ -22,8 +22,8 @@
 
       <div class="shipping-request-document__border-top-group">
         <div class="p-field p-mt-20">
-          <label for="customsDeclarationNumber">Customs Declaration Number</label>
-          <input pInputText id="customsDeclarationNumber" [formControl]="customsDeclarationNumberControl" type="text" />
+          <label for="customDeclarationNumber">Customs Declaration Number</label>
+          <input pInputText id="customDeclarationNumber" [formControl]="customDeclarationNumberControl" type="text" />
         </div>
 
         <div class="p-field">
@@ -44,6 +44,11 @@
         <div class="p-field">
           <label for="receiverAddress">Receiver Address</label>
           <input pInputText id="receiverAddress" [formControl]="receiverAddressControl" type="text" />
+        </div>
+
+        <div class="p-field">
+          <label for="trackingNumber">Tracking Number</label>
+          <input pInputText id="trackingNumber" [formControl]="trackingNumberControl" type="text" />
         </div>
 
         <div class="p-field">
