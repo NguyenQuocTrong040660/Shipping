@@ -30,12 +30,16 @@ namespace ShippingApp.Domain.Models
         public string QtyPerPackage { get; set; }
 
         public virtual ICollection<ShippingPlanDetailModel> ShippingPlanDetails { get; set; }
+        public virtual ICollection<MovementRequestDetailModel> MovementRequestDetails { get; set; }
         public virtual ICollection<ShippingRequestDetailModel> ShippingRequestDetails { get; set; }
         public virtual ICollection<WorkOrderDetailModel> WorkOrderDetails { get; set; }
-        public virtual ICollection<ShippingMarkModel> ShippingMarks { get; set; }
-        public virtual ICollection<ReceivedMarkModel> ReceivedMarks { get; set; }
+
         public virtual ICollection<ReceivedMarkMovementModel> ReceivedMarkMovements { get; set; }
         public virtual ICollection<ReceivedMarkPrintingModel> ReceivedMarkPrintings { get; set; }
         public virtual ICollection<ReceivedMarkSummaryModel> ReceivedMarkSummaries { get; set; }
+
+        public virtual ICollection<ShippingMarkPrintingModel> ShippingMarkPrintings { get; set; }
+        public virtual ICollection<ShippingMarkShippingModel> ShippingMarkShippings { get; set; }
+        public virtual ICollection<ShippingMarkSummaryModel> ShippingMarkSummaries { get; set; }
     }
 }

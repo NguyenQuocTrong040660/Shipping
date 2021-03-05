@@ -66,4 +66,8 @@ export class ShippingMarkDetailsComponent implements OnInit {
       accept: () => this.rePrintMarkEvent.emit(shippingMarkPrinting),
     });
   }
+
+  remainItemToPrint() {
+    return this.shippingMarkPrintings.filter((i) => i.printCount === 0).length > 0;
+  }
 }

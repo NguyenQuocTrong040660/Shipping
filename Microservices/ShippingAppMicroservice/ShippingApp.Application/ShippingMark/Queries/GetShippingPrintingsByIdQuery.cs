@@ -34,7 +34,6 @@ namespace ShippingApp.Application.ShippingMark.Queries
             var shippingMarkPrintings = await _context.ShippingMarkPrintings
                 .AsNoTracking()
                 .Where(x => x.ShippingMarkId == request.ShippingMarkId && x.ProductId == request.ProductId)
-                .Where(x => !x.Status.Equals(nameof(ShippingMarkStatus.Shipping)))
                 .OrderBy(x => x.Sequence)
                 .ToListAsync();
 

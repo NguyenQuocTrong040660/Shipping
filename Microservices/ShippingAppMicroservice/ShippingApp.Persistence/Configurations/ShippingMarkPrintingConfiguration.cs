@@ -12,6 +12,7 @@ namespace ShippingApp.Persistence.Configurations
             builder.Property(t => t.Id).UseIdentityColumn();
             builder.Property(t => t.PrintCount).HasDefaultValue(0);
             builder.Property(t => t.Status).HasDefaultValue(nameof(ShippingMarkStatus.New));
+            builder.Property(t => t.Prefix).HasDefaultValue(PrefixTable.ShippingMarkPrinting);
 
             builder.HasOne<Product>(s => s.Product)
                     .WithMany(g => g.ShippingMarkPrintings)

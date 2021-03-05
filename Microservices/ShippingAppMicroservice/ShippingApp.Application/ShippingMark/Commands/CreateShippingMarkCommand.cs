@@ -120,6 +120,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                 }
 
                 receivedMarkPrinting.ShippingMarkId = shippingMark.Id;
+                receivedMarkPrinting.Status = nameof(ReceivedMarkStatus.Reserved);
             }
 
             return await _context.SaveChangesAsync() > 0

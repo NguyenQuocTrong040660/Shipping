@@ -35,7 +35,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                 .Include(x => x.Product)
                 .Where(x => x.ShippingMarkId == request.PrintShippingMarkRequest.ShippingMarkId
                          && x.ProductId == request.PrintShippingMarkRequest.ProductId)
-                .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.New)))
+                .Where(x => x.Status.Equals(nameof(ShippingMarkStatus.New)))
                 .OrderBy(x => x.Sequence)
                 .ToListAsync();
 

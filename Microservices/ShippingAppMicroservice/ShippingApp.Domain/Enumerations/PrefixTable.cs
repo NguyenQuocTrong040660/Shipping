@@ -9,5 +9,7 @@
         public static string ShippingPlan = "SHIPPL";
         public static string ShippingRequest = "SHIPRQ";
         public static string WorkOrder = "WO";
+        public static string ShippingMarkPrinting = "SHIPPINGMARK";
+        public static string ReceivedMarkPrinting = "RECEIVEDMARK";
     }
 }

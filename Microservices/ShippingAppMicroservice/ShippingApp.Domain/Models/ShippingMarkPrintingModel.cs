@@ -1,16 +1,33 @@
-﻿using System;
+﻿using AutoMapper;
+using ShippingApp.Domain.Enumerations;
+using System;
 
 namespace ShippingApp.Domain.Models
 {
     public class ShippingMarkPrintingModel : AuditableEntityModel
     {
+        [IgnoreMap]
+        public string Identifier
+        {
+            get
+            {
+                return string.Concat(Prefix, Id);
+            }
+        }
+
         public int Id { get; set; }
+        public string Prefix
+        {
+            get
+            {
+                return PrefixTable.ShippingMarkPrinting;
+            }
+        }
+
         public int Sequence { get; set; }
         public int Quantity { get; set; }
         public string Status { get; set; }
         public int PrintCount { get; set; }
-
-        public string Revision { get; set; }
 
         public string RePrintingBy { get; set; }
         public DateTime? RePrintingDate { get; set; }

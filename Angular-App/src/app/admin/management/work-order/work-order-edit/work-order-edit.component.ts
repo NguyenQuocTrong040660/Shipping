@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { WorkOrderDetailModel, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
-import { WidthColumn } from 'app/shared/configs/width-column';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -24,7 +23,6 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
   stepItems: MenuItem[];
   stepIndex = 0;
 
-  WidthColumn = WidthColumn;
   TypeColumn = TypeColumn;
 
   get refIdControl() {

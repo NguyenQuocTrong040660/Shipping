@@ -34,7 +34,6 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                 .AsNoTracking()
                 .Where(x => x.ProductId == request.ProductId)
                 .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.Storage)))
-                .Where(x => x.ShippingMarkId == null)
                 .OrderBy(x => x.LastModified)
                 .ToListAsync();
 

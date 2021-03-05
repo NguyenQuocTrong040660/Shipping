@@ -199,4 +199,14 @@
 >
 </app-shipping-mark-details>
 
+<app-shipping-mark-edit
+  [shippingMarkForm]="shippingMarkForm"
+  [titleDialog]="titleDialog"
+  [shippingMark]="currentShippingMark"
+  [isShowDialog]="isShowDialogEdit"
+  (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
+>
+</app-shipping-mark-edit>
+
 <app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingMark" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

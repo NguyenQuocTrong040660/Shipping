@@ -50,6 +50,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   isShowDialogCreate = false;
   isShowDialogDetail = false;
   isShowDialogHistory = false;
+  isShowDialogEdit = false;
 
   cols: any[] = [];
   fields: any[] = [];
@@ -113,6 +114,8 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   }
 
   initShippingMarks() {
+    this.expandedItems = [];
+
     this.shippingMarkClients
       .getShippingMarks()
       .pipe(takeUntil(this.destroyed$))
@@ -163,10 +166,29 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   }
 
   openEditDialog(shippingMark: ShippingMarkModel) {
-    this.isShowDialog = true;
     this.titleDialog = 'Edit Shipping Mark';
     this.isEdit = true;
-    this.shippingMarkForm.patchValue(shippingMark);
+
+    this.shippingMarkClients
+      .getShippingMarkById(shippingMark.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: ShippingMarkModel) => {
+          let shippingRequest = null;
+
+          i.shippingMarkShippings.forEach((item) => {
+            shippingRequest = item.shippingRequest;
+            item['selectedReceivedMarks'] = item.product.receivedMarkPrintings.filter((p) => i.receivedMarkPrintings.some((r) => r.id === p.id));
+          });
+
+          this.currentShippingMark = i;
+          this.isShowDialogEdit = true;
+
+          this.shippingMarkForm.patchValue(i);
+          this.shippingMarkForm.get('shippingRequest').patchValue(shippingRequest);
+        },
+        (_) => this.notificationService.error('Failed to open Edit Shipping Mark')
+      );
   }
 
   hideDialog() {
@@ -174,6 +196,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     this.isShowDialogCreate = false;
     this.isShowDialogHistory = false;
     this.isShowDialogDetail = false;
+    this.isShowDialogEdit = false;
   }
 
   onEdit() {
@@ -259,6 +282,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           if (result) {
             this.printData = result;
             this.onPrint();
+            this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentPrintShippingMarkSummary.productId);
           } else {
             this.notificationService.error('Print Shipping Mark Failed. Please try again');
           }
@@ -282,6 +306,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
         (result) => {
           if (result) {
             this.onPrint();
+            this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentPrintShippingMarkSummary.productId);
           } else {
             this.notificationService.error('Print Shipping Mark Failed. Please try again');
           }
@@ -319,6 +344,14 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
         this.isShowDialogDetail = true;
         this.titleDialog = `Product Number: ${shippingMarkSummaryModel.product.productNumber} - ${shippingMarkSummaryModel.product.productName}`;
       },
+      (_) => this.notificationService.error('Failed to show detail')
+    );
+  }
+
+  reLoadShippingMarkPrintings(shippingMarkId: number, productId: number) {
+    this.shippingMarkPrintings = [];
+    this.shippingMarkClients.getShippingMarkPrintings(shippingMarkId, productId).subscribe(
+      (shippingMarkPrintings) => (this.shippingMarkPrintings = shippingMarkPrintings),
       (_) => this.notificationService.error('Failed to show detail')
     );
   }

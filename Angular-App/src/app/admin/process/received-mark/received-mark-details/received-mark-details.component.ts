@@ -47,7 +47,7 @@ export class ReceivedMarkDetailsComponent implements OnInit {
       message: 'Are you sure you want to print mark for this item?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
-      accept: () => this.printMarkEvent.emit()
+      accept: () => this.printMarkEvent.emit(),
     });
   }
 
@@ -70,5 +70,9 @@ export class ReceivedMarkDetailsComponent implements OnInit {
 
   handleUnStuffMark(receivedMarkPrinting: ReceivedMarkPrintingModel) {
     this.unstuffMarkEvent.emit(receivedMarkPrinting);
+  }
+
+  remainItemToPrint() {
+    return this.receivedMarkPrintings.filter((i) => i.printCount === 0).length > 0;
   }
 }
