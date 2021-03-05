@@ -269,6 +269,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Work Order Successfully');
                 this.initWorkOrders();
+                this.selectedWorkOrder = null;
               } else {
                 this.notificationService.error(result?.error);
               }

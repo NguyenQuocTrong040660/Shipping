@@ -12,32 +12,36 @@
         <div class="print__content">
           <div class="print__header">
             <div class="print__company-name">SPARTON VIETNAM</div>
-            <div class="print__company-info">No.3 , street No.6, VSIP1, Thuan An, Binh Duong, VietNam</div>
+            <div class="print__company-info">No. 3, Street 6, Vietnam Singapore, Industrial Park, Thuan An City, Binh Duong Province, Vietnam</div>
           </div>
           <div class="print__detail">
             <table>
-              <tr class="print__identity">
-                <td>Received ID:</td>
-                <td class="print__value">{{ printData && printData.id ? printData.id : '' }}</td>
+              <tr *ngIf="printData && printData.receivedMarkId" class="print__identity">
+                <td>Received ID :</td>
+                <td class="print__value">{{ printData && printData.receivedMarkId ? printData.receivedMarkId : '' }}</td>
+              </tr>
+              <tr *ngIf="printData && printData.shippingMarkId" class="print__identity">
+                <td>Shipping Mark ID :</td>
+                <td class="print__value">{{ printData && printData.shippingMarkId ? printData.shippingMarkId : '' }}</td>
               </tr>
               <tr>
-                <td>P/N:</td>
+                <td>P/N :</td>
                 <td class="print__value">{{ printData && printData.product ? printData.product.productName : '' }}</td>
               </tr>
               <tr>
-                <td>Qty:</td>
+                <td>Qty :</td>
                 <td class="print__value">{{ printData && printData.quantity ? printData.quantity : '' }}</td>
               </tr>
-              <tr>
-                <td>Revision:</td>
+              <tr *ngIf="printData && printData.revision">
+                <td>Revision :</td>
                 <td class="print__value">{{ printData && printData.revision ? printData.revision : '' }}</td>
               </tr>
               <tr>
-                <td>Carton number:</td>
+                <td>Carton number :</td>
                 <td class="print__value">{{ printData && printData.sequence ? printData.sequence : '' }}</td>
               </tr>
               <tr>
-                <td>Date:</td>
+                <td>Date :</td>
                 <td class="print__value">{{ printData && printData.printingDate ? (printData.printingDate | date: 'dd/MM/yyyy') : '' }}</td>
               </tr>
             </table>

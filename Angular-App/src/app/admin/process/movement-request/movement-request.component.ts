@@ -55,7 +55,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.colFields = this.cols.map((i) => i.field);
@@ -218,6 +218,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Movement Request Successfully');
                 this.initMovementRequests();
+                this.selectedMovementRequest = null;
               } else {
                 this.notificationService.error(result?.error);
               }

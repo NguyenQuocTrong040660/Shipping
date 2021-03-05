@@ -238,6 +238,8 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
             (result) => {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Received Mark Successfully');
+                this.initReceivedMarks();
+                this.selectedReceivedMark = null;
               } else {
                 this.notificationService.error(result?.error);
               }

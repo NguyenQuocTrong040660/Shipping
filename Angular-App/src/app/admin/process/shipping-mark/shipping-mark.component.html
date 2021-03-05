@@ -1,5 +1,8 @@
+<div [class.isPrinting]="printService.isPrinting">
+  <app-print [title]="'shipping-mark Componnet'" [printData]="printData"></app-print>
+</div>
+
 <div class="card" [class.isPrinting]="printService.isPrinting">
-  <app-print [title]="'shipping-mark Componnet'"></app-print>
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left"></ng-template>
     <ng-template pTemplate="right">

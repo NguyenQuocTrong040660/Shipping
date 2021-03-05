@@ -232,6 +232,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Shipping Request Successfully');
                 this.initShippingRequest();
+                this.selectedShippingRequest = null;
               } else {
                 this.notificationService.error(result?.error);
               }

@@ -7,7 +7,7 @@
       </ng-template>
     </p-toolbar>
 
-    <p-table dataKey="id" [value]="receivedMarkPrintings" [rows]="20" [columns]="cols" [paginator]="true">
+    <p-table dataKey="id" [value]="receivedMarkPrintings" [rows]="10" [columns]="cols" [paginator]="true">
       <ng-template pTemplate="header" let-columns>
         <tr>
           <ng-container *ngFor="let col of columns">

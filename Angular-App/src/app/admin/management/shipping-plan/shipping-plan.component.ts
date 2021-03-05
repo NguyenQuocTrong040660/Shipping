@@ -255,6 +255,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Shipping Plan Successfully');
                 this.initShippingPlans();
+                this.selectedShippingPlan = null;
               } else {
                 this.notificationService.error(result?.error);
               }

@@ -181,6 +181,7 @@ export class ProductComponent implements OnInit, OnDestroy {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Product Successfully');
                 this.initProducts();
+                this.selectedItem = null;
               } else {
                 this.notificationService.error(result?.error);
               }
