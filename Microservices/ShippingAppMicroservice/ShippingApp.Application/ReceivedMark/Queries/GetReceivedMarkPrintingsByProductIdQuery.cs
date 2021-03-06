@@ -33,7 +33,8 @@ namespace ShippingApp.Application.ReceivedMark.Queries
             var receivedMarkPrintings = await _context.ReceivedMarkPrintings
                 .AsNoTracking()
                 .Where(x => x.ProductId == request.ProductId)
-                .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.Storage)))
+                .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.Storage)) 
+                         || x.Status.Equals(nameof(ReceivedMarkStatus.Reserved)))
                 .OrderBy(x => x.LastModified)
                 .ToListAsync();
 

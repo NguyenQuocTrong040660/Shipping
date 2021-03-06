@@ -128,6 +128,7 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
             productName: item.product.productName,
             productNumber: item.product.productNumber,
             quantity: item.quantity,
+            qtyPerPackage: item.product.qtyPerPackage,
             totalReceivedMarks: totalReceivedMarks,
             totalShippingMarks: this.calculateShippingMarks(item.product, totalReceivedMarks),
           };

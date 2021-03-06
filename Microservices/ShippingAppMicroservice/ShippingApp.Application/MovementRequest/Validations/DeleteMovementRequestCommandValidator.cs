@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Application.MovementRequest.Commands;
 using System;
@@ -21,7 +22,7 @@ namespace ShippingApp.Application.MovementRequest.Validations
 
         private bool NotExistInReceivedMarkMovements(int movementRequestId)
         {
-            return _context.ReceivedMarkMovements.Any(x => x.MovementRequestId == movementRequestId) == false;
+            return _context.ReceivedMarkMovements.AsNoTracking().Any(x => x.MovementRequestId == movementRequestId) == false;
         }
     }
 }

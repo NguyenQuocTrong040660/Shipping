@@ -106,6 +106,7 @@ export class ShippingMarkEditComponent implements OnInit {
           const record = {
             productName: item.product.productName,
             productNumber: item.product.productNumber,
+            qtyPerPackage: item.product.qtyPerPackage,
             quantity: item.quantity,
             totalReceivedMarks: totalReceivedMarks,
             totalShippingMarks: this.calculateShippingMarks(item.product, totalReceivedMarks),

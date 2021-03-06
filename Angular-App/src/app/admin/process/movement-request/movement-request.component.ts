@@ -121,6 +121,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
 
   onCreate() {
     const model = this.movementRequestForm.value as MovementRequestModel;
+    model.id = 0;
 
     this.movementRequestClients
       .addMovementRequest(model)

@@ -58,6 +58,7 @@
                   <th class="p-text-center">Shipping Request</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Quantity</th>
                   <th class="p-text-center">Quantity of Received Marks</th>
                   <th style="width: 10rem"></th>
@@ -74,6 +75,10 @@
 
                   <td>
                     {{ item?.product?.productName }}
+                  </td>
+
+                  <td class="p-text-center">
+                    {{ item?.product?.qtyPerPackage }}
                   </td>
 
                   <td class="p-text-center">
@@ -99,7 +104,7 @@
 
               <ng-template pTemplate="rowexpansion" let-item>
                 <tr>
-                  <td colspan="6">
+                  <td colspan="7">
                     <div class="p-p-3">
                       <p-table [(selection)]="item['selectedReceivedMarks']" selectionMode="multiple" [value]="item.product.receivedMarkPrintings" dataKey="id">
                         <ng-template pTemplate="header">
@@ -114,7 +119,7 @@
                         </ng-template>
                         <ng-template pTemplate="body" let-receivedMarkPrinting>
                           <tr>
-                            <td class="p-text-center">{{ receivedMarkPrinting.id }}</td>
+                            <td class="p-text-center">{{ receivedMarkPrinting.identifier }}</td>
                             <td class="p-text-center">{{ receivedMarkPrinting.quantity }}</td>
                             <td class="p-text-center">{{ receivedMarkPrinting.status }}</td>
                             <td>
@@ -161,6 +166,7 @@
                 <tr>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Quantity</th>
                   <th class="p-text-center">Total Received Marks Quantity</th>
                   <th class="p-text-center">Total Shipping Marks (expect)</th>
@@ -174,6 +180,9 @@
                   </td>
                   <td>
                     {{ item?.productName }}
+                  </td>
+                  <td>
+                    {{ item?.qtyPerPackage }}
                   </td>
                   <td class="p-text-center">
                     {{ item?.quantity | number }}

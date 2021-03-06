@@ -8,6 +8,8 @@ using ShippingApp.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using ShippingApp.Application.ReceivedMark.Queries;
+using ShippingApp.Domain.Enumerations;
+using System.Collections.Generic;
 
 namespace ShippingApp.Application.ShippingMark.Queries
 {
@@ -45,16 +47,29 @@ namespace ShippingApp.Application.ShippingMark.Queries
 
             foreach (var item in model.ShippingMarkShippings)
             {
-                item.Product.ReceivedMarkPrintings = await _mediator.Send(new GetReceivedMarkPrintingsByProductIdQuery
-                {
-                    ProductId = item.ProductId
-                });
-
-                item.ShippingRequest = _mapper.Map<ShippingRequestModel>(
-                    await _context.ShippingRequests.FindAsync(item.ShippingRequestId));
+                item.Product.ReceivedMarkPrintings = await GetReceivedMarkPrintingsStorage(item.ProductId, request.Id);
+                item.ShippingRequest = await GetShippingRequestAsync(item.ShippingRequestId);
             }
 
             return model;
+        }
+
+        private async Task<List<ReceivedMarkPrintingModel>> GetReceivedMarkPrintingsStorage(int productId, int shippingMarkId)
+        {
+            var data = await _mediator.Send(new GetReceivedMarkPrintingsByProductIdQuery
+            {
+                ProductId = productId
+            });
+
+            return data
+                .Where(x => x.ShippingMarkId == shippingMarkId || x.ShippingMarkId == null)
+                .ToList();
+        }
+
+        private async Task<ShippingRequestModel> GetShippingRequestAsync(int shippingRequestId)
+        {
+            var shippingRequest = await _context.ShippingRequests.FindAsync(shippingRequestId);
+            return _mapper.Map<ShippingRequestModel>(shippingRequest);
         }
     }
 }

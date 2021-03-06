@@ -29,8 +29,8 @@ namespace ShippingApp.Application.ShippingMark.Queries
         public async Task<List<ShippingMarkSummaryModel>> Handle(GetShippingMarkSummariesByIdQuery request, CancellationToken cancellationToken)
         {
             var shippingMarkSummaries = await _context.ShippingMarkSummaries
-                .Include(x => x.Product)
                 .AsNoTracking()
+                .Include(x => x.Product)
                 .Where(x => x.ShippingMarkId == request.ShippingMarkId)
                 .ToListAsync();
 

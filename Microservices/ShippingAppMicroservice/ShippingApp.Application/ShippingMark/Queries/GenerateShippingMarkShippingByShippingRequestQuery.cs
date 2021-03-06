@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using ShippingApp.Application.ReceivedMark.Queries;
+using ShippingApp.Domain.Enumerations;
 
 namespace ShippingApp.Application.ShippingMark.Queries
 {
@@ -54,10 +55,7 @@ namespace ShippingApp.Application.ShippingMark.Queries
 
             foreach (var item in shippingRequestDetailsGroupByProduct)
             {
-                item.Product.ReceivedMarkPrintings = await _mediator.Send(new GetReceivedMarkPrintingsByProductIdQuery 
-                { 
-                    ProductId = item.ProductId 
-                });
+                item.Product.ReceivedMarkPrintings = await GetReceivedMarkPrintingsStorage(item.ProductId);
 
                 shippingMarkShippings.Add(new ShippingMarkShippingModel
                 {
@@ -71,6 +69,18 @@ namespace ShippingApp.Application.ShippingMark.Queries
             }
 
             return shippingMarkShippings;
+        }
+
+        private async Task<List<ReceivedMarkPrintingModel>> GetReceivedMarkPrintingsStorage(int productId)
+        {
+            var data = await _context.ReceivedMarkPrintings
+                        .AsNoTracking()
+                        .Where(x => x.ProductId == productId)
+                        .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.Storage)))
+                        .OrderBy(x => x.LastModified)
+                        .ToListAsync();
+
+            return _mapper.Map<List<ReceivedMarkPrintingModel>>(data);
         }
     }
 }

@@ -67,14 +67,16 @@ namespace ShippingApp.Application.ShippingMark.Commands
 
                 if (remainQty <= printedQty)
                 {
-                    return Result.Failure("Failed to edit Shipping Mark. Please try again");
+                    return Result.Failure("Total Quantity can not be less than Printed Quantity");
                 }
 
                 _context.ShippingMarkPrintings.RemoveRange(shippingMarkPrintingsGenerated);
                 
                 remainQty -= printedQty;
 
-                var product = await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == group.ProductId);
+                var product = await _context.Products
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == group.ProductId);
 
                 var lastItem = shippingMarkPrintingsPrinted
                     .Where(x => x.ProductId == group.ProductId)
@@ -153,7 +155,8 @@ namespace ShippingApp.Application.ShippingMark.Commands
 
             foreach (var item in newReceivedMarkPrintings)
             {
-                var receivedMarkPrinting = await _context.ReceivedMarkPrintings.FindAsync(item.Id);
+                var receivedMarkPrinting = await _context.ReceivedMarkPrintings
+                    .FirstOrDefaultAsync(x => x.Id == item.Id && x.ShippingMarkId == null && item.Status.Equals(nameof(ReceivedMarkStatus.Storage)));
 
                 if (receivedMarkPrinting == null)
                 {

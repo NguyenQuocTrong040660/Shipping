@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Application.Product.Commands;
 using System;
@@ -31,52 +32,52 @@ namespace ShippingApp.Application.Product.Validations
 
         private bool NotExistInShippingPlanDetails(int productId)
         {
-            return _context.ShippingPlanDetails.Any(x => x.ProductId == productId) == false;
+            return _context.ShippingPlanDetails.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInShippingRequestDetails(int productId)
         {
-            return _context.ShippingRequestDetails.Any(x => x.ProductId == productId) == false;
+            return _context.ShippingRequestDetails.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInWorkOrderDetails(int productId)
         {
-            return _context.WorkOrderDetails.Any(x => x.ProductId == productId) == false;
+            return _context.WorkOrderDetails.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInMovementRequestDetails(int productId)
         {
-            return _context.MovementRequestDetails.Any(x => x.ProductId == productId) == false;
+            return _context.MovementRequestDetails.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInReceivedMarkMovements(int productId)
         {
-            return _context.ReceivedMarkMovements.Any(x => x.ProductId == productId) == false;
+            return _context.ReceivedMarkMovements.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInReceivedMarkPrintings(int productId)
         {
-            return _context.ReceivedMarkPrintings.Any(x => x.ProductId == productId) == false;
+            return _context.ReceivedMarkPrintings.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInReceivedMarkSummaries(int productId)
         {
-            return _context.ReceivedMarkSummaries.Any(x => x.ProductId == productId) == false;
+            return _context.ReceivedMarkSummaries.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInShippingMarkPrintings(int productId)
         {
-            return _context.ShippingMarkPrintings.Any(x => x.ProductId == productId) == false;
+            return _context.ShippingMarkPrintings.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInShippingMarkShippings(int productId)
         {
-            return _context.ShippingMarkShippings.Any(x => x.ProductId == productId) == false;
+            return _context.ShippingMarkShippings.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInShippingMarkSummaries(int productId)
         {
-            return _context.ShippingMarkSummaries.Any(x => x.ProductId == productId) == false;
+            return _context.ShippingMarkSummaries.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
     }
 }

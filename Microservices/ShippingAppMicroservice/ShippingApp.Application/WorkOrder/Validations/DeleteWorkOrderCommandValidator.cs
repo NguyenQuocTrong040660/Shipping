@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Application.WorkOrder.Commands;
 using System;
@@ -22,7 +23,7 @@ namespace ShippingApp.Application.WorkOrder.Validations
         
         private bool NotExistInMovementRequestDetails(int workOrderId)
         {
-            return _context.MovementRequestDetails.Any(x => x.WorkOrderId == workOrderId) == false;
+            return _context.MovementRequestDetails.AsNoTracking().Any(x => x.WorkOrderId == workOrderId) == false;
         }
     }
 }

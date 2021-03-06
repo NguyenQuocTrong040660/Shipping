@@ -3969,13 +3969,15 @@ export interface ProductModel extends AuditableEntityModel {
     notes?: string | undefined;
     qtyPerPackage?: string | undefined;
     shippingPlanDetails?: ShippingPlanDetailModel[] | undefined;
+    movementRequestDetails?: MovementRequestDetailModel[] | undefined;
     shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
     workOrderDetails?: WorkOrderDetailModel[] | undefined;
-    shippingMarks?: ShippingMarkModel[] | undefined;
-    receivedMarks?: ReceivedMarkModel[] | undefined;
     receivedMarkMovements?: ReceivedMarkMovementModel[] | undefined;
     receivedMarkPrintings?: ReceivedMarkPrintingModel[] | undefined;
     receivedMarkSummaries?: ReceivedMarkSummaryModel[] | undefined;
+    shippingMarkPrintings?: ShippingMarkPrintingModel[] | undefined;
+    shippingMarkShippings?: ShippingMarkShippingModel[] | undefined;
+    shippingMarkSummaries?: ShippingMarkSummaryModel[] | undefined;
 }
 
 export interface ShippingPlanDetailModel extends AuditableEntityModel {
@@ -4057,12 +4059,13 @@ export interface ShippingMarkModel extends AuditableEntityModel {
 }
 
 export interface ShippingMarkPrintingModel extends AuditableEntityModel {
+    identifier?: string | undefined;
     id?: number;
+    prefix?: string | undefined;
     sequence?: number;
     quantity?: number;
     status?: string | undefined;
     printCount?: number;
-    revision?: string | undefined;
     rePrintingBy?: string | undefined;
     rePrintingDate?: Date | undefined;
     printingBy?: string | undefined;
@@ -4093,12 +4096,15 @@ export interface ShippingMarkSummaryModel extends AuditableEntityModel {
 }
 
 export interface ReceivedMarkPrintingModel extends AuditableEntityModel {
+    identifier?: string | undefined;
     id?: number;
+    prefix?: string | undefined;
     sequence?: number;
     quantity?: number;
     status?: string | undefined;
     printCount?: number;
     parentId?: string | undefined;
+    revision?: string | undefined;
     rePrintingBy?: string | undefined;
     rePrintingDate?: Date | undefined;
     printingBy?: string | undefined;
