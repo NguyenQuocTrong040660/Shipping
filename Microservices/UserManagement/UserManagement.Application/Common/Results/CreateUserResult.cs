@@ -1,6 +1,6 @@
 ﻿namespace UserManagement.Application.Common.Results
 {
-    public class CreateUserResult
+    public class ResetPasswordResult
     {
         public string Email { get; set; }
         public string UserName { get; set; }

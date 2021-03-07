@@ -50,6 +50,7 @@ namespace UserManagement.Api
 
                     await ApplicationDbContextSeed.SeedDefaultRolesAsync(roleManager);
                     await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager);
+                    await ApplicationDbContextSeed.SeedUserTestingAsync(userManager);
                 }
                 catch (Exception ex)
                 {

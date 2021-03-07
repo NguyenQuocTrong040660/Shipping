@@ -44,6 +44,7 @@ namespace Communication.Api.Controllers
         [HttpPost("users")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(List<CreateUserResult>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Result>> SendEmailRegistrationUsers([FromBody] List<CreateUserResult> users)
         {
             if (!ModelState.IsValid)
@@ -58,9 +59,21 @@ namespace Communication.Api.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public async Task<ActionResult<Result>> SendEmailForgotPasswordAsync()
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ResetPasswordResult>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> SendEmailForgotPasswordAsync(
+            [FromBody] List<ResetPasswordResult> resetPasswordResults)
         {
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(resetPasswordResults);
+            }
+
+            return Ok(await Mediator.Send(new SendForgetPasswordEmailCommand
+            {
+                ResetPasswordResults = resetPasswordResults
+            }));
         }
 
         [HttpPost("shipping-request")]

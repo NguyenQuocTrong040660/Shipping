@@ -71,5 +71,66 @@ namespace UserManagement.Infrastructure.Persistence
                 }
             }
         }
+
+        public static async Task SeedUserTestingAsync(UserManager<ApplicationUser> userManager)
+        {
+            var users = new List<ApplicationUser>
+            {
+                new ApplicationUser
+                {
+                    UserName = "user01",
+                    Email = "user01@gmail.com",
+                },
+                new ApplicationUser
+                {
+                    UserName = "user02",
+                    Email = "user02@gmail.com",
+                },
+                new ApplicationUser
+                {
+                    UserName = "user03",
+                    Email = "user03@gmail.com",
+                },
+                new ApplicationUser
+                {
+                    UserName = "user04",
+                    Email = "user04@gmail.com",
+                },
+                new ApplicationUser
+                {
+                    UserName = "user05",
+                    Email = "user05@gmail.com",
+                },
+                new ApplicationUser
+                {
+                    UserName = "user06",
+                    Email = "user06@gmail.com",
+                }
+            };
+
+            var roles = new List<string>
+            {
+                Roles.ITAdministrator,// userName: user01
+                Roles.ShippingDept,   // userName: user02
+                Roles.Manager,        // userName: user03
+                Roles.LogisticsDept,  // userName: user04
+                Roles.PlanningDept,   // userName: user05
+                Roles.FAQDept,        // userName: user06
+            };
+
+            for (int i = 0; i < users.Count; i++)
+            {
+                var user = users[i];
+
+                if (userManager.Users.All(u => u.UserName != user.UserName))
+                {
+                    user.LockoutEnabled = false;
+                    user.LockoutEnd = DateTime.Now;
+
+                    await userManager.CreateAsync(user, "userTesting@123456");
+                    await userManager.AddToRoleAsync(user, roles[i]);
+                }
+            }
+        }
     }
 }

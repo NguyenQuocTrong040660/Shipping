@@ -26,7 +26,7 @@ namespace UserManagement.Application.Profile.Commands
 
         public async Task<Result> Handle(CreateNewPasswordCommand request, CancellationToken cancellationToken)
         {
-            var result = await _identityService.GenerateNewPasswordAsync(request.Email);
+            (var result, _) = await _identityService.GenerateNewPasswordAsync(request.Email);
             return result;
         }
     }

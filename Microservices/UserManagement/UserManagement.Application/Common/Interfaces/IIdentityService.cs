@@ -14,7 +14,7 @@ namespace UserManagement.Application.Common.Interfaces
         Task<IList<string>> GetRolesUserAsync(string userName);
         Task<string> GetRoleUserAsync(string userName);
         Task<Result> ChangePasswordAsync(string userId, string oldPassword, string newPassword);
-        Task<Result> GenerateNewPasswordAsync(string email);
+        Task<(Result, string)> GenerateNewPasswordAsync(string email);
         Task<ApplicationUser> GetUserByIdentifierAsync(string identifier);
         Task<List<ApplicationUser>> GetUsersAsync();
         Task<Microsoft.AspNetCore.Identity.IdentityResult> AssignUserToRole(ApplicationUser user, string role);

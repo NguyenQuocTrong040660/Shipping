@@ -182,7 +182,26 @@ export class UserManagementComponent implements OnInit {
   }
 
   onSetNewPassword() {
-    console.log('this.setNewPasswordForm: ', this.setNewPasswordForm.value);
+    const userEmails = [];
+
+    this.newPasswordForms.value.forEach((item) => {
+      userEmails.push(item['email']);
+    });
+
+    this.userClient
+      .apiUserAdminUsersResetPassword(userEmails)
+      .pipe(takeUntil(this.destroyed$))
+      .pipe(switchMap((users) => this.communicationClient.apiCommunicationEmailnotificationForgotPassword(users)))
+      .subscribe(
+        (_) => {
+          this.hideSetNewPasswordDialog();
+          this.initUsers();
+        },
+        (_) => {
+          this.hideSetNewPasswordDialog();
+          this.notificationService.error('Reset Password for users failed. Please try again');
+        }
+      );
   }
 
   openLockDialog() {

@@ -1,4 +1,4 @@
-﻿namespace Communication.Domain.Models
+﻿namespace UserManagement.Application.Common.Results
 {
     public class CreateUserResult
     {
@@ -7,4 +7,3 @@
         public string Password { get; set; }
     }
 }
-

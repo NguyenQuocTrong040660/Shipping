@@ -187,6 +187,69 @@ export class UserClient {
         return _observableOf<CreateUserResult[]>(<any>null);
     }
 
+    apiUserAdminUsersResetPassword(userEmails: string[]): Observable<ResetPasswordResult[]> {
+        let url_ = this.baseUrl + "/api/user/admin/users/reset-password";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(userEmails);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiUserAdminUsersResetPassword(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiUserAdminUsersResetPassword(<any>response_);
+                } catch (e) {
+                    return <Observable<ResetPasswordResult[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ResetPasswordResult[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processApiUserAdminUsersResetPassword(response: HttpResponseBase): Observable<ResetPasswordResult[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ResetPasswordResult[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <string[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ResetPasswordResult[]>(<any>null);
+    }
+
     apiUserAdminUsersLock(users: string[]): Observable<Result> {
         let url_ = this.baseUrl + "/api/user/admin/users/lock";
         url_ = url_.replace(/[?&]$/, "");
@@ -946,6 +1009,12 @@ export interface CreateUserRequest {
     userName?: string | undefined;
     email: string;
     roleId?: string | undefined;
+}
+
+export interface ResetPasswordResult {
+    email?: string | undefined;
+    userName?: string | undefined;
+    password?: string | undefined;
 }
 
 export interface Result {

@@ -25,6 +25,60 @@ export class CommunicationClient {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
+    apiCommunicationEmailnotificationTesting(to: string | null, content: string): Observable<Result> {
+        let url_ = this.baseUrl + "/api/communication/emailnotification/testing/{to}";
+        if (to === undefined || to === null)
+            throw new Error("The parameter 'to' must be defined.");
+        url_ = url_.replace("{to}", encodeURIComponent("" + to));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(content);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processApiCommunicationEmailnotificationTesting(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processApiCommunicationEmailnotificationTesting(<any>response_);
+                } catch (e) {
+                    return <Observable<Result>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<Result>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processApiCommunicationEmailnotificationTesting(response: HttpResponseBase): Observable<Result> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<Result>(<any>null);
+    }
+
     apiCommunicationEmailnotificationUsers(users: CreateUserResult[]): Observable<Result> {
         let url_ = this.baseUrl + "/api/communication/emailnotification/users";
         url_ = url_.replace(/[?&]$/, "");
@@ -74,6 +128,12 @@ export class CommunicationClient {
             result400 = _responseText === "" ? null : <CreateUserResult[]>JSON.parse(_responseText, this.jsonParseReviver);
             return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -82,14 +142,18 @@ export class CommunicationClient {
         return _observableOf<Result>(<any>null);
     }
 
-    apiCommunicationEmailnotificationForgotPassword(): Observable<Result> {
+    apiCommunicationEmailnotificationForgotPassword(resetPasswordResults: ResetPasswordResult[]): Observable<Result> {
         let url_ = this.baseUrl + "/api/communication/emailnotification/forgot-password";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(resetPasswordResults);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
@@ -120,6 +184,18 @@ export class CommunicationClient {
             let result200: any = null;
             result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
             return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ResetPasswordResult[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -229,6 +305,21 @@ export interface Result {
 }
 
 export interface CreateUserResult {
+    email?: string | undefined;
+    userName?: string | undefined;
+    password?: string | undefined;
+}
+
+export interface ProblemDetails {
+    type?: string | undefined;
+    title?: string | undefined;
+    status?: number | undefined;
+    detail?: string | undefined;
+    instance?: string | undefined;
+    extensions?: { [key: string]: any; } | undefined;
+}
+
+export interface ResetPasswordResult {
     email?: string | undefined;
     userName?: string | undefined;
     password?: string | undefined;

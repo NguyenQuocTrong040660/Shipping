@@ -93,13 +93,13 @@ namespace UserManagement.Infrastructure.Services
             return Result.Success();
         }
 
-        public async Task<Result> GenerateNewPasswordAsync(string email)
+        public async Task<(Result, string)> GenerateNewPasswordAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
-                return Result.Failure("Can not be found the user");
+                return (Result.Failure("Can not be found the user"), string.Empty);
             }
 
             var temporaryPassword = CreatePassword(10);
@@ -108,7 +108,7 @@ namespace UserManagement.Infrastructure.Services
 
             if (!setNewPasswordResult.Succeeded)
             {
-                return setNewPasswordResult.ToApplicationResult();
+                return (setNewPasswordResult.ToApplicationResult(), string.Empty);
             }
 
             user.RequireChangePassword = true;
@@ -116,7 +116,7 @@ namespace UserManagement.Infrastructure.Services
             await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
 
-            return Result.Success();
+            return (Result.Success(), temporaryPassword);
         }
 
         public async Task<(Result, string)> CreateUserWithTemporaryPasswordAsync(string email, string userName, string roleId)

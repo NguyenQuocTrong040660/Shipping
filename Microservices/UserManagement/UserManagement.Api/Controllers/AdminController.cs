@@ -58,11 +58,25 @@ namespace UserManagement.Api.Controllers
             return Ok(await Mediator.Send(new CreateUsersCommand { Users = createUsersRequest }));
         }
 
+        [HttpPost("users/reset-password")]
+        [ProducesResponseType(typeof(List<ResetPasswordResult>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ResetPasswordResult>>> ResetPasswordUsersAsync([FromBody] List<string> userEmails)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(userEmails);
+            }
+
+            return Ok(await Mediator.Send(new ResetUsersPasswordCommand { UserEmails = userEmails }));
+        }
+
         [HttpPost("users/lock")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(List<string>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<CreateUserResult>>> CreateUserAsync([FromBody] List<string> users)
+        public async Task<ActionResult<Result>> LockUsersAsync([FromBody] List<string> users)
         {
             if (!ModelState.IsValid)
             {
