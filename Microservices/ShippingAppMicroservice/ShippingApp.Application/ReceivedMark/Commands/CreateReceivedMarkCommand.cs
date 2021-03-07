@@ -49,7 +49,6 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 .Select(g => new
                 {
                     ProductId = g.Key,
-                    ReceivedMarkMovements = g.ToList(),
                     ReceivedQty = g.ToList().Sum(i => i.Quantity)
                 });
 

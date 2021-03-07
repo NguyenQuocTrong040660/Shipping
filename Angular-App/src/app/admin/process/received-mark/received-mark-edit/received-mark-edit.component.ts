@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { MovementRequestModel, ReceivedMarkMovementModel } from 'app/shared/api-clients/shipping-app.client';
+import { ReceivedMarkModel, ReceivedMarkMovementModel } from 'app/shared/api-clients/shipping-app.client';
 import { MenuItem, SelectItem } from 'primeng/api';
 
 @Component({
@@ -12,7 +12,7 @@ export class ReceivedMarkEditComponent implements OnInit {
   @Input() receivedMarkForm: FormGroup;
   @Input() titleDialog = '';
   @Input() isShowDialog = false;
-  @Input() receivedMarkMovements: ReceivedMarkMovementModel[] = [];
+  @Input() receivedMark: ReceivedMarkModel;
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
@@ -40,7 +40,7 @@ export class ReceivedMarkEditComponent implements OnInit {
   }
 
   hideDialog() {
-    this.receivedMarkMovements = [];
+    this.receivedMark = null;
     this.stepIndex = 0;
     this.receivedMarkForm.reset();
     this.hideDialogEvent.emit();
@@ -49,7 +49,7 @@ export class ReceivedMarkEditComponent implements OnInit {
   onSubmit() {
     this.receivedMarkMovementsControl.clear();
 
-    this.receivedMarkMovements.forEach((i) => {
+    this.receivedMark.receivedMarkMovements.forEach((i) => {
       this.receivedMarkMovementsControl.push(this.initReceivedMarkMovementForm(i));
     });
 
@@ -61,7 +61,7 @@ export class ReceivedMarkEditComponent implements OnInit {
       quantity: [receivedMarkMovement.quantity],
       productId: [receivedMarkMovement.productId],
       movementRequestId: [receivedMarkMovement.movementRequestId],
-      receivedMarkId: 0,
+      receivedMarkId: [receivedMarkMovement.receivedMarkId],
     });
   }
 
@@ -74,17 +74,17 @@ export class ReceivedMarkEditComponent implements OnInit {
   }
 
   onRowDelete(receivedMarkMovement: ReceivedMarkMovementModel) {
-    this.receivedMarkMovements = this.receivedMarkMovements.filter((i) => i['id'] !== receivedMarkMovement['id']);
+    this.receivedMark.receivedMarkMovements = this.receivedMark.receivedMarkMovements.filter((i) => i['id'] !== receivedMarkMovement['id']);
   }
 
   onRowEditSave(receivedMarkMovement: ReceivedMarkMovementModel) {
-    const entity = this.receivedMarkMovements.find((i) => i['id'] === receivedMarkMovement['id']);
+    const entity = this.receivedMark.receivedMarkMovements.find((i) => i['id'] === receivedMarkMovement['id']);
     entity.quantity = receivedMarkMovement.quantity;
     delete this.clonedReceivedMarkMovementModels[receivedMarkMovement['id']];
   }
 
   onRowEditCancel(receivedMarkMovement: ReceivedMarkMovementModel, index: number) {
-    this.receivedMarkMovements[index] = this.clonedReceivedMarkMovementModels[receivedMarkMovement['id']];
+    this.receivedMark.receivedMarkMovements[index] = this.clonedReceivedMarkMovementModels[receivedMarkMovement['id']];
     delete this.clonedReceivedMarkMovementModels[receivedMarkMovement['id']];
   }
 
@@ -93,14 +93,15 @@ export class ReceivedMarkEditComponent implements OnInit {
       case 0: {
         this.dataGroupByProduct = [];
 
-        const products = this.receivedMarkMovements.map((i) => i.product);
-        const productNumbers = this.receivedMarkMovements.map((i) => i.product.productNumber);
+        const products = this.receivedMark.receivedMarkMovements.map((i) => i.product);
+        const productNumbers = this.receivedMark.receivedMarkMovements.map((i) => i.product.productNumber);
         let uniqueProducts = [...new Set(productNumbers)];
         uniqueProducts.forEach((item) => {
           const product = {
             productNumber: item,
             productName: products.find((i) => i.productNumber === item).productName,
-            quantity: this.receivedMarkMovements.map((i) => i.product.productNumber === item && i.quantity).reduce((a: number, b: number) => a + b, 0),
+            qtyPerPackage: products.find((i) => i.productNumber === item).qtyPerPackage,
+            quantity: this.receivedMark.receivedMarkMovements.map((i) => i.product.productNumber === item && i.quantity).reduce((a: number, b: number) => a + b, 0),
           };
 
           this.dataGroupByProduct.push(product);

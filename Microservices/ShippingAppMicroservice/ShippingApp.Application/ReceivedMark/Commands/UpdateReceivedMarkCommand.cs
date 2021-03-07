@@ -40,22 +40,50 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             }
 
             var receivedMarkPrintings = new List<Entities.ReceivedMarkPrinting>();
-            var receivedMarkSummaries = new List<Entities.ReceivedMarkSummary>();
+
+            var receivedMarkPrintingsGenerated = await _context.ReceivedMarkPrintings
+                .Where(i => i.ReceivedMarkId == request.Id)
+                .Where(x => x.Status.Equals(nameof(ShippingMarkStatus.New)))
+                .ToListAsync();
+
+            var receivedMarkPrintingsPrinted = await _context.ReceivedMarkPrintings
+               .Where(i => i.ReceivedMarkId == request.Id)
+               .Where(x => !receivedMarkPrintingsGenerated.Contains(x))
+               .ToListAsync();
 
             var groupByProducts = request.ReceivedMark.ReceivedMarkMovements
                 .GroupBy(x => x.ProductId)
                 .Select(g => new
                 {
                     ProductId = g.Key,
-                    ReceivedMarkMovements = g.ToList(),
                     ReceivedQty = g.ToList().Sum(i => i.Quantity)
                 });
 
             foreach (var group in groupByProducts)
             {
                 int remainQty = group.ReceivedQty;
-                var product = await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == group.ProductId);
-                int sequence = 1;
+                int printedQty = receivedMarkPrintingsPrinted.Where(x => x.ProductId == group.ProductId)
+                                                             .ToList()
+                                                             .Sum(i => i.Quantity);
+
+                if (remainQty <= printedQty)
+                {
+                    return Result.Failure("Total Quantity can not be less than Printed Quantity");
+                }
+
+                _context.ReceivedMarkPrintings.RemoveRange(receivedMarkPrintingsGenerated);
+                remainQty -= printedQty;
+
+                var product = await _context.Products
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == group.ProductId);
+
+                var lastItem = receivedMarkPrintingsPrinted
+                    .Where(x => x.ProductId == group.ProductId)
+                    .OrderBy(x => x.Sequence)
+                    .LastOrDefault();
+
+                int sequence = lastItem == null ? 1 : lastItem.Sequence + 1;
 
                 while (remainQty > 0)
                 {
@@ -67,6 +95,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                             Quantity = product.QtyPerPackage,
                             Sequence = sequence,
                             Status = nameof(ReceivedMarkStatus.New),
+                            ReceivedMarkId = request.Id
                         });
                     }
                     else
@@ -77,6 +106,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                             Quantity = remainQty,
                             Sequence = sequence,
                             Status = nameof(ReceivedMarkStatus.New),
+                            ReceivedMarkId = request.Id
                         });
                     }
 
@@ -84,37 +114,35 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                     sequence++;
                 }
 
-                receivedMarkSummaries.Add(new Entities.ReceivedMarkSummary
+                var receivedMarkSummary = await _context.ReceivedMarkSummaries
+                    .FirstOrDefaultAsync(x => x.ProductId == group.ProductId && x.ReceivedMarkId == request.Id);
+
+                receivedMarkSummary.TotalPackage = sequence - 1;
+                receivedMarkSummary.TotalQuantity = group.ReceivedQty;
+
+                var receivedMarkMovements = await _context.ReceivedMarkMovements
+                                                          .Where(i => i.ReceivedMarkId == request.Id && i.ProductId == group.ProductId)
+                                                          .ToListAsync();
+
+                foreach (var item in receivedMarkMovements)
                 {
-                    ProductId = group.ProductId,
-                    TotalPackage = sequence - 1,
-                    TotalQuantity = group.ReceivedQty
-                });
+                    var model = request.ReceivedMark.ReceivedMarkMovements
+                        .FirstOrDefault(i => i.ReceivedMarkId == item.ReceivedMarkId && i.ProductId == item.ProductId && i.MovementRequestId == item.MovementRequestId);
+
+                    if (model == null)
+                    {
+                        _context.ReceivedMarkMovements.Remove(item);
+                    }
+                    else
+                    {
+                        item.Quantity = model.Quantity;
+                    }
+                }
             }
 
-            var receivedMark = new Entities.ReceivedMark
-            {
-                Notes = request.ReceivedMark.Notes,
-                ReceivedMarkPrintings = receivedMarkPrintings,
-                ReceivedMarkMovements = BuildReceivedMarkMovements(request.ReceivedMark.ReceivedMarkMovements),
-                ReceivedMarkSummaries = receivedMarkSummaries
-            };
-
-            await _context.ReceivedMarks.AddAsync(receivedMark);
+            await _context.ReceivedMarkPrintings.AddRangeAsync(receivedMarkPrintings);
             await _context.SaveChangesAsync();
-
             return Result.Success();
-        }
-
-        private List<Entities.ReceivedMarkMovement> BuildReceivedMarkMovements(ICollection<ReceivedMarkMovementModel> receivedMarkMovements)
-        {
-            return receivedMarkMovements.Select(x => new Entities.ReceivedMarkMovement
-            {
-                MovementRequestId = x.MovementRequestId,
-                ProductId = x.ProductId,
-                Quantity = x.Quantity,
-                ReceivedMarkId = 0,
-            }).ToList();
         }
     }
 }

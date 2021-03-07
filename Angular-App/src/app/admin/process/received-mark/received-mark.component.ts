@@ -175,6 +175,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Received Mark Successfully');
+            this.initReceivedMarks();
           } else {
             this.notificationService.error(result?.error);
           }
@@ -222,11 +223,29 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   openEditDialog(receivedMark: ReceivedMarkModel) {
-    this.isShowDialogEdit = true;
     this.titleDialog = 'Edit Received Mark';
     this.isEdit = true;
 
-    this.receivedMarkForm.patchValue(receivedMark);
+    this.receivedMarkClients
+      .getReceivedMarkById(receivedMark.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i: ReceivedMarkModel) => {
+          let movementRequest = null;
+
+          i.receivedMarkMovements.forEach((item, index) => {
+            item['id'] = index++;
+            movementRequest = item.movementRequest;
+          });
+
+          this.currentReceivedMark = i;
+          this.isShowDialogEdit = true;
+
+          this.receivedMarkForm.patchValue(i);
+          this.receivedMarkForm.get('movementRequests').patchValue(movementRequest);
+        },
+        (_) => this.notificationService.error('Failed to open Edit Received Mark')
+      );
   }
 
   openDeleteDialog(receivedMark: ReceivedMarkModel) {
@@ -370,12 +389,15 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   reLoadReceivedMarkPrintings(receivedMarkId: number, productId: number) {
     this.receivedMarkPrintings = [];
 
-    this.receivedMarkClients.getReceivedMarkPrintings(receivedMarkId, productId).subscribe(
-      (receivedMarkPrintings) => {
-        this.receivedMarkPrintings = receivedMarkPrintings;
-      },
-      (_) => (this.receivedMarkPrintings = [])
-    );
+    this.receivedMarkClients
+      .getReceivedMarkPrintings(receivedMarkId, productId)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (receivedMarkPrintings) => {
+          this.receivedMarkPrintings = receivedMarkPrintings;
+        },
+        (_) => (this.receivedMarkPrintings = [])
+      );
   }
 
   showDetailReceivedMarkSummary(receivedMark: ReceivedMarkModel, receivedMarkSummaryModel: ReceivedMarkSummaryModel) {
@@ -385,14 +407,17 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     this.currentPrintReceivedMarkSummary = receivedMarkSummaryModel;
 
     this.receivedMarkPrintings = [];
-    this.receivedMarkClients.getReceivedMarkPrintings(receivedMark.id, receivedMarkSummaryModel.productId).subscribe(
-      (receivedMarkPrintings) => {
-        this.receivedMarkPrintings = receivedMarkPrintings;
-        this.isShowDialogDetail = true;
-        this.titleDialog = `Product Number: ${receivedMarkSummaryModel.product.productNumber} - ${receivedMarkSummaryModel.product.productName}`;
-      },
-      (_) => this.notificationService.error('Failed to show detail')
-    );
+    this.receivedMarkClients
+      .getReceivedMarkPrintings(receivedMark.id, receivedMarkSummaryModel.productId)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (receivedMarkPrintings) => {
+          this.receivedMarkPrintings = receivedMarkPrintings;
+          this.isShowDialogDetail = true;
+          this.titleDialog = `Product Number: ${receivedMarkSummaryModel.product.productNumber} - ${receivedMarkSummaryModel.product.productName}`;
+        },
+        (_) => this.notificationService.error('Failed to show detail')
+      );
   }
 
   ngOnDestroy(): void {

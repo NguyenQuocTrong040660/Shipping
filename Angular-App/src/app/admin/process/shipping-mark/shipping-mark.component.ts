@@ -245,15 +245,18 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
 
   handleSelectedShippingRequest(shippingRequest: ShippingRequestModel) {
     if (shippingRequest) {
-      this.shippingMarkClients.generateShippingMarkShippings(shippingRequest).subscribe(
-        (shippingMarkShippings) => {
-          this.shippingMarkShippings = shippingMarkShippings;
-          this.shippingMarkShippings.forEach((item) => {
-            item['selectedReceivedMarks'] = [];
-          });
-        },
-        (_) => (this.shippingMarkShippings = [])
-      );
+      this.shippingMarkClients
+        .generateShippingMarkShippings(shippingRequest)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          (shippingMarkShippings) => {
+            this.shippingMarkShippings = shippingMarkShippings;
+            this.shippingMarkShippings.forEach((item) => {
+              item['selectedReceivedMarks'] = [];
+            });
+          },
+          (_) => (this.shippingMarkShippings = [])
+        );
     }
   }
 
@@ -338,22 +341,28 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     this.currentPrintShippingMarkSummary = shippingMarkSummaryModel;
 
     this.shippingMarkPrintings = [];
-    this.shippingMarkClients.getShippingMarkPrintings(shippingMark.id, shippingMarkSummaryModel.productId).subscribe(
-      (shippingMarkPrintings) => {
-        this.shippingMarkPrintings = shippingMarkPrintings;
-        this.isShowDialogDetail = true;
-        this.titleDialog = `Product Number: ${shippingMarkSummaryModel.product.productNumber} - ${shippingMarkSummaryModel.product.productName}`;
-      },
-      (_) => this.notificationService.error('Failed to show detail')
-    );
+    this.shippingMarkClients
+      .getShippingMarkPrintings(shippingMark.id, shippingMarkSummaryModel.productId)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (shippingMarkPrintings) => {
+          this.shippingMarkPrintings = shippingMarkPrintings;
+          this.isShowDialogDetail = true;
+          this.titleDialog = `Product Number: ${shippingMarkSummaryModel.product.productNumber} - ${shippingMarkSummaryModel.product.productName}`;
+        },
+        (_) => this.notificationService.error('Failed to show detail')
+      );
   }
 
   reLoadShippingMarkPrintings(shippingMarkId: number, productId: number) {
     this.shippingMarkPrintings = [];
-    this.shippingMarkClients.getShippingMarkPrintings(shippingMarkId, productId).subscribe(
-      (shippingMarkPrintings) => (this.shippingMarkPrintings = shippingMarkPrintings),
-      (_) => this.notificationService.error('Failed to show detail')
-    );
+    this.shippingMarkClients
+      .getShippingMarkPrintings(shippingMarkId, productId)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (shippingMarkPrintings) => (this.shippingMarkPrintings = shippingMarkPrintings),
+        (_) => this.notificationService.error('Failed to show detail')
+      );
   }
 
   ngOnDestroy(): void {

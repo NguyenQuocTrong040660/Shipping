@@ -211,6 +211,16 @@
 >
 </app-received-mark-create>
 
+<app-received-mark-edit
+  [receivedMarkForm]="receivedMarkForm"
+  [titleDialog]="titleDialog"
+  [receivedMark]="currentReceivedMark"
+  [isShowDialog]="isShowDialogEdit"
+  (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
+>
+</app-received-mark-edit>
+
 <app-received-mark-details
   [class.isPrinting]="printService.isPrinting"
   [titleDialog]="titleDialog"

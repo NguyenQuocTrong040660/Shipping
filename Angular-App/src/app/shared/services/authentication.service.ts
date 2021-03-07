@@ -33,21 +33,21 @@ export class AuthenticationService implements OnDestroy {
       rememberMe,
     };
 
-    // if (!environment.production) {
-    //   const mockIdentityResult: IdentityResult = {
-    //     succeeded: true,
-    //     userName: 'admin',
-    //     roles: [Roles.SystemAdministrator],
-    //     originalUserName: 'admin',
-    //   };
+    if (!environment.production) {
+      const mockIdentityResult: IdentityResult = {
+        succeeded: true,
+        userName: 'admin',
+        roles: [Roles.SystemAdministrator],
+        originalUserName: 'admin',
+      };
 
-    //   this._user.next({
-    //     userName: mockIdentityResult.userName,
-    //     roles: mockIdentityResult.roles,
-    //     originalUserName: mockIdentityResult.originalUserName,
-    //   });
-    //   return of(mockIdentityResult);
-    // }
+      this._user.next({
+        userName: mockIdentityResult.userName,
+        roles: mockIdentityResult.roles,
+        originalUserName: mockIdentityResult.originalUserName,
+      });
+      return of(mockIdentityResult);
+    }
 
     return this.usersClient.apiUserUserLogin(loginRequest).pipe(
       tap((data: IdentityResult) => {

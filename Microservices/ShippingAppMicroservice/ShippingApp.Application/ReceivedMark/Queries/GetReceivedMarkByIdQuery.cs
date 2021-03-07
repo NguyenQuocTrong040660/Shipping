@@ -17,24 +17,28 @@ namespace ShippingApp.Application.ReceivedMark.Queries
     }
     public class GetReceiveMarkByIdQueryHandler : IRequestHandler<GetReceivedMarkByIdQuery, ReceivedMarkModel>
     {
+        private readonly IShippingAppDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.ReceivedMark> _shippingAppRepository;
 
-        public GetReceiveMarkByIdQueryHandler(IMapper mapper, IShippingAppRepository<Entities.ReceivedMark> shippingAppRepository)
+        public GetReceiveMarkByIdQueryHandler(IShippingAppDbContext context, IMapper mapper)
         {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
         }
 
         public async Task<ReceivedMarkModel> Handle(GetReceivedMarkByIdQuery request, CancellationToken cancellationToken)
         {
-            var receivedMarks = await _shippingAppRepository.GetDbSet()
+            var entity = await _context.ReceivedMarks
                  .AsNoTracking()
-                 .Include(x => x.ReceivedMarkSummaries)
-                 .ThenInclude(x => x.Product)
-                 .ToListAsync();
-                
-            var entity = receivedMarks.FirstOrDefault(x => x.Id == request.Id);
+                 .Include(x => x.ReceivedMarkMovements)
+                 .FirstOrDefaultAsync(x => x.Id == request.Id);
+
+            foreach (var item in entity.ReceivedMarkMovements)
+            {
+                item.Product = await _context.Products.FindAsync(item.ProductId);
+                item.MovementRequest = await _context.MovementRequests.FindAsync(item.MovementRequestId);
+            }
+
             return _mapper.Map<ReceivedMarkModel>(entity);
         }
     }
