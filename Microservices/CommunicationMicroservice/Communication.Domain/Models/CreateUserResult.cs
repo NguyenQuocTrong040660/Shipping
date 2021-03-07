@@ -1,4 +1,4 @@
-﻿namespace UserManagement.Application.Common.Results
+﻿namespace Communication.Domain.Models
 {
     public class CreateUserResult
     {

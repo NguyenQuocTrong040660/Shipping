@@ -4,38 +4,69 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Communication.Application.Email.Commands;
 using Communication.Application.Common.Results;
+using Communication.Application.Email.Commands;
 using Communication.Domain.Models;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace Communication.Api.Controllers
 {
     public class EmailNotificationController : BaseController
     {
         readonly ILogger<EmailNotificationController> _logger;
+        private readonly IWebHostEnvironment _environment;
 
-        public EmailNotificationController(IMediator mediator, ILogger<EmailNotificationController> logger) : base(mediator)
+        public EmailNotificationController(IMediator mediator,
+            IWebHostEnvironment environment,
+            ILogger<EmailNotificationController> logger) : base(mediator)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
-        [HttpPost]
+        [HttpPut("testing/{to}")]
+        public async Task<ActionResult<Result>> TestSendEmail(string to, [FromBody] string content)
+        {
+            if (_environment.IsProduction())
+            {
+                return NoContent();
+            }
+
+            return Ok(await Mediator.Send(new SendEmailForTestingCommand
+            {
+                To = to,
+                Content = content
+            }));
+        }
+
+        [HttpPost("users")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(EmailModel), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Result>> SendEmail([FromBody] EmailModel request)
+        [ProducesResponseType(typeof(List<CreateUserResult>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Result>> SendEmailRegistrationUsers([FromBody] List<CreateUserResult> users)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(request);
+                return BadRequest(users);
             }
 
-            _logger.LogInformation("Start Send", DateTime.Now.ToString());
+            return Ok(await Mediator.Send(new SendRegistrationEmailCommand
+            {
+                Users = users
+            }));
+        }
 
-            var result = await Mediator.Send(new SendMailCommand { Email = request });
+        [HttpPost("forgot-password")]
+        public async Task<ActionResult<Result>> SendEmailForgotPasswordAsync()
+        {
+            return Ok();
+        }
 
-            _logger.LogInformation("End Send", DateTime.Now.ToString());
-
-            return Ok(result);
+        [HttpPost("shipping-request")]
+        public async Task<ActionResult<Result>> SendEmailShippingRequestAsync()
+        {
+            return Ok();
         }
     }
 }

@@ -938,12 +938,13 @@ export interface ProblemDetails {
 
 export interface CreateUserResult {
     email?: string | undefined;
+    userName?: string | undefined;
     password?: string | undefined;
 }
 
 export interface CreateUserRequest {
     userName?: string | undefined;
-    email?: string | undefined;
+    email: string;
     roleId?: string | undefined;
 }
 

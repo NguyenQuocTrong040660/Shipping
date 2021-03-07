@@ -45,6 +45,7 @@ namespace UserManagement.Application.ManageUser.Commands
                 createUserResults.Add(new CreateUserResult
                 {
                     Email = item.Email,
+                    UserName = item.UserName,
                     Password = temporaryPassword.ToBase64Encode()
                 });
             }

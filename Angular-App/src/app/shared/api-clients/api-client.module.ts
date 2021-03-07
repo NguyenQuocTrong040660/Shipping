@@ -16,6 +16,7 @@ import {
   WorkOrderClients,
 } from './shipping-app.client';
 import { environment } from 'environments/environment';
+import { API_BASE_URL as COMMUNICATIONS_BASE_URL, CommunicationClient } from './communications.client';
 
 @NgModule({
   declarations: [],
@@ -33,9 +34,11 @@ import { environment } from 'environments/environment';
     ShippingPlanClients,
     ShippingRequestClients,
     WorkOrderClients,
+    CommunicationClient,
     { provide: USER_BASE_URL, useValue: environment.baseUrl },
     { provide: SHIPPING_BASE_URL, useValue: environment.baseUrl },
     { provide: FILES_BASE_URL, useValue: environment.baseUrl },
+    { provide: COMMUNICATIONS_BASE_URL, useValue: environment.baseUrl },
   ],
 })
 export class ApiClientModule {}

@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Communication.Application.Interfaces;
+using Communication.Infrastructure.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Communication.Domain.AppSetting;
 
 namespace Communication.Infrastructure
 {
@@ -8,8 +9,7 @@ namespace Communication.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            var emailConfiguration = configuration.GetSection("EmailConfiguration");
-            services.Configure<EmailConfiguration>(emailConfiguration);
+            services.AddTransient<IEmailService, EmailService>();
 
             return services;
         }

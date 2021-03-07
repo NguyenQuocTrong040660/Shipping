@@ -1,12 +1,13 @@
 import { NotificationService } from 'app/shared/services/notification.service';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { CreateUserRequest, CreateUserResult, LockRequest, RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
+import { CreateUserRequest, LockRequest, RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { CommunicationClient } from 'app/shared/api-clients/communications.client';
 
 @Component({
   templateUrl: './user-management.component.html',
@@ -39,7 +40,12 @@ export class UserManagementComponent implements OnInit {
 
   private destroyed$ = new Subject<void>();
 
-  constructor(private userClient: UserClient, private notificationService: NotificationService, private confirmationService: ConfirmationService) {}
+  constructor(
+    private userClient: UserClient,
+    private communicationClient: CommunicationClient,
+    private notificationService: NotificationService,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -123,7 +129,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   onCreate() {
-    const createUserRequets: CreateUserResult[] = [];
+    const createUserRequets: CreateUserRequest[] = [];
 
     this.newUsers.forEach((item) => {
       const request: CreateUserRequest = {
@@ -135,17 +141,20 @@ export class UserManagementComponent implements OnInit {
       createUserRequets.push(request);
     });
 
-    this.userClient.apiUserAdminUsersPost(createUserRequets).subscribe(
-      (i: CreateUserResult[]) => {
-        //!TODO: Call Communication API
-        this.hideCreateDialog();
-        this.initUsers();
-      },
-      (_) => {
-        this.hideCreateDialog();
-        this.notificationService.error('Create Users failed. Please try again');
-      }
-    );
+    this.userClient
+      .apiUserAdminUsersPost(createUserRequets)
+      .pipe(takeUntil(this.destroyed$))
+      .pipe(switchMap((users) => this.communicationClient.apiCommunicationEmailnotificationUsers(users)))
+      .subscribe(
+        (_) => {
+          this.hideCreateDialog();
+          this.initUsers();
+        },
+        (_) => {
+          this.hideCreateDialog();
+          this.notificationService.error('Create Users failed. Please try again');
+        }
+      );
   }
 
   openSetNewPasswordDialog() {

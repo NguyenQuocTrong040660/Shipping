@@ -20,12 +20,14 @@ using System;
 using System.Linq;
 using System.Text;
 using OpenApiSecurityScheme = NSwag.OpenApiSecurityScheme;
+using Communication.Api.Configs;
+using Communication.Domain.Configs;
 
 namespace Communication.Api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -35,19 +37,16 @@ namespace Communication.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddPersistence(Configuration);
-            services.AddApplication();
-            services.AddInfrastructure(Configuration);
-
             services.AddControllers(options =>
               options.Filters.Add(new ApiExceptionFilterAttribute())).AddFluentValidation();
 
-            //Should be disabled in PROD
-            services.AddMigrationServices();
+            //services.AddMigrationServices();
 
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
+            services.AddSingleton<IEnvironmentApplication, EnvironmentApplication>();
 
             services.AddHealthChecks();
+
             services.AddOpenApiDocument(configure =>
             {
                 configure.Title = "Communication Microservice API";
@@ -88,6 +87,12 @@ namespace Communication.Api
             });
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             services.AddRouting(options => options.LowercaseUrls = true);
+
+            services.AddPersistence(Configuration);
+            services.AddApplication();
+            services.AddInfrastructure(Configuration);
+
+            services.Configure<AppSettings>(Configuration);
         }
 
         private void ConfigureAuthenticationServices(IServiceCollection services)
