@@ -52,6 +52,8 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   isShowDialogHistory = false;
   isShowDialogUnstuff = false;
   isShowDialogDetail = false;
+  isShowDialogEdit = false;
+
   canRePrint = false;
 
   cols: any[] = [];
@@ -153,6 +155,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   hideDialog() {
     this.isShowDialog = false;
     this.isShowDialogCreate = false;
+    this.isShowDialogEdit = false;
     this.isShowDialogHistory = false;
     this.isShowDialogDetail = false;
   }
@@ -219,9 +222,10 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   openEditDialog(receivedMark: ReceivedMarkModel) {
-    this.isShowDialog = true;
+    this.isShowDialogEdit = true;
     this.titleDialog = 'Edit Received Mark';
     this.isEdit = true;
+
     this.receivedMarkForm.patchValue(receivedMark);
   }
 

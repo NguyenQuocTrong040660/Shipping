@@ -84,6 +84,7 @@
             <p-table [value]="data">
               <ng-template pTemplate="header">
                 <tr>
+                  <th class="p-text-center">Reference Id</th>
                   <th class="p-text-center">Customer Name</th>
                   <th class="p-text-center">Purchase Order</th>
                   <th class="p-text-center">Sales ID</th>
@@ -99,32 +100,45 @@
               <ng-template pTemplate="body" let-item>
                 <tr>
                   <td>
+                    {{ item?.shippingPlanId }}
+                  </td>
+
+                  <td>
                     {{ item?.customerName }}
                   </td>
+
                   <td>
                     {{ item?.purchaseOrder }}
                   </td>
+
                   <td>
                     {{ item?.salesID }}
                   </td>
+
                   <td>
                     {{ item?.semlineNumber }}
                   </td>
+
                   <td>
                     {{ item?.productNumber }}
                   </td>
-                  <td>
-                    {{ item?.quantityOrder }}
+
+                  <td class="p-text-center">
+                    {{ item?.quantityOrder | number }}
                   </td>
-                  <td>
-                    {{ item?.salesPrice }}
+
+                  <td class="p-text-center">
+                    {{ item?.salesPrice | number }}
                   </td>
+
                   <td>
                     {{ item?.shippingMode }}
                   </td>
+
                   <td>
                     {{ item?.shippingDate | date: 'dd/MM/yyyy' }}
                   </td>
+
                   <td>
                     {{ item?.notes }}
                   </td>
@@ -229,6 +243,7 @@
             <p-table [value]="dataValidated">
               <ng-template pTemplate="header">
                 <tr>
+                  <th class="p-text-center">Reference Id</th>
                   <th class="p-text-center">Customer Name</th>
                   <th class="p-text-center">Purchase Order</th>
                   <th class="p-text-center">Sales ID</th>
@@ -245,6 +260,10 @@
               <ng-template pTemplate="body" let-item>
                 <tr [ngClass]="item?.valid ? '' : 'p-text-danger'">
                   <td>
+                    {{ item?.shippingPlanId }}
+                  </td>
+
+                  <td>
                     {{ item?.customerName }}
                   </td>
                   <td>
@@ -260,10 +279,10 @@
                     {{ item?.productNumber }}
                   </td>
                   <td class="p-text-center">
-                    {{ item?.quantityOrder }}
+                    {{ item?.quantityOrder | number }}
                   </td>
                   <td class="p-text-center">
-                    {{ item?.salesPrice }}
+                    {{ item?.salesPrice | number }}
                   </td>
                   <td>
                     {{ item?.shippingMode }}
@@ -366,6 +385,7 @@
             <p-table [value]="failedToImportItems">
               <ng-template pTemplate="header">
                 <tr>
+                  <th class="p-text-center">Reference Id</th>
                   <th class="p-text-center">Customer Name</th>
                   <th class="p-text-center">Purchase Order</th>
                   <th class="p-text-center">Sales ID</th>
@@ -380,6 +400,9 @@
               </ng-template>
               <ng-template pTemplate="body" let-item>
                 <tr>
+                  <td>
+                    {{ item?.shippingPlanId }}
+                  </td>
                   <td>
                     {{ item?.customerName }}
                   </td>
@@ -396,10 +419,10 @@
                     {{ item?.productNumber }}
                   </td>
                   <td class="p-text-center">
-                    {{ item?.quantityOrder }}
+                    {{ item?.quantityOrder | number }}
                   </td>
                   <td class="p-text-center">
-                    {{ item?.salesPrice }}
+                    {{ item?.salesPrice | number }}
                   </td>
                   <td>
                     {{ item?.shippingMode }}

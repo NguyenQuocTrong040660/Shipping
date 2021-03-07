@@ -122,12 +122,10 @@ namespace ShippingApp.Application.ShippingMark.Commands
             }
 
             await _context.ShippingMarkPrintings.AddRangeAsync(shippingMarkPrintings);
-
             await AddOrUpdateReceivedMarkPrintings(request.Id, request.ShippingMark.ReceivedMarkPrintings);
+            await _context.SaveChangesAsync();
 
-            return await _context.SaveChangesAsync() > 0
-                ? Result.Success()
-                : Result.Failure("Failed to edit Shipping Mark. Please try again");
+            return Result.Success();
         }
 
         private async Task AddOrUpdateReceivedMarkPrintings(int shippingMarkId, ICollection<ReceivedMarkPrintingModel> receivedMarkPrintingModels)

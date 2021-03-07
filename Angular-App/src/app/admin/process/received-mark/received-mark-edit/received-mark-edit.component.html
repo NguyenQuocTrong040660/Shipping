@@ -1,51 +1,8 @@
-<p-dialog [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
     <ng-container *ngIf="stepIndex === 0">
-      <p-card>
-        <ng-template pTemplate="content">
-          <form [formGroup]="receivedMarkForm">
-            <div class="p-field">
-              <label for="movementRequests" class="control-label">Movement Requests</label><span class="p-invalid"> *</span>
-              <p-multiSelect
-                [ngClass]="{ 'ng-dirty': movementRequestsControl.invalid && (movementRequestsControl.dirty || movementRequestsControl.touched) }"
-                [options]="selecteMovementRequestItems"
-                [formControl]="movementRequestsControl"
-                defaultLabel="Select Movement Requests"
-                appendTo="body"
-                id="movementRequests"
-              >
-              </p-multiSelect>
-              <ng-container *ngIf="movementRequestsControl.invalid && (movementRequestsControl.dirty || movementRequestsControl.touched)">
-                <small class="p-invalid p-error">Please select Movement Request</small>
-              </ng-container>
-            </div>
-
-            <div class="p-field">
-              <label for="notes">Notes</label>
-              <input pInputText id="notes" [formControl]="notesControl" type="text" />
-            </div>
-          </form>
-        </ng-template>
-
-        <ng-template pTemplate="footer">
-          <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-angle-left"></p-button>
-            <p-button
-              [disabled]="receivedMarkForm.invalid"
-              styleClass="p-button-text"
-              label="Next"
-              (onClick)="nextPage(stepIndex)"
-              icon="pi pi-angle-right"
-              iconPos="right"
-            ></p-button>
-          </div>
-        </ng-template>
-      </p-card>
-    </ng-container>
-
-    <ng-container *ngIf="stepIndex === 1">
       <p-card>
         <ng-template pTemplate="content">
           <p-card styleClass="p-card-custom">
@@ -55,7 +12,6 @@
                   <th class="p-text-center">Movement Request</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
-                  <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Quantity</th>
                   <th style="width: 10rem"></th>
                 </tr>
@@ -64,18 +20,12 @@
               <ng-template pTemplate="body" let-item let-editing="editing" let-ri="rowIndex">
                 <tr [pEditableRow]="item">
                   <td>{{ item?.movementRequest?.identifier }}</td>
-
                   <td>
                     {{ item?.product?.productNumber }}
                   </td>
                   <td>
                     {{ item?.product?.productName }}
                   </td>
-
-                  <td class="p-text-center">
-                    {{ item?.product?.qtyPerPackage }}
-                  </td>
-
                   <td class="p-text-center">
                     <p-cellEditor>
                       <ng-template pTemplate="input">
@@ -152,7 +102,7 @@
       </p-card>
     </ng-container>
 
-    <ng-container *ngIf="stepIndex === 2">
+    <ng-container *ngIf="stepIndex === 1">
       <p-card>
         <ng-template pTemplate="content">
           <p-card styleClass="p-card-custom">
@@ -161,7 +111,6 @@
                 <tr>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
-                  <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Quantity</th>
                 </tr>
               </ng-template>
@@ -171,15 +120,9 @@
                   <td>
                     {{ item?.productNumber }}
                   </td>
-
                   <td>
                     {{ item?.productName }}
                   </td>
-
-                  <td class="p-text-center">
-                    {{ item?.qtyPerPackage }}
-                  </td>
-
                   <td class="p-text-center">
                     {{ item?.quantity | number }}
                   </td>

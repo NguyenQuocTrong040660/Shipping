@@ -4,20 +4,18 @@ import { MovementRequestModel, ReceivedMarkMovementModel } from 'app/shared/api-
 import { MenuItem, SelectItem } from 'primeng/api';
 
 @Component({
-  selector: 'app-received-mark-create',
-  templateUrl: './received-mark-create.component.html',
-  styleUrls: ['./received-mark-create.component.scss'],
+  selector: 'app-received-mark-edit',
+  templateUrl: './received-mark-edit.component.html',
+  styleUrls: ['./received-mark-edit.component.scss'],
 })
-export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
+export class ReceivedMarkEditComponent implements OnInit {
   @Input() receivedMarkForm: FormGroup;
   @Input() titleDialog = '';
   @Input() isShowDialog = false;
   @Input() receivedMarkMovements: ReceivedMarkMovementModel[] = [];
-  @Input() movementRequests: MovementRequestModel[] = [];
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
-  @Output() selectedMovementRequestsEvent = new EventEmitter<any>();
 
   clonedReceivedMarkMovementModels: { [s: string]: ReceivedMarkMovementModel } = {};
 
@@ -31,24 +29,14 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
     return this.receivedMarkForm.get('notes');
   }
 
-  get movementRequestsControl() {
-    return this.receivedMarkForm.get('movementRequests');
-  }
-
   get receivedMarkMovementsControl() {
     return this.receivedMarkForm.get('receivedMarkMovements') as FormArray;
   }
 
   constructor(private fb: FormBuilder) {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.movementRequests && changes.movementRequests.currentValue) {
-      this.selecteMovementRequestItems = this._mapDataToMovementRequestItems(changes.movementRequests.currentValue);
-    }
-  }
-
   ngOnInit(): void {
-    this.stepItems = [{ label: 'Movement Requests' }, { label: 'Products' }, { label: 'Summary' }];
+    this.stepItems = [{ label: 'Products' }, { label: 'Summary' }];
   }
 
   hideDialog() {
@@ -56,13 +44,6 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
     this.stepIndex = 0;
     this.receivedMarkForm.reset();
     this.hideDialogEvent.emit();
-  }
-
-  _mapDataToMovementRequestItems(movementRequests: MovementRequestModel[]): SelectItem[] {
-    return movementRequests.map((p) => ({
-      value: p,
-      label: `${p.identifier}`,
-    }));
   }
 
   onSubmit() {
@@ -110,10 +91,6 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
   nextPage(currentIndex: number) {
     switch (currentIndex) {
       case 0: {
-        this.selectedMovementRequestsEvent.emit();
-        break;
-      }
-      case 1: {
         this.dataGroupByProduct = [];
 
         const products = this.receivedMarkMovements.map((i) => i.product);
@@ -123,13 +100,15 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
           const product = {
             productNumber: item,
             productName: products.find((i) => i.productNumber === item).productName,
-            qtyPerPackage: products.find((i) => i.productNumber === item).qtyPerPackage,
             quantity: this.receivedMarkMovements.map((i) => i.product.productNumber === item && i.quantity).reduce((a: number, b: number) => a + b, 0),
           };
 
           this.dataGroupByProduct.push(product);
         });
 
+        break;
+      }
+      case 1: {
         break;
       }
     }

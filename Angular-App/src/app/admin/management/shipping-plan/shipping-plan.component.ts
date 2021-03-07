@@ -76,14 +76,16 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     this.initForm();
     this.initShippingPlans();
     this.initProducts();
-    this.initEventBroadCast;
+    this.initEventBroadCast();
   }
 
   initEventBroadCast() {
-    this.importService.event$.pipe(takeUntil(this.destroyed$)).subscribe((event) => {
+    this.importService.getEvent().subscribe((event) => {
       switch (event) {
         case EventType.HideDialog:
-          this.ref.close();
+          if (this.ref) {
+            this.ref.close();
+          }
           this.initShippingPlans();
           break;
       }
@@ -114,7 +116,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       data: TemplateType.ShippingPlan,
     });
 
-    this.ref.onClose.subscribe(() => this.initProducts());
+    this.ref.onClose.subscribe(() => this.initShippingPlans());
   }
 
   exportTemplate() {
@@ -268,7 +270,10 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
 
   getDetailShippingPlanById(shippingPlanId: number) {
     const shippingPlanSelected = this.shippingPlans.find((i) => i.id === shippingPlanId);
-    shippingPlanSelected.shippingPlanDetails = [];
+
+    if (shippingPlanSelected && shippingPlanSelected.shippingPlanDetails && shippingPlanSelected.shippingPlanDetails.length > 0) {
+      return;
+    }
 
     this.shippingPlanClients
       .getShippingPlanById(shippingPlanId)

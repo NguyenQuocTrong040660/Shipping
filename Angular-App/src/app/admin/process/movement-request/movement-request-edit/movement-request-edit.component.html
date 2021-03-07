@@ -1,4 +1,4 @@
-<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
@@ -12,6 +12,7 @@
                   <th class="p-text-center">Work Order</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Quantity</th>
                   <th style="width: 10rem"></th>
                 </tr>
@@ -26,13 +27,18 @@
                   <td>
                     {{ movementRequestDetail?.product?.productName }}
                   </td>
+
+                  <td class="p-text-center">
+                    {{ movementRequestDetail?.product?.qtyPerPackage }}
+                  </td>
+
                   <td class="p-text-center">
                     <p-cellEditor>
                       <ng-template pTemplate="input">
                         <p-inputNumber [(ngModel)]="movementRequestDetail.quantity" required></p-inputNumber>
                       </ng-template>
                       <ng-template pTemplate="output">
-                        {{ movementRequestDetail?.quantity | number}}
+                        {{ movementRequestDetail?.quantity | number }}
                       </ng-template>
                     </p-cellEditor>
                   </td>
@@ -112,6 +118,7 @@
                   <th class="p-text-center">Work Order</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Quantity</th>
                 </tr>
               </ng-template>
@@ -125,8 +132,13 @@
                   <td>
                     {{ movementRequestDetail?.product?.productName }}
                   </td>
+
                   <td class="p-text-center">
-                    {{ movementRequestDetail?.quantity | number}}
+                    {{ movementRequestDetail?.product?.qtyPerPackage }}
+                  </td>
+
+                  <td class="p-text-center">
+                    {{ movementRequestDetail?.quantity | number }}
                   </td>
                 </tr>
               </ng-template>

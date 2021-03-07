@@ -31,6 +31,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
         {
             var receivedMarks = await _shippingAppRepository
                 .GetDbSet()
+                .AsNoTracking()
                 .OrderByDescending(x => x.LastModified)
                 .ToListAsync();
 

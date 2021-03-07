@@ -49,9 +49,8 @@ namespace ShippingApp.Application.MovementRequest.Commands
 
             movementRequest.Notes = request.MovementRequest.Notes;
 
-            return await _context.SaveChangesAsync() > 0
-                ? Result.Success()
-                : Result.Failure($"Failed to update movement request");
+            await _context.SaveChangesAsync();
+            return Result.Success();
         }
     }
 }

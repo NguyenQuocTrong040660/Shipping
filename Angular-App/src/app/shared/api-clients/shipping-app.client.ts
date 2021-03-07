@@ -2795,6 +2795,69 @@ export class ShippingPlanClients {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
+    bulkInsertShippingPlan(shippingPlanImports: ShippingPlanImportModel[]): Observable<ShippingPlanImportModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/shippingplan/bulkinsert";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(shippingPlanImports);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBulkInsertShippingPlan(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBulkInsertShippingPlan(<any>response_);
+                } catch (e) {
+                    return <Observable<ShippingPlanImportModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ShippingPlanImportModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processBulkInsertShippingPlan(response: HttpResponseBase): Observable<ShippingPlanImportModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ShippingPlanImportModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ShippingPlanImportModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ShippingPlanImportModel[]>(<any>null);
+    }
+
     addShippingPlan(shippingPlan: ShippingPlanModel): Observable<Result> {
         let url_ = this.baseUrl + "/api/shippingapp/shippingplan";
         url_ = url_.replace(/[?&]$/, "");
@@ -3999,7 +4062,7 @@ export interface ShippingPlanModel extends AuditableEntityModel {
     customerName?: string | undefined;
     shippingDate?: Date;
     salesID?: string | undefined;
-    semlineNumber?: number;
+    semlineNumber?: string | undefined;
     notes?: string | undefined;
     purchaseOrder?: string | undefined;
     refId?: string | undefined;
@@ -4025,7 +4088,7 @@ export interface ShippingRequestModel extends AuditableEntityModel {
     customerName?: string | undefined;
     shippingDate?: Date;
     salesID?: string | undefined;
-    semlineNumber?: number;
+    semlineNumber?: string | undefined;
     notes?: string | undefined;
     purchaseOrder?: string | undefined;
     shippingRequestLogisticId?: number;
@@ -4171,6 +4234,20 @@ export interface PrintShippingMarkRequest {
 export interface RePrintShippingMarkRequest {
     shippingMarkPrintingId: number;
     rePrintedBy: string;
+}
+
+export interface ShippingPlanImportModel {
+    shippingPlanId?: string | undefined;
+    customerName?: string | undefined;
+    purchaseOrder?: string | undefined;
+    salesID?: string | undefined;
+    semlineNumber?: string | undefined;
+    productNumber?: string | undefined;
+    quantityOrder?: number;
+    salesPrice?: number;
+    shippingMode?: string | undefined;
+    shippingDate?: Date;
+    notes?: string | undefined;
 }
 
 export interface WorkOrderImportModel {

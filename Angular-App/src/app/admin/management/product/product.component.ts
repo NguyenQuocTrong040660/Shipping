@@ -83,10 +83,12 @@ export class ProductComponent implements OnInit, OnDestroy {
   }
 
   initEventBroadCast() {
-    this.importService.event$.pipe(takeUntil(this.destroyed$)).subscribe((event) => {
+    this.importService.getEvent().subscribe((event) => {
       switch (event) {
         case EventType.HideDialog:
-          this.ref.close();
+          if (this.ref) {
+            this.ref.close();
+          }
           this.initProducts();
           break;
       }

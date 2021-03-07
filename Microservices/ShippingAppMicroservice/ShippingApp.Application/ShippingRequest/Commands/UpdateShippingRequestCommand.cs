@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using AutoMapper;
 using Entities = ShippingApp.Domain.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace ShippingApp.Application.ShippingRequest.Commands
 {
@@ -22,11 +23,13 @@ namespace ShippingApp.Application.ShippingRequest.Commands
     {
         private readonly IShippingAppDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<UpdateShippingRequestCommandHandler> _logger;
 
-        public UpdateShippingRequestCommandHandler(IShippingAppDbContext context, IMapper mapper)
+        public UpdateShippingRequestCommandHandler(IShippingAppDbContext context, IMapper mapper, ILogger<UpdateShippingRequestCommandHandler> logger)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Result> Handle(UpdateShippingRequestCommand request, CancellationToken cancellationToken)
@@ -77,9 +80,12 @@ namespace ShippingApp.Application.ShippingRequest.Commands
             shippingRequest.SalesID = request.ShippingRequest.SalesID;
             shippingRequest.Notes = request.ShippingRequest.Notes;
 
-            return await _context.SaveChangesAsync() > 0
-                ? Result.Success()
-                : Result.Failure($"Failed to update shipping request");
+            if (await _context.SaveChangesAsync() == 0)
+            {
+                _logger.LogError($"Failed to update Shipping Request");
+            }
+
+            return Result.Success();
         }
     }
 }

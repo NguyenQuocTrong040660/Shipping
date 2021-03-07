@@ -19,20 +19,25 @@ namespace ShippingApp.Application.ShippingPlan.Queries
     public class GetShippingPlanByIDQueryHandler : IRequestHandler<GetShippingPlanByIDQuery, ShippingPlanModel>
     {
         private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.ShippingPlan> _shippingAppRepository;
+        private readonly IShippingAppDbContext _context;
 
-        public GetShippingPlanByIDQueryHandler(IMapper mapper, IShippingAppRepository<Entities.ShippingPlan> shippingAppRepository)
+        public GetShippingPlanByIDQueryHandler(IMapper mapper,
+            IShippingAppDbContext context)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<ShippingPlanModel> Handle(GetShippingPlanByIDQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _shippingAppRepository.GetDbSet()
-                .Include(x => x.ShippingPlanDetails)
-                .ThenInclude(x => x.Product)
+            var entity = await _context.ShippingPlans
                 .FirstOrDefaultAsync(x => x.Id == request.Id);
+
+            entity.ShippingPlanDetails = await _context.ShippingPlanDetails
+                .AsNoTracking()
+                .Include(x => x.Product)
+                .Where(i => i.ShippingPlanId == entity.Id)
+                .ToListAsync();
 
             return _mapper.Map<ShippingPlanModel>(entity);
         }

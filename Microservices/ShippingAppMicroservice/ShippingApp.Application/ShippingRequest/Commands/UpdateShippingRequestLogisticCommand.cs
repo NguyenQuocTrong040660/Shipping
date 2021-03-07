@@ -46,9 +46,9 @@ namespace ShippingApp.Application.ShippingRequest.Commands
             entity.TrackingNumber = request.ShippingRequestLogistic.TrackingNumber;
             entity.GrossWeight = request.ShippingRequestLogistic.GrossWeight;
 
-            return await _context.SaveChangesAsync() > 0
-                ? Result.Success()
-                : Result.Failure($"Failed to update shipping request logistic");
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
         }
     }
 }

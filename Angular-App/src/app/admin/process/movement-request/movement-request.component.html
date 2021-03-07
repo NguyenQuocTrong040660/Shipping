@@ -127,6 +127,7 @@
                   <th>Work Order</th>
                   <th>Product Number</th>
                   <th>Product Name</th>
+                  <th>Qty/ Pkg</th>
                   <th>Quantity</th>
                 </tr>
               </ng-template>
@@ -135,7 +136,8 @@
                   <td>{{ item?.workOrder?.identifier }}</td>
                   <td>{{ item?.product?.productNumber }}</td>
                   <td>{{ item?.product?.productName }}</td>
-                  <td>{{ item?.quantity | number}}</td>
+                  <td>{{ item?.product?.qtyPerPackage }}</td>
+                  <td>{{ item?.quantity | number }}</td>
                 </tr>
               </ng-template>
             </p-table>

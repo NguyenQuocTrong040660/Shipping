@@ -125,6 +125,8 @@
               <ng-template pTemplate="header">
                 <tr>
                   <th>Product Number</th>
+                  <th>Product Name</th>
+                  <th>Qty/ Pkg</th>
                   <th>Quantity</th>
                   <th>Price (USD)</th>
                   <th>Amount (USD)</th>
@@ -134,6 +136,8 @@
               <ng-template pTemplate="body" let-item>
                 <tr>
                   <td>{{ item?.product?.productNumber }}</td>
+                  <td>{{ item?.product?.productName }}</td>
+                  <td>{{ item?.product?.qtyPerPackage }}</td>
                   <td>{{ item?.quantity | number }}</td>
                   <td>{{ item?.price | number }}</td>
                   <td>{{ item?.amount | number }}</td>

@@ -5,7 +5,7 @@ namespace ShippingApp.Domain.Models
 {
     public class ShippingPlanImportModel
     {
-        public Guid Key { get; set; }
+        public string ShippingPlanId { get; set; }
         public string CustomerName { get; set; }
         public string PurchaseOrder { get; set; }
         public string SalesID { get; set; }

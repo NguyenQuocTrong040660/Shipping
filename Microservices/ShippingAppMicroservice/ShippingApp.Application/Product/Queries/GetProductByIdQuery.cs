@@ -11,7 +11,7 @@ namespace ShippingApp.Application.Product.Queries
 {
     public class GetProductByIdQuery : IRequest<ProductModel>
     {
-        public int Id;
+        public int Id { get; set; }
     }
     public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, ProductModel>
     {

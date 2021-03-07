@@ -1,11 +1,8 @@
-﻿using System;
-
-namespace ShippingApp.Domain.Models
+﻿namespace ShippingApp.Domain.Models
 {
     public class ShippingPlanDetailModel : AuditableEntityModel
     {
         public int Id { get; set; }
-        
         public int Quantity { get; set; }
         public float Price { get; set; }
         public string ShippingMode { get; set; }

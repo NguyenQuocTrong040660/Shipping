@@ -1,4 +1,4 @@
-<p-dialog [position]="'center'" [header]="titleDialog" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
@@ -221,12 +221,13 @@
           <p-table [value]="shippingRequestDetails" dataKey="product.id" editMode="row">
             <ng-template pTemplate="header">
               <tr>
-                <th>Product Number</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Price (USD)</th>
-                <th>Amount (USD)</th>
-                <th>Shipping Mode</th>
+                <th class="p-text-center">Product Number</th>
+                <th class="p-text-center">Product Name</th>
+                <th class="p-text-center">Qty/ Pkg</th>
+                <th class="p-text-center">Quantity</th>
+                <th class="p-text-center">Price (USD)</th>
+                <th class="p-text-center">Amount (USD)</th>
+                <th class="p-text-center">Shipping Mode</th>
                 <th style="width: 10rem"></th>
               </tr>
             </ng-template>
@@ -238,7 +239,12 @@
                 <td>
                   {{ item?.product?.productName }}
                 </td>
-                <td>
+
+                <td class="p-text-center">
+                  {{ item?.product?.qtyPerPackage }}
+                </td>
+
+                <td class="p-text-center">
                   <p-cellEditor>
                     <ng-template pTemplate="input">
                       <p-inputNumber [(ngModel)]="item.quantity" required></p-inputNumber>
@@ -248,7 +254,8 @@
                     </ng-template>
                   </p-cellEditor>
                 </td>
-                <td>
+
+                <td class="p-text-center">
                   <p-cellEditor>
                     <ng-template pTemplate="input">
                       <p-inputNumber [(ngModel)]="item.price" required mode="decimal"></p-inputNumber>
@@ -258,7 +265,8 @@
                     </ng-template>
                   </p-cellEditor>
                 </td>
-                <td>
+
+                <td class="p-text-center">
                   {{ item?.amount | number }}
                 </td>
 
@@ -273,7 +281,7 @@
                   </p-cellEditor>
                 </td>
 
-                <td style="text-align: center">
+                <td class="p-text-center">
                   <button
                     *ngIf="!editing"
                     pButton
@@ -343,11 +351,12 @@
           <p-table dataKey="id" [value]="shippingRequestDetails">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th>Product Number</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Price (USD)</th>
-                <th>Amount (USD)</th>
+                <th class="p-text-center">Product Number</th>
+                <th class="p-text-center">Product Name</th>
+                <th class="p-text-center">Qty/ Pkg</th>
+                <th class="p-text-center">Quantity</th>
+                <th class="p-text-center">Price (USD)</th>
+                <th class="p-text-center">Amount (USD)</th>
               </tr>
             </ng-template>
 
@@ -359,10 +368,15 @@
                 <td>
                   {{ item?.product?.productName }}
                 </td>
-                <td>
+
+                <td class="p-text-center">
+                  {{ item?.product?.qtyPerPackage }}
+                </td>
+
+                <td class="p-text-center">
                   {{ item?.quantity | number }}
                 </td>
-                <td>
+                <td class="p-text-center">
                   {{ item?.price | number }}
                 </td>
                 <td>

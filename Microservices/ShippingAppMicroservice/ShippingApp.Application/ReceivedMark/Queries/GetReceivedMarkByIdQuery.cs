@@ -29,10 +29,11 @@ namespace ShippingApp.Application.ReceivedMark.Queries
         public async Task<ReceivedMarkModel> Handle(GetReceivedMarkByIdQuery request, CancellationToken cancellationToken)
         {
             var receivedMarks = await _shippingAppRepository.GetDbSet()
+                 .AsNoTracking()
                  .Include(x => x.ReceivedMarkSummaries)
                  .ThenInclude(x => x.Product)
                  .ToListAsync();
-
+                
             var entity = receivedMarks.FirstOrDefault(x => x.Id == request.Id);
             return _mapper.Map<ReceivedMarkModel>(entity);
         }

@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ShippingApp.Application.Common.Results;
-using ShippingApp.Application.Interfaces;
+using ShippingApp.Application.Product.Queries;
 using ShippingApp.Application.WorkOrder.Commands;
 using ShippingApp.Application.WorkOrder.Queries;
 using ShippingApp.Domain.Models;
@@ -17,16 +16,13 @@ namespace ShippingApp.Api.Controllers
 {
     public class WorkOrderController : BaseController
     {
-        readonly ILogger<WorkOrderController> _logger;
-        readonly IShippingAppDbContext _context;
+        private readonly ILogger<WorkOrderController> _logger;
 
         public WorkOrderController(
             IMediator mediator, 
-            ILogger<WorkOrderController> logger, 
-            IShippingAppDbContext context) : base(mediator)
+            ILogger<WorkOrderController> logger) : base(mediator)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         [HttpPost("BulkInsert")]
@@ -61,21 +57,32 @@ namespace ShippingApp.Api.Controllers
 
                 var workOderDetails = new List<WorkOrderDetailModel>();
 
-                foreach (var workOderDetail in group.WorkOrderDetails)
-                {
-                    var product = await _context.Products
-                                                .FirstOrDefaultAsync(e => e.ProductNumber.Equals(workOderDetail.ProductNumber));
+                var groupByProduct = group.WorkOrderDetails
+                                                  .GroupBy(x => x.ProductNumber)
+                                                  .Select(g => new
+                                                  {
+                                                      ProductNumber = g.Key,
+                                                      Quantity = g.Sum(x => x.Quantity),
+                                                      WorkOders = g.ToList()
+                                                  });
 
-                    if (product == null)
+                foreach (var product in groupByProduct)
+                {
+                    var productDatabase = await Mediator.Send(new GetProductByProductNumberQuery 
+                    { 
+                        ProductNumber = product.ProductNumber
+                    });
+
+                    if (productDatabase == null)
                     {
-                        invalidworkOrders.Add(workOderDetail);
+                        invalidworkOrders.AddRange(product.WorkOders);
                         continue;
                     }
 
                     workOderDetails.Add(new WorkOrderDetailModel
                     {
-                        ProductId = product.Id,
-                        Quantity = workOderDetail.Quantity,
+                        ProductId = productDatabase.Id,
+                        Quantity = product.Quantity,
                         WorkOrderId = workOrder.Id,
                     });
                 }
@@ -92,7 +99,6 @@ namespace ShippingApp.Api.Controllers
 
             return Ok(invalidworkOrders.Distinct());
         }
-
 
         [HttpPost]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]

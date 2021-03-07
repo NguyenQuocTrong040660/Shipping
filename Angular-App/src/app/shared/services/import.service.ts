@@ -7,9 +7,15 @@ import { EventType } from '../enumerations/import-event-type.enum';
 })
 export class ImportService {
   private _event = new BehaviorSubject<EventType>(null);
-  event$: Observable<EventType> = this._event.asObservable();
+  private event$: Observable<EventType> = this._event.asObservable();
 
-  constructor() {}
+  constructor() {
+    console.log('cc');
+  }
+
+  getEvent() {
+    return this.event$;
+  }
 
   dispactEvent(event: EventType) {
     console.log('event', event);

@@ -78,9 +78,9 @@ namespace ShippingApp.Application.ShippingPlan.Commands
             shippingPlan.Notes = request.ShippingPlan.Notes;
             shippingPlan.RefId = request.ShippingPlan.RefId;
 
-            return await _context.SaveChangesAsync() > 0
-                ? Result.Success()
-                : Result.Failure($"Failed to update shipping plan");
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
         }
     }
 }

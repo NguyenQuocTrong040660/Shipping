@@ -4,7 +4,6 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -18,20 +17,25 @@ namespace ShippingApp.Application.ShippingRequest.Queries
     public class GetShippingRequestByIdQueryHandler : IRequestHandler<GetShippingRequestByIdQuery, ShippingRequestModel>
     {
         private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.ShippingRequest> _shippingAppRepository;
+        private readonly IShippingAppDbContext _context;
 
-        public GetShippingRequestByIdQueryHandler(IMapper mapper, IShippingAppRepository<Entities.ShippingRequest> shippingAppRepository)
+        public GetShippingRequestByIdQueryHandler(IMapper mapper,
+            IShippingAppDbContext context)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<ShippingRequestModel> Handle(GetShippingRequestByIdQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _shippingAppRepository.GetDbSet()
-                .Include(x => x.ShippingRequestDetails)
-                .ThenInclude(x => x.Product)
+            var entity = await _context.ShippingRequests
                 .FirstOrDefaultAsync(x => x.Id == request.Id);
+
+            entity.ShippingRequestDetails = await _context.ShippingRequestDetails
+                .AsNoTracking()
+                .Include(x => x.Product)
+                .Where(i => i.ShippingRequestId == entity.Id)
+                .ToListAsync();
 
             return _mapper.Map<ShippingRequestModel>(entity);
         }

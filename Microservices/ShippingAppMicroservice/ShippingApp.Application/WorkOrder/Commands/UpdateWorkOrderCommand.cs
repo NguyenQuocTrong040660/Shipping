@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using ShippingApp.Application.Common.Results;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Domain.Models;
 using System;
-using Entities = ShippingApp.Domain.Entities;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -56,9 +54,9 @@ namespace ShippingApp.Application.WorkOrder.Commands
             workOrder.Notes = request.WorkOrder.Notes;
             workOrder.RefId = request.WorkOrder.RefId;
 
-            return await _context.SaveChangesAsync() > 0
-                ? Result.Success()
-                : Result.Failure($"Failed to update work order");
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
         }
     }
 }

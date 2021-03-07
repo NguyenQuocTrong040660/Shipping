@@ -157,6 +157,7 @@
                 <tr>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Total Quantity</th>
                   <th class="p-text-center">Total Package</th>
                   <th class="p-text-center"></th>
@@ -166,6 +167,7 @@
                 <tr>
                   <td>{{ item?.product?.productNumber }}</td>
                   <td>{{ item?.product?.productName }}</td>
+                  <td class="p-text-center">{{ item?.product?.qtyPerPackage }}</td>
                   <td class="p-text-center">{{ item?.totalQuantity }}</td>
                   <td class="p-text-center">{{ item?.totalPackage }}</td>
                   <td class="p-text-center">
