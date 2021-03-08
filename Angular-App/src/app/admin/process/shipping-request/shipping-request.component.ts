@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommunicationClient } from 'app/shared/api-clients/communications.client';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
@@ -8,7 +9,7 @@ import Utilities from 'app/shared/helpers/utilities';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService } from 'primeng/api';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
   templateUrl: './shipping-request.component.html',
@@ -50,7 +51,8 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private productClients: ProductClients,
     private notificationService: NotificationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private communicationClient: CommunicationClient
   ) {}
 
   ngOnInit() {
@@ -157,6 +159,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.shippingRequestClients
       .addShippingRequest(model)
       .pipe(takeUntil(this.destroyed$))
+      .pipe(switchMap((response) => this.communicationClient.apiCommunicationEmailnotificationShippingRequest(response)))
       .subscribe(
         (result) => {
           if (result && result.succeeded) {

@@ -44,7 +44,7 @@ namespace Communication.Application.Email.Commands
                 }
 
                 var body = BuildTemplate(rawTemplate, item.UserName, item.Password);
-                var mailMessage = _emailService.BuildMailMessageForRegistration("Spartronics Registration Successfully", body, item.Email, null, null);
+                var mailMessage = _emailService.BuildMailMessageForSending("Spartronics Registration Successfully", body, new List<string> { item.Email } , null, null);
                 _ = _emailService.SendEmail(mailMessage);
             }
 

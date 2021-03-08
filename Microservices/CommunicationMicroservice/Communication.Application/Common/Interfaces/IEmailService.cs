@@ -10,6 +10,6 @@ namespace Communication.Application.Interfaces
         Task SendEmail(MailMessage mailMessage);
         Task<Result> SendEmailWithReturnResult(MailMessage mailMessage);
         Task<string> GetEmailTemplate(string templateName);
-        MailMessage BuildMailMessageForRegistration(string subject, string body, string emailTo, List<string> ccEmails, List<string> bccEmails);
+        MailMessage BuildMailMessageForSending(string subject, string body, List<string> emailTos, List<string> ccEmails, List<string> bccEmails);
     }
 }

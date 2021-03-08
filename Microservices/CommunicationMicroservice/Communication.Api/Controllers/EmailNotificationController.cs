@@ -77,9 +77,20 @@ namespace Communication.Api.Controllers
         }
 
         [HttpPost("shipping-request")]
-        public async Task<ActionResult<Result>> SendEmailShippingRequestAsync()
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ShippingRequestResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> SendEmailShippingRequestAsync([FromBody] ShippingRequestResponse shippingRequest)
         {
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(shippingRequest);
+            }
+
+            return Ok(await Mediator.Send(new SendShippingRequestEmailCommand
+            {
+                ShippingRequest = shippingRequest
+            }));
         }
     }
 }

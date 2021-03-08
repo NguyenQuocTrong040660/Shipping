@@ -205,14 +205,18 @@ export class CommunicationClient {
         return _observableOf<Result>(<any>null);
     }
 
-    apiCommunicationEmailnotificationShippingRequest(): Observable<Result> {
+    apiCommunicationEmailnotificationShippingRequest(shippingRequest: ShippingRequestResponse): Observable<Result> {
         let url_ = this.baseUrl + "/api/communication/emailnotification/shipping-request";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(shippingRequest);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
@@ -243,6 +247,18 @@ export class CommunicationClient {
             let result200: any = null;
             result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
             return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <ShippingRequestResponse>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
@@ -323,6 +339,41 @@ export interface ResetPasswordResult {
     email?: string | undefined;
     userName?: string | undefined;
     password?: string | undefined;
+}
+
+export interface ShippingRequestResponse {
+    emailShippingDeptEmail?: string | undefined;
+    logisticDeptEmail?: string | undefined;
+    shippingRequest?: ShippingRequestModel | undefined;
+}
+
+export interface ShippingRequestModel {
+    identifier?: string | undefined;
+    id?: number;
+    prefix?: string | undefined;
+    customerName?: string | undefined;
+    shippingDate?: Date;
+    salesID?: string | undefined;
+    semlineNumber?: string | undefined;
+    notes?: string | undefined;
+    purchaseOrder?: string | undefined;
+    shippingRequestLogisticId?: number;
+    shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
+}
+
+export interface ShippingRequestDetailModel {
+    quantity?: number;
+    price?: number;
+    shippingMode?: string | undefined;
+    amount?: number;
+    product?: ProductModel | undefined;
+}
+
+export interface ProductModel {
+    productName?: string | undefined;
+    productNumber?: string | undefined;
+    notes?: string | undefined;
+    qtyPerPackage?: string | undefined;
 }
 
 export interface FileResponse {

@@ -1,13 +1,11 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
-using System.Net;
-using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
 using Communication.Application.Common.Results;
 using Communication.Application.Interfaces;
+using System.Collections.Generic;
 
 namespace Communication.Application.Email.Commands
 {
@@ -32,9 +30,9 @@ namespace Communication.Application.Email.Commands
 
         public async Task<Result> Handle(SendEmailForTestingCommand request, CancellationToken cancellationToken)
         {
-            var mailMessage = _emailService.BuildMailMessageForRegistration("Spartronics Email for testing",
-                request.Content, 
-                request.To, null, null);
+            var mailMessage = _emailService.BuildMailMessageForSending("Spartronics Email for testing",
+                request.Content,
+                new List<string> { request.To }, null, null);
 
             await _emailService.SendEmail(mailMessage);
             return Result.Success();

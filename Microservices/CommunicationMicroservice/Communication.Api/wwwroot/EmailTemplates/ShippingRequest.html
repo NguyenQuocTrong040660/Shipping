@@ -44,8 +44,8 @@
                                         <td>: {{ purchaseOrder }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Samline Number</td>
-                                        <td>: {{ samlineNumber }}</td>
+                                        <td>Semline Number</td>
+                                        <td>: {{ semlineNumber }}</td>
                                     </tr>
                                     <tr>
                                         <td>Customer Name</td>
@@ -73,14 +73,15 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!--TODO: Loop below content foreach detail-->
-                                    <tr>
+                                    {{ shippingRequestDetails }}
+
+                                    <!--<tr>
                                         <td style="border: 1px solid #000000;">Product Number</td>
                                         <td style="border: 1px solid #000000;">Quantity</td>
                                         <td style="border: 1px solid #000000;">Price (USD)</td>
                                         <td style="border: 1px solid #000000;">Amount (USD)</td>
                                         <td style="border: 1px solid #000000;">Shipping Mode</td>
-                                    </tr>
+                                    </tr>-->
                                 </tbody>
                             </table>
                         </section>

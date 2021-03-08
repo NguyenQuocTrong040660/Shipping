@@ -3164,7 +3164,7 @@ export class ShippingRequestClients {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
     }
 
-    addShippingRequest(shippingRequest: ShippingRequestModel): Observable<Result> {
+    addShippingRequest(shippingRequest: ShippingRequestModel): Observable<ShippingRequestResponse> {
         let url_ = this.baseUrl + "/api/shippingapp/shippingrequest";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3187,14 +3187,14 @@ export class ShippingRequestClients {
                 try {
                     return this.processAddShippingRequest(<any>response_);
                 } catch (e) {
-                    return <Observable<Result>><any>_observableThrow(e);
+                    return <Observable<ShippingRequestResponse>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<Result>><any>_observableThrow(response_);
+                return <Observable<ShippingRequestResponse>><any>_observableThrow(response_);
         }));
     }
 
-    protected processAddShippingRequest(response: HttpResponseBase): Observable<Result> {
+    protected processAddShippingRequest(response: HttpResponseBase): Observable<ShippingRequestResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3204,19 +3204,13 @@ export class ShippingRequestClients {
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <ShippingRequestResponse>JSON.parse(_responseText, this.jsonParseReviver);
             return _observableOf(result200);
-            }));
-        } else if (status === 404) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result404: any = null;
-            result404 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result400: any = null;
-            result400 = _responseText === "" ? null : <ShippingRequestModel>JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = _responseText === "" ? null : <ShippingRequestResponse>JSON.parse(_responseText, this.jsonParseReviver);
             return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             }));
         } else if (status === 401) {
@@ -3230,7 +3224,7 @@ export class ShippingRequestClients {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<Result>(<any>null);
+        return _observableOf<ShippingRequestResponse>(<any>null);
     }
 
     getShippingRequests(): Observable<ShippingRequestModel[]> {
@@ -4248,6 +4242,12 @@ export interface ShippingPlanImportModel {
     shippingMode?: string | undefined;
     shippingDate?: Date;
     notes?: string | undefined;
+}
+
+export interface ShippingRequestResponse {
+    emailShippingDeptEmail?: string | undefined;
+    logisticDeptEmail?: string | undefined;
+    shippingRequest?: ShippingRequestModel | undefined;
 }
 
 export interface WorkOrderImportModel {

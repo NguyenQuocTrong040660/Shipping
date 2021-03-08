@@ -21,19 +21,25 @@ namespace ShippingApp.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ShippingRequestResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ShippingRequestModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ShippingRequestResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> AddShippingRequestAsync(ShippingRequestModel shippingRequest)
+        public async Task<ActionResult<ShippingRequestResponse>> AddShippingRequestAsync(ShippingRequestModel shippingRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(shippingRequest);
             }
 
-            var result = await Mediator.Send(new CreateShippingRequestCommand { ShippingRequest = shippingRequest });
-            return Ok(result);
+            (var result, var response) = await Mediator.Send(new CreateShippingRequestCommand { ShippingRequest = shippingRequest });
+
+            if (result.Succeeded)
+            {
+                return Ok(response);
+            }
+
+            return BadRequest(response);
         }
 
         [HttpGet]

@@ -77,16 +77,23 @@ namespace Communication.Infrastructure.Services
             return templateEmail;
         }
 
-        public MailMessage BuildMailMessageForRegistration(string subject, string body, string emailTo, List<string> ccEmails, List<string> bccEmails)
+        public MailMessage BuildMailMessageForSending(string subject, string body, List<string> emailTos, List<string> ccEmails, List<string> bccEmails)
         {
-            var message = new MailMessage();
+            var message = new MailMessage
+            {
+                From = new MailAddress(_appSettings.Smtp.Username, _appSettings.Smtp.Username),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true
+            };
 
-            message.To.Add(new MailAddress(emailTo, emailTo));
-            message.From = new MailAddress(_appSettings.Smtp.Username, _appSettings.Smtp.Username);
-
-            message.Subject = subject;
-            message.Body = body;
-            message.IsBodyHtml = true;
+            if (emailTos != null)
+            {
+                foreach (var item in emailTos)
+                {
+                    message.To.Add(new MailAddress(item, item));
+                }
+            }
 
             if (ccEmails != null)
             {

@@ -9,15 +9,16 @@ using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Application.Common.Results;
 using ShippingApp.Domain.Enumerations;
 using ShippingApp.Application.Config.Queries;
+using ShippingApp.Application.Product.Queries;
 
 namespace ShippingApp.Application.ShippingRequest.Commands
 {
-    public class CreateShippingRequestCommand : IRequest<Result>
+    public class CreateShippingRequestCommand : IRequest<(Result, ShippingRequestResponse)>
     {
         public ShippingRequestModel ShippingRequest { get; set; }
     }
 
-    public class CreateShippingRequestCommandHandler : IRequestHandler<CreateShippingRequestCommand, Result>
+    public class CreateShippingRequestCommandHandler : IRequestHandler<CreateShippingRequestCommand, (Result, ShippingRequestResponse)>
     {
         private readonly IMapper _mapper;
         private readonly IShippingAppRepository<Entities.ShippingRequest> _shippingAppRepository;
@@ -32,7 +33,7 @@ namespace ShippingApp.Application.ShippingRequest.Commands
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
         }
 
-        public async Task<Result> Handle(CreateShippingRequestCommand request, CancellationToken cancellationToken)
+        public async Task<(Result, ShippingRequestResponse)> Handle(CreateShippingRequestCommand request, CancellationToken cancellationToken)
         {
             var config = await _mediator.Send(new GetConfigByKeyQuery 
             { 
@@ -51,7 +52,7 @@ namespace ShippingApp.Application.ShippingRequest.Commands
 
             if ((request.ShippingRequest.ShippingDate - DateTime.Now).TotalDays <= numberDays) 
             {
-                return Result.Failure($"Shipping Date should be larger than submit date {numberDays} days");
+                return (Result.Failure($"Shipping Date should be larger than submit date {numberDays} days"), null);
             }
 
             var entity = _mapper.Map<Entities.ShippingRequest>(request.ShippingRequest);
@@ -67,7 +68,43 @@ namespace ShippingApp.Application.ShippingRequest.Commands
                 GrossWeight = 0,
             };
 
-            return await _shippingAppRepository.AddAsync(entity);
+            var result = await _shippingAppRepository.AddAsync(entity);
+
+            var response = await BuildShippingResponse(entity);
+
+            return (result, response);
+        }
+
+        private async Task<ShippingRequestResponse> BuildShippingResponse(Entities.ShippingRequest entity)
+        {
+            var configLogisticDeptEmail = await _mediator.Send(new GetConfigByKeyQuery
+            {
+                Key = ConfigKey.LogisticDeptEmail
+            });
+
+            var configShippingDeptEmail = await _mediator.Send(new GetConfigByKeyQuery
+            {
+                Key = ConfigKey.ShippingDeptEmail
+            });
+
+            if (configLogisticDeptEmail == null || configShippingDeptEmail == null)
+            {
+                return null;
+            }
+
+            var shippingRequestModel = _mapper.Map<ShippingRequestModel>(entity);
+
+            foreach (var item in shippingRequestModel.ShippingRequestDetails)
+            {
+                item.Product = await _mediator.Send(new GetProductByIdQuery { Id = item.ProductId });
+            }
+
+            return new ShippingRequestResponse
+            {
+                LogisticDeptEmail = configLogisticDeptEmail.Value,
+                ShippingDeptEmail = configShippingDeptEmail.Value,
+                ShippingRequest = shippingRequestModel
+            };
         }
     }
 }
