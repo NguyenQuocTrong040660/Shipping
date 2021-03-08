@@ -57,7 +57,8 @@ export const adminRoutes: Routes = [
       {
         path: 'configuration',
         loadChildren: () => import('./settings/configuration/configuration.module').then((m) => m.ConfigurationModule),
-        canActivate: [AuthenticationGuard],
+        canActivate: [AuthenticationGuard, RoleGuard],
+        data: { roles: [UserRole.SystemAdministrator, UserRole.ITAdministrator] },
       },
       {
         path: 'files-management',
