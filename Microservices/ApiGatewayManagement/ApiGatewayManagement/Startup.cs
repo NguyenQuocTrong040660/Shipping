@@ -47,26 +47,16 @@ namespace ApiGatewayManagement
                 {
                     builder.WithOrigins(
                                         //LOCAL
-                                        "http://localhost:4200/",
-                                        "https://localhost:4200/",
+                                        "http://grexsolutionsdemo.ddns.net:1003/",
+                                        "https://grexsolutionsdemo.ddns.net:1003/",
+                                        "http://www.grexsolutionsdemo.ddns.net:1003/",
+                                        "https://www.grexsolutionsdemo.ddns.net:1003/",
 
                                         //MAIN PAGE
                                         "http://shippingapp.spartronics.com/",
                                         "https://shippingapp.spartronics.com/",
                                         "http://www.spartronics.com.vn/",
-                                        "https://www.spartronics.com.vn/",
-
-                                        //USER
-                                        "http://api-user.spartronics.com.vn/",
-                                        "https://api-user.spartronics.com.vn/",
-                                        "http://www.api-user.spartronics.com.vn/",
-                                        "https://www.api-user.spartronics.com.vn/",
-
-                                        //Shipping Application
-                                        "http://api-shippingapp.spartronics.com.vn/",
-                                        "https://api-shippingapp.spartronics.com.vn/",
-                                        "http://www.api-shippingapp.spartronics.com.vn/",
-                                        "https://www.api-shippingapp.spartronics.com.vn/"
+                                        "https://www.spartronics.com.vn/"
 
                                         )
                                         .AllowAnyHeader()
@@ -146,7 +136,8 @@ namespace ApiGatewayManagement
             app.UseSerilogRequestLogging();
             app.UseHealthChecks("/health");
 
-            app.UseHttpsRedirection();
+            //Disable Temporary
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors("GREXSOLUTIONS");

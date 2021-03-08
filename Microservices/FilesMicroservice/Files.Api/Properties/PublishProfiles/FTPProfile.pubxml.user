@@ -7,7 +7,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA2DfMwYsMekCkj8A+airL/AAAAAACAAAAAAAQZgAAAAEAACAAAACXJ+y+Fs5wTRvv3yfMKFFoh9lUfj+YEGz8+WtROUktrAAAAAAOgAAAAAIAACAAAACgurbE0DHobrGReqF22C4a62LpBoxFBgRuFhjFz3iPlCAAAAAT4nWjWhZe73Btae9a9Slr2CwjC4f79J/nU+qsZi4CP0AAAACfzGGzN9Ml9FRbjuePykdf37L74guTl/9mFG1sUnh3xfHniqzPsFXcMSaPMmS+hJ9iJuyEu006Jzi2mHv7Q25N</EncryptedPassword>
-    <_PublishTargetUrl>C:\Deployment\IIS_Server\Spartronics\Api-FileManagement</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\inetpub\wwwroot\spartronics\Api-FileManagement</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">

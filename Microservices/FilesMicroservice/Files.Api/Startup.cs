@@ -19,6 +19,7 @@ using System.Linq;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using OpenApiSecurityScheme = NSwag.OpenApiSecurityScheme;
+using Microsoft.Extensions.Hosting;
 
 namespace Files.Api
 {
@@ -130,8 +131,8 @@ namespace Files.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory)
         {
-            //if (!env.IsProduction())
-            //{
+            if (!env.IsProduction())
+            {
                 app.UseDeveloperExceptionPage();
                 
                 // Enable middleware to serve generated Swagger as a JSON endpoint.
@@ -144,7 +145,7 @@ namespace Files.Api
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Files API V1");
                 });
-            //}
+            }
 
             loggerfactory.AddSerilog();
             app.UseSerilogRequestLogging();

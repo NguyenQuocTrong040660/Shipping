@@ -45,10 +45,10 @@ namespace UserManagement.Api
                 builder =>
                 {
                     builder.WithOrigins(
-                                        "http://api-gatewayapi.shippingapp.spartronics.com/",
-                                        "https://api-gatewayapi.shippingapp.spartronics.com/",
-                                        "http://www.api-gatewayapi.shippingapp.spartronics.com/",
-                                        "https://www.api-gatewayapi.shippingapp.spartronics.com/"
+                                        "http://api-gatewayapi.spartronics.com/",
+                                        "https://api-gatewayapi.spartronics.com/",
+                                        "http://www.api-gatewayapi.spartronics.com/",
+                                        "https://www.api-gatewayapi.spartronics.com/"
                                         )
                                         .AllowAnyHeader()
                                         .AllowAnyMethod()
