@@ -111,8 +111,6 @@ namespace UserManagement.Infrastructure.Services
                 return (setNewPasswordResult.ToApplicationResult(), string.Empty);
             }
 
-            user.RequireChangePassword = true;
-
             await _userManager.UpdateAsync(user);
             await _signInManager.RefreshSignInAsync(user);
 

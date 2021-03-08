@@ -17,17 +17,15 @@
       <div class="col-md-9">
         <div class="card">
           <div class="card-header p-2">
-            <ul class="nav nav-pills">
-              <li class="nav-item"><a class="nav-link active" href="#settings" data-toggle="tab">Settings</a></li>
-            </ul>
+            <p>{{ 'Change Password' | uppercase }}</p>
           </div>
           <div class="card-body">
             <div class="tab-content">
               <div class="active tab-pane" id="settings">
                 <form [formGroup]="changePasswordForm" (ngSubmit)="changePassword()">
                   <div class="p-grid p-fluid">
-                    <div class="p-col-2">Old Password</div>
-                    <div class="p-col-10">
+                    <div class="p-col-3">Old Password</div>
+                    <div class="p-col-9">
                       <div class="p-field">
                         <input
                           [ngClass]="{ 'ng-dirty': oldPassword.invalid && (oldPassword.dirty || oldPassword.touched) }"
@@ -46,8 +44,8 @@
                   </div>
 
                   <div class="p-grid p-fluid">
-                    <div class="p-col-2">New Password</div>
-                    <div class="p-col-10">
+                    <div class="p-col-3">New Password</div>
+                    <div class="p-col-9">
                       <div class="p-field">
                         <input
                           [ngClass]="{ 'ng-dirty': newPassword.invalid && (newPassword.dirty || newPassword.touched) }"
@@ -66,8 +64,8 @@
                   </div>
 
                   <div class="p-grid p-fluid">
-                    <div class="p-col-2">Confirm Password</div>
-                    <div class="p-col-10">
+                    <div class="p-col-3">Confirm Password</div>
+                    <div class="p-col-9">
                       <div class="p-field">
                         <input
                           [ngClass]="{ 'ng-dirty': confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched) }"

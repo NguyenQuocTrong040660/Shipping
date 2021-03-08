@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
+import { UserRole } from 'app/shared/constants/user-role.constants';
 import { AuthenticationGuard } from 'app/shared/guards/authentication.guard';
+import { RoleGuard } from 'app/shared/guards/role.guard';
 import { AdminComponent } from './admin.component';
 
 export const adminRoutes: Routes = [
@@ -33,7 +35,8 @@ export const adminRoutes: Routes = [
       {
         path: 'user-management',
         loadChildren: () => import('./management/user-management/user-management.module').then((m) => m.UserManagementModule),
-        canActivate: [AuthenticationGuard],
+        canActivate: [AuthenticationGuard, RoleGuard],
+        data: { roles: [UserRole.SystemAdministrator, UserRole.ITAdministrator] },
       },
       {
         path: 'product',

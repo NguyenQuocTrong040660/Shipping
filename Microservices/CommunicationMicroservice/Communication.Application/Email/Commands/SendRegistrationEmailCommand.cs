@@ -54,7 +54,7 @@ namespace Communication.Application.Email.Commands
         private static string BuildTemplate(string rawTemplate, string userName, string password)
         {
             rawTemplate = rawTemplate.Replace("{{userName}}", userName);
-            rawTemplate = rawTemplate.Replace("{{newPassword}}", password.ToBase64Decode());
+            rawTemplate = rawTemplate.Replace("{{password}}", password.ToBase64Decode());
             return rawTemplate;
         }
     }

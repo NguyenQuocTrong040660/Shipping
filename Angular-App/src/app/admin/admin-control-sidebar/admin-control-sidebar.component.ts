@@ -1,17 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { UserRole } from 'app/shared/constants/user-role.constants';
+import { ApplicationUser } from 'app/shared/models/application-user';
+import { AuthenticationService } from 'app/shared/services/authentication.service';
 import { MenuItem } from 'primeng/api';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'admin-control-sidebar',
   templateUrl: './admin-control-sidebar.component.html',
   styleUrls: ['./admin-control-sidebar.component.scss'],
 })
-export class AdminControlSidebarComponent implements OnInit {
+export class AdminControlSidebarComponent implements OnInit, OnDestroy {
   items: MenuItem[];
+  user: ApplicationUser;
+  private destroyed$ = new Subject<void>();
 
-  constructor() { }
+  constructor(private authenticationService: AuthenticationService) {}
 
   ngOnInit(): void {
+    this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user) => {
+      if (user) {
+        this.user = user;
+      }
+    });
+
     this.items = [
       {
         label: 'Process',
@@ -47,6 +60,7 @@ export class AdminControlSidebarComponent implements OnInit {
             label: 'Users',
             icon: 'pi pi-users',
             routerLink: '/user-management',
+            visible: this._viewedByRoles([UserRole.SystemAdministrator, UserRole.ITAdministrator]),
           },
           {
             label: 'Product',
@@ -68,6 +82,7 @@ export class AdminControlSidebarComponent implements OnInit {
       {
         label: 'Settings',
         icon: 'pi pi-pw pi-file',
+        visible: this._viewedByRoles([UserRole.SystemAdministrator, UserRole.ITAdministrator]),
         items: [
           {
             label: 'Configuration',
@@ -77,5 +92,23 @@ export class AdminControlSidebarComponent implements OnInit {
         ],
       },
     ];
+  }
+
+  _viewedByRoles(roles: string[]): boolean {
+    let haveAccess = false;
+    this.user.roles.forEach((r) => {
+      const result = roles.some((i) => i === r);
+
+      if (result) {
+        haveAccess = true;
+      }
+    });
+
+    return haveAccess;
+  }
+
+  ngOnDestroy() {
+    this.destroyed$.next();
+    this.destroyed$.unsubscribe();
   }
 }

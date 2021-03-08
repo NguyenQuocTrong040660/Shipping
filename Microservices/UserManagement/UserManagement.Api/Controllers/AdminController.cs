@@ -14,7 +14,7 @@ using UserManagement.Domain.Enums;
 
 namespace UserManagement.Api.Controllers
 {
-    [Authorize(Roles = Roles.SystemAdministrator)]
+    [Authorize(Roles = "SystemAdministrator,ITAdministrator")]
     public class AdminController : ApiController
     {
         private readonly ILogger<AdminController> _logger;
