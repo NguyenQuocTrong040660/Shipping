@@ -16,7 +16,7 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
   user: ApplicationUser;
   private destroyed$ = new Subject<void>();
 
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user) => {
@@ -80,12 +80,12 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
         ],
       },
       {
-        label: 'Settings',
+        label: 'Setting',
         icon: 'pi pi-pw pi-file',
         visible: this._viewedByRoles([UserRole.SystemAdministrator, UserRole.ITAdministrator]),
         items: [
           {
-            label: 'Users',
+            label: 'User',
             icon: 'pi pi-users',
             routerLink: '/user-management',
             visible: this._viewedByRoles([UserRole.SystemAdministrator, UserRole.ITAdministrator]),

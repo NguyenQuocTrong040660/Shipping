@@ -12,7 +12,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./configuration.component.scss'],
 })
 export class ConfigurationComponent implements OnInit, OnDestroy {
-  title = 'Configurations';
+  title = 'Configuration';
 
   configurations: ConfigModel[] = [];
   selectedConfiguration: ConfigModel[];
@@ -39,7 +39,7 @@ export class ConfigurationComponent implements OnInit, OnDestroy {
 
   private destroyed$ = new Subject<void>();
 
-  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) {}
+  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) { }
 
   ngOnInit() {
     this.cols = [

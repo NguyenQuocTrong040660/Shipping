@@ -14,7 +14,7 @@ import { CommunicationClient } from 'app/shared/api-clients/communications.clien
   styleUrls: ['./user-management.component.scss'],
 })
 export class UserManagementComponent implements OnInit {
-  title = 'Users Management';
+  title = 'User Management';
 
   users: CreateUserModel[] = [];
   newUsers: CreateUserModel[] = [];
@@ -47,7 +47,7 @@ export class UserManagementComponent implements OnInit {
     private communicationClient: CommunicationClient,
     private notificationService: NotificationService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [

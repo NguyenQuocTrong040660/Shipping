@@ -20,7 +20,7 @@ import { ImportService } from 'app/shared/services/import.service';
   styleUrls: ['./work-order.component.scss'],
 })
 export class WorkOrderComponent implements OnInit, OnDestroy {
-  title = 'Work Orders Management';
+  title = 'Work Order Management';
 
   workOrders: WorkOrderModel[] = [];
   products: ProductModel[] = [];
@@ -55,7 +55,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private filesClient: FilesClient,
     private importService: ImportService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
