@@ -142,7 +142,6 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   openCreateDialog() {
     this.isEdit = false;
     this.selectedShippingRequest = null;
-    this.shippingRequestForm.reset();
     this.titleDialog = 'Create Shipping Request';
     this.isShowDialogCreate = true;
   }
@@ -190,6 +189,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.isShowDialogEdit = false;
     this.isShowDialogHistory = false;
     this.isShowDialogDocuments = false;
+    this.shippingRequestForm.reset();
   }
 
   onEdit() {

@@ -97,7 +97,8 @@ export class ShippingRequestCreateComponent implements OnInit {
             icon: 'pi pi-exclamation-triangle',
             accept: () => (this.stepIndex += 1),
           });
-
+          this.shippingRequestForm.reset();
+          this.shippingDateControl.setValue(new Date());
           return;
         }
 
@@ -148,7 +149,14 @@ export class ShippingRequestCreateComponent implements OnInit {
     }
   }
 
-  prevPage() {
+  prevPage(currentIndex?: number) {
+    switch (currentIndex) {
+      case 1: {
+        this.selectedShippingPlan = null;
+        break;
+      }
+    }
+
     this.stepIndex -= 1;
   }
 
