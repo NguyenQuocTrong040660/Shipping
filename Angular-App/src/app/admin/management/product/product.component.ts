@@ -18,7 +18,7 @@ import { EventType } from 'app/shared/enumerations/import-event-type.enum';
   templateUrl: './product.component.html',
 })
 export class ProductComponent implements OnInit, OnDestroy {
-  title = 'Products Management';
+  title = 'Product Management';
 
   selectedItem: ProductModel;
   products: ProductModel[] = [];
@@ -62,7 +62,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private filesClient: FilesClient,
     private importService: ImportService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
