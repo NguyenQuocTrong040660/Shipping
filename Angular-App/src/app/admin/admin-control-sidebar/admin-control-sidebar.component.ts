@@ -27,23 +27,13 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
 
     this.items = [
       {
-        label: 'Process',
+        label: 'Shipping',
         icon: 'pi pi-pw pi-file',
         items: [
-          {
-            label: 'Movement Request',
-            icon: 'pi pi-envelope',
-            routerLink: '/movement-request',
-          },
           {
             label: 'Shipping Request',
             icon: 'pi pi-envelope',
             routerLink: '/shipping-request',
-          },
-          {
-            label: 'Received Mark',
-            icon: 'pi pi-tags',
-            routerLink: '/received-mark',
           },
           {
             label: 'Shipping Mark',
@@ -53,15 +43,25 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
         ],
       },
       {
-        label: 'Management',
+        label: 'Movement',
         icon: 'pi pi-pw pi-file',
         items: [
           {
-            label: 'Users',
-            icon: 'pi pi-users',
-            routerLink: '/user-management',
-            visible: this._viewedByRoles([UserRole.SystemAdministrator, UserRole.ITAdministrator]),
+            label: 'Movement Request',
+            icon: 'pi pi-envelope',
+            routerLink: '/movement-request',
           },
+          {
+            label: 'Received Mark',
+            icon: 'pi pi-tags',
+            routerLink: '/received-mark',
+          },
+        ],
+      },
+      {
+        label: 'Management',
+        icon: 'pi pi-pw pi-file',
+        items: [
           {
             label: 'Product',
             icon: 'pi pi-list',
@@ -84,6 +84,12 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
         icon: 'pi pi-pw pi-file',
         visible: this._viewedByRoles([UserRole.SystemAdministrator, UserRole.ITAdministrator]),
         items: [
+          {
+            label: 'Users',
+            icon: 'pi pi-users',
+            routerLink: '/user-management',
+            visible: this._viewedByRoles([UserRole.SystemAdministrator, UserRole.ITAdministrator]),
+          },
           {
             label: 'Configuration',
             icon: 'pi pi-cog',

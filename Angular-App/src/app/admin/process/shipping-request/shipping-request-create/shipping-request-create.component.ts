@@ -83,6 +83,7 @@ export class ShippingRequestCreateComponent implements OnInit {
   hideDialog() {
     this.selectedProducts = [];
     this.shippingRequestDetails = [];
+    this.selectedShippingPlan = null;
     this.stepIndex = 0;
     this.hideDialogEvent.emit();
   }
@@ -99,6 +100,7 @@ export class ShippingRequestCreateComponent implements OnInit {
           });
           this.shippingRequestForm.reset();
           this.shippingDateControl.setValue(new Date());
+          this.selectedProducts = [];
           return;
         }
 

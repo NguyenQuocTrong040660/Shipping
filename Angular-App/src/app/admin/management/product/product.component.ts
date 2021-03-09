@@ -171,7 +171,7 @@ export class ProductComponent implements OnInit, OnDestroy {
 
   deleteProduct(product: ProductModel) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this item?',
+      message: 'Do you confirm to delete this item?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
