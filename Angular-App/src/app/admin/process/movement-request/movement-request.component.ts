@@ -255,3 +255,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
     this.destroyed$.complete();
   }
 }
+
+export interface MovementRequestDetail extends MovementRequestDetailModel {
+  isEditRow?: boolean;
+}

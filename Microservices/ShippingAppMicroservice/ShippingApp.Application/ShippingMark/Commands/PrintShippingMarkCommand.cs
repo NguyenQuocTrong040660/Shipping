@@ -33,6 +33,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
         {
             var shippingMarkShippings = await _context.ShippingMarkPrintings
                 .Include(x => x.Product)
+                .Include(x => x.ShippingMark)
                 .Where(x => x.ShippingMarkId == request.PrintShippingMarkRequest.ShippingMarkId
                          && x.ProductId == request.PrintShippingMarkRequest.ProductId)
                 .Where(x => x.Status.Equals(nameof(ShippingMarkStatus.New)))

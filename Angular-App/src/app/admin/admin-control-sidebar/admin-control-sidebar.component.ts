@@ -31,14 +31,14 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
         icon: 'pi pi-pw pi-file',
         items: [
           {
-            label: 'Shipping Request',
-            icon: 'pi pi-envelope',
-            routerLink: '/shipping-request',
-          },
-          {
             label: 'Movement Request',
             icon: 'pi pi-envelope',
             routerLink: '/movement-request',
+          },
+          {
+            label: 'Shipping Request',
+            icon: 'pi pi-envelope',
+            routerLink: '/shipping-request',
           },
           {
             label: 'Received Mark',

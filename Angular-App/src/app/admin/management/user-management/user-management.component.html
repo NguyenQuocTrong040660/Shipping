@@ -121,8 +121,17 @@
       <ng-template pTemplate="left">
         <button class="p-button-primary" label="Add User" pButton pRipple icon="pi pi-plus" (click)="addUser()"></button>
       </ng-template>
-      <ng-template pTemplate="right"> </ng-template>
     </p-toolbar>
+
+    <ng-container *ngIf="errorUsers && errorUsers.length > 0">
+      <p-toolbar styleClass="p-mb-2 create-user-form__error-toolbar">
+        <ng-template pTemplate="left">
+          <ul class="create-user-form__error-list">
+            <li *ngFor="let user of errorUsers">{{ user.email }} is invalid email</li>
+          </ul>
+        </ng-template>
+      </p-toolbar>
+    </ng-container>
 
     <p-table [value]="newUsers" dataKey="id" editMode="row">
       <ng-template pTemplate="header">
@@ -138,7 +147,7 @@
           <td>
             <p-cellEditor>
               <ng-template pTemplate="input">
-                <input pInputText type="text" [(ngModel)]="item.email" (ngModelChange)="handleOnInputEmail(item)" />
+                <input pInputText type="text" [(ngModel)]="item.email" (ngModelChange)="handleOnInputEmail(item)" placeholder="email@example.com" />
               </ng-template>
               <ng-template pTemplate="output">
                 {{ item.email }}
@@ -146,7 +155,7 @@
             </p-cellEditor>
           </td>
           <td>
-            {{ item.userName }}
+            {{ item.userName ? item.userName : 'Username' }}
           </td>
           <td>
             <p-cellEditor>
@@ -203,12 +212,14 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideCreateDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="!canCreateUsers(newUsers)" (click)="onCreate()"></button>
+    <div class="p-grid p-nogutter p-justify-between">
+      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideCreateDialog()"></button>
+      <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="!allowCreateUsers(newUsers)" (click)="onCreate()"></button>
+    </div>
   </ng-template>
 </p-dialog>
 
-<p-dialog header="Reset user password" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowSetNewPassworDialog" (onHide)="hideSetNewPasswordDialog()">
+<p-dialog header="Reset User Password" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowSetNewPassworDialog" (onHide)="hideSetNewPasswordDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="setNewPasswordForm">
       <div formArrayName="newPasswordForms">
@@ -266,7 +277,9 @@
   </ng-template>
 
   <ng-template pTemplate="footer">
-    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideSetNewPasswordDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="setNewPasswordForm.invalid" (click)="onSetNewPassword()"></button>
+    <div class="p-grid p-nogutter p-justify-between">
+      <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideSetNewPasswordDialog()"></button>
+      <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="setNewPasswordForm.invalid" (click)="onSetNewPassword()"></button>
+    </div>
   </ng-template>
 </p-dialog>

@@ -28,4 +28,15 @@
   &__error {
     padding-top: 3px;
   }
+
+  &__error-list {
+    margin-bottom: 0px;
+  }
+}
+
+p-toolbar {
+  ::ng-deep .create-user-form__error-toolbar {
+    border: 1px solid #ff0000;
+    background-color: #ff000021;
+  }
 }

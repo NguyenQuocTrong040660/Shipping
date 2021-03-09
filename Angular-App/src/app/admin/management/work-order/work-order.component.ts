@@ -1,4 +1,4 @@
-import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel, WorkOrderDetailModel } from 'app/shared/api-clients/shipping-app.client';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -296,4 +296,8 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
       this.ref.close();
     }
   }
+}
+
+export interface WorkOrderDetail extends WorkOrderDetailModel {
+  isEditRow?: boolean;
 }

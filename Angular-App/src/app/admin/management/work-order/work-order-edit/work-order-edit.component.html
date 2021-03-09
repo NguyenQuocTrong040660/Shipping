@@ -28,7 +28,7 @@
                       <p-inputNumber [(ngModel)]="workOrderDetail.quantity" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ workOrderDetail?.quantity | number}}
+                      {{ workOrderDetail?.quantity | number }}
                     </ng-template>
                   </p-cellEditor>
                 </td>
@@ -63,6 +63,7 @@
                     type="button"
                     pSaveEditableRow
                     icon="pi pi-check"
+                    [disabled]="!workOrderDetail.quantity"
                     (click)="onRowEditSave(workOrderDetail)"
                     class="p-button-rounded p-button-text p-button-success p-mr-2"
                   ></button>
@@ -83,9 +84,9 @@
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" icon="pi pi-times" iconPos="left"></p-button>
             <p-button
-              [disabled]="!checkModifiedQuantity(workOrderDetails)"
+              [disabled]="!allowMoveToCompleteStep(workOrderDetails)"
               styleClass="p-button-text"
               label="Submit"
               (onClick)="nextPage(stepIndex)"

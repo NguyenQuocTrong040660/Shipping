@@ -30,7 +30,7 @@
 
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-times"></p-button>
             <p-button
               [disabled]="movementRequestForm.invalid"
               styleClass="p-button-text"
@@ -47,98 +47,97 @@
     <ng-container *ngIf="stepIndex === 1">
       <p-card>
         <ng-template pTemplate="content">
-          <p-card styleClass="p-card-custom">
-            <p-table dataKey="id" [value]="movementRequestDetails" editMode="row">
-              <ng-template pTemplate="header" let-columns>
-                <tr>
-                  <th class="p-text-center">Work Order</th>
-                  <th class="p-text-center">Product Number</th>
-                  <th class="p-text-center">Product Name</th>
-                  <th class="p-text-center">Qty/ Pkg</th>
-                  <th class="p-text-center">Quantity</th>
-                  <th style="width: 10rem"></th>
-                </tr>
-              </ng-template>
+          <p-table dataKey="id" [value]="movementRequestDetails" editMode="row">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th class="p-text-center">Work Order</th>
+                <th class="p-text-center">Product Number</th>
+                <th class="p-text-center">Product Name</th>
+                <th class="p-text-center">Qty/ Pkg</th>
+                <th class="p-text-center">Quantity</th>
+                <th style="width: 10rem"></th>
+              </tr>
+            </ng-template>
 
-              <ng-template pTemplate="body" let-movementRequestDetail let-editing="editing" let-ri="rowIndex">
-                <tr [pEditableRow]="movementRequestDetail">
-                  <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
-                  <td>
-                    {{ movementRequestDetail?.product?.productNumber }}
-                  </td>
-                  <td>
-                    {{ movementRequestDetail?.product?.productName }}
-                  </td>
+            <ng-template pTemplate="body" let-movementRequestDetail let-editing="editing" let-ri="rowIndex">
+              <tr [pEditableRow]="movementRequestDetail">
+                <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
+                <td>
+                  {{ movementRequestDetail?.product?.productNumber }}
+                </td>
+                <td>
+                  {{ movementRequestDetail?.product?.productName }}
+                </td>
 
-                  <td class="p-text-center">
-                    {{ movementRequestDetail?.product?.qtyPerPackage }}
-                  </td>
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.product?.qtyPerPackage }}
+                </td>
 
-                  <td class="p-text-center">
-                    <p-cellEditor>
-                      <ng-template pTemplate="input">
-                        <p-inputNumber [(ngModel)]="movementRequestDetail.quantity" required></p-inputNumber>
-                      </ng-template>
-                      <ng-template pTemplate="output">
-                        {{ movementRequestDetail?.quantity | number }}
-                      </ng-template>
-                    </p-cellEditor>
-                  </td>
+                <td class="p-text-center">
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <p-inputNumber [(ngModel)]="movementRequestDetail.quantity" required></p-inputNumber>
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{ movementRequestDetail?.quantity | number }}
+                    </ng-template>
+                  </p-cellEditor>
+                </td>
 
-                  <td class="p-text-center">
-                    <button
-                      *ngIf="!editing"
-                      pButton
-                      pRipple
-                      type="button"
-                      pInitEditableRow
-                      icon="pi pi-pencil"
-                      (click)="onRowEditInit(movementRequestDetail)"
-                      class="p-button-rounded p-button-text"
-                    ></button>
+                <td class="p-text-center">
+                  <button
+                    *ngIf="!editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pInitEditableRow
+                    icon="pi pi-pencil"
+                    (click)="onRowEditInit(movementRequestDetail)"
+                    class="p-button-rounded p-button-text"
+                  ></button>
 
-                    <button
-                      *ngIf="!editing"
-                      pButton
-                      pRipple
-                      type="button"
-                      pInitEditableRow
-                      icon="pi pi-times"
-                      (click)="onRowDelete(movementRequestDetail)"
-                      class="p-button-rounded p-button-text"
-                    ></button>
+                  <button
+                    *ngIf="!editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pInitEditableRow
+                    icon="pi pi-times"
+                    (click)="onRowDelete(movementRequestDetail)"
+                    class="p-button-rounded p-button-text"
+                  ></button>
 
-                    <button
-                      *ngIf="editing"
-                      pButton
-                      pRipple
-                      type="button"
-                      pSaveEditableRow
-                      icon="pi pi-check"
-                      (click)="onRowEditSave(movementRequestDetail)"
-                      class="p-button-rounded p-button-text p-button-success p-mr-2"
-                    ></button>
-                    <button
-                      *ngIf="editing"
-                      pButton
-                      pRipple
-                      type="button"
-                      pCancelEditableRow
-                      icon="pi pi-times"
-                      (click)="onRowEditCancel(movementRequestDetail, ri)"
-                      class="p-button-rounded p-button-text p-button-danger"
-                    ></button>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </p-card>
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pSaveEditableRow
+                    icon="pi pi-check"
+                    [disabled]="!movementRequestDetail.quantity"
+                    (click)="onRowEditSave(movementRequestDetail)"
+                    class="p-button-rounded p-button-text p-button-success p-mr-2"
+                  ></button>
+                  <button
+                    *ngIf="editing"
+                    pButton
+                    pRipple
+                    type="button"
+                    pCancelEditableRow
+                    icon="pi pi-times"
+                    (click)="onRowEditCancel(movementRequestDetail, ri)"
+                    class="p-button-rounded p-button-text p-button-danger"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
-              [disabled]="movementRequestForm.invalid"
+              [disabled]="!allowMoveToCompleteStep(movementRequestDetails)"
               styleClass="p-button-text"
               label="Submit"
               (onClick)="nextPage(stepIndex)"
@@ -153,38 +152,36 @@
     <ng-container *ngIf="stepIndex === 2">
       <p-card>
         <ng-template pTemplate="content">
-          <p-card styleClass="p-card-custom">
-            <p-table dataKey="id" [value]="movementRequestDetails">
-              <ng-template pTemplate="header" let-columns>
-                <tr>
-                  <th class="p-text-center">Work Order</th>
-                  <th class="p-text-center">Product Number</th>
-                  <th class="p-text-center">Product Name</th>
-                  <th class="p-text-center">Qty/ Pkg</th>
-                  <th class="p-text-center">Quantity</th>
-                </tr>
-              </ng-template>
+          <p-table dataKey="id" [value]="movementRequestDetails">
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th class="p-text-center">Work Order</th>
+                <th class="p-text-center">Product Number</th>
+                <th class="p-text-center">Product Name</th>
+                <th class="p-text-center">Qty/ Pkg</th>
+                <th class="p-text-center">Quantity</th>
+              </tr>
+            </ng-template>
 
-              <ng-template pTemplate="body" let-movementRequestDetail>
-                <tr>
-                  <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
-                  <td>
-                    {{ movementRequestDetail?.product?.productNumber }}
-                  </td>
-                  <td>
-                    {{ movementRequestDetail?.product?.productName }}
-                  </td>
-                  <td class="p-text-center">
-                    {{ movementRequestDetail?.product?.qtyPerPackage }}
-                  </td>
+            <ng-template pTemplate="body" let-movementRequestDetail>
+              <tr>
+                <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
+                <td>
+                  {{ movementRequestDetail?.product?.productNumber }}
+                </td>
+                <td>
+                  {{ movementRequestDetail?.product?.productName }}
+                </td>
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.product?.qtyPerPackage }}
+                </td>
 
-                  <td class="p-text-center">
-                    {{ movementRequestDetail?.quantity | number }}
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </p-card>
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.quantity | number }}
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
         </ng-template>
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">

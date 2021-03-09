@@ -29,8 +29,8 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
   productCols: any[] = [];
   selectedProducts: ProductModel[] = [];
 
-  shippingDetailModels: ShippingPlanDetailModel[] = [];
-  clonedshippingDetailModels: { [s: string]: ShippingPlanDetailModel } = {};
+  shippingDetailModels: ShippingPlanDetails[] = [];
+  clonedshippingDetailModels: { [s: string]: ShippingPlanDetails } = {};
 
   TypeColumn = TypeColumn;
   private destroyed$ = new Subject<void>();
@@ -156,6 +156,7 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
 
   onRowEditCancel(shippingDetailModel: ShippingPlanDetails, index: number) {
     this.shippingDetailModels[index] = this.clonedshippingDetailModels[shippingDetailModel.productId];
+    this.shippingDetailModels[index].isEditRow = false;
     delete this.clonedshippingDetailModels[shippingDetailModel.productId];
   }
 

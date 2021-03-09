@@ -1,27 +1,27 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { MovementRequestDetailModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { MenuItem, SelectItem } from 'primeng/api';
+import { MovementRequestDetail } from '../movement-request.component';
 
 @Component({
   selector: 'app-movement-request-create',
   templateUrl: './movement-request-create.component.html',
   styleUrls: ['./movement-request-create.component.scss'],
 })
-export class MovementRequestCreateComponent implements OnInit {
+export class MovementRequestCreateComponent implements OnInit, OnChanges {
   @Input() movementRequestForm: FormGroup;
   @Input() titleDialog = '';
   @Input() isShowDialog = false;
-  @Input() movementRequestDetails: MovementRequestDetailModel[] = [];
+  @Input() movementRequestDetails: MovementRequestDetail[] = [];
   @Input() selectItems: SelectItem[] = [];
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
   @Output() selectedWorkOrdersEvent = new EventEmitter<any>();
 
-  clonedMovementRequestDetailModels: { [s: string]: MovementRequestDetailModel } = {};
+  clonedMovementRequestDetailModels: { [s: string]: MovementRequestDetail } = {};
 
   stepItems: MenuItem[];
   stepIndex = 0;
@@ -42,6 +42,12 @@ export class MovementRequestCreateComponent implements OnInit {
   }
 
   constructor(private fb: FormBuilder) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.movementRequestDetails && this.movementRequestDetails && this.movementRequestDetails.length > 0) {
+      this.movementRequestDetails.forEach((m) => (m.isEditRow = false));
+    }
+  }
 
   ngOnInit(): void {
     this.stepItems = [{ label: 'Work Orders' }, { label: 'Confirmation' }, { label: 'Complete' }];
@@ -64,7 +70,7 @@ export class MovementRequestCreateComponent implements OnInit {
     this.submitEvent.emit();
   }
 
-  initMovementRequestDetailForm(movementRequestDetail: MovementRequestDetailModel) {
+  initMovementRequestDetailForm(movementRequestDetail: MovementRequestDetail) {
     return this.fb.group({
       quantity: [movementRequestDetail.quantity],
       productId: [movementRequestDetail.productId],
@@ -73,29 +79,35 @@ export class MovementRequestCreateComponent implements OnInit {
     });
   }
 
-  checkModifiedQuantity(movementRequestDetails: MovementRequestDetailModel[]) {
-    return movementRequestDetails.filter((i) => i.quantity === 0).length === 0;
+  allowMoveToCompleteStep(movementRequestDetails: MovementRequestDetail[]): boolean {
+    const haveFilledDataRows = movementRequestDetails.filter((i) => i.quantity === 0).length === 0;
+    const haveNotEditRows = movementRequestDetails.every((d) => d.isEditRow === false);
+
+    return haveFilledDataRows && haveNotEditRows && this.movementRequestDetails.length > 0;
   }
 
-  onRowEditInit(movementRequestDetailModel: MovementRequestDetailModel) {
+  onRowEditInit(movementRequestDetailModel: MovementRequestDetail) {
+    movementRequestDetailModel.isEditRow = true;
     const key = `${movementRequestDetailModel.workOrderId}-${movementRequestDetailModel.productId}`;
     this.clonedMovementRequestDetailModels[key] = { ...movementRequestDetailModel };
   }
 
-  onRowDelete(movementRequestDetailModel: MovementRequestDetailModel) {
+  onRowDelete(movementRequestDetailModel: MovementRequestDetail) {
     this.movementRequestDetails = this.movementRequestDetails.filter((i) => i['id'] !== movementRequestDetailModel['id']);
   }
 
-  onRowEditSave(movementRequestDetailModel: MovementRequestDetailModel) {
+  onRowEditSave(movementRequestDetailModel: MovementRequestDetail) {
+    movementRequestDetailModel.isEditRow = false;
     const entity = this.movementRequestDetails.find((i) => i['id'] === movementRequestDetailModel['id']);
     entity.quantity = movementRequestDetailModel.quantity;
     delete this.clonedMovementRequestDetailModels[movementRequestDetailModel['id']];
   }
 
-  onRowEditCancel(movementRequestDetailModel: MovementRequestDetailModel, index: number) {
+  onRowEditCancel(movementRequestDetailModel: MovementRequestDetail, index: number) {
     const key = `${movementRequestDetailModel.workOrderId}-${movementRequestDetailModel.productId}`;
 
     this.movementRequestDetails[index] = this.clonedMovementRequestDetailModels[key];
+    this.movementRequestDetails[index].isEditRow = false;
     delete this.clonedMovementRequestDetailModels[key];
   }
 

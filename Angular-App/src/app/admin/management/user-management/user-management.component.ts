@@ -16,14 +16,14 @@ import { CommunicationClient } from 'app/shared/api-clients/communications.clien
 export class UserManagementComponent implements OnInit {
   title = 'Users Management';
 
-  users: UserResult[] = [];
-  newUsers: UserResult[] = [];
+  users: CreateUserModel[] = [];
+  newUsers: CreateUserModel[] = [];
   selectRoleItems: SelectItem[] = [];
   roles: RoleModel[] = [];
 
-  clonedNewUsers: { [s: string]: UserResult } = {};
+  clonedNewUsers: { [s: string]: CreateUserModel } = {};
 
-  selectedUsers: UserResult[] = [];
+  selectedUsers: CreateUserModel[] = [];
   isShowCreateDialog: boolean;
   isShowSetNewPassworDialog: boolean;
 
@@ -33,6 +33,8 @@ export class UserManagementComponent implements OnInit {
   fields: any[] = [];
 
   TypeColumn = TypeColumn;
+  emailPattern = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$';
+  errorUsers: CreateUserModel[] = [];
 
   get newPasswordForms() {
     return this.setNewPasswordForm.get('newPasswordForms') as FormArray;
@@ -93,7 +95,7 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  handleOnInputEmail(item: UserResult) {
+  handleOnInputEmail(item: CreateUserModel) {
     if (item.email.includes('@')) {
       item.userName = item.email.split('@')[0];
       return;
@@ -114,14 +116,14 @@ export class UserManagementComponent implements OnInit {
   }
 
   hideCreateDialog() {
+    this.newUsers = [];
+    this.errorUsers = [];
     this.isShowCreateDialog = false;
   }
 
   addUser() {
-    const user: UserResult = {
+    const user: CreateUserModel = {
       id: this.createUUID(),
-      userName: 'email',
-      email: 'email@example.com',
       roleName: this.roles && this.roles.length > 0 ? this.roles[0].name : '',
     };
 
@@ -273,36 +275,70 @@ export class UserManagementComponent implements OnInit {
     return uuid;
   }
 
-  onRowEditInit(user: UserResult): void {
+  onRowEditInit(user: CreateUserModel): void {
+    user.isEditRow = true;
     this.clonedNewUsers[user.id] = { ...user };
   }
 
-  onRowDelete(user: UserResult): void {
+  onRowDelete(user: CreateUserModel): void {
     this.newUsers = this.newUsers.filter((i) => i.id !== user.id);
+
+    if (this.errorUsers && this.errorUsers.length > 0) {
+      const userIndexExisted = this.errorUsers.findIndex((u) => u.id === user.id);
+
+      if (userIndexExisted > -1) {
+        this.errorUsers.splice(userIndexExisted, 1);
+      }
+    }
   }
 
-  onRowEditSave(user: UserResult): void {
+  onRowEditSave(user: CreateUserModel): void {
     if (!user.email && !user.userName) {
       this.notificationService.error('Please specify a email to register new user');
+      delete this.clonedNewUsers[user.id];
+      return;
+    }
+
+    user.isEditRow = false;
+    const emailRegex = new RegExp(this.emailPattern);
+    user.isValidEmail = emailRegex.test(user.email) ? true : false;
+
+    if (user && user.isValidEmail) {
+      if (this.errorUsers && this.errorUsers.length > 0) {
+        const userIndexExisted = this.errorUsers.findIndex((u) => u.id === user.id);
+
+        if (userIndexExisted > -1) {
+          this.errorUsers.splice(userIndexExisted, 1);
+        }
+      }
+    } else {
+      if (!this.errorUsers.find((u) => u.id === user.id)) {
+        this.errorUsers.push(user);
+      }
     }
 
     delete this.clonedNewUsers[user.id];
   }
 
-  onRowEditCancel(user: UserResult, index: number): void {
+  onRowEditCancel(user: CreateUserModel, index: number): void {
     this.newUsers[index] = this.clonedNewUsers[user.id];
+    this.newUsers[index].isEditRow = false;
     delete this.clonedNewUsers[user.id];
   }
 
-  canCreateUsers(newsUser: UserResult[]): boolean {
-    if (newsUser.length === 0) {
-      return false;
-    }
+  allowCreateUsers(newsUsers: CreateUserModel[]): boolean {
+    const haveValidEmailRows = newsUsers.every((d) => d.isValidEmail === true);
+    const haveNotEditRows = newsUsers.every((d) => d.isEditRow === false);
 
-    return newsUser.filter((i) => !!i.email === false).length === 0;
+    return haveValidEmailRows && haveNotEditRows && newsUsers.length > 0;
   }
 
   _mapRoleNameToRoleId(roleName: string): string {
     return this.roles.find((x) => x.name.toLowerCase() === roleName.toLowerCase()).id;
   }
+}
+
+export interface CreateUserModel extends UserResult {
+  isEditRow?: boolean;
+  isValidEmail?: boolean;
 }

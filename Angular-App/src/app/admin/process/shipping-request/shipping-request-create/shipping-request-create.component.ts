@@ -95,7 +95,7 @@ export class ShippingRequestCreateComponent implements OnInit {
             message: 'Are you sure you want to create shipping request without selecting shipping plan?',
             header: 'Confirm',
             icon: 'pi pi-exclamation-triangle',
-            accept: () => (this.stepIndex += 1)
+            accept: () => (this.stepIndex += 1),
           });
 
           return;
@@ -223,7 +223,8 @@ export class ShippingRequestCreateComponent implements OnInit {
   _mapToSelectShippingPlanItem(shippingPlans: ShippingPlanModel[]): SelectItem[] {
     return shippingPlans.map((p) => ({
       value: p.id,
-      label: `${p.identifier} | ${p.purchaseOrder} | ${p.customerName} | ${p.salesID} | ${p.semlineNumber} | ${p.shippingDate}`,
+      label: `${p.identifier} | ${p.purchaseOrder} | ${p.customerName} | ${p.salesID} | ${p.semlineNumber} |
+        ${new Date(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
     }));
   }
 }

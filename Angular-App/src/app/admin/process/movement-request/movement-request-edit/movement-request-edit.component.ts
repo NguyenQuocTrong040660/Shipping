@@ -4,6 +4,7 @@ import { MovementRequestDetailModel, MovementRequestModel } from 'app/shared/api
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { MenuItem } from 'primeng/api';
+import { MovementRequestDetail } from '../movement-request.component';
 
 @Component({
   selector: 'app-movement-request-edit',
@@ -16,12 +17,12 @@ export class MovementRequestEditComponent implements OnInit {
   @Input() isShowDialog = false;
   @Input() movementRequest: MovementRequestModel;
 
-  movementRequestDetails: MovementRequestDetailModel[] = [];
+  movementRequestDetails: MovementRequestDetail[] = [];
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
 
-  clonedMovementRequestDetailModels: { [s: string]: MovementRequestDetailModel } = {};
+  clonedMovementRequestDetailModels: { [s: string]: MovementRequestDetail } = {};
 
   stepItems: MenuItem[];
   stepIndex = 0;
@@ -51,6 +52,7 @@ export class MovementRequestEditComponent implements OnInit {
       const workOders = movementRequest.movementRequestDetails.map((i) => i.workOrder);
       this.workOrdersControl.patchValue(workOders);
       this.movementRequestDetails = movementRequest.movementRequestDetails;
+      this.movementRequestDetails.forEach((m) => (m.isEditRow = false));
       this.movementRequestForm.patchValue(movementRequest);
     }
   }
@@ -76,7 +78,7 @@ export class MovementRequestEditComponent implements OnInit {
     this.submitEvent.emit();
   }
 
-  initMovementRequestDetailForm(movementRequestDetail: MovementRequestDetailModel) {
+  initMovementRequestDetailForm(movementRequestDetail: MovementRequestDetail) {
     return this.fb.group({
       quantity: [movementRequestDetail.quantity],
       productId: [movementRequestDetail.productId],
@@ -85,29 +87,35 @@ export class MovementRequestEditComponent implements OnInit {
     });
   }
 
-  checkModifiedQuantity(movementRequestDetails: MovementRequestDetailModel[]) {
-    return movementRequestDetails.filter((i) => i.quantity === 0).length === 0;
+  allowMoveToCompleteStep(movementRequestDetails: MovementRequestDetail[]): boolean {
+    const haveFilledDataRows = movementRequestDetails.filter((i) => i.quantity === 0).length === 0;
+    const haveNotEditRows = movementRequestDetails.every((d) => d.isEditRow === false);
+
+    return haveFilledDataRows && haveNotEditRows && this.movementRequestDetails.length > 0;
   }
 
-  onRowEditInit(movementRequestDetailModel: MovementRequestDetailModel) {
+  onRowEditInit(movementRequestDetailModel: MovementRequestDetail) {
+    movementRequestDetailModel.isEditRow = true;
     const key = `${movementRequestDetailModel.workOrderId}-${movementRequestDetailModel.productId}`;
     this.clonedMovementRequestDetailModels[key] = { ...movementRequestDetailModel };
   }
 
-  onRowDelete(movementRequestDetailModel: MovementRequestDetailModel) {
+  onRowDelete(movementRequestDetailModel: MovementRequestDetail) {
     this.movementRequestDetails = this.movementRequestDetails.filter((i) => i['id'] !== movementRequestDetailModel['id']);
   }
 
-  onRowEditSave(movementRequestDetailModel: MovementRequestDetailModel) {
+  onRowEditSave(movementRequestDetailModel: MovementRequestDetail) {
+    movementRequestDetailModel.isEditRow = false;
     const entity = this.movementRequestDetails.find((i) => i['id'] === movementRequestDetailModel['id']);
     entity.quantity = movementRequestDetailModel.quantity;
     delete this.clonedMovementRequestDetailModels[movementRequestDetailModel['id']];
   }
 
-  onRowEditCancel(movementRequestDetailModel: MovementRequestDetailModel, index: number) {
+  onRowEditCancel(movementRequestDetailModel: MovementRequestDetail, index: number) {
     const key = `${movementRequestDetailModel.workOrderId}-${movementRequestDetailModel.productId}`;
 
     this.movementRequestDetails[index] = this.clonedMovementRequestDetailModels[key];
+    this.movementRequestDetails[index].isEditRow = false;
     delete this.clonedMovementRequestDetailModels[key];
   }
 

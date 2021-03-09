@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace ShippingApp.Api.Controllers
 {
+    [Authorize(Roles = "SystemAdministrator,ITAdministrator")]
     public class ConfigController : BaseController
     {
         readonly ILogger<ConfigController> _logger;

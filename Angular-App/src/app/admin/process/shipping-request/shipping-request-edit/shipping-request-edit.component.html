@@ -99,7 +99,7 @@
 
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
-            <p-button styleClass="p-button-text" label="Cancel" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-times"></p-button>
             <p-button
               [disabled]="shippingRequestForm.invalid"
               styleClass="p-button-text"

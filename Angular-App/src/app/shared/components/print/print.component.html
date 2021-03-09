@@ -16,33 +16,33 @@
           </div>
           <div class="print__detail">
             <table>
-              <tr *ngIf="printData && printData.receivedMarkId" class="print__identity">
-                <td>Received ID :</td>
-                <td class="print__value">{{ printData && printData.receivedMarkId ? printData.receivedMarkId : '' }}</td>
+              <tr *ngIf="printData && printData.receivedMark && printData.receivedMark.identifier" class="print__identity">
+                <td>Received ID</td>
+                <td class="print__value">: {{ printData.receivedMark.identifier }}</td>
               </tr>
-              <tr *ngIf="printData && printData.shippingMarkId" class="print__identity">
-                <td>Shipping Mark ID :</td>
-                <td class="print__value">{{ printData && printData.shippingMarkId ? printData.shippingMarkId : '' }}</td>
-              </tr>
-              <tr>
-                <td>P/N :</td>
-                <td class="print__value">{{ printData && printData.product ? printData.product.productName : '' }}</td>
+              <tr *ngIf="printData && printData.shippingMark && printData.shippingMark.identifier" class="print__identity">
+                <td>Shipping Mark ID</td>
+                <td class="print__value">: {{ printData.shippingMark.identifier }}</td>
               </tr>
               <tr>
-                <td>Qty :</td>
-                <td class="print__value">{{ printData && printData.quantity ? printData.quantity : '' }}</td>
-              </tr>
-              <tr *ngIf="printData && printData.revision">
-                <td>Revision :</td>
-                <td class="print__value">{{ printData && printData.revision ? printData.revision : '' }}</td>
+                <td>P/N</td>
+                <td class="print__value">: {{ printData && printData.product ? printData.product.productName : '' }}</td>
               </tr>
               <tr>
-                <td>Carton number :</td>
-                <td class="print__value">{{ printData && printData.sequence ? printData.sequence : '' }}</td>
+                <td>Qty</td>
+                <td class="print__value">: {{ printData && printData.quantity ? printData.quantity : '' }}</td>
+              </tr>
+              <tr *ngIf="printData && printData.shippingMarkId">
+                <td>Revision</td>
+                <td class="print__value">: {{ printData && printData.revision ? printData.revision : '' }}</td>
               </tr>
               <tr>
-                <td>Date :</td>
-                <td class="print__value">{{ printData && printData.printingDate ? (printData.printingDate | date: 'dd/MM/yyyy') : '' }}</td>
+                <td>Carton number</td>
+                <td class="print__value">: {{ printData && printData.sequence ? printData.sequence : '' }}</td>
+              </tr>
+              <tr>
+                <td>Date</td>
+                <td class="print__value">: {{ printData && printData.printingDate ? (printData.printingDate | date: 'dd/MM/yyyy') : '' }}</td>
               </tr>
             </table>
           </div>

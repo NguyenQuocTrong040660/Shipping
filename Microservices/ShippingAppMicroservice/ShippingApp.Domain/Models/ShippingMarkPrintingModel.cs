@@ -24,6 +24,7 @@ namespace ShippingApp.Domain.Models
             }
         }
 
+        public string Revision { get; set; }
         public int Sequence { get; set; }
         public int Quantity { get; set; }
         public string Status { get; set; }
