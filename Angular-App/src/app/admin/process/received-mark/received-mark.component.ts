@@ -74,7 +74,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private fb: FormBuilder,
     private movementRequestClients: MovementRequestClients
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
@@ -360,6 +360,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           if (result) {
+            this.printData = result;
             this.onPrint();
             this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
           } else {

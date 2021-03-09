@@ -69,7 +69,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private shippingRequestClients: ShippingRequestClients,
     private authenticationService: AuthenticationService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
@@ -294,11 +294,11 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  handleRePrintMark(item: ShippingMarkModel) {
+  handleRePrintMark(item: ShippingMarkPrintingModel) {
     if (!item) return;
 
     const request: RePrintShippingMarkRequest = {
-      shippingMarkPrintingId: 0,
+      shippingMarkPrintingId: item.id,
       rePrintedBy: this.user.userName,
     };
 
@@ -308,6 +308,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           if (result) {
+            this.printData = result;
             this.onPrint();
             this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentPrintShippingMarkSummary.productId);
           } else {

@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ShippingApp.Application.ShippingMark.Commands
 {
-    public class RePrintShippingMarkCommand : IRequest<ReceivedMarkPrintingModel>
+    public class RePrintShippingMarkCommand : IRequest<ShippingMarkPrintingModel>
     {
         public RePrintShippingMarkRequest RePrintShippingMarkRequest { get; set; }
     }
 
-    public class RePrintShippingMarkCommandHandler : IRequestHandler<RePrintShippingMarkCommand, ReceivedMarkPrintingModel>
+    public class RePrintShippingMarkCommandHandler : IRequestHandler<RePrintShippingMarkCommand, ShippingMarkPrintingModel>
     {
         private readonly IShippingAppDbContext _context;
         private readonly IMapper _mapper;
@@ -25,10 +25,11 @@ namespace ShippingApp.Application.ShippingMark.Commands
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<ReceivedMarkPrintingModel> Handle(RePrintShippingMarkCommand request, CancellationToken cancellationToken)
+        public async Task<ShippingMarkPrintingModel> Handle(RePrintShippingMarkCommand request, CancellationToken cancellationToken)
         {
             var shippingMarkPrinting = await _context.ShippingMarkPrintings
                 .Include(x => x.Product)
+                .Include(x=> x.ShippingMark)
                 .FirstOrDefaultAsync(x => x.Id == request.RePrintShippingMarkRequest.ShippingMarkPrintingId);
 
             if (shippingMarkPrinting == null)
@@ -41,7 +42,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
             shippingMarkPrinting.RePrintingDate = DateTime.UtcNow;
 
             return await _context.SaveChangesAsync() > 0
-                    ? _mapper.Map<ReceivedMarkPrintingModel>(shippingMarkPrinting)
+                    ? _mapper.Map<ShippingMarkPrintingModel>(shippingMarkPrinting)
                     : null;
         }
     }
