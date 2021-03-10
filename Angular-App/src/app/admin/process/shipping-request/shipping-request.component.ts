@@ -27,7 +27,6 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
 
   shippingRequestForm: FormGroup;
 
-  isEdit: boolean;
   isShowDialogCreate: boolean;
   isShowDialogEdit: boolean;
   isShowDialogHistory: boolean;
@@ -140,7 +139,6 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   }
 
   openCreateDialog() {
-    this.isEdit = false;
     this.selectedShippingRequest = null;
     this.titleDialog = 'Create Shipping Request';
     this.isShowDialogCreate = true;
@@ -177,11 +175,9 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       );
   }
 
-  openEditDialog(selectedShippingRequest: ShippingRequestModel) {
+  openEditDialog() {
     this.titleDialog = 'Edit Shipping Request';
-    this.isEdit = true;
     this.isShowDialogEdit = true;
-    this.shippingRequestForm.patchValue(selectedShippingRequest);
   }
 
   hideDialog() {
@@ -189,7 +185,6 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.isShowDialogEdit = false;
     this.isShowDialogHistory = false;
     this.isShowDialogDocuments = false;
-    this.shippingRequestForm.reset();
   }
 
   onEdit() {

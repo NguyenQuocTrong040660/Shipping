@@ -22,7 +22,6 @@ export class ShippingRequestEditComponent implements OnInit, OnChanges {
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
-  @Output() selectedShippingPlanEvent = new EventEmitter<any>();
 
   stepItems: MenuItem[];
   stepIndex = 0;
@@ -36,6 +35,10 @@ export class ShippingRequestEditComponent implements OnInit, OnChanges {
   productFields: any[] = [];
 
   private destroyed$ = new Subject<void>();
+
+  get idControl() {
+    return this.shippingRequestForm.get('id');
+  }
 
   get customerNameControl() {
     return this.shippingRequestForm.get('customerName');
@@ -67,6 +70,20 @@ export class ShippingRequestEditComponent implements OnInit, OnChanges {
 
   constructor(private fb: FormBuilder, private shippingRequestClients: ShippingRequestClients) {}
 
+  ngOnChanges() {
+    if (this.selectedShippingRequest) {
+      this.idControl.setValue(this.selectedShippingRequest.id);
+      this.customerNameControl.setValue(this.selectedShippingRequest.customerName);
+      this.semlineNumberControl.setValue(this.selectedShippingRequest.semlineNumber);
+      this.purchaseOrderControl.setValue(this.selectedShippingRequest.purchaseOrder);
+      this.salesIdControl.setValue(this.selectedShippingRequest.salesID);
+      this.notesControl.setValue(this.selectedShippingRequest.notes);
+
+      const shippingDate = Utilities.ConvertDateBeforeSendToServer(this.selectedShippingRequest.shippingDate);
+      this.shippingDateControl.setValue(shippingDate);
+    }
+  }
+
   ngOnInit(): void {
     this.productCols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
@@ -78,18 +95,6 @@ export class ShippingRequestEditComponent implements OnInit, OnChanges {
     this.productFields = this.productCols.map((i) => i.field);
 
     this.stepItems = [{ label: 'Shipping Request Info' }, { label: 'Products' }, { label: 'Details' }, { label: 'Complete' }];
-  }
-
-  ngOnChanges() {
-    if (!this.shippingRequestForm) return;
-
-    this.shippingDateControl.patchValue(new Date(this.shippingDateControl.value));
-    const products = this.shippingRequestDetailsControl.value.map((i) => i.product);
-    this.selectedProducts = products;
-  }
-
-  handleOnSelectShippingPlan(shippingPlanId: number) {
-    this.selectedShippingPlanEvent.emit(shippingPlanId);
   }
 
   hideDialog() {
