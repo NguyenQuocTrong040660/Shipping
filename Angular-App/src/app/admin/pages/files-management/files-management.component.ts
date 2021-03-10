@@ -73,7 +73,7 @@ export class FilesManagementComponent implements OnInit {
 
   deleteAttachment(attachment: AttachmentDto) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + attachment.fileName + '?',
+      message: 'Do you want to delete ' + attachment.fileName + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
@@ -192,7 +192,7 @@ export class FilesManagementComponent implements OnInit {
 
   deleteSelectedItems() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected items?',
+      message: 'Do you want to delete the selected items?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

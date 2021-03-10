@@ -41,6 +41,7 @@ namespace UserManagement.Infrastructure
 
                 options.SignIn.RequireConfirmedAccount = false;
 
+                options.Lockout.AllowedForNewUsers = false;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(36500);
                 options.Lockout.MaxFailedAccessAttempts = 10;
 

@@ -106,5 +106,14 @@ namespace ShippingApp.Api.Controllers
             var result = await Mediator.Send(new UpdateShippingRequestLogisticCommand { ShippingRequestId = shippingRequestId, ShippingRequestLogistic = model });
             return Ok(result);
         }
+
+        [HttpPut("CompleteShippingRequest/{shippingMarkId}")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> CompleteShippingRequestAsync(int shippingMarkId)
+        {
+            var result = await Mediator.Send(new CompleteShippingRequestCommand { ShippingMarkId = shippingMarkId });
+            return Ok(result);
+        }
     }
 }

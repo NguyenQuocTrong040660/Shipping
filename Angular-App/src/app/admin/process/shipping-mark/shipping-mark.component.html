@@ -27,7 +27,15 @@
         (click)="openEditDialog(selectedShippingMark)"
       ></button>
 
-      <button class="p-button-help p-mr-2" pButton pRipple label="Confirm" icon="pi pi-check-circle" [disabled]="true"></button>
+      <button
+        class="p-button-help p-mr-2"
+        pButton
+        pRipple
+        label="Confirm"
+        icon="pi pi-check-circle"
+        [disabled]="!selectedShippingMark"
+        (click)="completeShippingRequest(selectedShippingMark)"
+      ></button>
 
       <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
     </ng-template>

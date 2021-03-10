@@ -88,7 +88,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
 
   deleteAttachmentType(attachmentType: AttachmentTypeDto) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete ' + attachmentType.name + '?',
+      message: 'Do you confirm to delete ' + attachmentType.name + '?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
@@ -106,7 +106,7 @@ export class AttachmentTypesManagementComponent implements OnInit {
 
   deleteSelectedItems() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected items?',
+      message: 'Do you confirm to delete the selected items?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

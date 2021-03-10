@@ -44,7 +44,7 @@ export class ReceivedMarkDetailsComponent implements OnInit {
 
   printMark() {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to print mark for this item?',
+      message: 'Do you want to print mark for this item?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => this.printMarkEvent.emit(),
@@ -61,7 +61,7 @@ export class ReceivedMarkDetailsComponent implements OnInit {
     }
 
     this.confirmationService.confirm({
-      message: 'Are you sure you want to re-print this mark?',
+      message: 'Do you want to re-print this mark?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => this.rePrintMarkEvent.emit(receivedMarkPrinting),

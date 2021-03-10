@@ -100,7 +100,7 @@ export class ImportComponent implements OnInit {
 
         if (invalidItems.length > 0) {
           this.confirmationService.confirm({
-            message: 'There are some invalid data. Are you sure you want to import them ?',
+            message: 'There are some invalid data. Do you want to import them ?',
             header: 'Warning',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {

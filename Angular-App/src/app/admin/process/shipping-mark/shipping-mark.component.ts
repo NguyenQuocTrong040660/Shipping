@@ -374,6 +374,32 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       );
   }
 
+  completeShippingRequest(shippingMark: ShippingMarkModel) {
+    this.confirmationService.confirm({
+      message: 'Do you confirm to complete shipping request of this item?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.shippingRequestClients
+          .completeShippingRequest(shippingMark.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.notificationService.success('Confirm Shipping Request Successfully');
+                this.selectedShippingMark = null;
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => {
+              this.notificationService.error('Confirm Shipping Request Failed. Please try again');
+            }
+          );
+      },
+    });
+  }
+
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();

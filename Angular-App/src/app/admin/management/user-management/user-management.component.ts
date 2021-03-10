@@ -155,7 +155,7 @@ export class UserManagementComponent implements OnInit {
         },
         (_) => {
           this.hideCreateDialog();
-          this.notificationService.error('Create Users failed. Please try again');
+          this.initUsers();
         }
       );
   }
@@ -210,7 +210,7 @@ export class UserManagementComponent implements OnInit {
 
   openLockDialog() {
     this.confirmationService.confirm({
-      message: `Are you sure you want to lock ${this.selectedUsers.length > 0 ? 'these users' : 'this user'} ?`,
+      message: `Do you want to lock ${this.selectedUsers.length > 0 ? 'these users' : 'this user'} ?`,
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
@@ -239,7 +239,7 @@ export class UserManagementComponent implements OnInit {
 
   openUnlockDialog() {
     this.confirmationService.confirm({
-      message: `Are you sure you want to ${this.selectedUsers.length > 0 ? 'these users' : 'this user'}?`,
+      message: `Do you want to ${this.selectedUsers.length > 0 ? 'these users' : 'this user'}?`,
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

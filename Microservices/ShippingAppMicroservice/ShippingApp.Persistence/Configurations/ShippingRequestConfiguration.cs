@@ -15,6 +15,8 @@ namespace ShippingApp.Persistence.Configurations
             builder.HasOne<ShippingRequestLogistic>(s => s.ShippingRequestLogistic)
                    .WithOne(ad => ad.ShippingRequest)
                    .HasForeignKey<ShippingRequestLogistic>(ad => ad.ShippingRequestId);
+
+            builder.Property(t => t.Status).HasDefaultValue(ShippingRequestStatus.New);
         }
     }
 }

@@ -94,7 +94,7 @@ export class ShippingRequestCreateComponent implements OnInit {
       case 0: {
         if (!this.selectedShippingPlan) {
           this.confirmationService.confirm({
-            message: 'Are you sure you want to create shipping request without selecting shipping plan?',
+            message: 'Do you want to create shipping request without selecting shipping plan?',
             header: 'Confirm',
             icon: 'pi pi-exclamation-triangle',
             accept: () => (this.stepIndex += 1),

@@ -40,6 +40,8 @@ namespace ShippingApp.Application.ShippingMark.Commands
                 .OrderBy(x => x.Sequence)
                 .ToListAsync();
 
+            ///!TODO: handle Received Mark Printing
+
             if (shippingMarkShippings == null || !shippingMarkShippings.Any())
             {
                 return null;

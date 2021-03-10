@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UserManagement.Application.Common.Interfaces;
 using UserManagement.Application.Common.Models;
@@ -131,6 +132,24 @@ namespace UserManagement.Api.Controllers
             var roles = await Mediator.Send(new GetRolesQuery { });
             roles.RemoveAll(i => i.Name.Equals(Roles.SystemAdministrator));
             return Ok(roles);
+        }
+
+        [HttpGet("user/verify/{email}")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> VerifyUserAsync(string email)
+        {
+            var users = await Mediator.Send(new GetAllUserQuery { });
+
+            var isExist = users.Any(x => x.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+
+            if (isExist)
+            {
+                return Ok(Result.Failure("User already issued"));
+            }
+
+            return Ok(Result.Success());
         }
     }
 }

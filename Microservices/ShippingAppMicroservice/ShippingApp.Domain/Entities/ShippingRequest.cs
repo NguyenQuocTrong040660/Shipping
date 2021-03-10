@@ -16,6 +16,8 @@ namespace ShippingApp.Domain.Entities
         public string Notes { get; set; }
         public int ShippingRequestLogisticId { get; set; }
 
+        public string Status { get; set; }
+
         public virtual ShippingRequestLogistic ShippingRequestLogistic { get; set; }
 
         public virtual ICollection<ShippingRequestDetail> ShippingRequestDetails { get; set; }
