@@ -141,6 +141,13 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             }
 
             await _context.ReceivedMarkPrintings.AddRangeAsync(receivedMarkPrintings);
+
+            var receivedMark = await _context.ReceivedMarks
+                .Where(x => x.Id == request.Id)
+                .FirstOrDefaultAsync();
+
+            receivedMark.Notes = request.ReceivedMark.Notes;
+
             await _context.SaveChangesAsync();
             return Result.Success();
         }

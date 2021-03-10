@@ -112,6 +112,11 @@
     <ng-container *ngIf="stepIndex === 1">
       <p-card>
         <ng-template pTemplate="content">
+          <div class="p-field">
+            <label for="notes">Notes</label>
+            <textarea id="notes" pInputTextarea [rows]="1" [formControl]="notesControl"></textarea>
+          </div>
+
           <p-table dataKey="id" [value]="dataSummary">
             <ng-template pTemplate="header" let-columns>
               <tr>

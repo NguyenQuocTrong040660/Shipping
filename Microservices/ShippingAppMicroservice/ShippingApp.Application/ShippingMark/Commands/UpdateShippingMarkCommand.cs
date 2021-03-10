@@ -123,6 +123,13 @@ namespace ShippingApp.Application.ShippingMark.Commands
 
             await _context.ShippingMarkPrintings.AddRangeAsync(shippingMarkPrintings);
             await AddOrUpdateReceivedMarkPrintings(request.Id, request.ShippingMark.ReceivedMarkPrintings);
+
+            var shippingMark = await _context.ShippingMarks
+                .Where(x => x.Id == request.Id)
+                .FirstOrDefaultAsync();
+
+            shippingMark.Notes = request.ShippingMark.Notes;
+
             await _context.SaveChangesAsync();
 
             return Result.Success();

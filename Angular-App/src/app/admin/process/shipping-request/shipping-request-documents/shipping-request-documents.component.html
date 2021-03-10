@@ -53,7 +53,7 @@
 
         <div class="p-field">
           <label for="notes">Notes</label>
-          <input pInputText id="notes" [formControl]="notesControl" type="text" />
+          <textarea id="notes" pInputTextarea [rows]="3" [formControl]="notesControl"></textarea>
         </div>
       </div>
     </form>

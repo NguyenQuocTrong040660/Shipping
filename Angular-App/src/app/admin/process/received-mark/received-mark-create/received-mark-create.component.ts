@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ShippingPlanDetails } from 'app/admin/management/shipping-plan/shipping-plan-create/shipping-plan-create.component';
 import { MovementRequestModel, ReceivedMarkMovementModel } from 'app/shared/api-clients/shipping-app.client';
 import { MenuItem, SelectItem } from 'primeng/api';
+import { ReceivedMarkMovement } from '../received-mark.component';
 
 @Component({
   selector: 'app-received-mark-create',
@@ -12,14 +14,14 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
   @Input() receivedMarkForm: FormGroup;
   @Input() titleDialog = '';
   @Input() isShowDialog = false;
-  @Input() receivedMarkMovements: ReceivedMarkMovementModel[] = [];
+  @Input() receivedMarkMovements: ReceivedMarkMovement[] = [];
   @Input() movementRequests: MovementRequestModel[] = [];
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
   @Output() selectedMovementRequestsEvent = new EventEmitter<any>();
 
-  clonedReceivedMarkMovementModels: { [s: string]: ReceivedMarkMovementModel } = {};
+  clonedReceivedMarkMovementModels: { [s: string]: ReceivedMarkMovement } = {};
 
   stepItems: MenuItem[];
   stepIndex = 0;
@@ -44,6 +46,10 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.movementRequests && changes.movementRequests.currentValue) {
       this.selecteMovementRequestItems = this._mapDataToMovementRequestItems(changes.movementRequests.currentValue);
+    }
+
+    if (changes.receivedMarkMovements && changes.receivedMarkMovements.currentValue.length > 0) {
+      this.receivedMarkMovements.forEach((r) => (r.isEditRow = false));
     }
   }
 
@@ -75,7 +81,7 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
     this.submitEvent.emit();
   }
 
-  initReceivedMarkMovementForm(receivedMarkMovement: ReceivedMarkMovementModel) {
+  initReceivedMarkMovementForm(receivedMarkMovement: ReceivedMarkMovement) {
     return this.fb.group({
       quantity: [receivedMarkMovement.quantity],
       productId: [receivedMarkMovement.productId],
@@ -84,26 +90,32 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
     });
   }
 
-  checkModifiedQuantity(receivedMarkMovements: ReceivedMarkMovementModel[]) {
-    return receivedMarkMovements.filter((i) => i.quantity === 0).length === 0;
+  allowMoveToCompleteStep(receivedMarkMovements: ReceivedMarkMovement[]): boolean {
+    const haveFilledDataRows = receivedMarkMovements.filter((i) => i.quantity === 0).length === 0;
+    const haveNotEditRows = receivedMarkMovements.every((d) => d.isEditRow === false);
+
+    return haveFilledDataRows && haveNotEditRows && this.receivedMarkMovements.length > 0;
   }
 
-  onRowEditInit(receivedMarkMovement: ReceivedMarkMovementModel) {
+  onRowEditInit(receivedMarkMovement: ReceivedMarkMovement) {
+    receivedMarkMovement.isEditRow = true;
     this.clonedReceivedMarkMovementModels[receivedMarkMovement['id']] = { ...receivedMarkMovement };
   }
 
-  onRowDelete(receivedMarkMovement: ReceivedMarkMovementModel) {
+  onRowDelete(receivedMarkMovement: ReceivedMarkMovement) {
     this.receivedMarkMovements = this.receivedMarkMovements.filter((i) => i['id'] !== receivedMarkMovement['id']);
   }
 
-  onRowEditSave(receivedMarkMovement: ReceivedMarkMovementModel) {
+  onRowEditSave(receivedMarkMovement: ReceivedMarkMovement) {
+    receivedMarkMovement.isEditRow = false;
     const entity = this.receivedMarkMovements.find((i) => i['id'] === receivedMarkMovement['id']);
     entity.quantity = receivedMarkMovement.quantity;
     delete this.clonedReceivedMarkMovementModels[receivedMarkMovement['id']];
   }
 
-  onRowEditCancel(receivedMarkMovement: ReceivedMarkMovementModel, index: number) {
+  onRowEditCancel(receivedMarkMovement: ReceivedMarkMovement, index: number) {
     this.receivedMarkMovements[index] = this.clonedReceivedMarkMovementModels[receivedMarkMovement['id']];
+    this.receivedMarkMovements[index].isEditRow = false;
     delete this.clonedReceivedMarkMovementModels[receivedMarkMovement['id']];
   }
 

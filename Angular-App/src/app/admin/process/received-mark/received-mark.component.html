@@ -42,6 +42,7 @@
     [scrollable]="true"
     [(selection)]="selectedReceivedMark"
     [expandedRowKeys]="expandedItems"
+    [globalFilterFields]="fields"
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
@@ -67,8 +68,11 @@
               <th class="p-text-center"></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th class="p-text-center">
+              <th class="p-text-center" [pSortableColumn]="col.field">
                 {{ col.header }}
+                <ng-container *ngIf="col.field">
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </ng-container>
               </th>
             </ng-container>
           </ng-container>
@@ -121,7 +125,7 @@
               </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              <td class="p-text-center">
+              <td>
                 {{ item[col.field] }}
               </td>
             </ng-container>

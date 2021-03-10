@@ -9,9 +9,7 @@ export class ImportService {
   private _event = new BehaviorSubject<EventType>(null);
   private event$: Observable<EventType> = this._event.asObservable();
 
-  constructor() {
-    console.log('cc');
-  }
+  constructor() {}
 
   getEvent() {
     return this.event$;

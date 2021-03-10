@@ -10,6 +10,7 @@ import {
   ReceivedMarkPrintingModel,
   ReceivedMarkSummaryModel,
   RePrintReceivedMarkRequest,
+  ShippingPlanDetailModel,
   UnstuffReceivedMarkRequest,
 } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -82,10 +83,10 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
-      { header: 'Notes', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NumberColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: 'actions', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -425,4 +426,8 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     this.destroyed$.next();
     this.destroyed$.complete();
   }
+}
+
+export interface ReceivedMarkMovement extends ReceivedMarkMovementModel {
+  isEditRow?: boolean;
 }

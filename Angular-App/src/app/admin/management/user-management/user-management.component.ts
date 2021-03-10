@@ -47,7 +47,7 @@ export class UserManagementComponent implements OnInit {
     private communicationClient: CommunicationClient,
     private notificationService: NotificationService,
     private confirmationService: ConfirmationService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -149,6 +149,7 @@ export class UserManagementComponent implements OnInit {
       .pipe(switchMap((users) => this.communicationClient.apiCommunicationEmailnotificationUsers(users)))
       .subscribe(
         (_) => {
+          this.notificationService.success('Create Users Successfully');
           this.hideCreateDialog();
           this.initUsers();
         },
@@ -196,12 +197,13 @@ export class UserManagementComponent implements OnInit {
       .pipe(switchMap((users) => this.communicationClient.apiCommunicationEmailnotificationForgotPassword(users)))
       .subscribe(
         (_) => {
+          this.notificationService.success('Reset Users Password Successfully');
           this.hideSetNewPasswordDialog();
           this.initUsers();
         },
         (_) => {
           this.hideSetNewPasswordDialog();
-          this.notificationService.error('Reset Password for users failed. Please try again');
+          this.notificationService.error('Reset Users Password Failed. Please try again');
         }
       );
   }

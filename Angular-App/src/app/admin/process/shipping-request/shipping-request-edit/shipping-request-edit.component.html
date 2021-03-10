@@ -90,7 +90,7 @@
               <div class="p-col-12">
                 <div class="p-field">
                   <label for="notes">Notes</label>
-                  <input pInputText id="notes" [formControl]="notesControl" type="text" />
+                  <textarea id="notes" pInputTextarea [rows]="3" [formControl]="notesControl"></textarea>
                 </div>
               </div>
             </div>
@@ -117,6 +117,7 @@
       <p-card>
         <ng-template pTemplate="content">
           <p-table
+            #productsDataTable
             dataKey="id"
             [columns]="productCols"
             [value]="products"
@@ -126,6 +127,16 @@
             [rows]="10"
             scrollHeight="350px"
           >
+            <ng-template pTemplate="caption">
+              <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">{{ 'Products' | uppercase }}</h5>
+                <div class="p-input-icon-left shipping-request-edit__search">
+                  <i class="pi pi-search"></i>
+                  <input pInputText type="text" (input)="productsDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                </div>
+              </div>
+            </ng-template>
+
             <ng-template pTemplate="colgroup" let-columns>
               <colgroup>
                 <col [style.width.px]="col.width" *ngFor="let col of columns" />
@@ -142,7 +153,12 @@
                       </th>
                     </ng-container>
                     <ng-container *ngSwitchDefault>
-                      <th [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"> </p-sortIcon></th>
+                      <th [pSortableColumn]="col.field">
+                        {{ col.header }}
+                        <ng-container *ngIf="col.field">
+                          <p-sortIcon [field]="col.field"></p-sortIcon>
+                        </ng-container>
+                      </th>
                     </ng-container>
                   </ng-container>
                 </ng-container>

@@ -24,7 +24,7 @@
 
             <div class="p-field">
               <label for="notes">Notes</label>
-              <input pInputText id="notes" [formControl]="notesControl" type="text" />
+              <textarea id="notes" pInputTextarea [rows]="3" [formControl]="notesControl"></textarea>
             </div>
           </form>
         </ng-template>
@@ -138,7 +138,7 @@
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
             <p-button
-              [disabled]="receivedMarkForm.invalid"
+              [disabled]="!allowMoveToCompleteStep(receivedMarkMovements)"
               styleClass="p-button-text"
               label="Next"
               (onClick)="nextPage(stepIndex)"

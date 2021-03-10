@@ -48,7 +48,12 @@
               <th></th>
             </ng-container>
             <ng-container *ngSwitchDefault>
-              <th [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"> </p-sortIcon></th>
+              <th [pSortableColumn]="col.field">
+                {{ col.header }}
+                <ng-container *ngIf="col.field">
+                  <p-sortIcon [field]="col.field"></p-sortIcon>
+                </ng-container>
+              </th>
             </ng-container>
           </ng-container>
         </ng-container>
@@ -130,7 +135,7 @@
 
       <div class="p-field">
         <label for="notes">Notes</label>
-        <input pInputText id="notes" [formControl]="notesControl" type="text" />
+        <textarea id="notes" pInputTextarea [rows]="3" [formControl]="notesControl"></textarea>
       </div>
     </form>
   </ng-template>

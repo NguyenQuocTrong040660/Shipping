@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ProductModel, ShippingPlanModel, ShippingRequestDetailModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
+import Utilities from 'app/shared/helpers/utilities';
 import { ConfirmationService, MenuItem, SelectItem } from 'primeng/api';
 
 @Component({
@@ -234,7 +235,7 @@ export class ShippingRequestCreateComponent implements OnInit {
     return shippingPlans.map((p) => ({
       value: p.id,
       label: `${p.identifier} | ${p.purchaseOrder} | ${p.customerName} | ${p.salesID} | ${p.semlineNumber} |
-        ${new Date(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
+        ${Utilities.ConvertDateBeforeSendToServer(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
     }));
   }
 }
