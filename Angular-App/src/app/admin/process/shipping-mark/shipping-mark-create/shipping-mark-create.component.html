@@ -184,7 +184,7 @@
                 <td class="p-text-center">
                   {{ item?.quantity | number }}
                 </td>
-                <td class="p-text-center">
+                <td class="p-text-center" [ngClass]="{ 'shipping-mark-create__warning-text': item?.totalReceivedMarks !== item?.quantity }">
                   {{ item?.totalReceivedMarks | number }}
                 </td>
                 <td class="p-text-center">

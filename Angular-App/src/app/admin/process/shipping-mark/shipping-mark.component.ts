@@ -68,8 +68,9 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private notificationService: NotificationService,
     private shippingRequestClients: ShippingRequestClients,
-    private authenticationService: AuthenticationService
-  ) { }
+    private authenticationService: AuthenticationService,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit() {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
@@ -224,23 +225,30 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   }
 
   openDeleteDialog(shippingMark: ShippingMarkModel) {
-    this.shippingMarkClients
-      .deleteShippingMarkAysnc(shippingMark.id)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (result) => {
-          if (result && result.succeeded) {
-            this.notificationService.success('Delete Shipping Mark Successfully');
-            this.initShippingMarks();
-            this.selectedShippingMark = null;
-          } else {
-            this.notificationService.error(result?.error);
-          }
-        },
-        (_) => {
-          this.notificationService.error('Delete Shipping Mark Failed. Please try again');
-        }
-      );
+    this.confirmationService.confirm({
+      message: 'Do you confirm to delete this item?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.shippingMarkClients
+          .deleteShippingMarkAysnc(shippingMark.id)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result && result.succeeded) {
+                this.notificationService.success('Delete Shipping Mark Successfully');
+                this.initShippingMarks();
+                this.selectedShippingMark = null;
+              } else {
+                this.notificationService.error(result?.error);
+              }
+            },
+            (_) => {
+              this.notificationService.error('Delete Shipping Mark Failed. Please try again');
+            }
+          );
+      },
+    });
   }
 
   handleSelectedShippingRequest(shippingRequest: ShippingRequestModel) {

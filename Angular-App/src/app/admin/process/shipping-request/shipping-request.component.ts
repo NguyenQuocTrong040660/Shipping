@@ -223,7 +223,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
 
   openDeleteDialog(singleShippingRequest: ShippingRequestModel) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this items?',
+      message: 'Do you confirm to delete this item?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

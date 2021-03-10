@@ -74,7 +74,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private fb: FormBuilder,
     private movementRequestClients: MovementRequestClients
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
@@ -250,7 +250,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
 
   openDeleteDialog(receivedMark: ReceivedMarkModel) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this items?',
+      message: 'Do you confirm to delete this item?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

@@ -55,7 +55,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private filesClient: FilesClient,
     private importService: ImportService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -261,7 +261,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
 
   openDeleteDialog(singleWorkOrder: WorkOrderModel) {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this items?',
+      message: 'Do you confirm to delete this item?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
