@@ -282,22 +282,22 @@ export class UserManagementComponent implements OnInit {
     this.newUsers = this.newUsers.filter((i) => i.id !== user.id);
 
     this._spliceErrorUser(user);
-    this._checkDuplicateEmail(user);
+    this._checkDuplicateEmail();
   }
 
-  onRowEditSave(user: CreateUserModel): void {
+  async onRowEditSave(user: CreateUserModel) {
     if (!user.email && !user.userName) {
       this.notificationService.error('Please specify a email to register new user');
       delete this.clonedNewUsers[user.id];
       this._spliceErrorUser(user);
-      this._checkDuplicateEmail(user);
+      this._checkDuplicateEmail();
 
       return;
     }
 
     user.isEditRow = false;
-    this._validateEmail(user);
-    this._checkDuplicateEmail(user);
+    await this._validateEmail(user);
+    this._checkDuplicateEmail();
 
     delete this.clonedNewUsers[user.id];
   }
@@ -305,7 +305,7 @@ export class UserManagementComponent implements OnInit {
   onRowEditCancel(user: CreateUserModel, index: number): void {
     this.newUsers[index] = this.clonedNewUsers[user.id];
     this.newUsers[index].isEditRow = false;
-    this._checkDuplicateEmail(user);
+    this._checkDuplicateEmail();
     delete this.clonedNewUsers[user.id];
   }
 
@@ -320,61 +320,39 @@ export class UserManagementComponent implements OnInit {
     return this.roles.find((x) => x.name.toLowerCase() === roleName.toLowerCase()).id;
   }
 
-  _validateEmail(user: CreateUserModel): void {
+  async _validateEmail(user: CreateUserModel) {
     const emailRegex = new RegExp(this.emailPattern);
 
     if (user && emailRegex.test(user.email)) {
       user.isValidEmail = true;
 
-      this.userClient
-        .apiUserAdminUserVerify(user.email)
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(
-          (result) => {
-            if (result && result.error) {
-              user.hasExistedEmail = true;
+      const result = await this._verifyUserEmail(user);
+      if (result && result.error) {
+        user.hasExistedEmail = true;
 
-              if (!this.errorUsers.find((u) => u.id === user.id)) {
-                this.errorUsers.push(user);
-              }
-            } else {
-              user.hasExistedEmail = false;
-
-              const userIndexExisted = this.errorUsers.findIndex((u) => u.id === user.id);
-              if (userIndexExisted > -1) {
-                this.errorUsers.splice(userIndexExisted, 1);
-              }
-            }
-          },
-          (_) => {
-            console.log('Verify User Email Failed. Please try again');
-          }
-        );
+        if (!this.errorUsers.find((u) => u.id === user.id)) {
+          this.errorUsers.push(user);
+        }
+      } else {
+        user.hasExistedEmail = false;
+        this._spliceErrorUser(user);
+      }
     } else {
       user.isValidEmail = false;
 
-      this.userClient
-        .apiUserAdminUserVerify(user.email)
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(
-          (result) => {
-            if (result && result.error) {
-              user.hasExistedEmail = true;
-            } else {
-              user.hasExistedEmail = false;
-            }
-            if (!this.errorUsers.find((u) => u.id === user.id)) {
-              this.errorUsers.push(user);
-            }
-          },
-          (_) => {
-            console.log('Verify User Email Failed. Please try again');
-          }
-        );
+      const result = await this._verifyUserEmail(user);
+      if (result && result.error) {
+        user.hasExistedEmail = true;
+      } else {
+        user.hasExistedEmail = false;
+      }
+      if (!this.errorUsers.find((u) => u.id === user.id)) {
+        this.errorUsers.push(user);
+      }
     }
   }
 
-  _checkDuplicateEmail(user: CreateUserModel) {
+  _checkDuplicateEmail() {
     if (this.newUsers && this.newUsers.length > 1) {
       const userNames = this.newUsers.map((u) => u.userName);
 
@@ -387,11 +365,14 @@ export class UserManagementComponent implements OnInit {
   _spliceErrorUser(user: CreateUserModel) {
     if (this.errorUsers && this.errorUsers.length > 0) {
       const userIndexExisted = this.errorUsers.findIndex((u) => u.id === user.id);
-
       if (userIndexExisted > -1) {
         this.errorUsers.splice(userIndexExisted, 1);
       }
     }
+  }
+
+  async _verifyUserEmail(user: CreateUserModel) {
+    return await this.userClient.apiUserAdminUserVerify(user.email).pipe(takeUntil(this.destroyed$)).toPromise();
   }
 }
 
