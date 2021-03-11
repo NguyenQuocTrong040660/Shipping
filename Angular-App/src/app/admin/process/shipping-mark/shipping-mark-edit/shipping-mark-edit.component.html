@@ -58,8 +58,14 @@
             <ng-template pTemplate="rowexpansion" let-item>
               <tr>
                 <td colspan="7">
-                  <div class="p-p-3">
-                    <p-table [(selection)]="item['selectedReceivedMarks']" selectionMode="multiple" [value]="item.product.receivedMarkPrintings" dataKey="id">
+                  <div>
+                    <p-table
+                      class="shipping-mark-edit__expaned-table"
+                      [(selection)]="item['selectedReceivedMarks']"
+                      selectionMode="multiple"
+                      [value]="item.product.receivedMarkPrintings"
+                      dataKey="id"
+                    >
                       <ng-template pTemplate="header">
                         <tr>
                           <th class="p-text-center">Package Received</th>

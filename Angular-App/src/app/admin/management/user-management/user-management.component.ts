@@ -35,6 +35,7 @@ export class UserManagementComponent implements OnInit {
   TypeColumn = TypeColumn;
   emailPattern = '^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*$';
   errorUsers: CreateUserModel[] = [];
+  hasDuplicateUsers: boolean;
 
   get newPasswordForms() {
     return this.setNewPasswordForm.get('newPasswordForms') as FormArray;
@@ -96,12 +97,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   handleOnInputEmail(item: CreateUserModel) {
-    if (item.email.includes('@')) {
-      item.userName = item.email.split('@')[0];
-      return;
-    }
-
-    item.userName = item.email;
+    item.userName = item.email.split('@')[0];
   }
 
   _mapRoleModelToSelectItem(roles: RoleModel[]): SelectItem[] {
@@ -203,7 +199,7 @@ export class UserManagementComponent implements OnInit {
         },
         (_) => {
           this.hideSetNewPasswordDialog();
-          this.notificationService.error('Reset Users Password Failed. Please try again');
+          this.notificationService.error('Reset Users Password Failed. Please Try Again');
         }
       );
   }
@@ -230,7 +226,7 @@ export class UserManagementComponent implements OnInit {
                   this.notificationService.error(result?.error);
                 }
               },
-              (_) => this.notificationService.error('Lock User Failed. Please try again')
+              (_) => this.notificationService.error('Lock User Failed. Please Try Again')
             );
         });
       },
@@ -259,7 +255,7 @@ export class UserManagementComponent implements OnInit {
                   this.notificationService.error(result?.error);
                 }
               },
-              (_) => this.notificationService.error('Unlock User Failed. Please try again')
+              (_) => this.notificationService.error('Unlock User Failed. Please Try Again')
             );
         });
       },
@@ -285,6 +281,110 @@ export class UserManagementComponent implements OnInit {
   onRowDelete(user: CreateUserModel): void {
     this.newUsers = this.newUsers.filter((i) => i.id !== user.id);
 
+    this._spliceErrorUser(user);
+    this._checkDuplicateEmail(user);
+  }
+
+  onRowEditSave(user: CreateUserModel): void {
+    if (!user.email && !user.userName) {
+      this.notificationService.error('Please specify a email to register new user');
+      delete this.clonedNewUsers[user.id];
+      this._spliceErrorUser(user);
+      this._checkDuplicateEmail(user);
+
+      return;
+    }
+
+    user.isEditRow = false;
+    this._validateEmail(user);
+    this._checkDuplicateEmail(user);
+
+    delete this.clonedNewUsers[user.id];
+  }
+
+  onRowEditCancel(user: CreateUserModel, index: number): void {
+    this.newUsers[index] = this.clonedNewUsers[user.id];
+    this.newUsers[index].isEditRow = false;
+    this._checkDuplicateEmail(user);
+    delete this.clonedNewUsers[user.id];
+  }
+
+  allowCreateUsers(newsUsers: CreateUserModel[]): boolean {
+    const haveValidEmailRows = newsUsers.every((d) => d.isValidEmail === true && d.hasExistedEmail === false);
+    const haveNotEditRows = newsUsers.every((d) => d.isEditRow === false);
+
+    return haveValidEmailRows && haveNotEditRows && newsUsers.length > 0 && !this.hasDuplicateUsers;
+  }
+
+  _mapRoleNameToRoleId(roleName: string): string {
+    return this.roles.find((x) => x.name.toLowerCase() === roleName.toLowerCase()).id;
+  }
+
+  _validateEmail(user: CreateUserModel): void {
+    const emailRegex = new RegExp(this.emailPattern);
+
+    if (user && emailRegex.test(user.email)) {
+      user.isValidEmail = true;
+
+      this.userClient
+        .apiUserAdminUserVerify(user.email)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          (result) => {
+            if (result && result.error) {
+              user.hasExistedEmail = true;
+
+              if (!this.errorUsers.find((u) => u.id === user.id)) {
+                this.errorUsers.push(user);
+              }
+            } else {
+              user.hasExistedEmail = false;
+
+              const userIndexExisted = this.errorUsers.findIndex((u) => u.id === user.id);
+              if (userIndexExisted > -1) {
+                this.errorUsers.splice(userIndexExisted, 1);
+              }
+            }
+          },
+          (_) => {
+            console.log('Verify User Email Failed. Please try again');
+          }
+        );
+    } else {
+      user.isValidEmail = false;
+
+      this.userClient
+        .apiUserAdminUserVerify(user.email)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          (result) => {
+            if (result && result.error) {
+              user.hasExistedEmail = true;
+            } else {
+              user.hasExistedEmail = false;
+            }
+            if (!this.errorUsers.find((u) => u.id === user.id)) {
+              this.errorUsers.push(user);
+            }
+          },
+          (_) => {
+            console.log('Verify User Email Failed. Please try again');
+          }
+        );
+    }
+  }
+
+  _checkDuplicateEmail(user: CreateUserModel) {
+    if (this.newUsers && this.newUsers.length > 1) {
+      const userNames = this.newUsers.map((u) => u.userName);
+
+      this.hasDuplicateUsers = new Set(userNames).size !== userNames.length ? true : false;
+    } else {
+      this.hasDuplicateUsers = false;
+    }
+  }
+
+  _spliceErrorUser(user: CreateUserModel) {
     if (this.errorUsers && this.errorUsers.length > 0) {
       const userIndexExisted = this.errorUsers.findIndex((u) => u.id === user.id);
 
@@ -293,54 +393,11 @@ export class UserManagementComponent implements OnInit {
       }
     }
   }
-
-  onRowEditSave(user: CreateUserModel): void {
-    if (!user.email && !user.userName) {
-      this.notificationService.error('Please specify a email to register new user');
-      delete this.clonedNewUsers[user.id];
-      return;
-    }
-
-    user.isEditRow = false;
-    const emailRegex = new RegExp(this.emailPattern);
-    user.isValidEmail = emailRegex.test(user.email) ? true : false;
-
-    if (user && user.isValidEmail) {
-      if (this.errorUsers && this.errorUsers.length > 0) {
-        const userIndexExisted = this.errorUsers.findIndex((u) => u.id === user.id);
-
-        if (userIndexExisted > -1) {
-          this.errorUsers.splice(userIndexExisted, 1);
-        }
-      }
-    } else {
-      if (!this.errorUsers.find((u) => u.id === user.id)) {
-        this.errorUsers.push(user);
-      }
-    }
-
-    delete this.clonedNewUsers[user.id];
-  }
-
-  onRowEditCancel(user: CreateUserModel, index: number): void {
-    this.newUsers[index] = this.clonedNewUsers[user.id];
-    this.newUsers[index].isEditRow = false;
-    delete this.clonedNewUsers[user.id];
-  }
-
-  allowCreateUsers(newsUsers: CreateUserModel[]): boolean {
-    const haveValidEmailRows = newsUsers.every((d) => d.isValidEmail === true);
-    const haveNotEditRows = newsUsers.every((d) => d.isEditRow === false);
-
-    return haveValidEmailRows && haveNotEditRows && newsUsers.length > 0;
-  }
-
-  _mapRoleNameToRoleId(roleName: string): string {
-    return this.roles.find((x) => x.name.toLowerCase() === roleName.toLowerCase()).id;
-  }
 }
 
 export interface CreateUserModel extends UserResult {
   isEditRow?: boolean;
   isValidEmail?: boolean;
+  isDuplicateEmail?: boolean;
+  hasExistedEmail?: boolean;
 }

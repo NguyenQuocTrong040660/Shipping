@@ -123,11 +123,16 @@
       </ng-template>
     </p-toolbar>
 
-    <ng-container *ngIf="errorUsers && errorUsers.length > 0">
+    <ng-container *ngIf="(errorUsers && errorUsers.length > 0) || hasDuplicateUsers">
       <p-toolbar styleClass="p-mb-2 create-user-form__error-toolbar">
         <ng-template pTemplate="left">
           <ul class="create-user-form__error-list">
-            <li *ngFor="let user of errorUsers">{{ user.email }} is invalid email</li>
+            <li *ngIf="hasDuplicateUsers">Has duplicate emails</li>
+            <li *ngFor="let user of errorUsers">
+              <ng-container *ngIf="!user.isValidEmail"> {{ user.email }} is invalid email </ng-container>
+              <ng-container *ngIf="user.hasExistedEmail"> {{ user.email }} already exists </ng-container>
+              <ng-container *ngIf="user.isDuplicateEmail"> {{ user.email }} is duplicate email </ng-container>
+            </li>
           </ul>
         </ng-template>
       </p-toolbar>
