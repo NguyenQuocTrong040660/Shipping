@@ -141,7 +141,7 @@
     <p-table [value]="newUsers" dataKey="id" editMode="row">
       <ng-template pTemplate="header">
         <tr>
-          <th>Email</th>
+          <th>Email<span class="p-invalid"> *</span></th>
           <th>UserName</th>
           <th>Role</th>
           <th style="width: 8rem"></th>
@@ -232,7 +232,7 @@
           <div [formGroupName]="i">
             <div class="create-user-form__group-inline p-grid">
               <div class="p-field p-col-5">
-                <label for="email">Email</label>
+                <label for="email">Email<span class="p-invalid"> *</span></label>
                 <input
                   id="email"
                   type="email"
@@ -254,7 +254,7 @@
                 </ng-container>
               </div>
               <div class="p-field p-col-6">
-                <label for="confirmEmail">Confirm Email</label>
+                <label for="confirmEmail">Confirm Email<span class="p-invalid"> *</span></label>
                 <input
                   id="confirmEmail"
                   type="text"
@@ -268,10 +268,16 @@
                 />
                 <ng-container
                   *ngIf="
-                    newPasswordForms.controls[i].invalid && (newPasswordForms.controls[i].get('confirmEmail').dirty || newPasswordForms.controls[i].get('confirmEmail').touched)
+                    newPasswordForms.controls[i].get('confirmEmail').invalid &&
+                    (newPasswordForms.controls[i].get('confirmEmail').dirty || newPasswordForms.controls[i].get('confirmEmail').touched)
                   "
                 >
-                  <small class="p-invalid p-error">Please confirm the email you want to reset password</small>
+                  <ng-container *ngIf="newPasswordForms.controls[i].get('confirmEmail').errors && newPasswordForms.controls[i].get('confirmEmail').errors.required">
+                    <small class="p-invalid p-error">Please confirm the email you want to reset password</small>
+                  </ng-container>
+                  <ng-container *ngIf="newPasswordForms.controls[i].get('confirmEmail').errors && newPasswordForms.controls[i].get('confirmEmail').errors.matchContent">
+                    <small class="p-invalid create-user-form__error">Email not match.</small>
+                  </ng-container>
                 </ng-container>
               </div>
             </div>

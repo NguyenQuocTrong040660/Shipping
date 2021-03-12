@@ -1,6 +1,6 @@
 import { NotificationService } from 'app/shared/services/notification.service';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { CreateUserRequest, LockRequest, RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
@@ -159,8 +159,8 @@ export class UserManagementComponent implements OnInit {
   openSetNewPasswordDialog() {
     this.isShowSetNewPassworDialog = true;
 
-    this.selectedUsers.forEach((u) => {
-      this.newPasswordForms.push(this.newPasswordFormsInit(u.email));
+    this.selectedUsers.forEach((u, index) => {
+      this.newPasswordForms.push(this.newPasswordFormsInit(u.email, index));
     });
   }
 
@@ -169,10 +169,10 @@ export class UserManagementComponent implements OnInit {
     this.resetSetNewPasswordForm();
   }
 
-  newPasswordFormsInit(email: string): FormGroup {
+  newPasswordFormsInit(email: string, index: number): FormGroup {
     return new FormGroup({
       email: new FormControl(email, [Validators.required, Validators.email]),
-      confirmEmail: new FormControl('', [Validators.required, Validators.email]),
+      confirmEmail: new FormControl('', [Validators.required, this._matchEmailContent(index)]),
     });
   }
 
@@ -314,6 +314,21 @@ export class UserManagementComponent implements OnInit {
     const haveNotEditRows = newsUsers.every((d) => d.isEditRow === false);
 
     return haveValidEmailRows && haveNotEditRows && newsUsers.length > 0 && !this.hasDuplicateUsers;
+  }
+
+  _matchEmailContent(index: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (this.newPasswordForms && this.newPasswordForms.value && this.newPasswordForms.value.length > 0) {
+        if (!control.value) return null;
+
+        if (control.value && control.value.length > 0) {
+          const email = this.newPasswordForms.controls[index].get('email');
+          if (control.value !== email.value) {
+            return { matchContent: true };
+          }
+        }
+      }
+    };
   }
 
   _mapRoleNameToRoleId(roleName: string): string {

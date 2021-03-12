@@ -100,7 +100,7 @@
   <ng-template pTemplate="content">
     <form [formGroup]="configurationForm">
       <div class="p-field">
-        <label for="key">Key</label>
+        <label for="key">Key<span class="p-invalid"> *</span></label>
         <input [ngClass]="{ 'ng-dirty': keyControl.invalid && (keyControl.dirty || keyControl.touched) }" pInputText id="key" [formControl]="keyControl" type="text" disabled />
         <ng-container *ngIf="keyControl.invalid && (keyControl.dirty || keyControl.touched)">
           <small *ngIf="keyControl && keyControl.errors?.required" class="p-invalid p-error">Key is required.</small>
@@ -119,7 +119,7 @@
       </div>
 
       <div class="p-field">
-        <label for="value">Value</label>
+        <label for="value">Value<span class="p-invalid"> *</span></label>
         <input [ngClass]="{ 'ng-dirty': valueControl.invalid && (valueControl.dirty || valueControl.touched) }" pInputText id="value" [formControl]="valueControl" type="text" />
         <ng-container *ngIf="valueControl.invalid && (valueControl.dirty || valueControl.touched)">
           <small *ngIf="valueControl && valueControl.errors?.required" class="p-invalid p-error">Please specify a value</small>

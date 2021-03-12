@@ -93,7 +93,7 @@
   <ng-template pTemplate="content">
     <form [formGroup]="productForm">
       <div class="p-field">
-        <label for="productName">Product Name</label>
+        <label for="productName">Product Name<span class="p-invalid"> *</span></label>
         <input
           [ngClass]="{ 'ng-dirty': productNameControl.invalid && (productNameControl.dirty || productNameControl.touched) }"
           pInputText
@@ -107,7 +107,7 @@
       </div>
 
       <div class="p-field">
-        <label for="productNumber">Product Number</label>
+        <label for="productNumber">Product Number<span class="p-invalid"> *</span></label>
         <input
           [ngClass]="{ 'ng-dirty': productNumberControl.invalid && (productNumberControl.dirty || productNumberControl.touched) }"
           pInputText
@@ -121,7 +121,7 @@
       </div>
 
       <div class="p-field">
-        <label for="qtyPerPackage">Qty Per Package</label>
+        <label for="qtyPerPackage">Qty Per Package<span class="p-invalid"> *</span></label>
         <p-inputNumber
           [ngClass]="{ 'ng-dirty': qtyPerPackageControl.invalid && (qtyPerPackageControl.dirty || qtyPerPackageControl.touched) }"
           inputId="qtyPerPackage"

@@ -37,7 +37,7 @@
             <div class="p-grid p-fluid">
               <div class="p-col-12">
                 <div class="p-field">
-                  <label for="customerName">Customer Name</label>
+                  <label for="customerName">Customer Name<span class="p-invalid"> *</span></label>
                   <input
                     [ngClass]="{ 'ng-dirty': customerNameControl.invalid && (customerNameControl.dirty || customerNameControl.touched) }"
                     pInputText
@@ -53,7 +53,7 @@
 
               <div class="p-col-12">
                 <div class="p-field">
-                  <label for="semlineNumber">Semline Number</label>
+                  <label for="semlineNumber">Semline Number<span class="p-invalid"> *</span></label>
                   <p-inputNumber
                     [ngClass]="{ 'ng-dirty': semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched) }"
                     [formControl]="semlineNumberControl"
@@ -68,7 +68,7 @@
 
               <div class="p-col-6">
                 <div class="p-field">
-                  <label for="shippingMode">Purchase Order</label>
+                  <label for="shippingMode">Purchase Order<span class="p-invalid"> *</span></label>
                   <input
                     [ngClass]="{ 'ng-dirty': purchaseOrderControl.invalid && (purchaseOrderControl.dirty || purchaseOrderControl.touched) }"
                     pInputText
@@ -85,7 +85,7 @@
 
               <div class="p-col-6">
                 <div class="p-field">
-                  <label for="shippingDate">Shipping Date</label>
+                  <label for="shippingDate">Shipping Date<span class="p-invalid"> *</span></label>
                   <p-calendar
                     [ngClass]="{ 'ng-dirty': shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched) }"
                     id="shippingDate"
@@ -101,7 +101,7 @@
 
               <div class="p-col-12">
                 <div class="p-field">
-                  <label for="salesId">Sales Id</label>
+                  <label for="salesId">Sales Id<span class="p-invalid"> *</span></label>
                   <input
                     [ngClass]="{ 'ng-dirty': salesIdControl.invalid && (salesIdControl.dirty || salesIdControl.touched) }"
                     pInputText
@@ -240,8 +240,8 @@
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Product Name</th>
                 <th class="p-text-center">Qty/ Pkg</th>
-                <th class="p-text-center">Quantity</th>
-                <th class="p-text-center">Price (USD)</th>
+                <th class="p-text-center">Quantity<span class="p-invalid"> *</span></th>
+                <th class="p-text-center">Price (USD)<span class="p-invalid"> *</span></th>
                 <th class="p-text-center">Amount (USD)</th>
                 <th class="p-text-center">Shipping Mode</th>
                 <th style="width: 10rem"></th>
