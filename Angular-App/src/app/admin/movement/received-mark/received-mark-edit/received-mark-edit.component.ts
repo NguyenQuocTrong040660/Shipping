@@ -95,7 +95,7 @@ export class ReceivedMarkEditComponent implements OnInit {
 
         const products = this.receivedMark.receivedMarkMovements.map((i) => i.product);
         const productNumbers = this.receivedMark.receivedMarkMovements.map((i) => i.product.productNumber);
-        let uniqueProducts = [...new Set(productNumbers)];
+        const uniqueProducts = [...new Set(productNumbers)];
         uniqueProducts.forEach((item) => {
           const product = {
             productNumber: item,

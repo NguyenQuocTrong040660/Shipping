@@ -10,7 +10,7 @@ export class RoleGuard implements CanActivate {
   constructor(private router: Router, private userClient: UserClient) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    let roles = route.data.roles as Array<string>;
+    const roles = route.data.roles as Array<string>;
 
     this.userClient.apiUserUserInfo().subscribe((user) => {
       if (user) {

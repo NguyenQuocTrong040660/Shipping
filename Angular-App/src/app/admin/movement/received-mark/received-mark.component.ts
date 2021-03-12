@@ -291,7 +291,9 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   handleSubmitEventUnstuff(event) {
-    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkSummary) return;
+    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkSummary) {
+      return;
+    }
 
     const { unstuffQuantity, receivedMarkPrintingId } = event;
 
@@ -322,7 +324,9 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   printReceivedMark() {
-    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkSummary) return;
+    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkSummary) {
+      return;
+    }
 
     const requestPrint: PrintReceivedMarkRequest = {
       productId: this.currentPrintReceivedMarkSummary.productId,
@@ -348,7 +352,9 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   handleRePrintMark(item: ReceivedMarkPrintingModel) {
-    if (!item) return;
+    if (!item) {
+      return;
+    }
 
     const request: RePrintReceivedMarkRequest = {
       receivedMarkPrintingId: item.id,
@@ -403,7 +409,9 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   showDetailReceivedMarkSummary(receivedMark: ReceivedMarkModel, receivedMarkSummaryModel: ReceivedMarkSummaryModel) {
-    if (!receivedMark || !receivedMarkSummaryModel) return;
+    if (!receivedMark || !receivedMarkSummaryModel) {
+      return;
+    }
 
     this.currentReceivedMark = receivedMark;
     this.currentPrintReceivedMarkSummary = receivedMarkSummaryModel;

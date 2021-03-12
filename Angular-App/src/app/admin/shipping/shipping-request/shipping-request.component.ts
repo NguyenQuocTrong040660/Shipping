@@ -263,7 +263,9 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   }
 
   openDocumentsDialog() {
-    if (!this.selectedShippingRequest) return;
+    if (!this.selectedShippingRequest) {
+      return;
+    }
 
     this.isShowDialogDocuments = true;
     this.titleDialog = 'Shipping Request Documents: ' + this.selectedShippingRequest.identifier;

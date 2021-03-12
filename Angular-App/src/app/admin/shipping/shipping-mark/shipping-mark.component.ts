@@ -277,7 +277,9 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   }
 
   printShippingMark() {
-    if (!this.currentShippingMark || !this.currentPrintShippingMarkSummary) return;
+    if (!this.currentShippingMark || !this.currentPrintShippingMarkSummary) {
+      return;
+    }
 
     const requestPrint: PrintShippingMarkRequest = {
       productId: this.currentPrintShippingMarkSummary.productId,
@@ -303,7 +305,9 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   }
 
   handleRePrintMark(item: ShippingMarkPrintingModel) {
-    if (!item) return;
+    if (!item) {
+      return;
+    }
 
     const request: RePrintShippingMarkRequest = {
       shippingMarkPrintingId: item.id,
@@ -344,7 +348,9 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   }
 
   showDetailShippingMarkSummary(shippingMark: ShippingMarkModel, shippingMarkSummaryModel: ShippingMarkSummaryModel) {
-    if (!shippingMark || !shippingMarkSummaryModel) return;
+    if (!shippingMark || !shippingMarkSummaryModel) {
+      return;
+    }
 
     this.currentShippingMark = shippingMark;
     this.currentPrintShippingMarkSummary = shippingMarkSummaryModel;

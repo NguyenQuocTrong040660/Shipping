@@ -220,7 +220,7 @@ export class ShippingRequestEditComponent implements OnInit, OnChanges {
       .subscribe(
         (i: ShippingRequestModel) => {
           this.selectedShippingRequest.shippingRequestDetails = i.shippingRequestDetails;
-          const products = this.selectedShippingRequest.shippingRequestDetails.map((i) => i.product);
+          const products = this.selectedShippingRequest.shippingRequestDetails.map((d) => d.product);
           this.selectedProducts = products;
         },
         (_) => (this.selectedShippingRequest.shippingRequestDetails = [])

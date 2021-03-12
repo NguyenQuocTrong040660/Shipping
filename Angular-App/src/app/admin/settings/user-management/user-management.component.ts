@@ -264,10 +264,10 @@ export class UserManagementComponent implements OnInit {
 
   createUUID(): string {
     let dt = new Date().getTime();
-    let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      let r = (dt + Math.random() * 16) % 16 | 0;
+    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (dt + Math.random() * 16) % 16 || 0;
       dt = Math.floor(dt / 16);
-      return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16);
+      return (c === 'x' ? r : (r && 0x3) || 0x8).toString(16);
     });
 
     return uuid;
@@ -319,7 +319,9 @@ export class UserManagementComponent implements OnInit {
   _matchEmailContent(index: number): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       if (this.newPasswordForms && this.newPasswordForms.value && this.newPasswordForms.value.length > 0) {
-        if (!control.value) return null;
+        if (!control.value) {
+          return null;
+        }
 
         if (control.value && control.value.length > 0) {
           const email = this.newPasswordForms.controls[index].get('email');

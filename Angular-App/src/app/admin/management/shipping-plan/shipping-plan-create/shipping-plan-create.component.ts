@@ -207,7 +207,8 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
   }
 
   _getDetailShippingPlan() {
-    let { id, shippingPlanDetails } = this.selectedShippingPlan;
+    const { id } = this.selectedShippingPlan;
+    let { shippingPlanDetails } = this.selectedShippingPlan;
     shippingPlanDetails = [];
 
     this.shippingPlanClients
@@ -216,7 +217,7 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
       .subscribe(
         (i: ShippingPlanModel) => {
           shippingPlanDetails = i.shippingPlanDetails;
-          const products = shippingPlanDetails.map((i) => i.product);
+          const products = shippingPlanDetails.map((p) => p.product);
           this.selectedProducts = products;
         },
         (_) => (shippingPlanDetails = [])

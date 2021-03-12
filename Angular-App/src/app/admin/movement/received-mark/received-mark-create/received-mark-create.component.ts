@@ -130,7 +130,7 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
 
         const products = this.receivedMarkMovements.map((i) => i.product);
         const productNumbers = this.receivedMarkMovements.map((i) => i.product.productNumber);
-        let uniqueProducts = [...new Set(productNumbers)];
+        const uniqueProducts = [...new Set(productNumbers)];
         uniqueProducts.forEach((item) => {
           const product = {
             productNumber: item,

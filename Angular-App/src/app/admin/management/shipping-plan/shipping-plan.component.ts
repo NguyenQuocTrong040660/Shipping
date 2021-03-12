@@ -219,7 +219,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   onEdit() {
-    let { id, shippingDate } = this.shippingPlanForm.value;
+    const { id, shippingDate } = this.shippingPlanForm.value;
     this.shippingPlanForm.value.shippingDate = Utilities.ConvertDateBeforeSendToServer(shippingDate);
 
     this.shippingPlanClients

@@ -131,7 +131,7 @@ export class ShippingMarkEditComponent implements OnInit {
   calculateShippingMarks(product: ProductModel, totalQuantityOfReceivedMarks: number) {
     let remainTotal = totalQuantityOfReceivedMarks;
     let totalShippingMarks = 0;
-    const qtyPerPackageNumber = parseInt(product.qtyPerPackage) * 1;
+    const qtyPerPackageNumber = parseInt(product.qtyPerPackage, 0) * 1;
 
     while (remainTotal > 0) {
       if (remainTotal >= qtyPerPackageNumber) {

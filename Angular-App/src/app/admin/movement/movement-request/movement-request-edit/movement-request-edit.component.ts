@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MovementRequestDetailModel, MovementRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -11,7 +11,7 @@ import { MovementRequestDetail } from '../movement-request.component';
   templateUrl: './movement-request-edit.component.html',
   styleUrls: ['./movement-request-edit.component.scss'],
 })
-export class MovementRequestEditComponent implements OnInit {
+export class MovementRequestEditComponent implements OnInit, OnChanges {
   @Input() movementRequestForm: FormGroup;
   @Input() titleDialog = '';
   @Input() isShowDialog = false;
