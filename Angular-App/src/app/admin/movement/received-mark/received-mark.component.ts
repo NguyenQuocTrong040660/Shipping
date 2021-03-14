@@ -430,6 +430,20 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       );
   }
 
+  getTotalQuantityPrinted(item: ReceivedMarkSummaryModel) {
+    if (item && item.product && item.product.receivedMarkPrintings && item.product.receivedMarkPrintings.length > 0) {
+      return item.product.receivedMarkPrintings.reduce((a, b) => {
+        if (b.printCount != 0) {
+          return a + b.quantity;
+        }
+
+        return a + 0;
+      }, 0);
+    }
+
+    return 0;
+  }
+
   ngOnDestroy(): void {
     this.destroyed$.next();
     this.destroyed$.complete();

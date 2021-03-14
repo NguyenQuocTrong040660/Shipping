@@ -16,8 +16,6 @@ export class ImportService {
   }
 
   dispactEvent(event: EventType) {
-    console.log('event', event);
-
     this._event.next(event);
   }
 }

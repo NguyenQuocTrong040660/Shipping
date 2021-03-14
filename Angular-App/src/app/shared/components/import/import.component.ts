@@ -1,14 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FilesClient, TemplateType, ValidateDataRequest } from 'app/shared/api-clients/files.client';
-import {
-  ProductClients,
-  ProductModel,
-  ShippingPlanClients,
-  ShippingPlanImportModel,
-  ShippingPlanModel,
-  WorkOrderClients,
-  WorkOrderImportModel,
-} from 'app/shared/api-clients/shipping-app.client';
+import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanImportModel, WorkOrderClients, WorkOrderImportModel } from 'app/shared/api-clients/shipping-app.client';
 import { EventType } from 'app/shared/enumerations/import-event-type.enum';
 import { ImportService } from 'app/shared/services/import.service';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -122,52 +114,79 @@ export class ImportComponent implements OnInit {
     }
   }
 
-  handleValidationDataImport(data: any[], typeImport: TemplateType) {
+  async handleValidationDataImport(data: any[], typeImport: TemplateType) {
     const request: ValidateDataRequest = {
       data,
     };
 
+    const resultsFileClients = await this.filesClient.apiFilesImportValidate(typeImport, request).toPromise();
+    const invalidItems = resultsFileClients.data;
+
     switch (typeImport) {
       case TemplateType.Product:
-        this.filesClient.apiFilesImportValidate(typeImport, request).subscribe((result) => {
-          if (result && result.succeeded) {
-            const invalidItems = result.data as ProductModel[];
+        {
+          data.forEach((item: ProductModel) => {
+            const invalidItem = invalidItems.find((i) => i.productNumber === item.productNumber);
+            item['valid'] = invalidItem ? false : true;
+            this.dataValidated.push(item);
+          });
 
-            data.forEach((item: ProductModel) => {
-              const invalidItem = invalidItems.find((i) => i.productNumber === item.productNumber);
-              item['valid'] = invalidItem ? false : true;
-              this.dataValidated.push(item);
-            });
-          }
-        });
+          const productNumbers = data.map((i) => i.productNumber);
+          const resultsProductClients = await this.productClients.verifyProduct(productNumbers).toPromise();
+          const existProductNumbers = resultsProductClients;
+
+          this.dataValidated.forEach((item) => {
+            if (item.valid) {
+              const productNumber = existProductNumbers.find((i) => i === item['productNumber']);
+              item['valid'] = !productNumber;
+            }
+          });
+        }
+
         break;
       case TemplateType.WorkOrder:
-        this.filesClient.apiFilesImportValidate(typeImport, request).subscribe((result) => {
-          if (result && result.succeeded) {
-            const invalidItems = result.data;
+        {
+          data.forEach((item) => {
+            const invalidItem = invalidItems.find((i) => i.workOrderId === item.workOrderId);
+            item['valid'] = invalidItem ? false : true;
+            this.dataValidated.push(item);
+          });
 
-            data.forEach((item) => {
-              const invalidItem = invalidItems.find((i) => i.workOrderId === item.workOrderId);
-              item['valid'] = invalidItem ? false : true;
-              this.dataValidated.push(item);
-            });
-          }
-        });
+          const productNumbers = data.map((i) => i.productNumber);
+          const resultsProductClients = await this.productClients.verifyProduct(productNumbers).toPromise();
+          const existProductNumbers = resultsProductClients;
+
+          this.dataValidated.forEach((item) => {
+            if (item.valid) {
+              const productNumber = existProductNumbers.find((i) => i === item['productNumber']);
+              item['valid'] = !!productNumber;
+            }
+          });
+        }
+
         break;
       case TemplateType.ShippingPlan:
-        request.data.forEach((i) => (i['key'] = this.createUUID()));
+        {
+          request.data.forEach((i) => (i['key'] = this.createUUID()));
 
-        this.filesClient.apiFilesImportValidate(typeImport, request).subscribe((result) => {
-          if (result && result.succeeded) {
-            const invalidItems = result.data;
+          data.forEach((item) => {
+            const invalidItem = invalidItems.find((i) => i.key === item.key);
+            item['valid'] = invalidItem ? false : true;
+            this.dataValidated.push(item);
+          });
 
-            data.forEach((item) => {
-              const invalidItem = invalidItems.find((i) => i.key === item.key);
-              item['valid'] = invalidItem ? false : true;
-              this.dataValidated.push(item);
-            });
-          }
-        });
+          const productNumbers = data.map((i) => i.productNumber);
+          const resultsProductClients = await this.productClients.verifyProduct(productNumbers).toPromise();
+          const existProductNumbers = resultsProductClients;
+
+          this.dataValidated.forEach((item) => {
+            if (item.valid) {
+              const productNumber = existProductNumbers.find((i) => i === item['productNumber']);
+              item['valid'] = !!productNumber;
+            }
+          });
+        }
+
         break;
     }
   }

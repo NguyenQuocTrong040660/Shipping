@@ -1,9 +1,9 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { environment } from 'environments/environment';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import Logger from '../helpers/logger';
 import { AuthenticationService } from '../services/authentication.service';
 
 @Injectable()
@@ -17,9 +17,7 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
           this.tryRefreshToken();
         }
 
-        if (!environment.production) {
-          console.error(err);
-        }
+        Logger.LogError(err);
 
         const error = (err && err.error && err.error.message) || err.statusText;
         return throwError(error);
@@ -29,13 +27,13 @@ export class UnAuthorizedInterceptor implements HttpInterceptor {
 
   tryRefreshToken() {
     return this.authenticationService.refreshToken().subscribe(
-      (_) => console.log('try to refresh token'),
+      (_) => Logger.LogInfo('try to refresh token'),
       (_) => this.doWhenRefreshFailed()
     );
   }
 
   doWhenRefreshFailed() {
-    console.log('clean when try failed');
+    Logger.LogInfo('clean when try failed');
     this.authenticationService.clearLocalStorage();
     this.router.navigate(['login']);
   }

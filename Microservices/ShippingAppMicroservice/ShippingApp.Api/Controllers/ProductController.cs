@@ -106,5 +106,33 @@ namespace ShippingApp.Api.Controllers
             var result = await Mediator.Send(new DeleteProductCommand { Id = id });
             return Ok(result);
         }
+
+        [HttpPost("VerifyProduct")]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<string>>> VerifyProductAsync([FromBody] List<string> productNumbers)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(productNumbers);
+            }
+
+            var existProduct = new List<string>();
+
+            foreach (var item in productNumbers)
+            {
+                var product = await Mediator.Send(new GetProductByProductNumberQuery { ProductNumber = item });
+
+                if (product == null)
+                {
+                    continue;
+                }
+
+                existProduct.Add(item);
+            }
+
+            return Ok(existProduct);
+        }
     }
 }

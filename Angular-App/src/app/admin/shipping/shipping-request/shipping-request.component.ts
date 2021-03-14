@@ -1,3 +1,4 @@
+import { Result } from './../../../shared/api-clients/user.client';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommunicationClient } from 'app/shared/api-clients/communications.client';
@@ -61,7 +62,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Sales Id', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NumberColumn },
+      { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
@@ -157,16 +158,11 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.shippingRequestClients
       .addShippingRequest(model)
       .pipe(takeUntil(this.destroyed$))
-      .pipe(switchMap((response) => this.communicationClient.apiCommunicationEmailnotificationShippingRequest(response)))
       .subscribe(
-        (result) => {
-          if (result && result.succeeded) {
-            this.notificationService.success('Create Shipping Request Successfully');
-            this.initShippingRequest();
-          } else {
-            this.notificationService.error(result?.error);
-          }
-
+        (response) => {
+          this.sendNotification(response);
+          this.notificationService.success('Create Shipping Request Successfully');
+          this.initShippingRequest();
           this.hideDialog();
         },
         (_) => {
@@ -174,6 +170,14 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
           this.hideDialog();
         }
       );
+  }
+
+  async sendNotification(shippingRequestResponse) {
+    try {
+      await this.communicationClient.apiCommunicationEmailnotificationShippingRequest(shippingRequestResponse).toPromise();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   openEditDialog() {

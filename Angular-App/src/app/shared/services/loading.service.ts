@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import Logger from '../helpers/logger';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ export class LoadingService {
   public IsLoading: Observable<boolean> = this.$isLoading.asObservable();
 
   constructor() {
-    console.log('Init Loading Service');
+    Logger.LogInfo('Init Loading Service');
   }
 
   showLoading() {

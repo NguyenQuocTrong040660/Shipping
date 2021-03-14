@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, of, Subscription, throwError } from 'rxjs'
 import { catchError, delay, finalize, tap } from 'rxjs/operators';
 import { LoginRequest, IdentityResult, RefreshTokenRequest, UserClient } from '../api-clients/user.client';
 import { Roles } from '../enumerations/roles.enum';
+import Logger from '../helpers/logger';
 import { ApplicationUser } from '../models/application-user';
 import { NotificationService } from './notification.service';
 import { States, StateService } from './state.service';
@@ -17,7 +18,7 @@ export class AuthenticationService implements OnDestroy {
   user$: Observable<ApplicationUser> = this._user.asObservable();
 
   constructor(private router: Router, private usersClient: UserClient, private stateService: StateService, private notificationService: NotificationService) {
-    console.log('init AuthenticationService');
+    Logger.LogInfo('init AuthenticationService');
     window.addEventListener('storage', this.storageEventListener.bind(this));
   }
 
@@ -90,7 +91,7 @@ export class AuthenticationService implements OnDestroy {
           originalUserName: x.originalUserName,
         }),
       (_) => {
-        console.log('User logged out');
+        Logger.LogInfo('User logged out');
         this.clearLocalStorage();
         this.router.navigate(['login']);
       }

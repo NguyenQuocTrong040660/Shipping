@@ -26,11 +26,13 @@
               <div class="p-col-12">
                 <div class="p-field">
                   <label for="semlineNumber">Semline Number<span class="p-invalid"> *</span></label>
-                  <p-inputNumber
+                  <input
                     [ngClass]="{ 'ng-dirty': semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched) }"
+                    pInputText
                     [formControl]="semlineNumberControl"
                     id="semlineNumber"
-                  ></p-inputNumber>
+                    type="text"
+                  />
 
                   <ng-container *ngIf="semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched)">
                     <small class="p-invalid p-error">Please specify a semline number</small>

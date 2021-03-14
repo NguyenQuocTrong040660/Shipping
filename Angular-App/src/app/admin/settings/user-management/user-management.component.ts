@@ -1,7 +1,7 @@
 import { NotificationService } from 'app/shared/services/notification.service';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { CreateUserRequest, LockRequest, RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
+import { CreateUserRequest, LockRequest, ResetPasswordResult, RoleModel, UserClient, UserResult } from 'app/shared/api-clients/user.client';
 import { ConfirmationService, SelectItem } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -142,18 +142,26 @@ export class UserManagementComponent implements OnInit {
     this.userClient
       .apiUserAdminUsersPost(createUserRequets)
       .pipe(takeUntil(this.destroyed$))
-      .pipe(switchMap((users) => this.communicationClient.apiCommunicationEmailnotificationUsers(users)))
       .subscribe(
-        (_) => {
+        (users) => {
+          this.sendNotificationToUsers(users);
           this.notificationService.success('Create Users Successfully');
           this.hideCreateDialog();
           this.initUsers();
         },
         (_) => {
+          this.notificationService.success('Create Users Failed');
           this.hideCreateDialog();
-          this.initUsers();
         }
       );
+  }
+
+  async sendNotificationToUsers(users: UserResult[]) {
+    try {
+      await this.communicationClient.apiCommunicationEmailnotificationUsers(users).toPromise();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   openSetNewPasswordDialog() {
@@ -190,9 +198,9 @@ export class UserManagementComponent implements OnInit {
     this.userClient
       .apiUserAdminUsersResetPassword(userEmails)
       .pipe(takeUntil(this.destroyed$))
-      .pipe(switchMap((users) => this.communicationClient.apiCommunicationEmailnotificationForgotPassword(users)))
       .subscribe(
-        (_) => {
+        (resetPasswordResults) => {
+          this.sendForgotPasswordNotifcations(resetPasswordResults);
           this.notificationService.success('Reset Users Password Successfully');
           this.hideSetNewPasswordDialog();
           this.initUsers();
@@ -202,6 +210,14 @@ export class UserManagementComponent implements OnInit {
           this.notificationService.error('Reset Users Password Failed. Please Try Again');
         }
       );
+  }
+
+  async sendForgotPasswordNotifcations(resetPasswordResults: ResetPasswordResult[]) {
+    try {
+      await this.communicationClient.apiCommunicationEmailnotificationForgotPassword(resetPasswordResults).toPromise();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   openLockDialog() {

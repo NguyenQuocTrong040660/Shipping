@@ -34,6 +34,14 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                 .Where(x => x.ReceivedMarkId == request.ReceivedMarkId)
                 .ToListAsync();
 
+            foreach (var item in receivedMarkSummaries)
+            {
+                item.Product.ReceivedMarkPrintings = await _context.ReceivedMarkPrintings
+                    .AsNoTracking()
+                    .Where(x => x.ProductId == item.ProductId && x.ReceivedMarkId == request.ReceivedMarkId)
+                    .ToListAsync();
+            }
+
             return _mapper.Map<List<ReceivedMarkSummaryModel>>(receivedMarkSummaries);
         }
     }

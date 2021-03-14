@@ -67,7 +67,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
 
                 if (remainQty <= printedQty)
                 {
-                    return Result.Failure("Total Quantity can not be less than Printed Quantity");
+                    return Result.Failure("Total Quantity can not be less than or equal Printed Quantity");
                 }
 
                 _context.ShippingMarkPrintings.RemoveRange(shippingMarkPrintingsGenerated);

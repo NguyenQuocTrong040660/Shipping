@@ -159,6 +159,7 @@
                   <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Total Quantity</th>
                   <th class="p-text-center">Total Package</th>
+                  <th class="p-text-center">Total Quantity Printed</th>
                   <th class="p-text-center"></th>
                 </tr>
               </ng-template>
@@ -171,6 +172,7 @@
                   </td>
                   <td class="p-text-center">{{ item?.totalQuantity }}</td>
                   <td class="p-text-center">{{ item?.totalPackage }}</td>
+                  <td class="p-text-center">{{ getTotalQuantityPrinted(item) }}</td>
                   <td class="p-text-center">
                     <button
                       pButton

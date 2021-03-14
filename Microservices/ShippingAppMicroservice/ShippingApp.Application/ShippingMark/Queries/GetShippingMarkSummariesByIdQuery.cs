@@ -34,6 +34,14 @@ namespace ShippingApp.Application.ShippingMark.Queries
                 .Where(x => x.ShippingMarkId == request.ShippingMarkId)
                 .ToListAsync();
 
+            foreach (var item in shippingMarkSummaries)
+            {
+                item.Product.ShippingMarkPrintings = await _context.ShippingMarkPrintings
+                  .AsNoTracking()
+                  .Where(x => x.ProductId == item.ProductId && x.ShippingMarkId == request.ShippingMarkId)
+                  .ToListAsync();
+            }
+
             return _mapper.Map<List<ShippingMarkSummaryModel>>(shippingMarkSummaries);
         }
     }
