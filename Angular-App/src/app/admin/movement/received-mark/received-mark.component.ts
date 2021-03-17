@@ -433,7 +433,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   getTotalQuantityPrinted(item: ReceivedMarkSummaryModel) {
     if (item && item.product && item.product.receivedMarkPrintings && item.product.receivedMarkPrintings.length > 0) {
       return item.product.receivedMarkPrintings.reduce((a, b) => {
-        if (b.printCount != 0) {
+        if (b.printCount !== 0) {
           return a + b.quantity;
         }
 

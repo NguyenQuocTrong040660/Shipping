@@ -409,7 +409,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   getTotalQuantityPrinted(item: ShippingMarkSummaryModel) {
     if (item && item.product && item.product.shippingMarkPrintings && item.product.shippingMarkPrintings.length > 0) {
       return item.product.receivedMarkPrintings.reduce((a, b) => {
-        if (b.printCount != 0) {
+        if (b.printCount !== 0) {
           return a + b.quantity;
         }
 
