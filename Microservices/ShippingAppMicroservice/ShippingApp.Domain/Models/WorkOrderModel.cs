@@ -24,6 +24,9 @@ namespace ShippingApp.Domain.Models
         }
         public string RefId { get; set; }
         public string Notes { get; set; }
+
+        public string Status { get; set; }
+
         public virtual ICollection<WorkOrderDetailModel> WorkOrderDetails { get; set; }
         public virtual ICollection<MovementRequestDetailModel> MovementRequestDetails { get; set; }
     }

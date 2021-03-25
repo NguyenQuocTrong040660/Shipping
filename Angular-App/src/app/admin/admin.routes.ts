@@ -34,7 +34,7 @@ export const adminRoutes: Routes = [
       },
       // Management
       {
-        path: 'product',
+        path: 'package-rule',
         loadChildren: () => import('./management/product/product.module').then((m) => m.ProductModule),
         canActivate: [AuthenticationGuard],
       },

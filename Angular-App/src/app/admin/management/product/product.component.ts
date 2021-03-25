@@ -18,7 +18,7 @@ import { EventType } from 'app/shared/enumerations/import-event-type.enum';
   templateUrl: './product.component.html',
 })
 export class ProductComponent implements OnInit, OnDestroy {
-  title = 'Product Management';
+  title = 'Package Rule';
 
   selectedItem: ProductModel;
   products: ProductModel[] = [];
@@ -69,7 +69,7 @@ export class ProductComponent implements OnInit, OnDestroy {
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
       { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Product Name', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Description', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Qty/ Pkg', field: 'qtyPerPackage', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },

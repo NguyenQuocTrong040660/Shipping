@@ -31,6 +31,9 @@ namespace ShippingApp.Application.WorkOrder.Queries
         {
             var workOrders = await _shippingAppRepository
                 .GetDbSet()
+                .AsNoTracking()
+                .Include(x => x.WorkOrderDetails)
+                .ThenInclude(x => x.Product)
                 .OrderByDescending(i => i.LastModified)
                 .ToListAsync();
 

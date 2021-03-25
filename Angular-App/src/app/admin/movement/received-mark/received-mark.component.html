@@ -90,25 +90,6 @@
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
-            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <td class="p-text-center">
-                <ng-container *ngIf="item['printCount'] && item['printCount'] === 1; else canPrint">
-                  <button
-                    [disabled]="!canRePrint()"
-                    (click)="handleRePrintMark(item)"
-                    pButton
-                    pRipple
-                    [pTooltip]="getHelpText()"
-                    type="button"
-                    icon="pi pi-lock"
-                    class="p-button-rounded p-button-danger p-button-text"
-                  ></button>
-                </ng-container>
-                <ng-template #canPrint>
-                  <p-tableRadioButton [value]="item"></p-tableRadioButton>
-                </ng-template>
-              </td>
-            </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
               <td>
                 {{ item[col.field] }}
@@ -160,7 +141,7 @@
               <ng-template pTemplate="header">
                 <tr>
                   <th class="p-text-center">Product Number</th>
-                  <th class="p-text-center">Product Name</th>
+                  <th class="p-text-center">Description</th>
                   <th class="p-text-center">Qty/ Pkg</th>
                   <th class="p-text-center">Total Quantity</th>
                   <th class="p-text-center">Total Package</th>

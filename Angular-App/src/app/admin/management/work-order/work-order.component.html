@@ -76,7 +76,7 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
+    <ng-template pTemplate="body" let-item let-columns="columns">
       <tr>
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
@@ -90,48 +90,12 @@
               {{ item[col.field] | date: 'dd/MM/yyyy' }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-              {{ item[col.field][col.subField] }}
+              {{ item['workOrderDetails'][0][col.field][col.subField] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
               {{ item[col.field] }}
             </ng-container>
-            <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
-              <button
-                type="button"
-                pButton
-                pRipple
-                (click)="getDetailWorkOrder(item)"
-                [pRowToggler]="item"
-                class="p-button-text p-button-rounded p-button-plain"
-                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
-              ></button>
-            </ng-container>
           </ng-container>
-        </td>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="rowexpansion" let-workOrder>
-      <tr>
-        <td colspan="7" class="work-order__expaned">
-          <div>
-            <p-table class="work-order__expaned-table" [value]="workOrder.workOrderDetails">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th>Product Number</th>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-detail>
-                <tr>
-                  <td>{{ detail?.product?.productNumber }}</td>
-                  <td>{{ detail?.product?.productName }}</td>
-                  <td>{{ detail?.quantity | number}}</td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </div>
         </td>
       </tr>
     </ng-template>

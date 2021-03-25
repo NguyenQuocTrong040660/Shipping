@@ -9,7 +9,7 @@
             <ng-template pTemplate="header">
               <tr>
                 <th>Product Number</th>
-                <th>Product Name</th>
+                <th>Description</th>
                 <th>Quantity<span class="p-invalid"> *</span></th>
                 <th style="width: 10rem"></th>
               </tr>
@@ -42,17 +42,6 @@
                     pInitEditableRow
                     icon="pi pi-pencil"
                     (click)="onRowEditInit(workOrderDetail)"
-                    class="p-button-rounded p-button-text"
-                  ></button>
-
-                  <button
-                    *ngIf="!editing"
-                    pButton
-                    pRipple
-                    type="button"
-                    pInitEditableRow
-                    icon="pi pi-times"
-                    (click)="onRowDelete(workOrderDetail)"
                     class="p-button-rounded p-button-text"
                   ></button>
 

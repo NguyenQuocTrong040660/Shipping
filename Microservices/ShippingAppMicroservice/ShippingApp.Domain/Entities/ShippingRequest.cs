@@ -18,6 +18,13 @@ namespace ShippingApp.Domain.Entities
 
         public string Status { get; set; }
 
+        public string BillTo { get; set; }
+        public string BillToAddress { get; set; }
+        public string ShipTo { get; set; }
+        public string ShipToAddress { get; set; }
+        public string AccountNumber { get; set; }
+
+
         public virtual ShippingRequestLogistic ShippingRequestLogistic { get; set; }
 
         public virtual ICollection<ShippingRequestDetail> ShippingRequestDetails { get; set; }

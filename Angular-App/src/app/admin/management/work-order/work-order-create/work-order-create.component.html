@@ -9,7 +9,7 @@
           [columns]="productCols"
           [value]="products"
           [globalFilterFields]="productFields"
-          [(selection)]="selectedProducts"
+          [(selection)]="selectedProduct"
           [paginator]="true"
           [rows]="10"
           scrollHeight="350px"
@@ -25,9 +25,7 @@
               <ng-container *ngFor="let col of columns">
                 <ng-container [ngSwitch]="col.type">
                   <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-                    <th>
-                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                    </th>
+                    <th></th>
                   </ng-container>
                   <ng-container *ngSwitchDefault>
                     <th [pSortableColumn]="col.field">
@@ -47,7 +45,7 @@
               <td *ngFor="let col of columns">
                 <ng-container [ngSwitch]="col.type">
                   <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-                    <p-tableCheckbox [value]="product"></p-tableCheckbox>
+                    <p-tableRadioButton [value]="product"></p-tableRadioButton>
                   </ng-container>
                   <ng-container *ngSwitchCase="TypeColumn.DateColumn">
                     {{ product[col.field] | date: 'dd/MM/yyyy' }}
@@ -69,7 +67,7 @@
             <p-button
               styleClass="p-button-text"
               label="Next"
-              [disabled]="selectedProducts && selectedProducts.length === 0"
+              [disabled]="!selectedProduct"
               (onClick)="nextPage(stepIndex)"
               icon="pi pi-angle-right"
               iconPos="right"
@@ -86,7 +84,7 @@
             <ng-template pTemplate="header">
               <tr>
                 <th>Product Number</th>
-                <th>Product Name</th>
+                <th>Description</th>
                 <th>Quantity<span class="p-invalid"> *</span></th>
                 <th style="width: 10rem"></th>
               </tr>
@@ -122,7 +120,7 @@
                     class="p-button-rounded p-button-text"
                   ></button>
 
-                  <button
+                  <!-- <button
                     *ngIf="!editing"
                     pButton
                     pRipple
@@ -131,7 +129,7 @@
                     icon="pi pi-times"
                     (click)="onRowDelete(workOrderDetail)"
                     class="p-button-rounded p-button-text"
-                  ></button>
+                  ></button> -->
 
                   <button
                     *ngIf="editing"

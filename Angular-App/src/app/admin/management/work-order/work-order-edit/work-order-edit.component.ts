@@ -91,10 +91,6 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
     this.clonedWorkOrderDetailModels[workOrderDetail.productId] = { ...workOrderDetail };
   }
 
-  onRowDelete(workOrderDetail: WorkOrderDetail) {
-    this.workOrderDetails = this.workOrderDetails.filter((i) => i.productId !== workOrderDetail.productId);
-  }
-
   onRowEditSave(workOrderDetail: WorkOrderDetail) {
     workOrderDetail.isEditRow = false;
     const entity = this.workOrderDetails.find((i) => i.productId === workOrderDetail.productId);

@@ -63,9 +63,9 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
         icon: 'pi pi-pw pi-file',
         items: [
           {
-            label: 'Product',
+            label: 'Package Rule',
             icon: 'pi pi-list',
-            routerLink: '/product',
+            routerLink: '/package-rule',
           },
           {
             label: 'Work Order',

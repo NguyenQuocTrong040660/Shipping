@@ -61,11 +61,17 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+
+      { header: 'Product Number', subField: 'productNumber', field: 'product', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Description', subField: 'productName', field: 'product', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Qty/ Pkg ', subField: 'qtyPerPackage', field: 'product', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+
       { header: 'Reference Id', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
+
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);

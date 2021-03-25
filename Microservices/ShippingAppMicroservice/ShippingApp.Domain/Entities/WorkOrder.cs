@@ -9,6 +9,8 @@ namespace ShippingApp.Domain.Entities
         public string Prefix { get; set; }
         public string RefId { get; set; }
         public string Notes { get; set; }
+        public string Status { get; set; }
+
         public virtual ICollection<WorkOrderDetail> WorkOrderDetails { get; set; }
         public virtual ICollection<MovementRequestDetail> MovementRequestDetails { get; set; }
     }

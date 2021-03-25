@@ -32,6 +32,13 @@ namespace ShippingApp.Domain.Models
         public string PurchaseOrder { get; set; }
         public string RefId { get; set; }
 
+        public string BillTo { get; set; }
+        public string BillToAddress { get; set; }
+        public string ShipTo { get; set; }
+        public string ShipToAddress { get; set; }
+        public string AccountNumber { get; set; }
+
+
         public virtual ICollection<ShippingPlanDetailModel> ShippingPlanDetails { get; set; }
     }
 }

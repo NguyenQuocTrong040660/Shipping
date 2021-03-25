@@ -19,7 +19,7 @@ export class WorkOrderCreateComponent implements OnInit {
   @Output() submitEvent = new EventEmitter<any>(null);
   @Output() hideDialogEvent = new EventEmitter<any>();
 
-  selectedProducts: ProductModel[] = [];
+  selectedProduct: ProductModel;
   workOrderDetails: WorkOrderDetail[] = [];
   clonedWorkOrderDetailModels: { [s: string]: WorkOrderDetail } = {};
 
@@ -50,7 +50,7 @@ export class WorkOrderCreateComponent implements OnInit {
     this.productCols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Product Name', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Description', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Qty Per Package', field: 'qtyPerPackage', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
     ];
 
@@ -60,7 +60,7 @@ export class WorkOrderCreateComponent implements OnInit {
   }
 
   hideDialog() {
-    this.selectedProducts = [];
+    this.selectedProduct = null;
     this.workOrderDetails = [];
     this.stepIndex = 0;
     this.workOrderForm.reset();
@@ -88,11 +88,6 @@ export class WorkOrderCreateComponent implements OnInit {
   onRowEditInit(workOrderDetail: WorkOrderDetail) {
     workOrderDetail.isEditRow = true;
     this.clonedWorkOrderDetailModels[workOrderDetail.productId] = { ...workOrderDetail };
-  }
-
-  onRowDelete(workOrderDetail: WorkOrderDetail) {
-    this.selectedProducts = this.selectedProducts.filter((i) => i.id !== workOrderDetail.productId);
-    this.workOrderDetails = this.workOrderDetails.filter((i) => i.productId !== workOrderDetail.productId);
   }
 
   onRowEditSave(workOrderDetail: WorkOrderDetail) {
@@ -131,7 +126,7 @@ export class WorkOrderCreateComponent implements OnInit {
   nextPage(currentIndex: number) {
     switch (currentIndex) {
       case 0: {
-        this.workOrderDetails = this._mapToProductsToWorkOrderDetails(this.selectedProducts);
+        this.workOrderDetails = this._mapToProductsToWorkOrderDetails([this.selectedProduct]);
         break;
       }
       case 1: {

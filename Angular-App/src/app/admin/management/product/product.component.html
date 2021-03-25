@@ -93,7 +93,7 @@
   <ng-template pTemplate="content">
     <form [formGroup]="productForm">
       <div class="p-field">
-        <label for="productName">Product Name<span class="p-invalid"> *</span></label>
+        <label for="productName">Description<span class="p-invalid"> *</span></label>
         <input
           [ngClass]="{ 'ng-dirty': productNameControl.invalid && (productNameControl.dirty || productNameControl.touched) }"
           pInputText
@@ -102,7 +102,7 @@
           type="text"
         />
         <ng-container *ngIf="productNameControl.invalid && (productNameControl.dirty || productNameControl.touched)">
-          <small class="p-invalid p-error">Please enter a valid product name</small>
+          <small class="p-invalid p-error">Please enter a valid Description</small>
         </ng-container>
       </div>
 
