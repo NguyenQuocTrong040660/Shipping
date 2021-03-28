@@ -17,6 +17,20 @@ namespace ShippingApp.Domain.Models
             }
         }
 
+        [IgnoreMap]
+        public string RefId
+        {
+            get
+            {
+                if (Product == null)
+                {
+                    return string.Empty;
+                }
+
+                return string.Join("-", SalesID, SemlineNumber, Product.ProductNumber);
+            }
+        }
+
         public int Id { get; set; }
         public string Prefix
         {
@@ -25,19 +39,13 @@ namespace ShippingApp.Domain.Models
                 return PrefixTable.ShippingPlan;
             }
         }
+
         public string CustomerName { get; set; }
         public DateTime ShippingDate { get; set; }
         public string SalesID { get; set; }
         public string SemlineNumber { get; set; }
         public string Notes { get; set; }
         public string PurchaseOrder { get; set; }
-        public string RefId 
-        {
-            get
-            {
-                return string.Join("-", SalesID, SemlineNumber, Product.ProductNumber);
-            }
-        }
 
         public string BillTo { get; set; }
         public string BillToAddress { get; set; }

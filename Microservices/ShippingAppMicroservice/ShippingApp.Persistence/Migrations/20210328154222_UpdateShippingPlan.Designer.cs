@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShippingApp.Persistence.DBContext;
 
 namespace ShippingApp.Persistence.Migrations
 {
     [DbContext(typeof(ShippingAppDbContext))]
-    partial class ShippingAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210328154222_UpdateShippingPlan")]
+    partial class UpdateShippingPlan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -603,6 +605,12 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AccountNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -616,6 +624,21 @@ namespace ShippingApp.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("SHIPRQ");
+
+                    b.Property<int>("ProductLine")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PurchaseOrder")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SalesID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SemlineNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ShippingDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .ValueGeneratedOnAdd()
@@ -636,14 +659,8 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AccountNumber")
-                        .HasColumnType("int");
-
                     b.Property<float>("Amount")
                         .HasColumnType("real");
-
-                    b.Property<string>("CustomerName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
@@ -657,23 +674,8 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductLine")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PurchaseOrder")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
-
-                    b.Property<string>("SalesID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SemlineNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ShippingDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("ShippingMode")
                         .HasColumnType("nvarchar(max)");
@@ -705,6 +707,9 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("BillToAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("BillToCustomer")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CustomDeclarationNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -727,6 +732,12 @@ namespace ShippingApp.Persistence.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReceiverAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReceiverCustomer")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShipTo")

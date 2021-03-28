@@ -73,14 +73,14 @@ export class ShippingRequestEditComponent implements OnInit, OnChanges {
   ngOnChanges() {
     if (this.selectedShippingRequest) {
       this.idControl.setValue(this.selectedShippingRequest.id);
-      this.customerNameControl.setValue(this.selectedShippingRequest.customerName);
-      this.semlineNumberControl.setValue(this.selectedShippingRequest.semlineNumber);
-      this.purchaseOrderControl.setValue(this.selectedShippingRequest.purchaseOrder);
-      this.salesIdControl.setValue(this.selectedShippingRequest.salesID);
+      // this.customerNameControl.setValue(this.selectedShippingRequest.customerName);
+      // this.semlineNumberControl.setValue(this.selectedShippingRequest.semlineNumber);
+      // this.purchaseOrderControl.setValue(this.selectedShippingRequest.purchaseOrder);
+      // this.salesIdControl.setValue(this.selectedShippingRequest.salesID);
       this.notesControl.setValue(this.selectedShippingRequest.notes);
 
-      const shippingDate = Utilities.ConvertDateBeforeSendToServer(this.selectedShippingRequest.shippingDate);
-      this.shippingDateControl.setValue(shippingDate);
+      // const shippingDate = Utilities.ConvertDateBeforeSendToServer(this.selectedShippingRequest.shippingDate);
+      // this.shippingDateControl.setValue(shippingDate);
     }
   }
 

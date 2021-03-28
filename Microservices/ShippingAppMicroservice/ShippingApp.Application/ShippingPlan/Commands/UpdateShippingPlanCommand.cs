@@ -76,7 +76,6 @@ namespace ShippingApp.Application.ShippingPlan.Commands
             shippingPlan.ShippingDate = request.ShippingPlan.ShippingDate;
             shippingPlan.SalesID = request.ShippingPlan.SalesID;
             shippingPlan.Notes = request.ShippingPlan.Notes;
-            shippingPlan.RefId = request.ShippingPlan.RefId;
 
             await _context.SaveChangesAsync();
 

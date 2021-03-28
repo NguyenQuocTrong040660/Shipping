@@ -1,6 +1,5 @@
-import { Result } from './../../../shared/api-clients/user.client';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { CommunicationClient } from 'app/shared/api-clients/communications.client';
 import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -10,7 +9,7 @@ import Utilities from 'app/shared/helpers/utilities';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService } from 'primeng/api';
 import { Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   templateUrl: './shipping-request.component.html',
@@ -99,11 +98,6 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   initForm() {
     this.shippingRequestForm = this.fb.group({
       id: [0],
-      customerName: ['', [Validators.required]],
-      salesID: [0, [Validators.required]],
-      semlineNumber: [0, [Validators.required]],
-      purchaseOrder: ['', [Validators.required]],
-      shippingDate: ['', [Validators.required]],
       notes: [''],
       lastModifiedBy: [''],
       lastModified: [null],
@@ -160,7 +154,6 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
 
     const model = this.shippingRequestForm.value as ShippingRequestModel;
     model.id = 0;
-    model.shippingDate = Utilities.ConvertDateBeforeSendToServer(model.shippingDate);
 
     this.shippingRequestClients
       .addShippingRequest(model)

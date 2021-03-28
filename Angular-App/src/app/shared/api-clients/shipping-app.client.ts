@@ -4170,6 +4170,7 @@ export interface ShippingPlanDetailModel extends AuditableEntityModel {
 
 export interface ShippingPlanModel extends AuditableEntityModel {
     identifier?: string | undefined;
+    refId?: string | undefined;
     id?: number;
     prefix?: string | undefined;
     customerName?: string | undefined;
@@ -4178,7 +4179,6 @@ export interface ShippingPlanModel extends AuditableEntityModel {
     semlineNumber?: string | undefined;
     notes?: string | undefined;
     purchaseOrder?: string | undefined;
-    refId?: string | undefined;
     billTo?: string | undefined;
     billToAddress?: string | undefined;
     shipTo?: string | undefined;
@@ -4198,6 +4198,13 @@ export interface ShippingRequestDetailModel extends AuditableEntityModel {
     amount?: number;
     shippingRequestId?: number;
     productId?: number;
+    semlineNumber?: string | undefined;
+    purchaseOrder?: string | undefined;
+    salesID?: string | undefined;
+    shippingDate?: Date;
+    customerName?: string | undefined;
+    accountNumber?: number;
+    productLine?: number;
     product?: ProductModel | undefined;
     shippingRequest?: ShippingRequestModel | undefined;
 }
@@ -4206,15 +4213,9 @@ export interface ShippingRequestModel extends AuditableEntityModel {
     identifier?: string | undefined;
     id?: number;
     prefix?: string | undefined;
-    customerName?: string | undefined;
-    shippingDate?: Date;
-    salesID?: string | undefined;
-    semlineNumber?: string | undefined;
     notes?: string | undefined;
-    purchaseOrder?: string | undefined;
     status?: string | undefined;
-    shippingRequestLogisticId?: number;
-    shippingRequestLogistic?: ShippingRequestLogisticModel | undefined;
+    shippingRequestLogistic?: ShippingRequestLogisticModel[] | undefined;
     shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
     shippingMarks?: ShippingMarkModel[] | undefined;
 }
@@ -4223,11 +4224,12 @@ export interface ShippingRequestLogisticModel extends AuditableEntityModel {
     id?: number;
     notes?: string | undefined;
     grossWeight?: number;
-    billToCustomer?: string | undefined;
-    receiverCustomer?: string | undefined;
-    receiverAddress?: string | undefined;
     customDeclarationNumber?: string | undefined;
     trackingNumber?: string | undefined;
+    billTo?: string | undefined;
+    billToAddress?: string | undefined;
+    shipTo?: string | undefined;
+    shipToAddress?: string | undefined;
     forwarder?: string | undefined;
     netWeight?: number;
     dimension?: string | undefined;

@@ -81,10 +81,30 @@
             </p-table>
           </ng-container>
           <ng-container *ngSwitchCase="TemplateType.ShippingPlan">
-            <p-table [value]="data">
+            <p-table [value]="data" [scrollable]="true">
+              <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                </colgroup>
+              </ng-template>
+
               <ng-template pTemplate="header">
                 <tr>
-                  <th class="p-text-center">Reference Id</th>
                   <th class="p-text-center">Customer Name</th>
                   <th class="p-text-center">Purchase Order</th>
                   <th class="p-text-center">Sales ID</th>
@@ -94,15 +114,19 @@
                   <th class="p-text-center">Sales Price</th>
                   <th class="p-text-center">Shipping Mode</th>
                   <th class="p-text-center">Shipping Date</th>
+
+                  <th class="p-text-center">Bill To</th>
+                  <th class="p-text-center">Bill To Address</th>
+                  <th class="p-text-center">Ship To</th>
+                  <th class="p-text-center">Ship To Address</th>
+                  <th class="p-text-center">Account Number</th>
+                  <th class="p-text-center">Product Line</th>
+
                   <th class="p-text-center">Notes</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
                 <tr>
-                  <td>
-                    {{ item?.shippingPlanId }}
-                  </td>
-
                   <td>
                     {{ item?.customerName }}
                   </td>
@@ -137,6 +161,25 @@
 
                   <td>
                     {{ item?.shippingDate | date: 'dd/MM/yyyy' }}
+                  </td>
+
+                  <td>
+                    {{ item?.billTo }}
+                  </td>
+                  <td>
+                    {{ item?.billToAddress }}
+                  </td>
+                  <td>
+                    {{ item?.shipTo }}
+                  </td>
+                  <td>
+                    {{ item?.shipToAddress }}
+                  </td>
+                  <td>
+                    {{ item?.accountNumber }}
+                  </td>
+                  <td>
+                    {{ item?.productLine }}
                   </td>
 
                   <td>
@@ -240,10 +283,30 @@
             </p-table>
           </ng-container>
           <ng-container *ngSwitchCase="TemplateType.ShippingPlan">
-            <p-table [value]="dataValidated">
+            <p-table [value]="dataValidated" [scrollable]="true">
+              <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                </colgroup>
+              </ng-template>
+
               <ng-template pTemplate="header">
                 <tr>
-                  <th class="p-text-center">Reference Id</th>
                   <th class="p-text-center">Customer Name</th>
                   <th class="p-text-center">Purchase Order</th>
                   <th class="p-text-center">Sales ID</th>
@@ -253,16 +316,20 @@
                   <th class="p-text-center">Sales Price</th>
                   <th class="p-text-center">Shipping Mode</th>
                   <th class="p-text-center">Shipping Date</th>
+
+                  <th class="p-text-center">Bill To</th>
+                  <th class="p-text-center">Bill To Address</th>
+                  <th class="p-text-center">Ship To</th>
+                  <th class="p-text-center">Ship To Address</th>
+                  <th class="p-text-center">Account Number</th>
+                  <th class="p-text-center">Product Line</th>
+
                   <th class="p-text-center">Notes</th>
                   <th class="p-text-center" [style.width.px]="120">Status</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
                 <tr [ngClass]="item?.valid ? '' : 'p-text-danger'">
-                  <td>
-                    {{ item?.shippingPlanId }}
-                  </td>
-
                   <td>
                     {{ item?.customerName }}
                   </td>
@@ -290,6 +357,26 @@
                   <td>
                     {{ item?.shippingDate | date: 'dd/MM/yyyy' }}
                   </td>
+
+                  <td>
+                    {{ item?.billTo }}
+                  </td>
+                  <td>
+                    {{ item?.billToAddress }}
+                  </td>
+                  <td>
+                    {{ item?.shipTo }}
+                  </td>
+                  <td>
+                    {{ item?.shipToAddress }}
+                  </td>
+                  <td>
+                    {{ item?.accountNumber }}
+                  </td>
+                  <td>
+                    {{ item?.productLine }}
+                  </td>
+
                   <td>
                     {{ item?.notes }}
                   </td>
@@ -382,10 +469,30 @@
           </ng-container>
           <ng-container *ngSwitchCase="TemplateType.ShippingPlan">
             <div class="p-mb-4">The records have been failed to import</div>
-            <p-table [value]="failedToImportItems">
+            <p-table [value]="failedToImportItems" [scrollable]="true">
+              <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                  <col style="width: 250px" />
+                </colgroup>
+              </ng-template>
+
               <ng-template pTemplate="header">
                 <tr>
-                  <th class="p-text-center">Reference Id</th>
                   <th class="p-text-center">Customer Name</th>
                   <th class="p-text-center">Purchase Order</th>
                   <th class="p-text-center">Sales ID</th>
@@ -395,14 +502,19 @@
                   <th class="p-text-center">Sales Price</th>
                   <th class="p-text-center">Shipping Mode</th>
                   <th class="p-text-center">Shipping Date</th>
+
+                  <th class="p-text-center">Bill To</th>
+                  <th class="p-text-center">Bill To Address</th>
+                  <th class="p-text-center">Ship To</th>
+                  <th class="p-text-center">Ship To Address</th>
+                  <th class="p-text-center">Account Number</th>
+                  <th class="p-text-center">Product Line</th>
+
                   <th class="p-text-center">Notes</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
                 <tr>
-                  <td>
-                    {{ item?.shippingPlanId }}
-                  </td>
                   <td>
                     {{ item?.customerName }}
                   </td>
@@ -430,6 +542,26 @@
                   <td>
                     {{ item?.shippingDate | date: 'dd/MM/yyyy' }}
                   </td>
+
+                  <td>
+                    {{ item?.billTo }}
+                  </td>
+                  <td>
+                    {{ item?.billToAddress }}
+                  </td>
+                  <td>
+                    {{ item?.shipTo }}
+                  </td>
+                  <td>
+                    {{ item?.shipToAddress }}
+                  </td>
+                  <td>
+                    {{ item?.accountNumber }}
+                  </td>
+                  <td>
+                    {{ item?.productLine }}
+                  </td>
+
                   <td>
                     {{ item?.notes }}
                   </td>

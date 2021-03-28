@@ -37,16 +37,28 @@ namespace ShippingApp.Api.Controllers
 
             var invalidDatas = new List<ShippingPlanImportModel>();
 
-            var groupShippingPlans = shippingPlanImports.GroupBy(x => x.ShippingPlanId)
+            var groupByShippingPlan = shippingPlanImports.GroupBy(x => x.ShippingPlanId)
                                                   .Select(g => new
                                                   {
                                                       ShippingPlanId = g.Key,
                                                       ShippingPlans = g.ToList()
                                                   });
 
-            foreach (var group in groupShippingPlans)
+            foreach (var group in groupByShippingPlan)
             {
                 var item = shippingPlanImports.FirstOrDefault(i => i.ShippingPlanId == group.ShippingPlanId);
+
+                var productDatabase = await Mediator.Send(new GetProductByProductNumberQuery
+                {
+                    ProductNumber = item.ProductNumber
+                });
+
+                if (productDatabase == null || item.QuantityOrder * item.SalesPrice < 0 || group.ShippingPlans.Count > 1)
+                {
+                    _logger.LogError("Failed to import data with shippingPlanId {0}", group.ShippingPlanId);
+                    invalidDatas.AddRange(group.ShippingPlans);
+                    continue;
+                }
 
                 var shippingPlan = new ShippingPlanModel
                 {
@@ -62,54 +74,23 @@ namespace ShippingApp.Api.Controllers
                     ShipToAddress = item.ShipToAddress,
                     ProductLine = item.ProductLine,
                     AccountNumber = item.AccountNumber,
+                    ShippingPlanDetails = new List<ShippingPlanDetailModel>()
+                    {
+                        new ShippingPlanDetailModel
+                        {
+                            ProductId = productDatabase.Id,
+                            Quantity = item.QuantityOrder,
+                            Price = item.SalesPrice,
+                            Amount = item.QuantityOrder * item.SalesPrice,
+                            ShippingMode = item.ShippingMode,
+                        }
+                    }
                 };
-
-                var shippingPlanDetails = new List<ShippingPlanDetailModel>();
-
-                var groupByProduct = group.ShippingPlans
-                                                  .GroupBy(x => x.ProductNumber)
-                                                  .Select(g => new
-                                                  {
-                                                      ProductNumber = g.Key,
-                                                      Quantity = g.Sum(x => x.QuantityOrder),
-                                                      SalesPrice = g.FirstOrDefault(x => x.ProductNumber == g.Key).SalesPrice,
-                                                      ShippingMode = g.FirstOrDefault(x => x.ProductNumber == g.Key).ShippingMode,
-                                                      ShippingPlans = g.ToList()
-                                                  });
-
-                foreach (var product in groupByProduct)
-                {
-                    var productDatabase = await Mediator.Send(new GetProductByProductNumberQuery 
-                    { 
-                        ProductNumber = product.ProductNumber 
-                    });
-
-                    if (productDatabase == null)
-                    {
-                        invalidDatas.AddRange(product.ShippingPlans);
-                        continue;
-                    }
-
-                    if (product.Quantity * product.SalesPrice < 0)
-                    {
-                        invalidDatas.AddRange(product.ShippingPlans);
-                        continue;
-                    }
-
-                    shippingPlanDetails.Add(new ShippingPlanDetailModel
-                    {
-                        ProductId = productDatabase.Id,
-                        Quantity = product.Quantity,
-                        ShippingPlanId = shippingPlan.Id,
-                        Price = product.SalesPrice,
-                        Amount = product.Quantity * product.SalesPrice,
-                        ShippingMode = product.ShippingMode
-                    });
-                }
-
-                shippingPlan.ShippingPlanDetails = shippingPlanDetails;
-
-                var result = await Mediator.Send(new CreateNewShippingPLanCommand { ShippingPlan = shippingPlan });
+                
+                var result = await Mediator.Send(new CreateNewShippingPLanCommand 
+                { 
+                    ShippingPlan = shippingPlan 
+                });
 
                 if (!result.Succeeded)
                 {

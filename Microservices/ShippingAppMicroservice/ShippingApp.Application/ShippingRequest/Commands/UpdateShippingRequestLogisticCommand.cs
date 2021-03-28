@@ -38,11 +38,12 @@ namespace ShippingApp.Application.ShippingRequest.Commands
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            entity.BillToCustomer = request.ShippingRequestLogistic.BillToCustomer;
+            entity.BillTo = request.ShippingRequestLogistic.BillTo;
+            entity.BillToAddress = request.ShippingRequestLogistic.BillToAddress;
             entity.CustomDeclarationNumber = request.ShippingRequestLogistic.CustomDeclarationNumber;
             entity.Notes = request.ShippingRequestLogistic.Notes;
-            entity.ReceiverCustomer = request.ShippingRequestLogistic.ReceiverCustomer;
-            entity.ReceiverAddress = request.ShippingRequestLogistic.ReceiverAddress;
+            entity.ShipTo = request.ShippingRequestLogistic.ShipTo;
+            entity.ShipToAddress = request.ShippingRequestLogistic.ShipToAddress;
             entity.TrackingNumber = request.ShippingRequestLogistic.TrackingNumber;
             entity.GrossWeight = request.ShippingRequestLogistic.GrossWeight;
 

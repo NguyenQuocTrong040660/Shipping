@@ -73,11 +73,12 @@ namespace ShippingApp.Application.ShippingRequest.Commands
                 }
             }
 
-            shippingRequest.CustomerName = request.ShippingRequest.CustomerName;
-            shippingRequest.SemlineNumber = request.ShippingRequest.SemlineNumber;
-            shippingRequest.PurchaseOrder = request.ShippingRequest.PurchaseOrder;
-            shippingRequest.ShippingDate = request.ShippingRequest.ShippingDate;
-            shippingRequest.SalesID = request.ShippingRequest.SalesID;
+            //shippingRequest.CustomerName = request.ShippingRequest.CustomerName;
+            //shippingRequest.SemlineNumber = request.ShippingRequest.SemlineNumber;
+            //shippingRequest.PurchaseOrder = request.ShippingRequest.PurchaseOrder;
+            //shippingRequest.ShippingDate = request.ShippingRequest.ShippingDate;
+            //shippingRequest.SalesID = request.ShippingRequest.SalesID;
+
             shippingRequest.Notes = request.ShippingRequest.Notes;
 
             if (await _context.SaveChangesAsync() == 0)

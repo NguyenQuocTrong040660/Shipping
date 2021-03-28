@@ -24,16 +24,10 @@ namespace ShippingApp.Domain.Models
                 return PrefixTable.ShippingRequest;
             }
         }
-        public string CustomerName { get; set; }
-        public DateTime ShippingDate { get; set; }
-        public string SalesID { get; set; }
-        public string SemlineNumber { get; set; }
         public string Notes { get; set; }
-        public string PurchaseOrder { get; set; }
         public string Status { get; set; }
 
-        public int ShippingRequestLogisticId { get; set; }
-        public virtual ShippingRequestLogisticModel ShippingRequestLogistic { get; set; }
+        public virtual ICollection<ShippingRequestLogisticModel> ShippingRequestLogistic { get; set; }
         public virtual ICollection<ShippingRequestDetailModel> ShippingRequestDetails { get; set; }
         public virtual ICollection<ShippingMarkModel> ShippingMarks { get; set; }
     }

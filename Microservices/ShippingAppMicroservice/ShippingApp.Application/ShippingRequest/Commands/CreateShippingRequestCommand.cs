@@ -50,24 +50,13 @@ namespace ShippingApp.Application.ShippingRequest.Commands
                 throw new Exception("Failed to try parse value from config table");
             }
 
-            if ((request.ShippingRequest.ShippingDate - DateTime.Now).TotalDays <= numberDays) 
-            {
-                return (Result.Failure($"Shipping Date should be larger than submit date {numberDays} days"), null);
-            }
+            //if ((request.ShippingRequest.ShippingDate - DateTime.Now).TotalDays <= numberDays) 
+            //{
+            //    return (Result.Failure($"Shipping Date should be larger than submit date {numberDays} days"), null);
+            //}
 
             var entity = _mapper.Map<Entities.ShippingRequest>(request.ShippingRequest);
-
-            entity.ShippingRequestLogistic = new Entities.ShippingRequestLogistic
-            {
-                CustomDeclarationNumber = "",
-                BillToCustomer = string.Empty,
-                Notes = string.Empty,
-                ReceiverCustomer = string.Empty,
-                ReceiverAddress = string.Empty,
-                TrackingNumber = string.Empty,
-                GrossWeight = 0,
-            };
-
+            
             var result = await _shippingAppRepository.AddAsync(entity);
 
             var response = await BuildShippingResponse(entity);

@@ -6,11 +6,15 @@ namespace ShippingApp.Domain.Models
         public int Id { get; set; }
         public string Notes { get; set; }
         public float GrossWeight { get; set; }
-        public string BillToCustomer { get; set; }
-        public string ReceiverCustomer { get; set; }
-        public string ReceiverAddress { get; set; }
         public string CustomDeclarationNumber { get; set; }
         public string TrackingNumber { get; set; }
+
+
+        public string BillTo { get; set; }
+        public string BillToAddress { get; set; }
+        public string ShipTo { get; set; }
+        public string ShipToAddress { get; set; }
+
 
         public string Forwarder { get; set; }
         public float NetWeight { get; set; }

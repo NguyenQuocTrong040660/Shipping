@@ -11,6 +11,16 @@ namespace ShippingApp.Domain.Models
         public float Amount { get; set; }
         public int ShippingRequestId { get; set; }
         public int ProductId { get; set; }
+
+        public string SemlineNumber { get; set; }
+        public string PurchaseOrder { get; set; }
+        public string SalesID { get; set; }
+        public DateTime ShippingDate { get; set; }
+        public string CustomerName { get; set; }
+        public int AccountNumber { get; set; }
+        public int ProductLine { get; set; }
+
+
         public virtual ProductModel Product { get; set; }
         public virtual ShippingRequestModel ShippingRequest { get; set; }
     }

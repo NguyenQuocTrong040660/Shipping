@@ -13,7 +13,9 @@ namespace ShippingApp.Domain.Entities
         public DateTime ShippingDate { get; set; }
         public string SalesID { get; set; }
         public string SemlineNumber { get; set; }
-        public string RefId { get; set; }
+
+        //public string RefId { get; set; }
+
         public string Notes { get; set; }
 
         public string BillTo { get; set; }

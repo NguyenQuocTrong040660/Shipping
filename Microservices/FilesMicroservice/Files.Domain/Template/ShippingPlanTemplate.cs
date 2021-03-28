@@ -6,16 +6,6 @@ namespace Files.Domain.Template
     public class ShippingPlanTemplate
     {
         [ValidateDataType(IsRequired = true)]
-
-        public string ShippingPlanId
-        {
-            get
-            {
-                return string.Join("-", SalesID, SemlineNumber, ProductNumber);
-            }
-        }
-        
-        [ValidateDataType(IsRequired = true)]
         public string CustomerName { get; set; }
 
         [ValidateDataType(IsRequired = true)]
