@@ -90,6 +90,12 @@
       <tr>
         <ng-container *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
+            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+              <td class="p-text-center">
+                <p-tableRadioButton [value]="item"></p-tableRadioButton>
+              </td>
+            </ng-container>
+
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
               <td>
                 {{ item[col.field] }}

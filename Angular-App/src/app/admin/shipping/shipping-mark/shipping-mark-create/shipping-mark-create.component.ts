@@ -70,7 +70,12 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
   }
 
   canNavigateToSummaryStep() {
-    return this.shippingMarkShippings.filter((item) => item['selectedReceivedMarks'] && item['selectedReceivedMarks'].length === 0).length > 0;
+    return (
+      this.shippingMarkShippings.filter(
+        (item) =>
+          (item['selectedReceivedMarks'] && item['selectedReceivedMarks'].length === 0) || item.quantity !== this.calculateQuantityReceivedMark(item['selectedReceivedMarks'])
+      ).length > 0
+    );
   }
 
   onSubmit() {

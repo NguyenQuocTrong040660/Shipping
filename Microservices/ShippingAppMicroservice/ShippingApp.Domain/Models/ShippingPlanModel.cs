@@ -2,6 +2,7 @@
 using ShippingApp.Domain.Enumerations;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShippingApp.Domain.Models
 {
@@ -30,14 +31,48 @@ namespace ShippingApp.Domain.Models
         public string SemlineNumber { get; set; }
         public string Notes { get; set; }
         public string PurchaseOrder { get; set; }
-        public string RefId { get; set; }
+        public string RefId 
+        {
+            get
+            {
+                return string.Join("-", SalesID, SemlineNumber, Product.ProductNumber);
+            }
+        }
 
         public string BillTo { get; set; }
         public string BillToAddress { get; set; }
         public string ShipTo { get; set; }
         public string ShipToAddress { get; set; }
-        public string AccountNumber { get; set; }
+        public int AccountNumber { get; set; }
+        public int ProductLine { get; set; }
 
+        [IgnoreMap]
+        public ProductModel Product
+        {
+            get
+            {
+                if (ShippingPlanDetails == null || !ShippingPlanDetails.Any())
+                {
+                    return null;
+                }
+
+                return ShippingPlanDetails.ToArray()[0].Product;
+            }
+        }
+
+        [IgnoreMap]
+        public ShippingPlanDetailModel ShippingPlanDetail
+        {
+            get
+            {
+                if (ShippingPlanDetails == null || !ShippingPlanDetails.Any())
+                {
+                    return null;
+                }
+
+                return ShippingPlanDetails.ToArray()[0];
+            }
+        }
 
         public virtual ICollection<ShippingPlanDetailModel> ShippingPlanDetails { get; set; }
     }

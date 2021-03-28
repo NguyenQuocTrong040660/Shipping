@@ -30,19 +30,10 @@ namespace ShippingApp.Domain.Models
         public string SemlineNumber { get; set; }
         public string Notes { get; set; }
         public string PurchaseOrder { get; set; }
-
         public string Status { get; set; }
-
-        public string BillTo { get; set; }
-        public string BillToAddress { get; set; }
-        public string ShipTo { get; set; }
-        public string ShipToAddress { get; set; }
-        public string AccountNumber { get; set; }
-
 
         public int ShippingRequestLogisticId { get; set; }
         public virtual ShippingRequestLogisticModel ShippingRequestLogistic { get; set; }
-
         public virtual ICollection<ShippingRequestDetailModel> ShippingRequestDetails { get; set; }
         public virtual ICollection<ShippingMarkModel> ShippingMarks { get; set; }
     }

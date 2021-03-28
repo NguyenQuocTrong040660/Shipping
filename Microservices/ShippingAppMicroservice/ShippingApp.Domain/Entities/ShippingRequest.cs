@@ -15,18 +15,10 @@ namespace ShippingApp.Domain.Entities
         public string SemlineNumber { get; set; }
         public string Notes { get; set; }
         public int ShippingRequestLogisticId { get; set; }
-
         public string Status { get; set; }
-
-        public string BillTo { get; set; }
-        public string BillToAddress { get; set; }
-        public string ShipTo { get; set; }
-        public string ShipToAddress { get; set; }
-        public string AccountNumber { get; set; }
 
 
         public virtual ShippingRequestLogistic ShippingRequestLogistic { get; set; }
-
         public virtual ICollection<ShippingRequestDetail> ShippingRequestDetails { get; set; }
         public virtual ICollection<ShippingMarkShipping> ShippingMarkShippings { get; set; }
     }

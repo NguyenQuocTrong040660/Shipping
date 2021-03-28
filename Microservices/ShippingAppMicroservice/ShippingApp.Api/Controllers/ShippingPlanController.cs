@@ -55,8 +55,13 @@ namespace ShippingApp.Api.Controllers
                     SalesID = item.SalesID,
                     ShippingDate = item.ShippingDate,
                     PurchaseOrder = item.PurchaseOrder,
-                    RefId = item.ShippingPlanId,
                     SemlineNumber = item.SemlineNumber,
+                    BillTo = item.BillTo,
+                    BillToAddress = item.BillToAddress,
+                    ShipTo = item.ShipTo,
+                    ShipToAddress = item.ShipToAddress,
+                    ProductLine = item.ProductLine,
+                    AccountNumber = item.AccountNumber,
                 };
 
                 var shippingPlanDetails = new List<ShippingPlanDetailModel>();

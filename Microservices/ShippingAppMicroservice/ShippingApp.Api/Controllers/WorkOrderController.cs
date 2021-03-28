@@ -53,6 +53,10 @@ namespace ShippingApp.Api.Controllers
                 {
                     Notes = item?.Notes ?? string.Empty,
                     RefId = group.WorkOrderId,
+                    CreatedDate = DateTime.Now,
+                    PartRevision = item.PartRevision,
+                    CustomerName = item.CustomerName,
+                    ProcessRevision = item.ProcessRevision
                 };
 
                 var workOderDetails = new List<WorkOrderDetailModel>();
@@ -66,15 +70,24 @@ namespace ShippingApp.Api.Controllers
                                                       WorkOders = g.ToList()
                                                   });
 
+                if (groupByProduct.Count() > 1)
+                {
+                    invalidworkOrders.AddRange(group.WorkOrderDetails);
+                    _logger.LogError("Work Order can only have one Product");
+
+                    continue;
+                }
+
                 foreach (var product in groupByProduct)
                 {
-                    var productDatabase = await Mediator.Send(new GetProductByProductNumberQuery 
-                    { 
+                    var productDatabase = await Mediator.Send(new GetProductByProductNumberQuery
+                    {
                         ProductNumber = product.ProductNumber
                     });
 
                     if (productDatabase == null)
                     {
+                        _logger.LogError("Could not find any product with {0}", product.ProductNumber);
                         invalidworkOrders.AddRange(product.WorkOders);
                         continue;
                     }
@@ -93,6 +106,7 @@ namespace ShippingApp.Api.Controllers
 
                 if (!result.Succeeded)
                 {
+                    _logger.LogError("Unable to create work order by importing");
                     invalidworkOrders.AddRange(group.WorkOrderDetails);
                 }
             }

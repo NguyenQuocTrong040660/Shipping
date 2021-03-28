@@ -11,6 +11,11 @@ namespace ShippingApp.Domain.Entities
         public string ReceiverAddress { get; set; }
         public string CustomDeclarationNumber { get; set; }
         public string TrackingNumber { get; set; }
+
+        public string Forwarder { get; set; }
+        public float NetWeight { get; set; }
+        public string Dimension { get; set; }
+
         public int ShippingRequestId { get; set; }
         public string Notes { get; set; }
         public virtual ShippingRequest ShippingRequest { get; set; }

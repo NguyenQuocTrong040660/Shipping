@@ -4124,16 +4124,16 @@ export interface WorkOrderModel extends AuditableEntityModel {
     prefix?: string | undefined;
     refId?: string | undefined;
     notes?: string | undefined;
+    status?: string | undefined;
+    product?: ProductModel | undefined;
+    workOrderDetail?: WorkOrderDetailModel | undefined;
+    remainQuantity?: number;
+    partRevision?: string | undefined;
+    processRevision?: string | undefined;
+    customerName?: string | undefined;
+    createdDate?: Date | undefined;
     workOrderDetails?: WorkOrderDetailModel[] | undefined;
     movementRequestDetails?: MovementRequestDetailModel[] | undefined;
-}
-
-export interface WorkOrderDetailModel extends AuditableEntityModel {
-    quantity?: number;
-    workOrderId?: number;
-    workOrder?: WorkOrderModel | undefined;
-    productId?: number;
-    product?: ProductModel | undefined;
 }
 
 export interface ProductModel extends AuditableEntityModel {
@@ -4179,6 +4179,14 @@ export interface ShippingPlanModel extends AuditableEntityModel {
     notes?: string | undefined;
     purchaseOrder?: string | undefined;
     refId?: string | undefined;
+    billTo?: string | undefined;
+    billToAddress?: string | undefined;
+    shipTo?: string | undefined;
+    shipToAddress?: string | undefined;
+    accountNumber?: number;
+    productLine?: number;
+    product?: ProductModel | undefined;
+    shippingPlanDetail?: ShippingPlanDetailModel | undefined;
     shippingPlanDetails?: ShippingPlanDetailModel[] | undefined;
 }
 
@@ -4220,6 +4228,9 @@ export interface ShippingRequestLogisticModel extends AuditableEntityModel {
     receiverAddress?: string | undefined;
     customDeclarationNumber?: string | undefined;
     trackingNumber?: string | undefined;
+    forwarder?: string | undefined;
+    netWeight?: number;
+    dimension?: string | undefined;
     shippingRequestId?: number;
     shippingRequest?: ShippingRequestModel | undefined;
 }
@@ -4324,6 +4335,14 @@ export interface ReceivedMarkSummaryModel extends AuditableEntityModel {
     product?: ProductModel | undefined;
 }
 
+export interface WorkOrderDetailModel extends AuditableEntityModel {
+    quantity?: number;
+    workOrderId?: number;
+    workOrder?: WorkOrderModel | undefined;
+    productId?: number;
+    product?: ProductModel | undefined;
+}
+
 export interface UnstuffReceivedMarkRequest {
     receivedMarkPrintingId?: number;
     unstuffQuantity?: number;
@@ -4363,6 +4382,12 @@ export interface ShippingPlanImportModel {
     shippingMode?: string | undefined;
     shippingDate?: Date;
     notes?: string | undefined;
+    billTo?: string | undefined;
+    billToAddress?: string | undefined;
+    shipTo?: string | undefined;
+    shipToAddress?: string | undefined;
+    accountNumber?: number;
+    productLine?: number;
 }
 
 export interface ShippingRequestResponse {
@@ -4376,6 +4401,9 @@ export interface WorkOrderImportModel {
     productNumber?: string | undefined;
     quantity?: number;
     notes?: string | undefined;
+    partRevision?: string | undefined;
+    processRevision?: string | undefined;
+    customerName?: string | undefined;
 }
 
 export interface FileResponse {

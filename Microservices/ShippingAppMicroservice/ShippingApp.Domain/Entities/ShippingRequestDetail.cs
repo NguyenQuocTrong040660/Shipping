@@ -12,6 +12,7 @@ namespace ShippingApp.Domain.Entities
         public float Amount { get; set; }
         public int ShippingRequestId { get; set; }
         public int ProductId { get; set; }
+
         public virtual Product Product { get; set; }
         public virtual ShippingRequest ShippingRequest { get; set; }
     }

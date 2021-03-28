@@ -5,6 +5,9 @@ using System;
 using Entities = ShippingApp.Domain.Entities;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+using ShippingApp.Domain.Enumerations;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShippingApp.Application.MovementRequest.Commands
 {
@@ -27,7 +30,46 @@ namespace ShippingApp.Application.MovementRequest.Commands
 
         public async Task<Result> Handle(DeleteMovementRequestCommand request, CancellationToken cancellationToken)
         {
-            return await _shippingAppRepository.DeleteAsync(request.Id);
+            var result = await _shippingAppRepository.DeleteAsync(request.Id);
+
+            if (result.Succeeded)
+            {
+                await UpdateWorkOrderAsync();
+            }
+
+            return result;
+        }
+
+        private async Task UpdateWorkOrderAsync()
+        {
+            var workOrders = await _context.WorkOrders
+                    .Include(x => x.WorkOrderDetails)
+                    .Include(x => x.MovementRequestDetails)
+                    .ToListAsync();
+
+            foreach (var item in workOrders)
+            {
+                if (GetRemainQuantityWorkOrder(item) == 0)
+                {
+                    item.Status = nameof(WorkOrderStatus.Close);
+                }
+                else
+                {
+                    item.Status = nameof(WorkOrderStatus.Start);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        private int GetRemainQuantityWorkOrder(Entities.WorkOrder workOrder)
+        {
+            if (workOrder.WorkOrderDetails == null || workOrder.MovementRequestDetails == null || !workOrder.MovementRequestDetails.Any())
+            {
+                return workOrder.WorkOrderDetails.First().Quantity;
+            }
+
+            return workOrder.WorkOrderDetails.First().Quantity - workOrder.MovementRequestDetails.Sum(x => x.Quantity);
         }
     }
 }

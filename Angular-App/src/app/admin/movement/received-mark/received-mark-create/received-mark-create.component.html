@@ -153,28 +153,30 @@
     <ng-container *ngIf="stepIndex === 2">
       <p-card>
         <ng-template pTemplate="content">
-          <p-table dataKey="id" [value]="dataGroupByProduct">
+          <p-table dataKey="id" [value]="receivedMarkMovements">
             <ng-template pTemplate="header" let-columns>
               <tr>
+                <th class="p-text-center">Movement Request</th>
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
-                <th class="p-text-center">Quantity</th>
+                <th class="p-text-center">Quantity<span class="p-invalid"> *</span></th>
               </tr>
             </ng-template>
 
             <ng-template pTemplate="body" let-item>
               <tr>
-                <td>
-                  {{ item?.productNumber }}
-                </td>
+                <td>{{ item?.movementRequest?.identifier }}</td>
 
                 <td>
-                  {{ item?.productName }}
+                  {{ item?.product?.productNumber }}
+                </td>
+                <td>
+                  {{ item?.product?.productName }}
                 </td>
 
                 <td class="p-text-center">
-                  {{ item?.qtyPerPackage }}
+                  {{ item?.product?.qtyPerPackage }}
                 </td>
 
                 <td class="p-text-center">

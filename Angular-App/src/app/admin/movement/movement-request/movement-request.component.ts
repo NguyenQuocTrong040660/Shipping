@@ -90,7 +90,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
   _mapToSelectItems(workOrders: WorkOrderModel[]): SelectItem[] {
     return workOrders.map((p) => ({
       value: p,
-      label: `${p.identifier}`,
+      label: `${p.identifier} | ${p.refId} | ${p.remainQuantity}`,
     }));
   }
 

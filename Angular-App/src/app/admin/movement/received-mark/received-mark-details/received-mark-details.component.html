@@ -68,7 +68,7 @@
 
               <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
                 <td class="p-text-center">
-                  <ng-container *ngIf="item['printCount'] !== 0; else canUnSutff">
+                  <ng-container *ngIf="item['printCount'] !== 0">
                     <button
                       [disabled]="!canRePrint"
                       [pTooltip]="getHelpText()"
@@ -81,19 +81,17 @@
                       (click)="handleRePrintMark(item)"
                     ></button>
                   </ng-container>
-                  <ng-template #canUnSutff>
-                    <button
-                      *ngIf="item['printCount'] === 0"
-                      (click)="handleUnStuffMark(item)"
-                      pButton
-                      pRipple
-                      tooltipPosition="left"
-                      type="button"
-                      pTooltip="Unstuff Mark"
-                      icon="pi pi-clone"
-                      class="p-button-rounded p-button-secondary p-button-text"
-                    ></button>
-                  </ng-template>
+
+                  <button
+                    (click)="handleUnStuffMark(item)"
+                    pButton
+                    pRipple
+                    tooltipPosition="left"
+                    type="button"
+                    pTooltip="Unstuff Mark"
+                    icon="pi pi-clone"
+                    class="p-button-rounded p-button-secondary p-button-text"
+                  ></button>
                 </td>
               </ng-container>
             </ng-container>

@@ -33,6 +33,12 @@ namespace ShippingApp.Persistence
                         Key = ConfigKey.LogisticDeptEmail,
                         Value = "logistic@gmail.com",
                         Descriptions = "To Email of Logistic Department"
+                    },
+                      new Config
+                    {
+                        Key = ConfigKey.PlannerDeptEmail,
+                        Value = "planner@gmail.com",
+                        Descriptions = "To Email of Planner Department"
                     }
                 };
 
@@ -53,24 +59,6 @@ namespace ShippingApp.Persistence
 
                 var products = new List<Product>
                 {
-                    new Product
-                    {
-                        ProductName = "Product Name 1",
-                        ProductNumber = "Product Number 1",
-                        QtyPerPackage = 20
-                    },
-                    new Product
-                    {
-                        ProductName = "Product Name 2",
-                        ProductNumber = "Product Number 2",
-                        QtyPerPackage = 50
-                    },
-                    new Product
-                    {
-                        ProductName = "Product Name 3",
-                        ProductNumber = "Product Number 3",
-                        QtyPerPackage = 100
-                    }
                 };
 
                 for (int i = 0; i < 5; i++)

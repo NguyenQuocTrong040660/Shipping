@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using ShippingApp.Domain.Enumerations;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShippingApp.Domain.Models
 {
@@ -24,8 +26,54 @@ namespace ShippingApp.Domain.Models
         }
         public string RefId { get; set; }
         public string Notes { get; set; }
-
         public string Status { get; set; }
+
+        [IgnoreMap]
+        public ProductModel Product
+        {
+            get
+            {
+                if (WorkOrderDetails == null || !WorkOrderDetails.Any())
+                {
+                    return null;
+                }
+
+                return WorkOrderDetails.ToArray()[0].Product;
+            }
+        }
+
+        [IgnoreMap]
+        public WorkOrderDetailModel WorkOrderDetail
+        {
+            get
+            {
+                if (WorkOrderDetails == null || !WorkOrderDetails.Any())
+                {
+                    return null;
+                }
+
+                return WorkOrderDetails.ToArray()[0];
+            }
+        }
+
+        [IgnoreMap]
+        public int RemainQuantity
+        {
+            get
+            {
+                if (WorkOrderDetail == null || MovementRequestDetails == null || !MovementRequestDetails.Any())
+                {
+                    return WorkOrderDetail.Quantity;
+                }
+
+                return WorkOrderDetail.Quantity - MovementRequestDetails.Sum(x => x.Quantity);
+            }
+        }
+
+        public string PartRevision { get; set; }
+        public string ProcessRevision { get; set; }
+        public string CustomerName { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
         public virtual ICollection<WorkOrderDetailModel> WorkOrderDetails { get; set; }
         public virtual ICollection<MovementRequestDetailModel> MovementRequestDetails { get; set; }

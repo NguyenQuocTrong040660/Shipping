@@ -6,7 +6,14 @@ namespace Files.Domain.Template
     public class ShippingPlanTemplate
     {
         [ValidateDataType(IsRequired = true)]
-        public string ShippingPlanId { get; set; }
+
+        public string ShippingPlanId
+        {
+            get
+            {
+                return string.Join("-", SalesID, SemlineNumber, ProductNumber);
+            }
+        }
         
         [ValidateDataType(IsRequired = true)]
         public string CustomerName { get; set; }
@@ -33,5 +40,12 @@ namespace Files.Domain.Template
         [ValidateDataType(IsDateTime = true)]
         public DateTime ShippingDate { get; set; }   
         public string Notes { get; set; }
+
+        public string BillTo { get; set; }
+        public string BillToAddress { get; set; }
+        public string ShipTo { get; set; }
+        public string ShipToAddress { get; set; }
+        public string AccountNumber { get; set; }
+        public string ProductLine { get; set; }
     }
 }

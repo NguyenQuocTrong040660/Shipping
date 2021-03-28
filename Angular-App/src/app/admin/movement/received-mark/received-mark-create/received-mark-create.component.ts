@@ -126,22 +126,6 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
         break;
       }
       case 1: {
-        this.dataGroupByProduct = [];
-
-        const products = this.receivedMarkMovements.map((i) => i.product);
-        const productNumbers = this.receivedMarkMovements.map((i) => i.product.productNumber);
-        const uniqueProducts = [...new Set(productNumbers)];
-        uniqueProducts.forEach((item) => {
-          const product = {
-            productNumber: item,
-            productName: products.find((i) => i.productNumber === item).productName,
-            qtyPerPackage: products.find((i) => i.productNumber === item).qtyPerPackage,
-            quantity: this.receivedMarkMovements.map((i) => i.product.productNumber === item && i.quantity).reduce((a: number, b: number) => a + b, 0),
-          };
-
-          this.dataGroupByProduct.push(product);
-        });
-
         break;
       }
     }

@@ -90,7 +90,7 @@
               {{ item[col.field] | date: 'dd/MM/yyyy' }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-              {{ item['workOrderDetails'][0][col.field][col.subField] }}
+              {{ item[col.field][col.subField] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
               {{ item[col.field] }}

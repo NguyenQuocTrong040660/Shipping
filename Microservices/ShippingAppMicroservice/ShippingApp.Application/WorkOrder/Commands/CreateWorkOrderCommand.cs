@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Application.Common.Results;
 using System.Linq;
+using ShippingApp.Domain.Enumerations;
 
 namespace ShippingApp.Application.WorkOrder.Commands
 {
@@ -34,6 +35,8 @@ namespace ShippingApp.Application.WorkOrder.Commands
             entity.WorkOrderDetails.ToList().ForEach(i => {
                 i.Product = null;
             });
+
+            entity.Status = nameof(WorkOrderStatus.Start);
 
             return await _shippingAppRepository.AddAsync(entity);
         }

@@ -9,5 +9,6 @@ namespace ShippingApp.Domain.Enumerations
         public static string MinShippingDay = nameof(MinShippingDay);
         public static string ShippingDeptEmail = nameof(ShippingDeptEmail);
         public static string LogisticDeptEmail = nameof(LogisticDeptEmail);
+        public static string PlannerDeptEmail = nameof(PlannerDeptEmail);
     }
 }
