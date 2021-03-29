@@ -14,6 +14,7 @@ namespace ShippingApp.Application.ShippingRequest.Commands
     public class UpdateShippingRequestLogisticCommand : IRequest<Result>
     {
         public int ShippingRequestId { get; set; }
+        public int ProductId { get; set; }
         public ShippingRequestLogisticModel ShippingRequestLogistic { get; set; }
     }
 
@@ -31,15 +32,15 @@ namespace ShippingApp.Application.ShippingRequest.Commands
 
         public async Task<Result> Handle(UpdateShippingRequestLogisticCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.ShippingRequestLogistics.FirstOrDefaultAsync(x => x.ShippingRequestId == request.ShippingRequestId);
+            var entity = await _context.ShippingRequestLogistics
+                .FirstOrDefaultAsync(x => x.ShippingRequestId == request.ShippingRequestId 
+                && x.ProductId == request.ProductId);
 
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            entity.BillTo = request.ShippingRequestLogistic.BillTo;
-            entity.BillToAddress = request.ShippingRequestLogistic.BillToAddress;
             entity.CustomDeclarationNumber = request.ShippingRequestLogistic.CustomDeclarationNumber;
             entity.Notes = request.ShippingRequestLogistic.Notes;
             entity.ShipTo = request.ShippingRequestLogistic.ShipTo;
@@ -47,8 +48,16 @@ namespace ShippingApp.Application.ShippingRequest.Commands
             entity.TrackingNumber = request.ShippingRequestLogistic.TrackingNumber;
             entity.GrossWeight = request.ShippingRequestLogistic.GrossWeight;
 
-            await _context.SaveChangesAsync();
+            entity.BillTo = request.ShippingRequestLogistic.BillTo;
+            entity.BillToAddress = request.ShippingRequestLogistic.BillToAddress;
+            entity.ShipTo = request.ShippingRequestLogistic.ShipTo;
+            entity.ShipToAddress = request.ShippingRequestLogistic.ShipToAddress;
 
+            entity.Forwarder = request.ShippingRequestLogistic.Forwarder;
+            entity.NetWeight = request.ShippingRequestLogistic.NetWeight;
+            entity.Dimension = request.ShippingRequestLogistic.Dimension;
+
+            await _context.SaveChangesAsync();
             return Result.Success();
         }
     }

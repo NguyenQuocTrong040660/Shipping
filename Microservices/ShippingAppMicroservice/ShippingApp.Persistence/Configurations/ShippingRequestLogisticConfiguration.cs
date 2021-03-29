@@ -13,6 +13,11 @@ namespace ShippingApp.Persistence.Configurations
             builder.HasOne<ShippingRequest>(s => s.ShippingRequest)
                 .WithMany(g => g.ShippingRequestLogistics)
                 .HasForeignKey(s => s.ShippingRequestId);
+
+
+            builder.HasOne<Product>(s => s.Product)
+                .WithMany(g => g.ShippingRequestLogistics)
+                .HasForeignKey(s => s.ProductId);
         }
     }
 }

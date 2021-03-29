@@ -8,14 +8,13 @@
           <div class="p-field">
             <label for="customerName">Shipping Plan</label>
             <p-multiSelect
-              styleClass="p-dropdown-custom"
               appendTo="body"
               filterBy="label"
               placeholder="Please select a Shipping Plans"
               [filter]="true"
               [showClear]="true"
               [(ngModel)]="selectedShippingPlans"
-              [options]="_mapToSelectShippingPlanItem(shippingPlans)"
+              [options]="selectItems"
             >
             </p-multiSelect>
           </div>

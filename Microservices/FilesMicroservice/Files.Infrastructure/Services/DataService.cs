@@ -50,7 +50,7 @@ namespace Files.Infrastructure.Services
                     {
                         continue;
                     }
-                    
+
                     if (customeAttr.IsRequired)
                     {
                         if (value == null)

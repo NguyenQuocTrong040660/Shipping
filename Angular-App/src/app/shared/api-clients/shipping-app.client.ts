@@ -3521,11 +3521,14 @@ export class ShippingRequestClients {
         return _observableOf<Result>(<any>null);
     }
 
-    getShippingRequestLogistic(shippingRequestId: number): Observable<ShippingRequestLogisticModel> {
-        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/shippingrequestlogistic/{shippingRequestId}";
+    getShippingRequestLogistic(shippingRequestId: number, productId: number): Observable<ShippingRequestLogisticModel> {
+        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/shippingrequestlogistic/{shippingRequestId}/{productId}";
         if (shippingRequestId === undefined || shippingRequestId === null)
             throw new Error("The parameter 'shippingRequestId' must be defined.");
         url_ = url_.replace("{shippingRequestId}", encodeURIComponent("" + shippingRequestId));
+        if (productId === undefined || productId === null)
+            throw new Error("The parameter 'productId' must be defined.");
+        url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3577,11 +3580,14 @@ export class ShippingRequestClients {
         return _observableOf<ShippingRequestLogisticModel>(<any>null);
     }
 
-    updateShippingRequestLogistic(shippingRequestId: number, model: ShippingRequestLogisticModel): Observable<Result> {
-        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/shippingrequestlogistic/{shippingRequestId}";
+    updateShippingRequestLogistic(shippingRequestId: number, productId: number, model: ShippingRequestLogisticModel): Observable<Result> {
+        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/shippingrequestlogistic/{shippingRequestId}/{productId}";
         if (shippingRequestId === undefined || shippingRequestId === null)
             throw new Error("The parameter 'shippingRequestId' must be defined.");
         url_ = url_.replace("{shippingRequestId}", encodeURIComponent("" + shippingRequestId));
+        if (productId === undefined || productId === null)
+            throw new Error("The parameter 'productId' must be defined.");
+        url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(model);
@@ -4147,6 +4153,7 @@ export interface ProductModel extends AuditableEntityModel {
     shippingPlanDetails?: ShippingPlanDetailModel[] | undefined;
     movementRequestDetails?: MovementRequestDetailModel[] | undefined;
     shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
+    shippingRequestLogistics?: ShippingRequestLogisticModel[] | undefined;
     workOrderDetails?: WorkOrderDetailModel[] | undefined;
     receivedMarkMovements?: ReceivedMarkMovementModel[] | undefined;
     receivedMarkPrintings?: ReceivedMarkPrintingModel[] | undefined;
@@ -4233,6 +4240,8 @@ export interface ShippingRequestLogisticModel extends AuditableEntityModel {
     forwarder?: string | undefined;
     netWeight?: number;
     dimension?: string | undefined;
+    productId?: number;
+    product?: ProductModel | undefined;
     shippingRequestId?: number;
     shippingRequest?: ShippingRequestModel | undefined;
 }

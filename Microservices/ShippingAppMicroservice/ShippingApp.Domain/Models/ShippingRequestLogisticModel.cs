@@ -20,6 +20,9 @@ namespace ShippingApp.Domain.Models
         public float NetWeight { get; set; }
         public string Dimension { get; set; }
 
+        public int ProductId { get; set; }
+        public virtual ProductModel Product { get; set; }
+
         public int ShippingRequestId { get; set; }
         public virtual ShippingRequestModel ShippingRequest { get; set; }
     }

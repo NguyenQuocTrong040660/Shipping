@@ -27,6 +27,7 @@ namespace ShippingApp.Application.Product.Validations
                 .Must(NotExistInShippingMarkPrintings)
                 .Must(NotExistInShippingMarkShippings)
                 .Must(NotExistInShippingMarkSummaries)
+                .Must(NotExistInShippingRequestLogistics)
                 .WithMessage("Failed to delete product");
         }
 
@@ -78,6 +79,11 @@ namespace ShippingApp.Application.Product.Validations
         private bool NotExistInShippingMarkSummaries(int productId)
         {
             return _context.ShippingMarkSummaries.AsNoTracking().Any(x => x.ProductId == productId) == false;
+        }
+
+        private bool NotExistInShippingRequestLogistics(int productId)
+        {
+            return _context.ShippingRequestLogistics.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
     }
 }

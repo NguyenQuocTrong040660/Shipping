@@ -12,10 +12,14 @@ namespace ShippingApp.Domain.Entities
         public string Notes { get; set; }
         public int QtyPerPackage { get; set; }
 
+
         public virtual ICollection<ShippingPlanDetail> ShippingPlanDetails { get; set; }
         public virtual ICollection<MovementRequestDetail> MovementRequestDetails { get; set; }
         public virtual ICollection<ShippingRequestDetail> ShippingRequestDetails { get; set; }
+        public virtual ICollection<ShippingRequestLogistic> ShippingRequestLogistics { get; set; }
+
         public virtual ICollection<WorkOrderDetail> WorkOrderDetails { get; set; }
+
 
         public virtual ICollection<ReceivedMarkMovement> ReceivedMarkMovements { get; set; }
         public virtual ICollection<ReceivedMarkPrinting> ReceivedMarkPrintings { get; set; }

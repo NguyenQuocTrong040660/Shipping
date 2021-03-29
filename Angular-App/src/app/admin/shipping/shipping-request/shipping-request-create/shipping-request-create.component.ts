@@ -15,12 +15,14 @@ export class ShippingRequestCreateComponent implements OnInit {
   @Input() shippingRequestForm: FormGroup;
   @Input() titleDialog: string;
   @Input() isShowDialog: boolean;
-  products: ProductModel[] = [];
-  selectedShippingPlans: ShippingPlanModel[] = [];
   @Input() shippingPlans: ShippingPlanModel;
+  @Input() selectItems: SelectItem[] = [];
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
+
+  products: ProductModel[] = [];
+  selectedShippingPlans: ShippingPlanModel[] = [];
 
   stepItems: MenuItem[];
   stepIndex = 0;
@@ -163,13 +165,5 @@ export class ShippingRequestCreateComponent implements OnInit {
         shippingDate: null,
       };
     });
-  }
-
-  _mapToSelectShippingPlanItem(shippingPlans: ShippingPlanModel[]): SelectItem[] {
-    return shippingPlans.map((p) => ({
-      value: p,
-      label: `${p.identifier} | ${p.purchaseOrder} | ${p.customerName} | ${p.salesID} | ${p.semlineNumber} |
-        ${Utilities.ConvertDateBeforeSendToServer(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
-    }));
   }
 }

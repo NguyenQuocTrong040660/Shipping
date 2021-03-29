@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import { ShippingRequestClients, ShippingRequestDetailModel, ShippingRequestLogisticModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -13,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./shipping-request-documents.component.scss'],
 })
 export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() selectedShippingRequest: ShippingRequestModel;
+  @Input() selectedShippingRequestDetail: ShippingRequestDetailModel;
   @Input() titleDialog: string;
   @Input() isShowDialog: boolean;
 
@@ -30,8 +30,8 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
     return this.shippingRequestDocumentsForm.get('shippingRequestId');
   }
 
-  get shippingRequestIdentifierControl() {
-    return this.shippingRequestDocumentsForm.get('shippingRequestIdentifier');
+  get productIdControl() {
+    return this.shippingRequestDocumentsForm.get('productId');
   }
 
   get customDeclarationNumberControl() {
@@ -42,16 +42,8 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
     return this.shippingRequestDocumentsForm.get('grossWeight');
   }
 
-  get billToCustomerControl() {
-    return this.shippingRequestDocumentsForm.get('billToCustomer');
-  }
-
-  get receiverCustomerControl() {
-    return this.shippingRequestDocumentsForm.get('receiverCustomer');
-  }
-
-  get receiverAddressControl() {
-    return this.shippingRequestDocumentsForm.get('receiverAddress');
+  get billToControl() {
+    return this.shippingRequestDocumentsForm.get('billTo');
   }
 
   get trackingNumberControl() {
@@ -62,6 +54,30 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
     return this.shippingRequestDocumentsForm.get('notes');
   }
 
+  get billToAddressControl() {
+    return this.shippingRequestDocumentsForm.get('billToAddress');
+  }
+
+  get shipToControl() {
+    return this.shippingRequestDocumentsForm.get('shipTo');
+  }
+
+  get shipToAddressControl() {
+    return this.shippingRequestDocumentsForm.get('shipToAddress');
+  }
+
+  get forwarderControl() {
+    return this.shippingRequestDocumentsForm.get('forwarder');
+  }
+
+  get dimensionControl() {
+    return this.shippingRequestDocumentsForm.get('dimension');
+  }
+
+  get netWeightControl() {
+    return this.shippingRequestDocumentsForm.get('netWeight');
+  }
+
   constructor(private fb: FormBuilder, private shippingRequestClients: ShippingRequestClients, private notificationService: NotificationService) {}
 
   ngOnInit() {
@@ -69,25 +85,32 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
   }
 
   ngOnChanges() {
-    if (this.selectedShippingRequest) {
-      this.shippingRequestIdControl.setValue(this.selectedShippingRequest.id);
-      this.shippingRequestIdentifierControl.setValue(this.selectedShippingRequest.identifier);
-
-      this._getShippingRequestDocumentById(this.selectedShippingRequest.id);
+    if (this.selectedShippingRequestDetail) {
+      this._getShippingRequestDocument(this.selectedShippingRequestDetail.shippingRequestId, this.selectedShippingRequestDetail.productId);
     }
   }
 
   initForm() {
     this.shippingRequestDocumentsForm = this.fb.group({
+      id: [0],
       shippingRequestId: [0, [Validators.required]],
-      shippingRequestIdentifier: ['', [Validators.required]],
-      customDeclarationNumber: [''],
-      grossWeight: [0],
-      billToCustomer: [''],
-      receiverCustomer: [''],
-      trackingNumber: [''],
-      receiverAddress: [''],
+      customDeclarationNumber: ['', [Validators.required]],
+      trackingNumber: ['', [Validators.required]],
+      netWeight: [0, [Validators.required]],
+
+      grossWeight: [0, [Validators.required]],
+      billTo: ['', [Validators.required]],
+      billToAddress: ['', [Validators.required]],
+      shipTo: ['', [Validators.required]],
+      shipToAddress: ['', [Validators.required]],
+      forwarder: ['', [Validators.required]],
+      dimension: ['', [Validators.required]],
       notes: [''],
+      productId: [0, [Validators.required]],
+      lastModified: [null],
+      lastModifiedBy: [null],
+      product: [null],
+      shippingRequest: [null],
     });
   }
 
@@ -96,24 +119,28 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
   }
 
   onSubmit() {
-    this._updateShippingRequestDocument();
+    this._updateShippingRequestDocument(
+      this.selectedShippingRequestDetail.shippingRequestId,
+      this.selectedShippingRequestDetail.productId,
+      this.shippingRequestDocumentsForm.value
+    );
   }
 
-  _getShippingRequestDocumentById(shippingRequestId: number) {
+  _getShippingRequestDocument(shippingRequestId: number, productId: number) {
     this.shippingRequestClients
-      .getShippingRequestLogistic(shippingRequestId)
+      .getShippingRequestLogistic(shippingRequestId, productId)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (i) => {
-          this.shippingRequestDocumentsForm.patchValue(i);
+          this.shippingRequestDocumentsForm.setValue(i);
         },
         (_) => this.notificationService.error('Failed to Get Shipping Request Document')
       );
   }
 
-  _updateShippingRequestDocument() {
+  _updateShippingRequestDocument(shippingRequestId: number, productId: number, shippingDocument: ShippingRequestLogisticModel) {
     this.shippingRequestClients
-      .updateShippingRequestLogistic(this.shippingRequestIdControl.value, this.shippingRequestDocumentsForm.value)
+      .updateShippingRequestLogistic(shippingRequestId, productId, shippingDocument)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (result) => {

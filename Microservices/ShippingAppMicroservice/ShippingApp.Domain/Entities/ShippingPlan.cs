@@ -14,8 +14,6 @@ namespace ShippingApp.Domain.Entities
         public string SalesID { get; set; }
         public string SemlineNumber { get; set; }
 
-        //public string RefId { get; set; }
-
         public string Notes { get; set; }
 
         public string BillTo { get; set; }

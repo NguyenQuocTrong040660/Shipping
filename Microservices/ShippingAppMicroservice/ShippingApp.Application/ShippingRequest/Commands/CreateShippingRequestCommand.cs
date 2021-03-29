@@ -10,6 +10,7 @@ using ShippingApp.Application.Common.Results;
 using ShippingApp.Domain.Enumerations;
 using ShippingApp.Application.Config.Queries;
 using ShippingApp.Application.Product.Queries;
+using System.Collections.Generic;
 
 namespace ShippingApp.Application.ShippingRequest.Commands
 {
@@ -50,13 +51,29 @@ namespace ShippingApp.Application.ShippingRequest.Commands
                 throw new Exception("Failed to try parse value from config table");
             }
 
-            //if ((request.ShippingRequest.ShippingDate - DateTime.Now).TotalDays <= numberDays) 
-            //{
-            //    return (Result.Failure($"Shipping Date should be larger than submit date {numberDays} days"), null);
-            //}
+            foreach (var item in request.ShippingRequest.ShippingRequestDetails)
+            {
+                if ((item.ShippingDate - DateTime.Now).TotalDays <= numberDays)
+                {
+                    return (Result.Failure($"Shipping Date should be larger than submit date {numberDays} days"), null);
+                }
+            }
 
             var entity = _mapper.Map<Entities.ShippingRequest>(request.ShippingRequest);
-            
+
+            var shippingRequestLogistics = new List<Entities.ShippingRequestLogistic>();
+
+            foreach (var item in entity.ShippingRequestDetails)
+            {
+                shippingRequestLogistics.Add(new Entities.ShippingRequestLogistic
+                {
+                    ProductId = item.ProductId
+                });
+            }
+
+            entity.ShippingRequestLogistics = shippingRequestLogistics;
+
+
             var result = await _shippingAppRepository.AddAsync(entity);
 
             var response = await BuildShippingResponse(entity);

@@ -4,19 +4,19 @@
       <div class="p-grid">
         <div class="p-field p-col-3">
           <div>Purchase Order</div>
-          <div>{{ this.selectedShippingRequest.purchaseOrder }}</div>
+          <div>{{ selectedShippingRequestDetail.purchaseOrder }}</div>
         </div>
         <div class="p-field p-col-3">
           <div>Customer Name</div>
-          <div>{{ this.selectedShippingRequest.customerName }}</div>
+          <div>{{ selectedShippingRequestDetail.customerName }}</div>
         </div>
         <div class="p-field p-col-3">
           <div>Semline Number</div>
-          <div>{{ this.selectedShippingRequest.semlineNumber }}</div>
+          <div>{{ selectedShippingRequestDetail.semlineNumber }}</div>
         </div>
         <div class="p-field p-col-3">
           <div>Shipping Date</div>
-          <div>{{ this.selectedShippingRequest.shippingDate | date: 'dd/MM/yyyy' }}</div>
+          <div>{{ selectedShippingRequestDetail.shippingDate | date: 'dd/MM/yyyy' }}</div>
         </div>
       </div>
 
@@ -26,29 +26,55 @@
           <input pInputText id="customDeclarationNumber" [formControl]="customDeclarationNumberControl" type="text" />
         </div>
 
-        <div class="p-field">
-          <label for="grossWeight">Gross Weight (Kg)</label>
-          <p-inputNumber id="grossWeight" [formControl]="grossWeightControl"> </p-inputNumber>
+        <div class="p-grid">
+          <div class="p-field p-col-6">
+            <label for="grossWeight">Gross Weight (Kg)</label>
+            <p-inputNumber id="grossWeight" [formControl]="grossWeightControl"> </p-inputNumber>
+          </div>
+
+          <div class="p-field p-col-6">
+            <label for="netWeight">Net Weight (Kg)</label>
+            <p-inputNumber id="netWeight" [formControl]="netWeightControl"> </p-inputNumber>
+          </div>
         </div>
 
-        <div class="p-field">
-          <label for="billToCustomer">Bill To</label>
-          <input pInputText id="billToCustomer" [formControl]="billToCustomerControl" type="text" />
+        <div class="p-grid">
+          <div class="p-field p-col-6">
+            <label for="billTo">Bill To</label>
+            <input pInputText id="billTo" [formControl]="billToControl" type="text" />
+          </div>
+
+          <div class="p-field p-col-6">
+            <label for="billToAddress">Bill To Address</label>
+            <input pInputText id="billToAddress" [formControl]="billToAddressControl" type="text" />
+          </div>
         </div>
 
-        <div class="p-field">
-          <label for="receiverCustomer">Receiver</label>
-          <input pInputText id="receiverCustomer" [formControl]="receiverCustomerControl" type="text" />
-        </div>
+        <div class="p-grid">
+          <div class="p-field p-col-6">
+            <label for="shipTo">Ship To</label>
+            <input pInputText id="shipTo" [formControl]="shipToControl" type="text" />
+          </div>
 
-        <div class="p-field">
-          <label for="receiverAddress">Receiver Address</label>
-          <input pInputText id="receiverAddress" [formControl]="receiverAddressControl" type="text" />
+          <div class="p-field p-col-6">
+            <label for="shipToAddress">Ship To Address</label>
+            <input pInputText id="shipToAddress" [formControl]="shipToAddressControl" type="text" />
+          </div>
         </div>
 
         <div class="p-field">
           <label for="trackingNumber">Tracking Number</label>
           <input pInputText id="trackingNumber" [formControl]="trackingNumberControl" type="text" />
+        </div>
+
+        <div class="p-field">
+          <label for="forwarder">Forwarder</label>
+          <input pInputText id="forwarder" [formControl]="forwarderControl" type="text" />
+        </div>
+
+        <div class="p-field">
+          <label for="dimension">Dimension</label>
+          <input pInputText id="dimension" [formControl]="dimensionControl" type="text" />
         </div>
 
         <div class="p-field">
