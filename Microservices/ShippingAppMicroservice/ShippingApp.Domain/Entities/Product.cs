@@ -12,6 +12,9 @@ namespace ShippingApp.Domain.Entities
         public string Notes { get; set; }
         public int QtyPerPackage { get; set; }
 
+        public string PartRevisionRaw { get; set; }
+        public string PartRevisionClean { get; set; }
+        public string ProcessRevision { get; set; }
 
         public virtual ICollection<ShippingPlanDetail> ShippingPlanDetails { get; set; }
         public virtual ICollection<MovementRequestDetail> MovementRequestDetails { get; set; }

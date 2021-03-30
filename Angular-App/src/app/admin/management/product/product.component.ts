@@ -54,6 +54,18 @@ export class ProductComponent implements OnInit, OnDestroy {
     return this.productForm.get('qtyPerPackage');
   }
 
+  get partRevisionRawControl() {
+    return this.productForm.get('partRevisionRaw');
+  }
+
+  get partRevisionCleanControl() {
+    return this.productForm.get('partRevisionClean');
+  }
+
+  get processRevisionControl() {
+    return this.productForm.get('processRevision');
+  }
+
   constructor(
     private fb: FormBuilder,
     private notificationService: NotificationService,
@@ -62,7 +74,7 @@ export class ProductComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private filesClient: FilesClient,
     private importService: ImportService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -71,6 +83,11 @@ export class ProductComponent implements OnInit, OnDestroy {
       { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Description', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Qty/ Pkg', field: 'qtyPerPackage', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
+
+      { header: 'Part Revision Raw', field: 'partRevisionRaw', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Part Revision Clean', field: 'partRevisionClean', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Process Revision', field: 'processRevision', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
@@ -136,6 +153,9 @@ export class ProductComponent implements OnInit, OnDestroy {
       notes: [''],
       qtyPerPackage: ['', [Validators.required, Validators.min(0)]],
       lastModifiedBy: [''],
+      partRevisionRaw: [''],
+      partRevisionClean: [''],
+      processRevision: [''],
       lastModified: [null],
     });
   }

@@ -29,6 +29,10 @@ namespace ShippingApp.Domain.Models
         public string Notes { get; set; }
         public string QtyPerPackage { get; set; }
 
+        public string PartRevisionRaw { get; set; }
+        public string PartRevisionClean { get; set; }
+        public string ProcessRevision { get; set; }
+
         public virtual ICollection<ShippingPlanDetailModel> ShippingPlanDetails { get; set; }
         public virtual ICollection<MovementRequestDetailModel> MovementRequestDetails { get; set; }
         public virtual ICollection<ShippingRequestDetailModel> ShippingRequestDetails { get; set; }

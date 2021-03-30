@@ -134,6 +134,39 @@
       </div>
 
       <div class="p-field">
+        <label for="partRevision">Part Revision Raw<span class="p-invalid"> *</span></label>
+        <input
+          [ngClass]="{ 'ng-dirty': partRevisionRawControl.invalid && (partRevisionRawControl.dirty || partRevisionRawControl.touched) }"
+          pInputText
+          id="partRevision"
+          [formControl]="partRevisionRawControl"
+          type="text"
+        />
+      </div>
+
+      <div class="p-field">
+        <label for="partRevisionClean">Part Revision Clean<span class="p-invalid"> *</span></label>
+        <input
+          [ngClass]="{ 'ng-dirty': partRevisionCleanControl.invalid && (partRevisionCleanControl.dirty || partRevisionCleanControl.touched) }"
+          pInputText
+          id="partRevisionClean"
+          [formControl]="partRevisionCleanControl"
+          type="text"
+        />
+      </div>
+
+      <div class="p-field">
+        <label for="processRevision">Process Revision<span class="p-invalid"> *</span></label>
+        <input
+          [ngClass]="{ 'ng-dirty': processRevisionControl.invalid && (processRevisionControl.dirty || processRevisionControl.touched) }"
+          pInputText
+          id="processRevision"
+          [formControl]="processRevisionControl"
+          type="text"
+        />
+      </div>
+
+      <div class="p-field">
         <label for="notes">Notes</label>
         <textarea id="notes" pInputTextarea [rows]="3" [formControl]="notesControl"></textarea>
       </div>

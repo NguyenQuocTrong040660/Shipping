@@ -1,6 +1,6 @@
 import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel, WorkOrderDetailModel } from 'app/shared/api-clients/shipping-app.client';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { ConfirmationService } from 'primeng/api';
 import { WidthColumn } from 'app/shared/configs/width-column';
@@ -133,7 +133,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   initWorkOrderForm() {
     this.workOrderForm = this.fb.group({
       id: [0],
-      refId: [''],
+      refId: ['', [Validators.required]],
       notes: [''],
       lastModifiedBy: [''],
       lastModified: [null],

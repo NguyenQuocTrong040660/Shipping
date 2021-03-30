@@ -12,5 +12,9 @@ namespace Files.Domain.Template
         [ValidateDataType(IsNumber = true, IsRequired = true)]
         public string QtyPerPackage { get; set; }
         public string Notes { get; set; }
+
+        public string PartRevisionRaw { get; set; }
+        public string PartRevisionClean { get; set; }
+        public string ProcessRevision { get; set; }
     }
 }

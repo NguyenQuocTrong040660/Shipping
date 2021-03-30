@@ -6,8 +6,10 @@ namespace Files.Domain.Template
     {
         [ValidateDataType(IsRequired = true, IsUnique = true)]
         public string WorkOrderId { get; set; }
+
         [ValidateDataType(IsRequired = true)]
         public string ProductNumber { get; set; }
+
         [ValidateDataType(IsRequired = true, IsNumber = true)]
         public string Quantity { get; set; }
 
