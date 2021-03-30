@@ -60,7 +60,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Reference Id', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'WO ID', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
       // { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
 

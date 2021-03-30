@@ -2,21 +2,42 @@
   <ng-template pTemplate="content">
     <form [formGroup]="shippingRequestDocumentsForm">
       <div class="p-grid">
-        <div class="p-field p-col-3">
-          <div>Purchase Order</div>
-          <div>{{ selectedShippingRequestDetail.purchaseOrder }}</div>
-        </div>
-        <div class="p-field p-col-3">
+        <div class="p-field p-col-2">
           <div>Customer Name</div>
           <div>{{ selectedShippingRequestDetail.customerName }}</div>
         </div>
-        <div class="p-field p-col-3">
-          <div>Semline Number</div>
-          <div>{{ selectedShippingRequestDetail.semlineNumber }}</div>
+
+        <div class="p-field p-col-4">
+          <div>Purchase Order</div>
+          <div>{{ selectedShippingRequestDetail.purchaseOrder }}</div>
         </div>
-        <div class="p-field p-col-3">
+        <div class="p-field p-col-2">
+          <div>Account Number</div>
+          <div>{{ selectedShippingRequestDetail.accountNumber }}</div>
+        </div>
+        <div class="p-field p-col-4">
           <div>Shipping Date</div>
           <div>{{ selectedShippingRequestDetail.shippingDate | date: 'dd/MM/yyyy' }}</div>
+        </div>
+      </div>
+
+      <div class="p-grid">
+        <div class="p-field p-col-2">
+          <div>Bill To</div>
+          <div>{{ selectedShippingRequestDetail.billTo }}</div>
+        </div>
+
+        <div class="p-field p-col-4">
+          <div>Bill To Address</div>
+          <div>{{ selectedShippingRequestDetail.billToAddress }}</div>
+        </div>
+        <div class="p-field p-col-2">
+          <div>Ship To</div>
+          <div>{{ selectedShippingRequestDetail.shipTo }}</div>
+        </div>
+        <div class="p-field p-col-4">
+          <div>Ship To Address</div>
+          <div>{{ selectedShippingRequestDetail.shipToAddress }}</div>
         </div>
       </div>
 
@@ -38,7 +59,7 @@
           </div>
         </div>
 
-        <div class="p-grid">
+        <!-- <div class="p-grid">
           <div class="p-field p-col-6">
             <label for="billTo">Bill To</label>
             <input pInputText id="billTo" [formControl]="billToControl" type="text" />
@@ -60,7 +81,7 @@
             <label for="shipToAddress">Ship To Address</label>
             <input pInputText id="shipToAddress" [formControl]="shipToAddressControl" type="text" />
           </div>
-        </div>
+        </div> -->
 
         <div class="p-field">
           <label for="trackingNumber">Tracking Number</label>
