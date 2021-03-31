@@ -31,9 +31,13 @@ namespace Files.Domain.Template
         public DateTime ShippingDate { get; set; }   
         public string Notes { get; set; }
 
+        [ValidateDataType(IsRequired = true)]
         public string BillTo { get; set; }
+        [ValidateDataType(IsRequired = true)]
         public string BillToAddress { get; set; }
+        [ValidateDataType(IsRequired = true)]
         public string ShipTo { get; set; }
+        [ValidateDataType(IsRequired = true)]
         public string ShipToAddress { get; set; }
         public int AccountNumber { get; set; }
         public int ProductLine { get; set; }

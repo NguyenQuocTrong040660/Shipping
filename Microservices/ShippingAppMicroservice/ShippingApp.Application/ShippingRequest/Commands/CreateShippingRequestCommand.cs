@@ -51,12 +51,9 @@ namespace ShippingApp.Application.ShippingRequest.Commands
                 throw new Exception("Failed to try parse value from config table");
             }
 
-            foreach (var item in request.ShippingRequest.ShippingRequestDetails)
+            if ((request.ShippingRequest.ShippingDate - DateTime.Now).TotalDays <= numberDays)
             {
-                if ((item.ShippingDate - DateTime.Now).TotalDays <= numberDays)
-                {
-                    return (Result.Failure($"Shipping Date should be larger than submit date {numberDays} days"), null);
-                }
+                return (Result.Failure($"Shipping Date should be larger than submit date {numberDays} days"), null);
             }
 
             var entity = _mapper.Map<Entities.ShippingRequest>(request.ShippingRequest);

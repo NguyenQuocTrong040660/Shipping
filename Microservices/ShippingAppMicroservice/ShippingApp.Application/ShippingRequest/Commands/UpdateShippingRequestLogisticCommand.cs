@@ -43,16 +43,8 @@ namespace ShippingApp.Application.ShippingRequest.Commands
 
             entity.CustomDeclarationNumber = request.ShippingRequestLogistic.CustomDeclarationNumber;
             entity.Notes = request.ShippingRequestLogistic.Notes;
-            entity.ShipTo = request.ShippingRequestLogistic.ShipTo;
-            entity.ShipToAddress = request.ShippingRequestLogistic.ShipToAddress;
             entity.TrackingNumber = request.ShippingRequestLogistic.TrackingNumber;
             entity.GrossWeight = request.ShippingRequestLogistic.GrossWeight;
-
-            entity.BillTo = request.ShippingRequestLogistic.BillTo;
-            entity.BillToAddress = request.ShippingRequestLogistic.BillToAddress;
-            entity.ShipTo = request.ShippingRequestLogistic.ShipTo;
-            entity.ShipToAddress = request.ShippingRequestLogistic.ShipToAddress;
-
             entity.Forwarder = request.ShippingRequestLogistic.Forwarder;
             entity.NetWeight = request.ShippingRequestLogistic.NetWeight;
             entity.Dimension = request.ShippingRequestLogistic.Dimension;

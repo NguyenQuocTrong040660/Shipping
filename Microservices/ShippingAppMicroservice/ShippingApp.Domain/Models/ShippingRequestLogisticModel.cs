@@ -9,13 +9,6 @@ namespace ShippingApp.Domain.Models
         public string CustomDeclarationNumber { get; set; }
         public string TrackingNumber { get; set; }
 
-
-        public string BillTo { get; set; }
-        public string BillToAddress { get; set; }
-        public string ShipTo { get; set; }
-        public string ShipToAddress { get; set; }
-
-
         public string Forwarder { get; set; }
         public float NetWeight { get; set; }
         public string Dimension { get; set; }

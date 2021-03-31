@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ProductModel, ShippingPlanModel, ShippingRequestDetailModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -11,12 +11,13 @@ import { MenuItem, SelectItem } from 'primeng/api';
   templateUrl: './shipping-request-create.component.html',
   styleUrls: ['./shipping-request-create.component.scss'],
 })
-export class ShippingRequestCreateComponent implements OnInit {
+export class ShippingRequestCreateComponent implements OnInit, OnChanges {
   @Input() shippingRequestForm: FormGroup;
   @Input() titleDialog: string;
   @Input() isShowDialog: boolean;
-  @Input() shippingPlans: ShippingPlanModel;
-  @Input() selectItems: SelectItem[] = [];
+  @Input() shippingPlans: ShippingPlanModel[] = [];
+
+  selectItems: SelectItem[] = [];
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
@@ -38,7 +39,16 @@ export class ShippingRequestCreateComponent implements OnInit {
     return this.shippingRequestForm.get('shippingRequestDetails') as FormArray;
   }
 
+  selecteShippingInfoItems: SelectItem[] = [];
+  selectedShippingInfo: any;
+
   constructor(private fb: FormBuilder) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.shippingPlans && changes.shippingPlans.currentValue) {
+      this.selecteShippingInfoItems = this._mapDataToShippingInfoItems(changes.shippingPlans.currentValue);
+    }
+  }
 
   ngOnInit(): void {
     this.productCols = [
@@ -50,7 +60,7 @@ export class ShippingRequestCreateComponent implements OnInit {
 
     this.productFields = this.productCols.map((i) => i.field);
 
-    this.stepItems = [{ label: 'Select Shipping Plan' }, { label: 'Products' }, { label: 'Shipping Request Info' }];
+    this.stepItems = [{ label: 'Shipping Informations' }, { label: 'Shipping Plans' }, { label: 'Products' }, { label: 'Shipping Request Summary' }];
   }
 
   hideDialog() {
@@ -64,6 +74,28 @@ export class ShippingRequestCreateComponent implements OnInit {
   nextPage(currentIndex: number) {
     switch (currentIndex) {
       case 0: {
+        const { key, infos } = this.selectedShippingInfo;
+
+        this.shippingRequestForm.patchValue({
+          shippingDate: Utilities.ConvertDateBeforeSendToServer(infos.shippingDate),
+          billTo: infos.billTo,
+          billToAddress: infos.billToAddress,
+          shipTo: infos.shipTo,
+          shipToAddress: infos.shipToAddress,
+          customerName: infos.customerName,
+        });
+
+        const shippingPlansFilter = this.shippingPlans.filter((i) => {
+          return `${new Date(i.shippingDate).toLocaleDateString()}-${i.billTo}-${i.billToAddress}-${i.shipTo}-${i.shipToAddress}}`.toUpperCase() === key;
+        });
+
+        this.selectItems = this._mapToSelectShippingPlanItem(shippingPlansFilter);
+
+        this.stepIndex += 1;
+        break;
+      }
+
+      case 1: {
         if (!this.selectedShippingPlans || this.selectedShippingPlans.length === 0) {
           return;
         }
@@ -74,7 +106,7 @@ export class ShippingRequestCreateComponent implements OnInit {
         this.stepIndex += 1;
         break;
       }
-      case 1: {
+      case 2: {
         this.shippingRequestDetails = this._mapToProductsToShippingRequestDetailModels(this.selectedProducts);
 
         this.shippingRequestDetails.forEach((item) => {
@@ -88,10 +120,7 @@ export class ShippingRequestCreateComponent implements OnInit {
             item.semlineNumber = shippingPlan.semlineNumber;
             item.purchaseOrder = shippingPlan.purchaseOrder;
             item.salesID = shippingPlan.salesID;
-            item.customerName = shippingPlan.customerName;
-            item.accountNumber = shippingPlan.accountNumber;
             item.productLine = shippingPlan.productLine;
-            item.shippingDate = new Date(shippingPlan.shippingDate);
           }
         });
 
@@ -99,7 +128,7 @@ export class ShippingRequestCreateComponent implements OnInit {
         break;
       }
 
-      case 2:
+      case 3:
         this.stepIndex += 1;
         break;
     }
@@ -137,11 +166,51 @@ export class ShippingRequestCreateComponent implements OnInit {
       semlineNumber: [shippingRequestDetailModel.semlineNumber],
       purchaseOrder: [shippingRequestDetailModel.purchaseOrder],
       salesID: [shippingRequestDetailModel.salesID],
-      customerName: [shippingRequestDetailModel.customerName],
-      accountNumber: [shippingRequestDetailModel.accountNumber],
       productLine: [shippingRequestDetailModel.productLine],
-      shippingDate: [Utilities.ConvertDateBeforeSendToServer(shippingRequestDetailModel.shippingDate)],
     });
+  }
+
+  _mapDataToShippingInfoItems(shippingPlans: ShippingPlanModel[]): SelectItem[] {
+    const shippingInfos = shippingPlans.map((i) => {
+      return {
+        key: `${new Date(i.shippingDate).toLocaleDateString()}-${i.billTo}-${i.billToAddress}-${i.shipTo}-${i.shipToAddress}}`.toUpperCase(),
+        infos: {
+          shippingDate: i.shippingDate,
+          billTo: i.billTo,
+          billToAddress: i.billToAddress,
+          shipTo: i.shipTo,
+          shipToAddress: i.shipToAddress,
+          customerName: i.customerName,
+        },
+      };
+    });
+
+    const filterShippingInfos = shippingInfos.reduce((acc, current) => {
+      const x = acc.find((item) => item.key === current.key);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        return acc;
+      }
+    }, []);
+
+    return filterShippingInfos.map((p) => ({
+      value: p,
+      label: `${p.infos.billTo} | ${p.infos.billToAddress} | ${p.infos.shipTo} | ${p.infos.shipToAddress} | ${Utilities.ConvertDateBeforeSendToServer(p.infos.shippingDate)
+        .toISOString()
+        .split('T')[0]
+        .split('-')
+        .reverse()
+        .join('/')}`,
+    }));
+  }
+
+  _mapToSelectShippingPlanItem(shippingPlans: ShippingPlanModel[]): SelectItem[] {
+    return shippingPlans.map((p) => ({
+      value: p,
+      label: `${p.identifier} | ${p.purchaseOrder} | ${p.customerName} | ${p.salesID} | ${p.semlineNumber} |
+        ${Utilities.ConvertDateBeforeSendToServer(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
+    }));
   }
 
   _mapToProductsToShippingRequestDetailModels(products: ProductModel[]): ShippingRequestDetailModel[] {
@@ -159,10 +228,7 @@ export class ShippingRequestCreateComponent implements OnInit {
         semlineNumber: '',
         purchaseOrder: '',
         salesID: '',
-        customerName: '',
-        accountNumber: 0,
         productLine: 0,
-        shippingDate: null,
       };
     });
   }

@@ -4150,6 +4150,9 @@ export interface ProductModel extends AuditableEntityModel {
     productNumber?: string | undefined;
     notes?: string | undefined;
     qtyPerPackage?: string | undefined;
+    partRevisionRaw?: string | undefined;
+    partRevisionClean?: string | undefined;
+    processRevision?: string | undefined;
     shippingPlanDetails?: ShippingPlanDetailModel[] | undefined;
     movementRequestDetails?: MovementRequestDetailModel[] | undefined;
     shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
@@ -4208,9 +4211,6 @@ export interface ShippingRequestDetailModel extends AuditableEntityModel {
     semlineNumber?: string | undefined;
     purchaseOrder?: string | undefined;
     salesID?: string | undefined;
-    shippingDate?: Date;
-    customerName?: string | undefined;
-    accountNumber?: number;
     productLine?: number;
     product?: ProductModel | undefined;
     shippingRequest?: ShippingRequestModel | undefined;
@@ -4222,6 +4222,13 @@ export interface ShippingRequestModel extends AuditableEntityModel {
     prefix?: string | undefined;
     notes?: string | undefined;
     status?: string | undefined;
+    accountNumber?: number;
+    shippingDate?: Date;
+    customerName?: string | undefined;
+    billTo?: string | undefined;
+    billToAddress?: string | undefined;
+    shipTo?: string | undefined;
+    shipToAddress?: string | undefined;
     shippingRequestLogistic?: ShippingRequestLogisticModel[] | undefined;
     shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
     shippingMarks?: ShippingMarkModel[] | undefined;
@@ -4233,10 +4240,6 @@ export interface ShippingRequestLogisticModel extends AuditableEntityModel {
     grossWeight?: number;
     customDeclarationNumber?: string | undefined;
     trackingNumber?: string | undefined;
-    billTo?: string | undefined;
-    billToAddress?: string | undefined;
-    shipTo?: string | undefined;
-    shipToAddress?: string | undefined;
     forwarder?: string | undefined;
     netWeight?: number;
     dimension?: string | undefined;

@@ -1,15 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CommunicationClient } from 'app/shared/api-clients/communications.client';
-import {
-  ProductClients,
-  ProductModel,
-  ShippingPlanClients,
-  ShippingPlanModel,
-  ShippingRequestClients,
-  ShippingRequestDetailModel,
-  ShippingRequestModel,
-} from 'app/shared/api-clients/shipping-app.client';
+import { ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestDetailModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -63,7 +55,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Id', field: 'identifier', width: 250, type: TypeColumn.IdentityColumn },
+      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Account Number', field: 'accountNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       // { header: 'Product Line', field: 'productLine', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
@@ -74,16 +66,16 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       { header: 'Ship To Address', field: 'shipToAddress', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
-      { header: 'Status', field: 'status', width: 250, type: TypeColumn.NormalColumn },
-      { header: 'Updated By', field: 'lastModifiedBy', width: 250, type: TypeColumn.NormalColumn },
-      { header: 'Updated Time', field: 'lastModified', width: 250, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: 250, type: TypeColumn.ExpandColumn },
+      { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
 
     this.initForm();
-    // this.initShippingPlan();
+    this.initShippingPlan();
     this.initShippingRequest();
   }
 
@@ -94,7 +86,6 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       .subscribe(
         (i) => {
           this.shippingPlans = i;
-          this.selectItems = this._mapToSelectShippingPlanItem(i);
         },
         (_) => (this.shippingPlans = [])
       );
@@ -104,9 +95,15 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.shippingRequestForm = this.fb.group({
       id: [0],
       notes: [''],
+      customerName: [''],
+      shippingDate: [new Date()],
+      billTo: [''],
+      billToAddress: [''],
+      shipTo: [''],
+      shipToAddress: [''],
+      shippingRequestDetails: this.fb.array([]),
       lastModifiedBy: [''],
       lastModified: [null],
-      shippingRequestDetails: this.fb.array([]),
     });
   }
 
@@ -136,6 +133,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
 
     const model = this.shippingRequestForm.value as ShippingRequestModel;
     model.id = 0;
+    model.shippingDate = Utilities.ConvertDateBeforeSendToServer(model.shippingDate);
 
     this.shippingRequestClients
       .addShippingRequest(model)
@@ -214,18 +212,12 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   }
 
   openDocumentsDialog(selectedShippingRequestDetail: ShippingRequestDetailModel) {
+    const shippingRequestSelected = this.shippingRequests.find((i) => i.id === selectedShippingRequestDetail.shippingRequestId);
     this.selectedShippingRequestDetail = selectedShippingRequestDetail;
+    this.selectedShippingRequestDetail.shippingRequest = shippingRequestSelected;
 
     this.isShowDialogDocuments = true;
     this.titleDialog = 'Shipping Documents for Sales Order: ' + this.selectedShippingRequestDetail.salesID;
-  }
-
-  _mapToSelectShippingPlanItem(shippingPlans: ShippingPlanModel[]): SelectItem[] {
-    return shippingPlans.map((p) => ({
-      value: p,
-      label: `${p.identifier} | ${p.purchaseOrder} | ${p.customerName} | ${p.salesID} | ${p.semlineNumber} |
-        ${Utilities.ConvertDateBeforeSendToServer(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
-    }));
   }
 
   ngOnDestroy(): void {

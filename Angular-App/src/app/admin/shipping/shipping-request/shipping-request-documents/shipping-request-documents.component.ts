@@ -14,6 +14,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnDestroy {
   @Input() selectedShippingRequestDetail: ShippingRequestDetailModel;
+
   @Input() titleDialog: string;
   @Input() isShowDialog: boolean;
 
@@ -42,28 +43,12 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
     return this.shippingRequestDocumentsForm.get('grossWeight');
   }
 
-  get billToControl() {
-    return this.shippingRequestDocumentsForm.get('billTo');
-  }
-
   get trackingNumberControl() {
     return this.shippingRequestDocumentsForm.get('trackingNumber');
   }
 
   get notesControl() {
     return this.shippingRequestDocumentsForm.get('notes');
-  }
-
-  get billToAddressControl() {
-    return this.shippingRequestDocumentsForm.get('billToAddress');
-  }
-
-  get shipToControl() {
-    return this.shippingRequestDocumentsForm.get('shipTo');
-  }
-
-  get shipToAddressControl() {
-    return this.shippingRequestDocumentsForm.get('shipToAddress');
   }
 
   get forwarderControl() {
@@ -97,12 +82,7 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
       customDeclarationNumber: ['', [Validators.required]],
       trackingNumber: ['', [Validators.required]],
       netWeight: [0, [Validators.required]],
-
       grossWeight: [0, [Validators.required]],
-      billTo: ['', [Validators.required]],
-      billToAddress: ['', [Validators.required]],
-      shipTo: ['', [Validators.required]],
-      shipToAddress: ['', [Validators.required]],
       forwarder: ['', [Validators.required]],
       dimension: ['', [Validators.required]],
       notes: [''],

@@ -6,6 +6,41 @@
       <p-card>
         <ng-template pTemplate="content">
           <div class="p-field">
+            <label for="shippingInfos">Shipping Date and Shipping Informations</label>
+
+            <p-dropdown
+              [options]="selecteShippingInfoItems"
+              [(ngModel)]="selectedShippingInfo"
+              defaultLabel="Shipping Date and Shipping Informations"
+              placeholder="Please select Shipping Date and Shipping Informations"
+              appendTo="body"
+              autoDisplayFirst="false"
+              id="shippingInfos"
+            >
+            </p-dropdown>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+          <div class="p-grid p-nogutter p-justify-between">
+            <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" iconPos="left" icon="pi pi-times"></p-button>
+            <p-button
+              styleClass="p-button-text"
+              label="Next"
+              [disabled]="!selectedShippingInfo"
+              (onClick)="nextPage(stepIndex)"
+              icon="pi pi-angle-right"
+              iconPos="right"
+            ></p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </ng-container>
+
+    <ng-container *ngIf="stepIndex === 1">
+      <p-card>
+        <ng-template pTemplate="content">
+          <div class="p-field">
             <label for="customerName">Shipping Plan</label>
             <p-multiSelect
               appendTo="body"
@@ -18,6 +53,11 @@
             >
             </p-multiSelect>
           </div>
+
+          <div class="p-field">
+            <label for="notes">Notes</label>
+            <textarea id="notes" pInputTextarea [rows]="3" [formControl]="shippingRequestForm.get('notes')"></textarea>
+          </div>
         </ng-template>
 
         <ng-template pTemplate="footer">
@@ -29,7 +69,7 @@
       </p-card>
     </ng-container>
 
-    <ng-container *ngIf="stepIndex === 1">
+    <ng-ncontainer *ngIf="stepIndex === 2">
       <p-card>
         <ng-template pTemplate="content">
           <p-table
@@ -117,9 +157,9 @@
           </div>
         </ng-template>
       </p-card>
-    </ng-container>
+    </ng-ncontainer>
 
-    <ng-container *ngIf="stepIndex === 2">
+    <ng-container *ngIf="stepIndex === 3">
       <p-card>
         <ng-template pTemplate="content">
           <p-table [value]="shippingRequestDetails" [scrollable]="true">
@@ -134,59 +174,40 @@
                 <col style="width: 250px" />
                 <col style="width: 250px" />
                 <col style="width: 250px" />
-                <col style="width: 250px" />
-                <col style="width: 250px" />
-                <col style="width: 250px" />
-                <col style="width: 250px" />
-                <col style="width: 250px" />
-                <col style="width: 250px" />
-                <col style="width: 250px" />
               </colgroup>
             </ng-template>
 
             <ng-template pTemplate="header">
               <tr>
-                <th class="p-text-center">Customer Name</th>
-                <th class="p-text-center">AccountNumber</th>
-                <th class="p-text-center">Product Line</th>
                 <th class="p-text-center">Product Number</th>
+                <th class="p-text-center">Product Line</th>
                 <th class="p-text-center">Sales ID</th>
                 <th class="p-text-center">Semline Number</th>
                 <th class="p-text-center">Purchase Order</th>
-                <!-- <th class="p-text-center">Description</th> -->
-                <!-- <th class="p-text-center">Qty/ Pkg</th> -->
                 <th class="p-text-center">Quantity<span class="p-invalid"> *</span></th>
                 <th class="p-text-center">Price (USD)<span class="p-invalid"> *</span></th>
                 <th class="p-text-center">Amount (USD)</th>
-
-                <th class="p-text-center">Bill To</th>
-                <th class="p-text-center">Bill To Address</th>
-                <th class="p-text-center">Ship To</th>
-                <th class="p-text-center">Ship To Address</th>
-                <th class="p-text-center">Shipping Date</th>
                 <th class="p-text-center">Shipping Mode</th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-item>
               <tr>
                 <td>
-                  {{ item?.customerName }}
+                  {{ item?.product?.productNumber }}
                 </td>
-                <td>
-                  {{ item?.accountNumber }}
-                </td>
+
                 <td>
                   {{ item?.productLine }}
                 </td>
-                <td>
-                  {{ item?.product?.productNumber }}
-                </td>
+
                 <td>
                   {{ item?.salesID }}
                 </td>
+
                 <td>
                   {{ item?.semlineNumber }}
                 </td>
+
                 <td>
                   {{ item?.purchaseOrder }}
                 </td>
@@ -202,21 +223,7 @@
                 <td class="p-text-center">
                   {{ item?.amount | number }}
                 </td>
-                <td>
-                  {{ item?.billTo }}
-                </td>
-                <td>
-                  {{ item?.billToAddress }}
-                </td>
-                <td>
-                  {{ item?.shipTo }}
-                </td>
-                <td>
-                  {{ item?.shipToAddress }}
-                </td>
-                <td>
-                  {{ item?.shippingDate | date: 'dd/MM/yyyy' }}
-                </td>
+
                 <td>
                   {{ item?.shippingMode }}
                 </td>

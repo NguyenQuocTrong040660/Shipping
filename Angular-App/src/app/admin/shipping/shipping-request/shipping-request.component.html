@@ -14,16 +14,6 @@
         (click)="openDeleteDialog(selectedShippingRequest)"
       ></button>
 
-      <!-- <button
-        class="p-button-success p-mr-2"
-        pButton
-        pRipple
-        label="Edit"
-        icon="pi pi-pencil"
-        [disabled]="!selectedShippingRequest"
-        (click)="openEditDialog(selectedShippingRequest)"
-      ></button> -->
-
       <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
@@ -128,78 +118,31 @@
             <p-table class="shipping-request__expaned-table" [value]="shippingRequest.shippingRequestDetails">
               <ng-template pTemplate="header">
                 <tr>
-                  <!-- <th class="p-text-center">Product Number</th>
-                  <th class="p-text-center">Quantity</th>
-                  <th class="p-text-center">Price (USD)</th>
-                  <th class="p-text-center">Amount (USD)</th>
-
-                  <th class="p-text-center">Account Number</th>
-                  <th class="p-text-center">Purchase Order</th>
-                  <th class="p-text-center">Customer Name</th>
-                  <th class="p-text-center">Sales ID</th>
-                  <th class="p-text-center">Semline Number</th>
-                  <th class="p-text-center">Shipping Date</th>
-                  <th class="p-text-center">Shipping Mode</th> -->
-                  <!-- <th class="p-text-center">Customer Name</th>
-                  <th class="p-text-center">AccountNumber</th>
-                  <th class="p-text-center">Product Line</th> -->
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Sales ID</th>
                   <th class="p-text-center">Semline Number</th>
-                  <!-- <th class="p-text-center">Purchase Order</th> -->
-                  <!-- <th class="p-text-center">Description</th> -->
-                  <!-- <th class="p-text-center">Qty/ Pkg</th> -->
+
                   <th class="p-text-center">Quantity<span class="p-invalid"> *</span></th>
                   <th class="p-text-center">Price (USD)<span class="p-invalid"> *</span></th>
                   <th class="p-text-center">Amount (USD)</th>
 
-                  <!-- <th class="p-text-center">Bill To</th>
-                  <th class="p-text-center">Bill To Address</th>
-                  <th class="p-text-center">Ship To</th>
-                  <th class="p-text-center">Ship To Address</th>
-                  <th class="p-text-center">Shipping Date</th> -->
                   <th class="p-text-center">Shipping Mode</th>
-
                   <th class="p-text-center"></th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
                 <tr>
-                  <!-- <td>{{ item?.product?.productNumber }}</td>
-                  <td class="p-text-center">{{ item?.quantity | number }}</td>
-                  <td class="p-text-center">{{ item?.price | number }}</td>
-                  <td class="p-text-center">{{ item?.amount | number }}</td>
-
                   <td class="p-text-center">
-                    {{ item?.accountNumber }}
-                  </td>
-                  <td>{{ item?.purchaseOrder }}</td>
-                  <td>{{ item?.customerName }}</td>
-                  <td>{{ item?.salesID }}</td>
-                  <td class="p-text-center">{{ item?.semlineNumber }}</td>
-                  <td class="p-text-center">{{ item?.shippingDate | date: 'dd/MM/yyyy' }}</td>
-                  <td class="p-text-center">{{ item?.shippingMode }}</td> -->
-                  <!-- <td>
-                    {{ item?.customerName }}
-                  </td>
-                  <td>
-                    {{ item?.accountNumber }}
-                  </td>
-                  <td>
-                    {{ item?.productLine }}
-                  </td> -->
-                  <td>
                     {{ item?.product?.productNumber }}
                   </td>
-                  <td>
+
+                  <td class="p-text-center">
                     {{ item?.salesID }}
                   </td>
-                  <td>
+
+                  <td class="p-text-center">
                     {{ item?.semlineNumber }}
                   </td>
-                  <!-- <td>
-                    {{ item?.purchaseOrder }}
-                  </td> -->
 
                   <td class="p-text-center">
                     {{ item?.quantity | number }}
@@ -212,24 +155,11 @@
                   <td class="p-text-center">
                     {{ item?.amount | number }}
                   </td>
-                  <!-- <td>
-                    {{ item?.billTo }}
-                  </td>
-                  <td>
-                    {{ item?.billToAddress }}
-                  </td>
-                  <td>
-                    {{ item?.shipTo }}
-                  </td>
-                  <td>
-                    {{ item?.shipToAddress }}
-                  </td>
-                  <td>
-                    {{ item?.shippingDate | date: 'dd/MM/yyyy' }}
-                  </td> -->
-                  <td>
+
+                  <td class="p-text-center">
                     {{ item?.shippingMode }}
                   </td>
+
                   <td class="p-text-center">
                     <button
                       pButton
@@ -255,7 +185,6 @@
   [shippingRequestForm]="shippingRequestForm"
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialogCreate"
-  [selectItems]="selectItems"
   [shippingPlans]="shippingPlans"
   (submitEvent)="onCreate()"
   (hideDialogEvent)="hideDialog()"
