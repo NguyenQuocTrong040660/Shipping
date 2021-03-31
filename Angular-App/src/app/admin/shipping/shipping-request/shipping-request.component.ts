@@ -64,9 +64,17 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Id', field: 'identifier', width: 250, type: TypeColumn.IdentityColumn },
-
-      { header: 'Status', field: 'status', width: 250, type: TypeColumn.NormalColumn },
+      { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Account Number', field: 'accountNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      // { header: 'Product Line', field: 'productLine', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      // { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Bill To', field: 'billTo', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Bill To Address', field: 'billToAddress', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Ship To', field: 'shipTo', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Ship To Address', field: 'shipToAddress', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
+      { header: 'Status', field: 'status', width: 250, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: 250, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: 250, type: TypeColumn.DateColumn },
       { header: '', field: '', width: 250, type: TypeColumn.ExpandColumn },
@@ -75,7 +83,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.fields = this.cols.map((i) => i.field);
 
     this.initForm();
-    this.initShippingPlan();
+    // this.initShippingPlan();
     this.initShippingRequest();
   }
 
@@ -115,6 +123,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   }
 
   openCreateDialog() {
+    this.initShippingPlan();
     this.selectedShippingRequest = null;
     this.titleDialog = 'Create Shipping Request';
     this.isShowDialogCreate = true;

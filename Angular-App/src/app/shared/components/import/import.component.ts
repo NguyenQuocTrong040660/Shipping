@@ -255,6 +255,12 @@ export class ImportComponent implements OnInit {
             salesPrice: i.salesPrice,
             shippingMode: i.shippingMode,
             shippingDate: i.shippingDate,
+            billTo: i.billTo,
+            billToAddress: i.billToAddress,
+            shipTo: i.shipTo,
+            shipToAddress: i.shipToAddress,
+            productLine: i.productLine,
+            accountNumber: i.accountNumber,
           };
         });
 
