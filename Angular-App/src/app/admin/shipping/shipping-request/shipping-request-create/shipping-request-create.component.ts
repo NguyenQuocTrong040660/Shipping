@@ -181,6 +181,7 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
           shipTo: i.shipTo,
           shipToAddress: i.shipToAddress,
           customerName: i.customerName,
+          saleOrder: i.salesID,
         },
       };
     });
@@ -196,7 +197,7 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
 
     return filterShippingInfos.map((p) => ({
       value: p,
-      label: `${p.infos.billTo} | ${p.infos.billToAddress} | ${p.infos.shipTo} | ${p.infos.shipToAddress} | ${Utilities.ConvertDateBeforeSendToServer(p.infos.shippingDate)
+      label: `Sale Order: ${p.infos.saleOrder} | Shipping Date: ${Utilities.ConvertDateBeforeSendToServer(p.infos.shippingDate)
         .toISOString()
         .split('T')[0]
         .split('-')
@@ -208,7 +209,7 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
   _mapToSelectShippingPlanItem(shippingPlans: ShippingPlanModel[]): SelectItem[] {
     return shippingPlans.map((p) => ({
       value: p,
-      label: `${p.identifier} | ${p.purchaseOrder} | ${p.customerName} | ${p.salesID} | ${p.semlineNumber} |
+      label: `Sale Order: ${p.salesID} | Saleline Number: ${p.semlineNumber} | Product Number: ${p.product?.productNumber} | Shipping Date: 
         ${Utilities.ConvertDateBeforeSendToServer(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
     }));
   }

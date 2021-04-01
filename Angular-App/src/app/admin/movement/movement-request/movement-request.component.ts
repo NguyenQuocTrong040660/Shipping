@@ -51,7 +51,8 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      // { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      { header: 'Work Orders', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
@@ -90,7 +91,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
   _mapToSelectItems(workOrders: WorkOrderModel[]): SelectItem[] {
     return workOrders.map((p) => ({
       value: p,
-      label: `${p.identifier} | ${p.refId} | ${p.remainQuantity}`,
+      label: `Work Order Id: ${p.refId} | Product Number: ${p.product?.productNumber}`,
     }));
   }
 

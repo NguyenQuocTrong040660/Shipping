@@ -25,7 +25,7 @@
 
               <div class="p-col-12">
                 <div class="p-field">
-                  <label for="semlineNumber">Semline Number<span class="p-invalid"> *</span></label>
+                  <label for="semlineNumber">Saleline Number<span class="p-invalid"> *</span></label>
 
                   <input
                     [ngClass]="{ 'ng-dirty': semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched) }"
@@ -36,7 +36,7 @@
                   />
 
                   <ng-container *ngIf="semlineNumberControl.invalid && (semlineNumberControl.dirty || semlineNumberControl.touched)">
-                    <small class="p-invalid p-error">Please specify a semline number</small>
+                    <small class="p-invalid p-error">Please specify a Saleline Number</small>
                   </ng-container>
                 </div>
               </div>
@@ -76,7 +76,7 @@
 
               <div class="p-col-12">
                 <div class="p-field">
-                  <label for="salesId">Sales Id<span class="p-invalid"> *</span></label>
+                  <label for="salesId">Sales Order<span class="p-invalid"> *</span></label>
                   <input
                     [ngClass]="{ 'ng-dirty': salesIdControl.invalid && (salesIdControl.dirty || salesIdControl.touched) }"
                     pInputText
@@ -85,7 +85,7 @@
                     type="text"
                   />
                   <ng-container *ngIf="salesIdControl.invalid && (salesIdControl.dirty || salesIdControl.touched)">
-                    <small class="p-invalid p-error">Please specify a sales id</small>
+                    <small class="p-invalid p-error">Please specify a Sales Order</small>
                   </ng-container>
                 </div>
               </div>

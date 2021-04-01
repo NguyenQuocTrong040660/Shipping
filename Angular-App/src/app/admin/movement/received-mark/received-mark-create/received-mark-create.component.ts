@@ -67,7 +67,7 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
   _mapDataToMovementRequestItems(movementRequests: MovementRequestModel[]): SelectItem[] {
     return movementRequests.map((p) => ({
       value: p,
-      label: `${p.identifier}`,
+      label: `Movement Requests: [Work Orders] ${p.identifier}`,
     }));
   }
 

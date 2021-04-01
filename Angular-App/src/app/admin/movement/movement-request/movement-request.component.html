@@ -124,7 +124,7 @@
             <p-table class="movement-request__expaned-table" [value]="movementRequest.movementRequestDetails">
               <ng-template pTemplate="header">
                 <tr>
-                  <th>Work Order</th>
+                  <th>Work Order Id</th>
                   <th>Product Number</th>
                   <th>Description</th>
                   <th>Qty/ Pkg</th>
@@ -133,7 +133,7 @@
               </ng-template>
               <ng-template pTemplate="body" let-item>
                 <tr>
-                  <td>{{ item?.workOrder?.identifier }}</td>
+                  <td>{{ item?.workOrder?.refId }}</td>
                   <td>{{ item?.product?.productNumber }}</td>
                   <td>{{ item?.product?.productName }}</td>
                   <td>{{ item?.product?.qtyPerPackage }}</td>

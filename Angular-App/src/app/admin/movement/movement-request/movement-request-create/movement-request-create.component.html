@@ -50,7 +50,7 @@
           <p-table dataKey="id" [value]="movementRequestDetails" editMode="row">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th class="p-text-center">Work Order</th>
+                <th class="p-text-center">Work Order Id</th>
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
@@ -61,7 +61,7 @@
 
             <ng-template pTemplate="body" let-movementRequestDetail let-editing="editing" let-ri="rowIndex">
               <tr [pEditableRow]="movementRequestDetail">
-                <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
+                <td>{{ movementRequestDetail?.workOrder?.refId }}</td>
                 <td>
                   {{ movementRequestDetail?.product?.productNumber }}
                 </td>
@@ -155,7 +155,7 @@
           <p-table dataKey="id" [value]="movementRequestDetails">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th class="p-text-center">Work Order</th>
+                <th class="p-text-center">Work Order Id</th>
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
@@ -165,7 +165,7 @@
 
             <ng-template pTemplate="body" let-movementRequestDetail>
               <tr>
-                <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
+                <td>{{ movementRequestDetail?.workOrder?.refId }}</td>
                 <td>
                   {{ movementRequestDetail?.product?.productNumber }}
                 </td>
@@ -186,7 +186,14 @@
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
-            <p-button [disabled]="movementRequestForm.invalid" styleClass="p-button-text" label="Submit" (onClick)="onSubmit()" icon="pi pi-angle-right" iconPos="right"></p-button>
+            <p-button
+              [disabled]="movementRequestForm.invalid"
+              styleClass="p-button-text"
+              label="Complete"
+              (onClick)="onSubmit()"
+              icon="pi pi-angle-right"
+              iconPos="right"
+            ></p-button>
           </div>
         </ng-template>
       </p-card>

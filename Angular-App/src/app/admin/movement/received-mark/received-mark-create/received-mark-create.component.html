@@ -51,7 +51,8 @@
           <p-table dataKey="id" [value]="receivedMarkMovements" editMode="row">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th class="p-text-center">Movement Request</th>
+                <th class="p-text-center">Work Order Id</th>
+                <!-- <th class="p-text-center">Movement Request</th> -->
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
@@ -62,7 +63,9 @@
 
             <ng-template pTemplate="body" let-item let-editing="editing" let-ri="rowIndex">
               <tr [pEditableRow]="item">
-                <td>{{ item?.movementRequest?.identifier }}</td>
+                <td>[One Work Order Id]</td>
+
+                <!-- <td>{{ item?.movementRequest?.identifier }}</td> -->
 
                 <td>
                   {{ item?.product?.productNumber }}
@@ -156,7 +159,8 @@
           <p-table dataKey="id" [value]="receivedMarkMovements">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th class="p-text-center">Movement Request</th>
+                <th class="p-text-center">Work Order Id</th>
+                <!-- <th class="p-text-center">Movement Request</th> -->
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
@@ -166,7 +170,8 @@
 
             <ng-template pTemplate="body" let-item>
               <tr>
-                <td>{{ item?.movementRequest?.identifier }}</td>
+                <td>[One Work Order Id]</td>
+                <!-- <td>{{ item?.movementRequest?.identifier }}</td> -->
 
                 <td>
                   {{ item?.product?.productNumber }}
