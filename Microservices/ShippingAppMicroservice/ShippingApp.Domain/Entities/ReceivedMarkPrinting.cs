@@ -1,6 +1,5 @@
 ﻿using ShippingApp.Domain.CommonEntities;
 using System;
-using System.Collections.Generic;
 
 namespace ShippingApp.Domain.Entities
 {

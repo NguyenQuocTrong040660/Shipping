@@ -8,6 +8,7 @@
         public virtual MovementRequestModel MovementRequest { get; set; }
         public int ProductId { get; set; }
         public virtual ProductModel Product { get; set; }
+        public bool IsDirect { get; set; }
         public int Quantity { get; set; }
     }
 }

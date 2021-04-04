@@ -65,8 +65,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       { header: 'Account Number', field: 'accountNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Product Line', field: 'productLine', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Product Number', field: 'product', subField: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Sales Id', field: 'salesID', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Semline Number', field: 'semlineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Sales Order', field: 'salesOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Saleline Number', field: 'salelineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
       { header: 'Quantity ', subField: 'quantity', field: 'shippingPlanDetail', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
@@ -82,7 +82,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      // { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -110,8 +110,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     this.shippingPlanForm = this.fb.group({
       id: [''],
       customerName: ['', [Validators.required]],
-      salesID: [0, [Validators.required]],
-      semlineNumber: [0, [Validators.required]],
+      salesOrder: [0, [Validators.required]],
+      salelineNumber: [0, [Validators.required]],
       purchaseOrder: ['', [Validators.required]],
       shippingDate: ['', [Validators.required]],
       notes: [''],

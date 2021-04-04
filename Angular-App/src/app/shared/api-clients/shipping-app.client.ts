@@ -4107,6 +4107,7 @@ export interface CountryModel extends AuditableEntityModel {
 
 export interface MovementRequestModel extends AuditableEntityModel {
     identifier?: string | undefined;
+    workOrdersCollection?: string | undefined;
     id?: number;
     notes?: string | undefined;
     prefix?: string | undefined;
@@ -4121,6 +4122,7 @@ export interface MovementRequestDetailModel extends AuditableEntityModel {
     movementRequest?: MovementRequestModel | undefined;
     productId?: number;
     product?: ProductModel | undefined;
+    isDirect?: boolean;
     quantity?: number;
 }
 
@@ -4185,8 +4187,8 @@ export interface ShippingPlanModel extends AuditableEntityModel {
     prefix?: string | undefined;
     customerName?: string | undefined;
     shippingDate?: Date;
-    salesID?: string | undefined;
-    semlineNumber?: string | undefined;
+    salesOrder?: string | undefined;
+    salelineNumber?: string | undefined;
     notes?: string | undefined;
     purchaseOrder?: string | undefined;
     billTo?: string | undefined;
@@ -4208,9 +4210,9 @@ export interface ShippingRequestDetailModel extends AuditableEntityModel {
     amount?: number;
     shippingRequestId?: number;
     productId?: number;
-    semlineNumber?: string | undefined;
+    salelineNumber?: string | undefined;
     purchaseOrder?: string | undefined;
-    salesID?: string | undefined;
+    salesOrder?: string | undefined;
     productLine?: number;
     product?: ProductModel | undefined;
     shippingRequest?: ShippingRequestModel | undefined;
@@ -4325,6 +4327,7 @@ export interface ReceivedMarkModel extends AuditableEntityModel {
     id?: number;
     prefix?: string | undefined;
     notes?: string | undefined;
+    workOrdersCollection?: string | undefined;
     receivedMarkMovements?: ReceivedMarkMovementModel[] | undefined;
     receivedMarkPrintings?: ReceivedMarkPrintingModel[] | undefined;
     receivedMarkSummaries?: ReceivedMarkSummaryModel[] | undefined;
@@ -4335,6 +4338,7 @@ export interface ReceivedMarkMovementModel extends AuditableEntityModel {
     productId?: number;
     movementRequestId?: number;
     quantity?: number;
+    workOrderMomentRequest?: string | undefined;
     receivedMark?: ReceivedMarkModel | undefined;
     movementRequest?: MovementRequestModel | undefined;
     product?: ProductModel | undefined;
@@ -4388,8 +4392,8 @@ export interface ShippingPlanImportModel {
     shippingPlanId?: string | undefined;
     customerName?: string | undefined;
     purchaseOrder?: string | undefined;
-    salesID?: string | undefined;
-    semlineNumber?: string | undefined;
+    salesOrder?: string | undefined;
+    salelineNumber?: string | undefined;
     productNumber?: string | undefined;
     quantityOrder?: number;
     salesPrice?: number;

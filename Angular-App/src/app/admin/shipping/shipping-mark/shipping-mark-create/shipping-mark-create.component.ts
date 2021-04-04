@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ProductModel, ReceivedMarkPrintingModel, ShippingMarkShippingModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import Utilities from 'app/shared/helpers/utilities';
 import { MenuItem, SelectItem } from 'primeng/api';
 
 @Component({
@@ -65,7 +66,12 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
   _mapDataToShippingRequestItems(shippingRequests: ShippingRequestModel[]): SelectItem[] {
     return shippingRequests.map((p) => ({
       value: p,
-      label: `${p.identifier}`,
+      label: `Customer: ${p.customerName} | Bill To: ${p.billTo} | Bill To: ${p.shipTo}| Shipping Date: ${Utilities.ConvertDateBeforeSendToServer(p.shippingDate)
+        .toISOString()
+        .split('T')[0]
+        .split('-')
+        .reverse()
+        .join('/')}`,
     }));
   }
 

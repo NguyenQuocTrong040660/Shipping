@@ -17,8 +17,8 @@ namespace Communication.Domain.Models
         public string Prefix { get; set; }
         public string CustomerName { get; set; }
         public DateTime ShippingDate { get; set; }
-        public string SalesID { get; set; }
-        public string SemlineNumber { get; set; }
+        public string SalesOrder { get; set; }
+        public string SalelineNumber { get; set; }
         public string Notes { get; set; }
         public string PurchaseOrder { get; set; }
         public int ShippingRequestLogisticId { get; set; }

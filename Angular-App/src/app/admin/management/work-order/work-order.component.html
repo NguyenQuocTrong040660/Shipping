@@ -76,7 +76,7 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="body" let-item let-columns="columns">
+    <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
       <tr>
         <td *ngFor="let col of columns">
           <ng-container [ngSwitch]="col.type">
@@ -95,7 +95,47 @@
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
               {{ item[col.field] }}
             </ng-container>
+            <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
+              <button
+                type="button"
+                pButton
+                pRipple
+                (click)="getDetailWorkOrder(item)"
+                [pRowToggler]="item"
+                class="p-button-text p-button-rounded p-button-plain"
+                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
+              ></button>
+            </ng-container>
           </ng-container>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="rowexpansion" let-workOrder>
+      <tr>
+        <td [attr.colspan]="cols.length" class="work-order__expaned">
+          <div>
+            <p-table class="work-order__expaned-table" [value]="workOrder.movementRequestDetails">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Movement Request Id</th>
+                  <th>Product Number</th>
+                  <th>Description</th>
+                  <th>Qty/ Pkg</th>
+                  <th>Moved Qty</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>{{ item?.movementRequest?.identifier }}</td>
+                  <td>{{ item?.product?.productNumber }}</td>
+                  <td>{{ item?.product?.productName }}</td>
+                  <td>{{ item?.product?.qtyPerPackage | number }}</td>
+                  <td>{{ item?.quantity | number }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
         </td>
       </tr>
     </ng-template>

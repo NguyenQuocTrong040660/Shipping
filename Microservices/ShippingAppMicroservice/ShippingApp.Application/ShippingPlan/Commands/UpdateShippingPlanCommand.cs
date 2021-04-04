@@ -71,10 +71,10 @@ namespace ShippingApp.Application.ShippingPlan.Commands
             }
 
             shippingPlan.CustomerName = request.ShippingPlan.CustomerName;
-            shippingPlan.SemlineNumber = request.ShippingPlan.SemlineNumber;
+            shippingPlan.SalelineNumber = request.ShippingPlan.SalelineNumber;
             shippingPlan.PurchaseOrder = request.ShippingPlan.PurchaseOrder;
             shippingPlan.ShippingDate = request.ShippingPlan.ShippingDate;
-            shippingPlan.SalesID = request.ShippingPlan.SalesID;
+            shippingPlan.SalesOrder = request.ShippingPlan.SalesOrder;
             shippingPlan.Notes = request.ShippingPlan.Notes;
 
             await _context.SaveChangesAsync();

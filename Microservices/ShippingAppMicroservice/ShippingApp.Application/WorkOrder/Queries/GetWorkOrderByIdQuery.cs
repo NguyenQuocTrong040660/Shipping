@@ -18,11 +18,13 @@ namespace ShippingApp.Application.WorkOrder.Queries
     public class GetWorkOrderByIdQueryHandler : IRequestHandler<GetWorkOrderByIdQuery, WorkOrderModel>
     {
         private readonly IMapper _mapper;
+        private readonly IShippingAppDbContext _context;
         private readonly IShippingAppRepository<Entities.WorkOrder> _shippingAppRepository;
 
-        public GetWorkOrderByIdQueryHandler(IMapper mapper, IShippingAppRepository<Entities.WorkOrder> shippingAppRepository)
+        public GetWorkOrderByIdQueryHandler(IMapper mapper, IShippingAppDbContext context, IShippingAppRepository<Entities.WorkOrder> shippingAppRepository)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
         }
 
@@ -30,10 +32,15 @@ namespace ShippingApp.Application.WorkOrder.Queries
         {
             var workOrder = await _shippingAppRepository
                .GetDbSet()
-               .Include(i => i.WorkOrderDetails)
-               .ThenInclude(i => i.Product)
+               .Include(i => i.WorkOrderDetails).ThenInclude(i => i.Product)
+               .Include(x => x.MovementRequestDetails).ThenInclude(x => x.Product)
                .OrderByDescending(i => i.LastModified)
                .FirstOrDefaultAsync(i => i.Id == request.Id);
+
+            foreach (var item in workOrder.MovementRequestDetails)
+            {
+                item.MovementRequest = await _context.MovementRequests.FindAsync(item.MovementRequestId);
+            }
 
             return _mapper.Map<WorkOrderModel>(workOrder);
         }

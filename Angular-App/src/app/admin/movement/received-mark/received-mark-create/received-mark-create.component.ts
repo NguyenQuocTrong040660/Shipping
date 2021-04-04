@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ShippingPlanDetails } from 'app/admin/management/shipping-plan/shipping-plan-create/shipping-plan-create.component';
-import { MovementRequestModel, ReceivedMarkMovementModel } from 'app/shared/api-clients/shipping-app.client';
+import { MovementRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { MenuItem, SelectItem } from 'primeng/api';
 import { ReceivedMarkMovement } from '../received-mark.component';
 
@@ -67,7 +66,7 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
   _mapDataToMovementRequestItems(movementRequests: MovementRequestModel[]): SelectItem[] {
     return movementRequests.map((p) => ({
       value: p,
-      label: `${p.identifier}`,
+      label: `Movement Requests: ${p.workOrdersCollection}`,
     }));
   }
 

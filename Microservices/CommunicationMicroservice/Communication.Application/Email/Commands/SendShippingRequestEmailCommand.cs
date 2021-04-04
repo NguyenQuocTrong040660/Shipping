@@ -63,9 +63,9 @@ namespace Communication.Application.Email.Commands
             var shippingRequest = shippingRequestResponse.ShippingRequest;
 
             rawTemplate = rawTemplate.Replace("{{ shippingRequestId }}", shippingRequest.Identifier);
-            rawTemplate = rawTemplate.Replace("{{ salesId }}", shippingRequest.SalesID);
+            rawTemplate = rawTemplate.Replace("{{ salesId }}", shippingRequest.SalesOrder);
             rawTemplate = rawTemplate.Replace("{{ purchaseOrder }}", shippingRequest.PurchaseOrder);
-            rawTemplate = rawTemplate.Replace("{{ semlineNumber }}", shippingRequest.SemlineNumber);
+            rawTemplate = rawTemplate.Replace("{{ semlineNumber }}", shippingRequest.SalelineNumber);
             rawTemplate = rawTemplate.Replace("{{ customerName }}", shippingRequest.CustomerName);
             rawTemplate = rawTemplate.Replace("{{ shippingDate }}", shippingRequest.ShippingDate.ToString("dd/MM/yyyy"));
             rawTemplate = rawTemplate.Replace("{{ notes }}", shippingRequest.Notes);

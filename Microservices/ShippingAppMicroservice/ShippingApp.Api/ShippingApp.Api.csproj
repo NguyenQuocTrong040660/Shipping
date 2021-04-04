@@ -46,4 +46,8 @@
     <ProjectReference Include="..\ShippingApp.Persistence\ShippingApp.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="logs\" />
+  </ItemGroup>
+
 </Project>
