@@ -75,6 +75,7 @@ export class MovementRequestCreateComponent implements OnInit, OnChanges {
       quantity: [movementRequestDetail.quantity],
       productId: [movementRequestDetail.productId],
       workOrderId: [movementRequestDetail.workOrderId],
+      isDirect: [movementRequestDetail.isDirect],
       movementRequestId: [movementRequestDetail.movementRequestId],
     });
   }

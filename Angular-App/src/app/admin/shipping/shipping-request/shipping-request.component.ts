@@ -217,7 +217,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.selectedShippingRequestDetail.shippingRequest = shippingRequestSelected;
 
     this.isShowDialogDocuments = true;
-    this.titleDialog = 'Shipping Documents for Sales Order: ' + this.selectedShippingRequestDetail.salesID;
+    this.titleDialog = 'Shipping Documents for Sales Order: ' + this.selectedShippingRequestDetail.salesOrder;
   }
 
   ngOnDestroy(): void {

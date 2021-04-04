@@ -51,8 +51,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      // { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
-      { header: 'Work Orders', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Work Orders', field: 'workOrdersCollection', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
@@ -132,11 +131,10 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Create Movement Request Successfully');
             this.initMovementRequests();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Create Movement Request Failed. Please try again');

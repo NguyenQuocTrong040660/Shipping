@@ -9,14 +9,14 @@ namespace ShippingApp.Domain.Models
         {
             get
             {
-                return string.Join("-", SalesID, SemlineNumber, ProductNumber);
+                return string.Join("-", SalesOrder, SalelineNumber, ProductNumber);
             }
         }
 
         public string CustomerName { get; set; }
         public string PurchaseOrder { get; set; }
-        public string SalesID { get; set; }
-        public string SemlineNumber { get; set; }
+        public string SalesOrder { get; set; }
+        public string SalelineNumber { get; set; }
         public string ProductNumber { get; set; }
         public int QuantityOrder { get; set; }
         public float SalesPrice { get; set; }

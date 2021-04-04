@@ -26,6 +26,8 @@ namespace ShippingApp.Domain.Models
         }
         public string Notes { get; set; }
 
+        [IgnoreMap]
+        public string WorkOrdersCollection { get; set; }
 
         public virtual ICollection<ReceivedMarkMovementModel> ReceivedMarkMovements { get; set; }
         public virtual ICollection<ReceivedMarkPrintingModel> ReceivedMarkPrintings { get; set; }

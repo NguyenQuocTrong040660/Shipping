@@ -28,6 +28,7 @@
     "@angular/router": "9.0.6",
     "admin-lte": "^3.0.5",
     "core-js": "3.6.4",
+    "ngx-barcode": "^0.3.0",
     "ngx-quicklink": "^0.2.4",
     "primeflex": "^2.0.0",
     "primeicons": "^4.0.0",

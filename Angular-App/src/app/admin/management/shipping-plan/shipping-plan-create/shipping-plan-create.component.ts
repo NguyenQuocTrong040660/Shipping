@@ -39,8 +39,8 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
     return this.shippingPlanForm.get('customerName');
   }
 
-  get semlineNumberControl() {
-    return this.shippingPlanForm.get('semlineNumber');
+  get salelineNumberControl() {
+    return this.shippingPlanForm.get('salelineNumber');
   }
 
   get purchaseOrderControl() {
@@ -51,8 +51,8 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
     return this.shippingPlanForm.get('shippingDate');
   }
 
-  get salesIdControl() {
-    return this.shippingPlanForm.get('salesID');
+  get salesOrderControl() {
+    return this.shippingPlanForm.get('salesOrder');
   }
 
   get notesControl() {
@@ -78,12 +78,12 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     if (this.isEdit) {
-      const { customerName, semlineNumber, purchaseOrder, shippingDate, salesID, notes } = this.selectedShippingPlan;
+      const { customerName, salelineNumber, purchaseOrder, shippingDate, salesOrder, notes } = this.selectedShippingPlan;
 
       this.customerNameControl.patchValue(customerName);
-      this.semlineNumberControl.patchValue(semlineNumber);
+      this.salelineNumberControl.patchValue(salelineNumber);
       this.purchaseOrderControl.patchValue(purchaseOrder);
-      this.salesIdControl.patchValue(salesID);
+      this.salesOrderControl.patchValue(salesOrder);
       this.notesControl.patchValue(notes);
       this.shippingDateControl.patchValue(new Date(shippingDate));
     }

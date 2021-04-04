@@ -33,6 +33,7 @@ import { PrintComponent } from './components/print/print.component';
 import { PanelModule } from 'primeng/panel';
 import { HistoryDialogComponent } from './components/history-dialog/history-dialog.component';
 import { ImportComponent } from './components/import/import.component';
+import { NgxBarcodeModule } from 'ngx-barcode';
 
 @NgModule({
   declarations: [PrintComponent, HistoryDialogComponent, ImportComponent],
@@ -69,6 +70,7 @@ import { ImportComponent } from './components/import/import.component';
     InputNumberModule,
     TooltipModule,
     PanelModule,
+    NgxBarcodeModule,
   ],
   exports: [
     CommonModule,
@@ -103,6 +105,7 @@ import { ImportComponent } from './components/import/import.component';
     InputNumberModule,
     TooltipModule,
     PanelModule,
+    NgxBarcodeModule,
     PrintComponent,
     HistoryDialogComponent,
   ],

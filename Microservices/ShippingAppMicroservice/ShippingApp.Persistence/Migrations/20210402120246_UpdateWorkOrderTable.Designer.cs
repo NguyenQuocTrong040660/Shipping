@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShippingApp.Persistence.DBContext;
 
 namespace ShippingApp.Persistence.Migrations
 {
     [DbContext(typeof(ShippingAppDbContext))]
-    partial class ShippingAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210402120246_UpdateWorkOrderTable")]
+    partial class UpdateWorkOrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,9 +100,6 @@ namespace ShippingApp.Persistence.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsDirect")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");

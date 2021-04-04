@@ -26,7 +26,7 @@
               </tr>
               <tr>
                 <td>P/N</td>
-                <td class="print__value">: {{ printData && printData.product ? printData.product.productName : '' }}</td>
+                <td class="print__value">: {{ printData && printData.product ? printData.product.productNumber : '' }}</td>
               </tr>
               <tr>
                 <td>Qty</td>
@@ -43,6 +43,14 @@
               <tr>
                 <td>Date</td>
                 <td class="print__value">: {{ printData && printData.printingDate ? (printData.printingDate | date: 'dd/MM/yyyy') : '' }}</td>
+              </tr>
+              <tr>
+                <td>Barcode</td>
+                <td class="print__value">
+                  :
+                  <ngx-barcode *ngIf="printData && printData.receivedMark" [bc-value]="printData.receivedMark.identifier" [bc-display-value]="true"></ngx-barcode>
+                  <ngx-barcode *ngIf="printData && printData.shippingMark" [bc-value]="printData.shippingMark.identifier" [bc-display-value]="true"></ngx-barcode>
+                </td>
               </tr>
             </table>
           </div>

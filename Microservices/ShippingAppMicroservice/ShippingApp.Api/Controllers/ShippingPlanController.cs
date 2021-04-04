@@ -60,14 +60,27 @@ namespace ShippingApp.Api.Controllers
                     continue;
                 }
 
+                var shippingPlanDatabase = await Mediator.Send(new GetShippingPlanByRefIdQuery
+                {
+                    ProductNumber = item.ProductNumber,
+                    SalelineNumber = item.SalelineNumber,
+                    SalesOrder = item.SalesOrder
+                });
+
+                if (shippingPlanDatabase != null)
+                {
+                    invalidDatas.AddRange(group.ShippingPlans);
+                    continue;
+                }
+
                 var shippingPlan = new ShippingPlanModel
                 {
                     Notes = item?.Notes ?? string.Empty,
                     CustomerName = item?.CustomerName ?? string.Empty,
-                    SalesID = item.SalesID,
+                    SalesOrder = item.SalesOrder,
                     ShippingDate = item.ShippingDate,
                     PurchaseOrder = item.PurchaseOrder,
-                    SemlineNumber = item.SemlineNumber,
+                    SalelineNumber = item.SalelineNumber,
                     BillTo = item.BillTo,
                     BillToAddress = item.BillToAddress,
                     ShipTo = item.ShipTo,
@@ -130,7 +143,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ShippingPlanModel>> GetShippingPlanByIdAsync(int id)
         {
-            var result = await Mediator.Send(new GetShippingPlanByIDQuery { Id = id });
+            var result = await Mediator.Send(new GetShippingPlanByIdQuery { Id = id });
             return Ok(result);
         }
 

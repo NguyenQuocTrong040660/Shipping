@@ -11,24 +11,24 @@ using System.Linq;
 
 namespace ShippingApp.Application.ShippingPlan.Queries
 {
-    public class GetShippingPlanByIDQuery : IRequest<ShippingPlanModel>
+    public class GetShippingPlanByIdQuery : IRequest<ShippingPlanModel>
     {
         public int Id { get; set; }
     }
 
-    public class GetShippingPlanByIDQueryHandler : IRequestHandler<GetShippingPlanByIDQuery, ShippingPlanModel>
+    public class GetShippingPlanByIdQueryHandler : IRequestHandler<GetShippingPlanByIdQuery, ShippingPlanModel>
     {
         private readonly IMapper _mapper;
         private readonly IShippingAppDbContext _context;
 
-        public GetShippingPlanByIDQueryHandler(IMapper mapper,
+        public GetShippingPlanByIdQueryHandler(IMapper mapper,
             IShippingAppDbContext context)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<ShippingPlanModel> Handle(GetShippingPlanByIDQuery request, CancellationToken cancellationToken)
+        public async Task<ShippingPlanModel> Handle(GetShippingPlanByIdQuery request, CancellationToken cancellationToken)
         {
             var entity = await _context.ShippingPlans
                 .FirstOrDefaultAsync(x => x.Id == request.Id);

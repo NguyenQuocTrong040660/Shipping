@@ -62,8 +62,6 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: 'Work Order Id', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
-      // { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
-
       { header: 'Product Number', subField: 'productNumber', field: 'product', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Description', subField: 'productName', field: 'product', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Order Qty ', subField: 'quantity', field: 'workOrderDetail', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
@@ -167,18 +165,16 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   getDetailWorkOrder(workOrder: WorkOrderModel) {
     const workOrderSelected = this.workOrders.find((i) => i.id === workOrder.id);
 
-    if (workOrderSelected && workOrderSelected.workOrderDetails && workOrderSelected.workOrderDetails.length > 0) {
-      return;
-    }
-
     this.workOrderClients
       .getWorkOrderById(workOrder.id)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (i: WorkOrderModel) => {
-          workOrderSelected.workOrderDetails = i.workOrderDetails;
+          workOrderSelected.movementRequestDetails = i.movementRequestDetails;
         },
-        (_) => (workOrderSelected.workOrderDetails = [])
+        (_) => {
+          workOrderSelected.movementRequestDetails = [];
+        }
       );
   }
 
@@ -215,11 +211,10 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Create Work Order Successfully');
             this.initWorkOrders();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Create Work Order Failed. Please try again');
@@ -255,11 +250,10 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Work Order Successfully');
             this.initWorkOrders();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Edit Work Order Failed. Please try again');

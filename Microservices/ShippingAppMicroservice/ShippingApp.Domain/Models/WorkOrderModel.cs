@@ -61,9 +61,9 @@ namespace ShippingApp.Domain.Models
         {
             get
             {
-                if (WorkOrderDetail == null || MovementRequestDetails == null || !MovementRequestDetails.Any())
+                if (WorkOrderDetail == null || MovementRequestDetails == null)
                 {
-                    return WorkOrderDetail.Quantity;
+                    return 0;
                 }
 
                 return WorkOrderDetail.Quantity - MovementRequestDetails.Sum(x => x.Quantity);

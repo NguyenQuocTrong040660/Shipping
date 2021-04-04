@@ -1,5 +1,4 @@
-﻿    using ShippingApp.Domain.CommonEntities;
-using System;
+﻿using ShippingApp.Domain.CommonEntities;
 
 namespace ShippingApp.Domain.Entities
 {

@@ -88,16 +88,40 @@ namespace ShippingApp.Application.MovementRequest.Commands
 
         private async Task<Result> ValidateMovementRequestAsync(MovementRequestModel model)
         {
-            foreach (var item in model.MovementRequestDetails)
+            var momentRequestDetails = await _context.MovementRequestDetails
+                .AsNoTracking()
+                .Where(x => x.MovementRequestId == model.Id)
+                .ToListAsync();
+
+            foreach (var item in momentRequestDetails)
             {
+                var detail = model.MovementRequestDetails
+                    .FirstOrDefault(i => i.ProductId == item.ProductId && i.MovementRequestId == item.ProductId);
+
+                if  (detail == null)
+                {
+                    continue;
+                }
+
+                if (detail.Quantity == item.Quantity)
+                {
+                    continue;
+                }
+
+                var diffQuantity = detail.Quantity - item.Quantity;
+
+                if (diffQuantity < 0)
+                {
+                    continue;
+                }
+
                 var workOrder = await _context.WorkOrders
-                    .Include(x => x.WorkOrderDetails)
-                    .Include(x => x.MovementRequestDetails)
-                    .FirstOrDefaultAsync(i => i.Id == item.WorkOrderId);
+                   .Include(x => x.WorkOrderDetails)
+                   .FirstOrDefaultAsync(i => i.Id == item.WorkOrderId);
 
                 var remainQuantityOfWorkOrder = GetRemainQuantityWorkOrder(workOrder);
 
-                if (item.Quantity > remainQuantityOfWorkOrder)
+                if (diffQuantity > remainQuantityOfWorkOrder)
                 {
                     return Result.Failure("Quantity can not be greater than Remain Quantity of Work Order");
                 }

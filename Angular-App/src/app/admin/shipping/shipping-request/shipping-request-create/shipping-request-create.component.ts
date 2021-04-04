@@ -60,7 +60,20 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
 
     this.productFields = this.productCols.map((i) => i.field);
 
-    this.stepItems = [{ label: 'Shipping Informations' }, { label: 'Shipping Plans' }, { label: 'Products' }, { label: 'Shipping Request Summary' }];
+    this.stepItems = [
+      {
+        label: 'Shipping Informations',
+      },
+      {
+        label: 'Shipping Plans',
+      },
+      {
+        label: 'Products',
+      },
+      {
+        label: 'Shipping Request Summary',
+      },
+    ];
   }
 
   hideDialog() {
@@ -107,23 +120,7 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
         break;
       }
       case 2: {
-        this.shippingRequestDetails = this._mapToProductsToShippingRequestDetailModels(this.selectedProducts);
-
-        this.shippingRequestDetails.forEach((item) => {
-          const shippingPlan = this.selectedShippingPlans.find((i) => i.product.id === item.productId);
-
-          if (shippingPlan) {
-            item.amount = shippingPlan.shippingPlanDetail.amount;
-            item.quantity = shippingPlan.shippingPlanDetail.quantity;
-            item.price = shippingPlan.shippingPlanDetail.price;
-            item.shippingMode = shippingPlan.shippingPlanDetail.shippingMode;
-            item.semlineNumber = shippingPlan.semlineNumber;
-            item.purchaseOrder = shippingPlan.purchaseOrder;
-            item.salesID = shippingPlan.salesID;
-            item.productLine = shippingPlan.productLine;
-          }
-        });
-
+        this.shippingRequestDetails = this._mapToProductsToShippingRequestDetailModels(this.selectedProducts, this.selectedShippingPlans);
         this.stepIndex += 1;
         break;
       }
@@ -163,9 +160,9 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
       price: [shippingRequestDetailModel.price],
       shippingRequestId: [shippingRequestDetailModel.shippingRequestId],
       shippingMode: [shippingRequestDetailModel.shippingMode],
-      semlineNumber: [shippingRequestDetailModel.semlineNumber],
+      salelineNumber: [shippingRequestDetailModel.salelineNumber],
       purchaseOrder: [shippingRequestDetailModel.purchaseOrder],
-      salesID: [shippingRequestDetailModel.salesID],
+      salesOrder: [shippingRequestDetailModel.salesOrder],
       productLine: [shippingRequestDetailModel.productLine],
     });
   }
@@ -181,7 +178,7 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
           shipTo: i.shipTo,
           shipToAddress: i.shipToAddress,
           customerName: i.customerName,
-          saleOrder: i.salesID,
+          saleOrder: i.salesOrder,
         },
       };
     });
@@ -209,27 +206,27 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
   _mapToSelectShippingPlanItem(shippingPlans: ShippingPlanModel[]): SelectItem[] {
     return shippingPlans.map((p) => ({
       value: p,
-      label: `Sale Order: ${p.salesID} | Saleline Number: ${p.semlineNumber} | Product Number: ${p.product?.productNumber} | Shipping Date: 
+      label: `Sale Order: ${p.salesOrder} | Saleline Number: ${p.salelineNumber} | Product Number: ${p.product?.productNumber} | Shipping Date: 
         ${Utilities.ConvertDateBeforeSendToServer(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
     }));
   }
 
-  _mapToProductsToShippingRequestDetailModels(products: ProductModel[]): ShippingRequestDetailModel[] {
-    return products.map((item, index) => {
+  _mapToProductsToShippingRequestDetailModels(products: ProductModel[], shippingPlans: ShippingPlanModel[]): ShippingRequestDetailModel[] {
+    return shippingPlans.map((item, index) => {
       return {
         id: index + 1,
-        productId: item.id,
-        product: item,
+        productId: item.product.id,
+        product: products.find((i) => i.id == item.product.id),
         shippingRequest: null,
         shippingRequestId: 0,
-        quantity: 0,
-        price: 0,
-        amount: 0,
-        shippingMode: '',
-        semlineNumber: '',
-        purchaseOrder: '',
-        salesID: '',
-        productLine: 0,
+        quantity: item.shippingPlanDetail.quantity,
+        price: item.shippingPlanDetail.price,
+        amount: item.shippingPlanDetail.amount,
+        shippingMode: item.shippingPlanDetail.shippingMode,
+        salelineNumber: item.salelineNumber,
+        purchaseOrder: item.purchaseOrder,
+        salesOrder: item.salesOrder,
+        productLine: item.productLine,
       };
     });
   }

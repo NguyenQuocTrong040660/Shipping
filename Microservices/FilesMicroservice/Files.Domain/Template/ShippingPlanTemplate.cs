@@ -12,10 +12,10 @@ namespace Files.Domain.Template
         public string PurchaseOrder { get; set; }
 
         [ValidateDataType(IsRequired = true)]
-        public string SalesID { get; set; }
+        public string SalesOrder { get; set; }
 
         [ValidateDataType(IsRequired = true)]
-        public string SemlineNumber { get; set; }
+        public string SalelineNumber { get; set; }
 
         [ValidateDataType(IsRequired = true)]
         public string ProductNumber { get; set; }
