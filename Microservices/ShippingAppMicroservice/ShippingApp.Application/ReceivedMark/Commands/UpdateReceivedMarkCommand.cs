@@ -50,19 +50,13 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                .Where(i => i.ReceivedMarkId == request.Id)
                .Where(x => !receivedMarkPrintingsGenerated.Contains(x))
                .ToListAsync();
-
-            var groupByProducts = request.ReceivedMark.ReceivedMarkMovements
-                .GroupBy(x => x.ProductId)
-                .Select(g => new
-                {
-                    ProductId = g.Key,
-                    ReceivedQty = g.ToList().Sum(i => i.Quantity)
-                });
-
-            foreach (var group in groupByProducts)
+           
+            foreach (var receivedMarkMovement in request.ReceivedMark.ReceivedMarkMovements)
             {
-                int remainQty = group.ReceivedQty;
-                int printedQty = receivedMarkPrintingsPrinted.Where(x => x.ProductId == group.ProductId)
+                int remainQty = receivedMarkMovement.Quantity;
+                int printedQty = receivedMarkPrintingsPrinted.Where(x => x.ProductId == receivedMarkMovement.ProductId)
+                                                             .Where(x => x.MovementRequestId == receivedMarkMovement.MovementRequestId)
+                                                             .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.Storage)))
                                                              .ToList()
                                                              .Sum(i => i.Quantity);
 
@@ -76,10 +70,10 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
                 var product = await _context.Products
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == group.ProductId);
+                    .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.ProductId);
 
                 var lastItem = receivedMarkPrintingsPrinted
-                    .Where(x => x.ProductId == group.ProductId)
+                    .Where(x => x.ProductId == receivedMarkMovement.ProductId)
                     .OrderBy(x => x.Sequence)
                     .LastOrDefault();
 
@@ -87,47 +81,30 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
                 while (remainQty > 0)
                 {
-                    if (remainQty >= product.QtyPerPackage)
+                    receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
                     {
-                        receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
-                        {
-                            ProductId = product.Id,
-                            Quantity = product.QtyPerPackage,
-                            Sequence = sequence,
-                            Status = nameof(ReceivedMarkStatus.New),
-                            ReceivedMarkId = request.Id
-                        });
-                    }
-                    else
-                    {
-                        receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
-                        {
-                            ProductId = product.Id,
-                            Quantity = remainQty,
-                            Sequence = sequence,
-                            Status = nameof(ReceivedMarkStatus.New),
-                            ReceivedMarkId = request.Id
-                        });
-                    }
+                        ProductId = product.Id,
+                        Quantity = remainQty >= product.QtyPerPackage ? product.QtyPerPackage : remainQty,
+                        Sequence = sequence,
+                        Status = nameof(ReceivedMarkStatus.New),
+                        ReceivedMarkId = request.Id
+                    });
 
                     remainQty -= product.QtyPerPackage;
                     sequence++;
                 }
 
-                var receivedMarkSummary = await _context.ReceivedMarkSummaries
-                    .FirstOrDefaultAsync(x => x.ProductId == group.ProductId && x.ReceivedMarkId == request.Id);
-
-                receivedMarkSummary.TotalPackage = sequence - 1;
-                receivedMarkSummary.TotalQuantity = group.ReceivedQty;
-
                 var receivedMarkMovements = await _context.ReceivedMarkMovements
-                                                          .Where(i => i.ReceivedMarkId == request.Id && i.ProductId == group.ProductId)
+                                                          .Where(i => i.ReceivedMarkId == request.Id)
+                                                          .Where(i => i.ProductId == receivedMarkMovement.ProductId)
                                                           .ToListAsync();
 
                 foreach (var item in receivedMarkMovements)
                 {
                     var model = request.ReceivedMark.ReceivedMarkMovements
-                        .FirstOrDefault(i => i.ReceivedMarkId == item.ReceivedMarkId && i.ProductId == item.ProductId && i.MovementRequestId == item.MovementRequestId);
+                        .FirstOrDefault(i => i.ReceivedMarkId == item.ReceivedMarkId 
+                                            && i.ProductId == item.ProductId 
+                                            && i.MovementRequestId == item.MovementRequestId);
 
                     if (model == null)
                     {
@@ -149,6 +126,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             receivedMark.Notes = request.ReceivedMark.Notes;
 
             await _context.SaveChangesAsync();
+
             return Result.Success();
         }
     }

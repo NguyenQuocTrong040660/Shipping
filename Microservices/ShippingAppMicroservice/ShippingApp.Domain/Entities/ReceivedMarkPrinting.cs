@@ -28,5 +28,8 @@ namespace ShippingApp.Domain.Entities
         public virtual ReceivedMark ReceivedMark { get; set; }
         public virtual Product Product { get; set; }
         public virtual ShippingMark ShippingMark { get; set; }
+
+        public int MovementRequestId { get; set; }
+        public virtual MovementRequest MovementRequest { get; set; }
     }
 }

@@ -153,6 +153,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
     this.isShowDialogCreate = false;
     this.isShowDialogEdit = false;
     this.isShowDialogHistory = false;
+    this.selectedMovementRequest = null;
     this.movementRequestForm.reset();
   }
 
@@ -191,11 +192,10 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Movement Request Successfully');
             this.initMovementRequests();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Edit Movement Request Failed. Please try again');
@@ -216,9 +216,9 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
           .subscribe(
             (result) => {
               if (result && result.succeeded) {
+                this.selectedMovementRequest = null;
                 this.notificationService.success('Delete Movement Request Successfully');
                 this.initMovementRequests();
-                this.selectedMovementRequest = null;
               } else {
                 this.notificationService.error(result?.error);
               }

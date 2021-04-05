@@ -145,11 +145,10 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Create Shipping Mark Successfully');
             this.initShippingMarks();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Create Shipping Mark Failed. Please try again');
@@ -211,11 +210,10 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Shipping Mark Successfully');
             this.initShippingMarks();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Edit Shipping Mark Failed. Please try again');

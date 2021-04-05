@@ -11,6 +11,12 @@ namespace ShippingApp.Domain.Models
 
         [IgnoreMap]
         public string WorkOrderMomentRequest { get; set; }
+        [IgnoreMap]
+        public int TotalQuantity { get; set; }
+        [IgnoreMap]
+        public int TotalPackage { get; set; }
+        [IgnoreMap]
+        public int TotalQuantityPrinted { get; set; }
 
         public virtual ReceivedMarkModel ReceivedMark { get; set; }
         public virtual MovementRequestModel MovementRequest { get; set; }

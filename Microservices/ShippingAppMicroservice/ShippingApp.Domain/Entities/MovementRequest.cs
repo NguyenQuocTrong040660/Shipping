@@ -10,5 +10,6 @@ namespace ShippingApp.Domain.Entities
         public string Notes { get; set; }
         public virtual ICollection<MovementRequestDetail> MovementRequestDetails { get; set; }
         public virtual ICollection<ReceivedMarkMovement> ReceivedMarkMovements { get; set; }
+        public virtual ICollection<ReceivedMarkPrinting> ReceivedMarkPrintings { get; set; }
     }
 }

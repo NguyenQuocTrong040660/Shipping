@@ -50,7 +50,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<ShippingRequestModel>>> GetShippingRequests()
         {
-            return await Mediator.Send(new GetShippingRequestsQuery { });
+            return Ok(await Mediator.Send(new GetShippingRequestsQuery { }));
         }
 
         [HttpGet("{id}")]
@@ -58,12 +58,10 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ShippingRequestModel>> GetShippingRequestByIdAsync(int id)
         {
-            var result = await Mediator.Send(new GetShippingRequestByIdQuery 
-            { 
-                Id = id 
-            });
-
-            return Ok(result);
+            return Ok(await Mediator.Send(new GetShippingRequestByIdQuery
+            {
+                Id = id
+            }));
         }
 
         [HttpPut("{id}")]
@@ -78,8 +76,7 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(shippingRequest);
             }
 
-            var result = await Mediator.Send(new UpdateShippingRequestCommand { Id = id, ShippingRequest = shippingRequest });
-            return Ok(result);
+            return Ok(await Mediator.Send(new UpdateShippingRequestCommand { Id = id, ShippingRequest = shippingRequest }));
         }
 
         [HttpDelete("{id}")]
@@ -87,8 +84,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Result>> DeleteShippingRequestAysnc(int id)
         {
-            var result = await Mediator.Send(new DeleteShippingRequestCommand { Id = id });
-            return Ok(result);
+            return Ok(await Mediator.Send(new DeleteShippingRequestCommand { Id = id }));
         }
 
         [HttpGet("ShippingRequestLogistic/{shippingRequestId}/{productId}")]

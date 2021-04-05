@@ -44,5 +44,8 @@ namespace ShippingApp.Domain.Models
         public virtual ReceivedMarkModel ReceivedMark { get; set; }
         public virtual ProductModel Product { get; set; }
         public virtual ShippingMarkModel ShippingMark { get; set; }
+
+        public int MovementRequestId { get; set; }
+        public virtual MovementRequestModel MovementRequest { get; set; }
     }
 }

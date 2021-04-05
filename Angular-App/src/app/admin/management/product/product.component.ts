@@ -202,8 +202,8 @@ export class ProductComponent implements OnInit, OnDestroy {
             (result) => {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Product Successfully');
-                this.initProducts();
                 this.selectedItem = null;
+                this.initProducts();
               } else {
                 this.notificationService.error(result?.error);
               }
@@ -234,11 +234,10 @@ export class ProductComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Add Product Successfully');
             this.initProducts();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Add Product Failed. Please try again');
@@ -256,10 +255,10 @@ export class ProductComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Update Product Successfully');
             this.initProducts();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Update Product Failed. Please try again');

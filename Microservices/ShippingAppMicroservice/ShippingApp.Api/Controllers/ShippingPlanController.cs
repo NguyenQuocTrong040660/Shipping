@@ -126,8 +126,7 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(shippingPlan);
             }
 
-            var result = await Mediator.Send(new CreateNewShippingPLanCommand() { ShippingPlan = shippingPlan });
-            return Ok(result);
+            return Ok(await Mediator.Send(new CreateNewShippingPLanCommand() { ShippingPlan = shippingPlan }));
         }
 
         [HttpGet]
@@ -135,7 +134,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<ShippingPlanModel>>> GetAllShippingPlanAsync()
         {
-            return await Mediator.Send(new GetAllShippingPlanQuery());
+            return Ok(await Mediator.Send(new GetAllShippingPlanQuery()));
         }
 
         [HttpGet("{id}")]
@@ -143,8 +142,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ShippingPlanModel>> GetShippingPlanByIdAsync(int id)
         {
-            var result = await Mediator.Send(new GetShippingPlanByIdQuery { Id = id });
-            return Ok(result);
+            return Ok(await Mediator.Send(new GetShippingPlanByIdQuery { Id = id }));
         }
 
         [HttpPut("{id}")]
@@ -158,8 +156,7 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(shippingPlan);
             }
 
-            var result = await Mediator.Send(new UpdateShippingPlanCommand { Id = id, ShippingPlan = shippingPlan });
-            return Ok(result);
+            return Ok(await Mediator.Send(new UpdateShippingPlanCommand { Id = id, ShippingPlan = shippingPlan }));
         }
 
         [HttpDelete("{id}")]
@@ -167,8 +164,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<int>> DeletedShippingPlanAsync(int id)
         {
-            var result = await Mediator.Send(new DeleteShippingPlanCommand { Id = id });
-            return Ok(result);
+            return Ok(await Mediator.Send(new DeleteShippingPlanCommand { Id = id }));
         }
     }
 }

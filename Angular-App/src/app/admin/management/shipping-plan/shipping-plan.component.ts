@@ -197,12 +197,11 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
         if (result && result.succeeded) {
           this.notificationService.success('Create Shipping Plan Successfully');
           this.initShippingPlans();
+          this.hideDialog();
           this.selectedShippingPlan = null;
         } else {
           this.notificationService.error(result?.error);
         }
-
-        this.hideDialog();
       },
       (_) => {
         this.notificationService.error('Create Shipping Plan Failed. Please try again');
@@ -244,11 +243,10 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Shipping Plan Successfully');
             this.initShippingPlans();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Edit Shipping Plan Failed. Please try again');
@@ -271,8 +269,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
             (result) => {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Shipping Plan Successfully');
-                this.initShippingPlans();
                 this.selectedShippingPlan = null;
+                this.initShippingPlans();
               } else {
                 this.notificationService.error(result?.error);
               }

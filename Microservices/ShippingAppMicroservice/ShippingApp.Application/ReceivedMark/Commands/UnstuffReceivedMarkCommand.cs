@@ -66,6 +66,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 ProductId = receivedMarkPrinting.ProductId,
                 Sequence = receivedMarkPrinting.Sequence,
                 Status = nameof(ReceivedMarkStatus.New),
+                MovementRequestId = receivedMarkPrinting.MovementRequestId
             };
 
             var secondReceivedMark = new Entities.ReceivedMarkPrinting
@@ -75,13 +76,11 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 ProductId = receivedMarkPrinting.ProductId,
                 Sequence = lastReceivedMark.Sequence + 1,
                 Status = nameof(ReceivedMarkStatus.New),
+                MovementRequestId = receivedMarkPrinting.MovementRequestId
             };
 
             await _context.ReceivedMarkPrintings.AddAsync(firstReceivedMark);
             await _context.ReceivedMarkPrintings.AddAsync(secondReceivedMark);
-
-            var receivedMarkSummary = await _context.ReceivedMarkSummaries.FirstOrDefaultAsync(x => x.ProductId == receivedMarkPrinting.ProductId);
-            receivedMarkSummary.TotalPackage += 1;
 
             return await  _context.SaveChangesAsync() > 0 
                 ? Result.Success() 

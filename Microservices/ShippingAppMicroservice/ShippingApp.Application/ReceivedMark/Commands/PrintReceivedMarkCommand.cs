@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using ShippingApp.Application.Common.Results;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Domain.Models;
 using System;
@@ -35,7 +34,8 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 .Include(x => x.Product)
                 .Include(x => x.ReceivedMark)
                 .Where(x => x.ReceivedMarkId == request.PrintReceivedMarkRequest.ReceivedMarkId 
-                         && x.ProductId == request.PrintReceivedMarkRequest.ProductId)
+                         && x.ProductId == request.PrintReceivedMarkRequest.ProductId
+                         && x.MovementRequestId == request.PrintReceivedMarkRequest.MovementRequestId)
                 .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.New)))
                 .OrderBy(x => x.Sequence)
                 .ToListAsync();

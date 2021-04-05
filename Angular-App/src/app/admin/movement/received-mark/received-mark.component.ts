@@ -10,12 +10,12 @@ import {
   ReceivedMarkPrintingModel,
   ReceivedMarkSummaryModel,
   RePrintReceivedMarkRequest,
-  ShippingPlanDetailModel,
   UnstuffReceivedMarkRequest,
 } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
+import { EventType } from 'app/shared/enumerations/import-event-type.enum';
 import { ApplicationUser } from 'app/shared/models/application-user';
 import { AuthenticationService } from 'app/shared/services/authentication.service';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -44,7 +44,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   selectedReceivedMarkPrinting: ReceivedMarkPrintingModel;
 
   currentReceivedMark: ReceivedMarkModel;
-  currentPrintReceivedMarkSummary: ReceivedMarkSummaryModel;
+  currentPrintReceivedMarkMovement: ReceivedMarkMovementModel;
   receivedMarkForm: FormGroup;
 
   isEdit = false;
@@ -54,6 +54,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   isShowDialogUnstuff = false;
   isShowDialogDetail = false;
   isShowDialogEdit = false;
+  isShowDialogMergeDetail = false;
 
   canRePrint = false;
 
@@ -83,7 +84,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       // { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
-      { header: 'Work Orders', field: 'notes', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Movement Reques - Work Order', field: 'workOrdersMovementCollection', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
@@ -154,12 +155,17 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     this.isEdit = false;
   }
 
-  hideDialog() {
+  hideDialog(eventType = EventType.HideDialog) {
+    if (eventType == EventType.RefreshData && this.selectedReceivedMark) {
+      this.getReceivedMarkMovementRequestsFullInfo(this.selectedReceivedMark);
+    }
+
     this.isShowDialog = false;
     this.isShowDialogCreate = false;
     this.isShowDialogEdit = false;
     this.isShowDialogHistory = false;
     this.isShowDialogDetail = false;
+    this.isShowDialogMergeDetail = false;
   }
 
   hideDialogUnStuff() {
@@ -178,11 +184,10 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Received Mark Successfully');
             this.initReceivedMarks();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Edit Received Mark Failed. Please try again');
@@ -203,11 +208,10 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Create Received Mark Successfully');
             this.initReceivedMarks();
+            this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
-
-          this.hideDialog();
         },
         (_) => {
           this.notificationService.error('Create Received Mark Failed. Please try again');
@@ -292,7 +296,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   handleSubmitEventUnstuff(event) {
-    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkSummary) {
+    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkMovement) {
       return;
     }
 
@@ -310,7 +314,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
         (result) => {
           if (result.succeeded) {
             this.notificationService.success('Unstuff Received Mark Successfully');
-            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
+            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkMovement.productId, this.currentPrintReceivedMarkMovement.movementRequestId);
             this.hideDialogUnStuff();
             return;
           }
@@ -325,14 +329,15 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   printReceivedMark() {
-    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkSummary) {
+    if (!this.currentReceivedMark || !this.currentPrintReceivedMarkMovement) {
       return;
     }
 
     const requestPrint: PrintReceivedMarkRequest = {
-      productId: this.currentPrintReceivedMarkSummary.productId,
+      productId: this.currentPrintReceivedMarkMovement.productId,
       receivedMarkId: this.currentReceivedMark.id,
       printedBy: this.user.userName,
+      movementRequestId: this.currentPrintReceivedMarkMovement.movementRequestId,
     };
 
     this.receivedMarkClients
@@ -343,7 +348,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           if (result) {
             this.printData = result;
             this.onPrint();
-            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
+            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkMovement.productId, this.currentPrintReceivedMarkMovement.movementRequestId);
           } else {
             this.notificationService.error('Print Received Mark Failed. Please try again');
           }
@@ -370,7 +375,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           if (result) {
             this.printData = result;
             this.onPrint();
-            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkSummary.productId);
+            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentPrintReceivedMarkMovement.productId, this.currentPrintReceivedMarkMovement.movementRequestId);
           } else {
             this.notificationService.error('RePrint Received Mark Failed. Please try again');
           }
@@ -395,11 +400,34 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  reLoadReceivedMarkPrintings(receivedMarkId: number, productId: number) {
+  getReceivedMarkMovementRequestsFullInfo(item: ReceivedMarkModel) {
+    this.selectedReceivedMark = item;
+    const receivedMark = this.receivedMarks.find((i) => i.id === item.id);
+
+    this.receivedMarkClients
+      .getReceivedMarkMovementsFullInfo(item.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (receivedMarkMovements) => {
+          receivedMark.receivedMarkMovements.forEach((item) => {
+            const receivedMarkMovement = receivedMarkMovements.find(
+              (i) => i.receivedMarkId === item.receivedMarkId && i.productId == item.productId && i.movementRequestId == item.movementRequestId
+            );
+            item.product = receivedMarkMovement.product;
+            item.totalPackage = receivedMarkMovement.totalPackage;
+            item.totalQuantity = receivedMarkMovement.totalQuantity;
+            item.totalQuantityPrinted = receivedMarkMovement.totalQuantityPrinted;
+          });
+        },
+        (_) => {}
+      );
+  }
+
+  reLoadReceivedMarkPrintings(receivedMarkId: number, productId: number, movementRequestId: number) {
     this.receivedMarkPrintings = [];
 
     this.receivedMarkClients
-      .getReceivedMarkPrintings(receivedMarkId, productId)
+      .getReceivedMarkPrintings(receivedMarkId, productId, movementRequestId)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (receivedMarkPrintings) => {
@@ -409,23 +437,45 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  showDetailReceivedMarkSummary(receivedMark: ReceivedMarkModel, receivedMarkSummaryModel: ReceivedMarkSummaryModel) {
-    if (!receivedMark || !receivedMarkSummaryModel) {
+  showDetailReceivedMarkSummary(receivedMark: ReceivedMarkModel, receivedMarkMovementModel: ReceivedMarkMovementModel) {
+    if (!receivedMark || !receivedMarkMovementModel) {
       return;
     }
 
     this.currentReceivedMark = receivedMark;
-    this.currentPrintReceivedMarkSummary = receivedMarkSummaryModel;
+    this.currentPrintReceivedMarkMovement = receivedMarkMovementModel;
 
     this.receivedMarkPrintings = [];
     this.receivedMarkClients
-      .getReceivedMarkPrintings(receivedMark.id, receivedMarkSummaryModel.productId)
+      .getReceivedMarkPrintings(receivedMark.id, receivedMarkMovementModel.productId, receivedMarkMovementModel.movementRequestId)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (receivedMarkPrintings) => {
           this.receivedMarkPrintings = receivedMarkPrintings;
           this.isShowDialogDetail = true;
-          this.titleDialog = `Product Number: ${receivedMarkSummaryModel.product.productNumber} - ${receivedMarkSummaryModel.product.productName}`;
+          this.titleDialog = `Product Number: ${receivedMarkMovementModel.product.productNumber} - ${receivedMarkMovementModel.product.productName}`;
+        },
+        (_) => this.notificationService.error('Failed to show detail')
+      );
+  }
+
+  showMergeReceivedMark(receivedMark: ReceivedMarkModel, receivedMarkMovementModel: ReceivedMarkMovementModel) {
+    if (!receivedMark || !receivedMarkMovementModel) {
+      return;
+    }
+
+    this.currentReceivedMark = receivedMark;
+    this.currentPrintReceivedMarkMovement = receivedMarkMovementModel;
+
+    this.receivedMarkPrintings = [];
+    this.receivedMarkClients
+      .getReceivedMarkPrintings(receivedMark.id, receivedMarkMovementModel.productId, receivedMarkMovementModel.movementRequestId)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (receivedMarkPrintings) => {
+          this.receivedMarkPrintings = receivedMarkPrintings;
+          this.isShowDialogMergeDetail = true;
+          this.titleDialog = `Product Number: ${receivedMarkMovementModel.product.productNumber} - ${receivedMarkMovementModel.product.productName}`;
         },
         (_) => this.notificationService.error('Failed to show detail')
       );
@@ -443,6 +493,23 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     }
 
     return 0;
+  }
+
+  handleMergeReceivedMarks($event: ReceivedMarkPrintingModel[]) {
+    this.receivedMarkClients
+      .mergeReceivedMark($event)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (result) => {
+          if (result && result.succeeded) {
+            this.notificationService.success('Merged Received Marks Successfully');
+            this.hideDialog(EventType.RefreshData);
+          } else {
+            this.notificationService.error(result.error);
+          }
+        },
+        (_) => this.notificationService.error('Merged Received Marks Failed. Please try again')
+      );
   }
 
   ngOnDestroy(): void {

@@ -16,6 +16,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
     {
         public int ReceivedMarkId { get; set; }
         public int ProductId { get; set; }
+        public int MovementRequestId { get; set; }
     }
 
     public class GetReceivedMarkPrintingsByIdQueryHandler : IRequestHandler<GetReceivedMarkPrintingsByIdQuery, List<ReceivedMarkPrintingModel>>
@@ -33,7 +34,9 @@ namespace ShippingApp.Application.ReceivedMark.Queries
         {
             var receivedMarkPrintings = await _context.ReceivedMarkPrintings
                 .AsNoTracking()
-                .Where(x => x.ReceivedMarkId == request.ReceivedMarkId && x.ProductId == request.ProductId)
+                .Where(x => x.ReceivedMarkId == request.ReceivedMarkId 
+                && x.MovementRequestId == request.MovementRequestId
+                && x.ProductId == request.ProductId)
                 .Where(x => !x.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))
                 .OrderBy(x => x.Sequence)
                 .ToListAsync();

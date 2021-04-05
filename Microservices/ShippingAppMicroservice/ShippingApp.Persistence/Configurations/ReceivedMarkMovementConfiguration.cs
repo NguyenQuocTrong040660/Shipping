@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ShippingApp.Domain.Entities;
-using ShippingApp.Domain.Enumerations;
 
 namespace ShippingApp.Persistence.Configurations
 {

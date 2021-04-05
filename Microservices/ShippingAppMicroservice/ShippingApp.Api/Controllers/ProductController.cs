@@ -59,8 +59,7 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(product);
             }
 
-            var result = await Mediator.Send(new CreateProductCommand { Product = product });
-            return Ok(result);
+            return Ok(await Mediator.Send(new CreateProductCommand { Product = product }));
         }
 
         [HttpGet]
@@ -68,7 +67,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<ProductModel>>> GetProducts()
         {
-            return await Mediator.Send(new GetAllProductQuery());
+            return Ok(await Mediator.Send(new GetAllProductQuery { }));
         }
 
         [HttpGet("{id}")]
@@ -77,24 +76,21 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ProductModel>> GetProductByIdAsync(int id)
         {
-            var result = await Mediator.Send(new GetProductByIdQuery { Id = id });
-            return Ok(result);
+            return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProductModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> UpdateProductAsync(int id, [FromBody] ProductModel productDTO)
+        public async Task<ActionResult<Result>> UpdateProductAsync(int id, [FromBody] ProductModel model)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(productDTO);
+                return BadRequest(model);
             }
 
-            var result = await Mediator.Send(new UpdateProductCommand { Id = id, Product = productDTO });
-            return Ok(result);
+            return Ok(await Mediator.Send(new UpdateProductCommand { Id = id, Product = model }));
         }
 
         [HttpDelete("{id}")]
@@ -103,8 +99,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Result>> DeleteProductAysnc(int id)
         {
-            var result = await Mediator.Send(new DeleteProductCommand { Id = id });
-            return Ok(result);
+            return Ok(await Mediator.Send(new DeleteProductCommand { Id = id }));
         }
 
         [HttpPost("VerifyProduct")]

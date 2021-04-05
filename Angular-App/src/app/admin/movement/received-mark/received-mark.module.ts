@@ -8,9 +8,10 @@ import { ReceivedMarkUnstuffComponent } from './received-mark-unstuff/received-m
 import { ReceivedMarkCreateComponent } from './received-mark-create/received-mark-create.component';
 import { ReceivedMarkDetailsComponent } from './received-mark-details/received-mark-details.component';
 import { ReceivedMarkEditComponent } from './received-mark-edit/received-mark-edit.component';
+import { ReceivedMarkMergeComponent } from './received-mark-merge/received-mark-merge.component';
 
 @NgModule({
-  declarations: [ReceivedMarkComponent, ReceivedMarkUnstuffComponent, ReceivedMarkCreateComponent, ReceivedMarkDetailsComponent, ReceivedMarkEditComponent],
+  declarations: [ReceivedMarkComponent, ReceivedMarkUnstuffComponent, ReceivedMarkCreateComponent, ReceivedMarkDetailsComponent, ReceivedMarkEditComponent, ReceivedMarkMergeComponent],
   imports: [CommonModule, SharedModule, RouterModule.forChild(receivedMarkRoutes)],
   exports: [ReceivedMarkComponent, ReceivedMarkUnstuffComponent, ReceivedMarkCreateComponent, ReceivedMarkDetailsComponent, ReceivedMarkEditComponent],
 })

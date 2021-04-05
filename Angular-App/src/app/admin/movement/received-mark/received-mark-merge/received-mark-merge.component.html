@@ -1,0 +1,93 @@
+<p-dialog [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+  <ng-template pTemplate="content">
+    <p-toolbar styleClass="p-mb-4">
+      <ng-template pTemplate="left"></ng-template>
+      <ng-template pTemplate="right">
+        <button
+          [disabled]="selectedReceivedMarkPrintings && selectedReceivedMarkPrintings.lenght <= 1"
+          (click)="mergeReceivedMarks()"
+          label="Merge Mark"
+          pButton
+          pRipple
+          type="button"
+          icon="pi pi-check-circle"
+          class="p-button-help"
+        ></button>
+      </ng-template>
+    </p-toolbar>
+
+    <p-table dataKey="id" [value]="receivedMarkPrintings" [(selection)]="selectedReceivedMarkPrintings" [rows]="10" [columns]="cols" [paginator]="true">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <ng-container *ngFor="let col of columns">
+            <ng-container [ngSwitch]="col.type">
+              <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+                <th class="p-text-center" style="width: 3rem">
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+                <th class="p-text-center" style="width: 8rem">
+                  {{ col.header }}
+                </th>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
+                <th class="p-text-center" style="width: 8rem"></th>
+              </ng-container>
+              <ng-container *ngSwitchDefault>
+                <th class="p-text-center">
+                  {{ col.header }}
+                </th>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length" class="text-center">No records found</td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-item let-columns="columns">
+        <tr>
+          <ng-container *ngFor="let col of columns">
+            <ng-container [ngSwitch]="col.type">
+              <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+                <td class="p-text-center">
+                  <p-tableCheckbox [value]="item"></p-tableCheckbox>
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] | date: 'dd/MM/yyyy' }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+                <td>
+                  {{ item[col.field][col.subField] }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] | number }}
+                </td>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+</p-dialog>

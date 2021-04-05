@@ -125,8 +125,7 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(workOrder);
             }
 
-            var result = await Mediator.Send(new CreateWorkOrderCommand { WorkOrder = workOrder });
-            return Ok(result);
+            return Ok(await Mediator.Send(new CreateWorkOrderCommand { WorkOrder = workOrder }));
         }
 
         [HttpGet]
@@ -134,7 +133,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<WorkOrderModel>>> GetWorkOrders()
         {
-            return await Mediator.Send(new GetWorkOrdersQuery { });
+            return Ok(await Mediator.Send(new GetWorkOrdersQuery { }));
         }
 
         [HttpGet("{id}")]
@@ -142,8 +141,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<WorkOrderModel>> GetWorkOrderByIdAsync(int id)
         {
-            var result = await Mediator.Send(new GetWorkOrderByIdQuery { Id = id });
-            return Ok(result);
+            return Ok(await Mediator.Send(new GetWorkOrderByIdQuery { Id = id }));
         }
 
         [HttpPut("{id}")]
@@ -157,8 +155,7 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(workOrder);
             }
 
-            var result = await Mediator.Send(new UpdateWorkOrderCommand { Id = id, WorkOrder = workOrder });
-            return Ok(result);
+            return Ok(await Mediator.Send(new UpdateWorkOrderCommand { Id = id, WorkOrder = workOrder }));
         }
 
         [HttpDelete("{id}")]
@@ -166,8 +163,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Result>> DeleteWorkOrderAysnc(int id)
         {
-            var result = await Mediator.Send(new DeleteWorkOrderCommand { Id = id });
-            return Ok(result);
+            return Ok(await Mediator.Send(new DeleteWorkOrderCommand { Id = id }));
         }
     }
 }

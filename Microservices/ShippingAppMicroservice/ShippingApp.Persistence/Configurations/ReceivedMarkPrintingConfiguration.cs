@@ -26,6 +26,10 @@ namespace ShippingApp.Persistence.Configurations
               .WithMany(g => g.ReceivedMarkPrintings)
               .HasForeignKey(s => s.ShippingMarkId)
               .IsRequired(false);
+
+            builder.HasOne<MovementRequest>(sc => sc.MovementRequest)
+                .WithMany(s => s.ReceivedMarkPrintings)
+                .HasForeignKey(r => r.MovementRequestId);
         }
     }
 }

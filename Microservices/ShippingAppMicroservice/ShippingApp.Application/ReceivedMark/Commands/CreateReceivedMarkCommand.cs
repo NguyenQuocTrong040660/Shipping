@@ -21,17 +21,11 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
     public class CreateReceiveMarkCommandHandler : IRequestHandler<CreateReceivedMarkCommand, Result>
     {
-        private readonly IMapper _mapper;
-        private readonly IShippingAppRepository<Entities.ReceivedMark> _shippingAppRepository;
         private readonly IShippingAppDbContext _context;
 
-        public CreateReceiveMarkCommandHandler(IMapper mapper,
-            IShippingAppDbContext context,
-            IShippingAppRepository<Entities.ReceivedMark> shippingAppRepository)
+        public CreateReceiveMarkCommandHandler(IShippingAppDbContext context)
         {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
         }
 
         public async Task<Result> Handle(CreateReceivedMarkCommand request, CancellationToken cancellationToken)
@@ -42,55 +36,29 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             }
 
             var receivedMarkPrintings = new List<Entities.ReceivedMarkPrinting>();
-            var receivedMarkSummaries  = new List<Entities.ReceivedMarkSummary>();
 
-            var groupByProducts = request.ReceivedMark.ReceivedMarkMovements
-                .GroupBy(x => x.ProductId)
-                .Select(g => new
-                {
-                    ProductId = g.Key,
-                    ReceivedQty = g.ToList().Sum(i => i.Quantity)
-                });
-
-            foreach (var group in groupByProducts)
+            foreach (var receivedMarkMovement in request.ReceivedMark.ReceivedMarkMovements)
             {
-                int remainQty = group.ReceivedQty;
-                var product = await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == group.ProductId);
+                int remainQty = receivedMarkMovement.Quantity;
+                var product = await _context.Products
+                                    .AsNoTracking()
+                                    .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.ProductId);
                 int sequence = 1;
 
                 while (remainQty > 0)
                 {
-                    if (remainQty >= product.QtyPerPackage)
+                    receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
                     {
-                        receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
-                        {
-                            ProductId = product.Id,
-                            Quantity = product.QtyPerPackage,
-                            Sequence = sequence,
-                            Status = nameof(ReceivedMarkStatus.New),
-                        });
-                    }
-                    else
-                    {
-                        receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
-                        {
-                            ProductId = product.Id,
-                            Quantity = remainQty,
-                            Sequence = sequence,
-                            Status = nameof(ReceivedMarkStatus.New),
-                        });
-                    }
+                        ProductId = product.Id,
+                        Quantity = remainQty >= product.QtyPerPackage ? product.QtyPerPackage : remainQty,
+                        Sequence = sequence,
+                        Status = nameof(ReceivedMarkStatus.New),
+                        MovementRequestId = receivedMarkMovement.MovementRequestId
+                    });
 
                     remainQty -= product.QtyPerPackage;
                     sequence++;
                 }
-
-                receivedMarkSummaries.Add(new Entities.ReceivedMarkSummary
-                {
-                    ProductId = group.ProductId,
-                    TotalPackage = sequence - 1,
-                    TotalQuantity = group.ReceivedQty
-                });
             }
 
             var receivedMark = new Entities.ReceivedMark
@@ -98,7 +66,6 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 Notes = request.ReceivedMark.Notes,
                 ReceivedMarkPrintings = receivedMarkPrintings,
                 ReceivedMarkMovements = BuildReceivedMarkMovements(request.ReceivedMark.ReceivedMarkMovements),
-                ReceivedMarkSummaries = receivedMarkSummaries
             };
 
             await _context.ReceivedMarks.AddAsync(receivedMark);

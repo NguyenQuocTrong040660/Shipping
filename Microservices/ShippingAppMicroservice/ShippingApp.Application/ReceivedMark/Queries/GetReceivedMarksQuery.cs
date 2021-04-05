@@ -34,19 +34,25 @@ namespace ShippingApp.Application.ReceivedMark.Queries
             var receivedMarks = _mapper.Map<List<ReceivedMarkModel>>(await _shippingAppRepository
                 .GetDbSet()
                 .AsNoTracking()
+                .Include(x => x.ReceivedMarkMovements)
                 .OrderByDescending(x => x.LastModified)
                 .ToListAsync());
 
             foreach (var item in receivedMarks)
             {
-                var products = item.ReceivedMarkMovements.Select(x => x.ProductId);
-                var workOrders = await _context.WorkOrders
-                    .AsNoTracking()
-                    .Include(x => x.WorkOrderDetails)
-                    .Where(x => products.Contains(x.WorkOrderDetails.First().ProductId))
-                    .ToListAsync();
+                var movementWorkOrder = new List<string>();
 
-                item.WorkOrdersCollection = $"[{string.Join(",", workOrders.Select(x => x.RefId))}]";
+                foreach (var receivedMarkMovement in item.ReceivedMarkMovements)
+                {
+                    var movementRequest = await _context.MovementRequests
+                        .Include(x => x.MovementRequestDetails)
+                        .ThenInclude(x => x.WorkOrder)
+                        .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.MovementRequestId);
+
+                    receivedMarkMovement.WorkOrderMomentRequest = $"{movementRequest.Prefix}{movementRequest.Id}-{movementRequest.MovementRequestDetails.FirstOrDefault(x => x.ProductId == receivedMarkMovement.ProductId).WorkOrder.RefId}";
+                }
+
+                item.WorkOrdersMovementCollection = $"{string.Join(", ", item.ReceivedMarkMovements.Select(x => x.WorkOrderMomentRequest))} ";
             }
 
             return receivedMarks;

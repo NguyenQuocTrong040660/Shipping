@@ -39,7 +39,7 @@ export class ConfigurationComponent implements OnInit, OnDestroy {
 
   private destroyed$ = new Subject<void>();
 
-  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) { }
+  constructor(private configsClients: ConfigClients, private notifiactionService: NotificationService) {}
 
   ngOnInit() {
     this.cols = [
@@ -102,11 +102,10 @@ export class ConfigurationComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notifiactionService.success('Edit Config Successfully');
             this.getConfigurations();
+            this.hideEditDialog();
           } else {
-            this.notifiactionService.success(result.error);
+            this.notifiactionService.error(result.error);
           }
-
-          this.hideEditDialog();
         },
         (_) => {
           this.notifiactionService.error('Edit Config Falied. Please try again');

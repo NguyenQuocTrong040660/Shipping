@@ -32,8 +32,7 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(model);
             }
 
-            var result = await Mediator.Send(new CreateShippingMarkCommand { ShippingMark = model });
-            return Ok(result);
+            return Ok(await Mediator.Send(new CreateShippingMarkCommand { ShippingMark = model }));
         }
 
         [HttpGet]
@@ -41,7 +40,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<ShippingMarkModel>>> GetShippingMarks()
         {
-            return await Mediator.Send(new GetShippingMarksQuery { });
+            return Ok(await Mediator.Send(new GetShippingMarksQuery { }));
         }
 
         [HttpGet("{id}")]
@@ -49,8 +48,10 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ShippingMarkModel>> GetShippingMarkByIdAsync(int id)
         {
-            var result = await Mediator.Send(new GetShippingMarkByIdQuery { Id = id });
-            return Ok(result);
+            return Ok(await Mediator.Send(new GetShippingMarkByIdQuery
+            {
+                Id = id
+            }));
         }
 
         [HttpPut("{id}")]
@@ -64,8 +65,11 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(model);
             }
 
-            var result = await Mediator.Send(new UpdateShippingMarkCommand { Id = id, ShippingMark = model });
-            return Ok(result);
+            return Ok(await Mediator.Send(new UpdateShippingMarkCommand
+            {
+                Id = id,
+                ShippingMark = model
+            }));
         }
 
         [HttpDelete("{id}")]
@@ -73,8 +77,10 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<Result>> DeleteShippingMarkAysnc(int id)
         {
-            var result = await Mediator.Send(new DeleteShippingMarkCommand { Id = id });
-            return Ok(result);
+            return Ok(await Mediator.Send(new DeleteShippingMarkCommand
+            {
+                Id = id
+            }));
         }
 
         [HttpPost("Print")]
@@ -138,12 +144,10 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(shippingRequest);
             }
 
-            var result = await Mediator.Send(new GenerateShippingMarkShippingByShippingRequestQuery
+            return Ok(await Mediator.Send(new GenerateShippingMarkShippingByShippingRequestQuery
             {
                 ShippingRequest = shippingRequest
-            });
-
-            return Ok(result);
+            }));
         }
 
         [HttpGet("ShippingMarkSummaries/{shippingMarkId}")]
@@ -151,8 +155,10 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<ShippingMarkSummaryModel>>> GetShippingMarkSummariesAsync(int shippingMarkId)
         {
-            var result = await Mediator.Send(new GetShippingMarkSummariesByIdQuery { ShippingMarkId = shippingMarkId });
-            return Ok(result);
+            return Ok(await Mediator.Send(new GetShippingMarkSummariesByIdQuery
+            {
+                ShippingMarkId = shippingMarkId
+            }));
         }
 
         [HttpGet("ShippingMarkPrintings/{shippingMarkId}/{productId}")]
@@ -161,13 +167,11 @@ namespace ShippingApp.Api.Controllers
         public async Task<ActionResult<List<ShippingMarkPrintingModel>>> GetShippingMarkPrintingsAsync(
             int shippingMarkId, int productId)
         {
-            var result = await Mediator.Send(new GetShippingPrintingsByIdQuery
+            return Ok(await Mediator.Send(new GetShippingPrintingsByIdQuery
             {
                 ShippingMarkId = shippingMarkId,
                 ProductId = productId
-            });
-
-            return Ok(result);
+            }));
         }
     }
 }
