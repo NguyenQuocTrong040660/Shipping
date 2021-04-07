@@ -31,7 +31,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
 
         public async Task<ShippingMarkPrintingModel> Handle(PrintShippingMarkCommand request, CancellationToken cancellationToken)
         {
-            var shippingMarkShippings = await _context.ShippingMarkPrintings
+            var shippingMarkPrintings = await _context.ShippingMarkPrintings
                 .Include(x => x.Product)
                 .Include(x => x.ShippingMark)
                 .Where(x => x.ShippingMarkId == request.PrintShippingMarkRequest.ShippingMarkId
@@ -42,16 +42,16 @@ namespace ShippingApp.Application.ShippingMark.Commands
 
             ///!TODO: handle Received Mark Printing
 
-            if (shippingMarkShippings == null || !shippingMarkShippings.Any())
+            if (shippingMarkPrintings == null || !shippingMarkPrintings.Any())
             {
                 return null;
             }
 
             Entities.ShippingMarkPrinting printItem = null;
 
-            for (int i = 0; i < shippingMarkShippings.Count; i++)
+            for (int i = 0; i < shippingMarkPrintings.Count; i++)
             {
-                var itemPrint = shippingMarkShippings[i];
+                var itemPrint = shippingMarkPrintings[i];
 
                 if (itemPrint.PrintCount != 0)
                 {
@@ -69,7 +69,14 @@ namespace ShippingApp.Application.ShippingMark.Commands
                 break;
             }
 
-            return _mapper.Map<ShippingMarkPrintingModel>(printItem);
+            var result = _mapper.Map<ShippingMarkPrintingModel>(printItem);
+            result.ShippingMarkShipping = _mapper.Map<ShippingMarkShippingModel>(await _context.ShippingMarkShippings
+                .Include(x => x.ShippingRequest)
+                .FirstOrDefaultAsync(x =>
+                x.ShippingMarkId == request.PrintShippingMarkRequest.ShippingMarkId &&
+                x.ProductId == request.PrintShippingMarkRequest.ProductId));
+
+            return result;
         }
     }
 }

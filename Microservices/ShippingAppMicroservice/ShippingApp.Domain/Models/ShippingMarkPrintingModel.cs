@@ -15,6 +15,9 @@ namespace ShippingApp.Domain.Models
             }
         }
 
+        [IgnoreMap]
+        public ShippingMarkShippingModel ShippingMarkShipping { get; set; }
+
         public int Id { get; set; }
         public string Prefix
         {

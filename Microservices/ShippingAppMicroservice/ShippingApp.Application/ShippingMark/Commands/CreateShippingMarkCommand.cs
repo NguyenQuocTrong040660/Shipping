@@ -66,26 +66,13 @@ namespace ShippingApp.Application.ShippingMark.Commands
 
                 while (remainQty > 0)
                 {
-                    if (remainQty >= product.QtyPerPackage)
+                    shippingMarkPrintings.Add(new Entities.ShippingMarkPrinting
                     {
-                        shippingMarkPrintings.Add(new Entities.ShippingMarkPrinting
-                        {
-                            ProductId = product.Id,
-                            Quantity = product.QtyPerPackage,
-                            Sequence = sequence,
-                            Status = nameof(ShippingMarkStatus.New),
-                        });
-                    }
-                    else
-                    {
-                        shippingMarkPrintings.Add(new Entities.ShippingMarkPrinting
-                        {
-                            ProductId = product.Id,
-                            Quantity = remainQty,
-                            Sequence = sequence,
-                            Status = nameof(ShippingMarkStatus.New),
-                        });
-                    }
+                        ProductId = product.Id,
+                        Quantity = remainQty >= product.QtyPerPackage ? product.QtyPerPackage : remainQty,
+                        Sequence = sequence,
+                        Status = nameof(ShippingMarkStatus.New),
+                    });
 
                     remainQty -= product.QtyPerPackage;
                     sequence++;

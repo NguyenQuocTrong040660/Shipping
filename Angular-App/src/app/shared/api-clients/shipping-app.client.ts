@@ -1892,7 +1892,7 @@ export class ReceivedMarkClients {
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result400: any = null;
-            result400 = _responseText === "" ? null : <UnstuffReceivedMarkRequest>JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = _responseText === "" ? null : <ReceivedMarkPrintingModel[]>JSON.parse(_responseText, this.jsonParseReviver);
             return throwException("A server side error occurred.", status, _responseText, _headers, result400);
             }));
         } else if (status === 401) {
@@ -4325,6 +4325,7 @@ export interface ShippingMarkModel extends AuditableEntityModel {
 
 export interface ShippingMarkPrintingModel extends AuditableEntityModel {
     identifier?: string | undefined;
+    shippingMarkShipping?: ShippingMarkShippingModel | undefined;
     id?: number;
     prefix?: string | undefined;
     revision?: string | undefined;

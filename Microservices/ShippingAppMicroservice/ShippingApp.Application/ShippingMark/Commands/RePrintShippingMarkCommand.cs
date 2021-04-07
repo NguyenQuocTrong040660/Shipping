@@ -41,9 +41,21 @@ namespace ShippingApp.Application.ShippingMark.Commands
             shippingMarkPrinting.RePrintingBy = request.RePrintShippingMarkRequest.RePrintedBy;
             shippingMarkPrinting.RePrintingDate = DateTime.UtcNow;
 
-            return await _context.SaveChangesAsync() > 0
-                    ? _mapper.Map<ShippingMarkPrintingModel>(shippingMarkPrinting)
-                    : null;
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                var result = _mapper.Map<ShippingMarkPrintingModel>(shippingMarkPrinting);
+
+                result.ShippingMarkShipping = _mapper.Map<ShippingMarkShippingModel>(await _context.ShippingMarkShippings
+                    .Include(x => x.ShippingRequest)
+                    .FirstOrDefaultAsync(x =>
+                    x.ShippingMarkId == shippingMarkPrinting.ShippingMarkId &&
+                    x.ProductId == shippingMarkPrinting.ProductId));
+
+                return result;
+            }
+
+            return null;
         }
     }
 }
+
