@@ -10,8 +10,8 @@ using ShippingApp.Persistence.DBContext;
 namespace ShippingApp.Persistence.Migrations
 {
     [DbContext(typeof(ShippingAppDbContext))]
-    [Migration("20210325033652_AddColumnShippingPlanRequest")]
-    partial class AddColumnShippingPlanRequest
+    [Migration("20210412083542_InitDatabase")]
+    partial class InitDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -101,6 +101,9 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsDirect")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -137,10 +140,19 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PartRevisionClean")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PartRevisionRaw")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Prefix")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("PROD");
+
+                    b.Property<string>("ProcessRevision")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductName")
                         .HasColumnType("nvarchar(max)");
@@ -228,6 +240,9 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("MovementRequestId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ParentId")
                         .HasColumnType("int");
 
@@ -277,6 +292,8 @@ namespace ShippingApp.Persistence.Migrations
                         .HasDefaultValue("New");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MovementRequestId");
 
                     b.HasIndex("ProductId");
 
@@ -502,8 +519,8 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AccountNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("BillTo")
                         .HasColumnType("nvarchar(max)");
@@ -528,16 +545,16 @@ namespace ShippingApp.Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("SHIPPL");
 
+                    b.Property<int>("ProductLine")
+                        .HasColumnType("int");
+
                     b.Property<string>("PurchaseOrder")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RefId")
+                    b.Property<string>("SalelineNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SalesID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SemlineNumber")
+                    b.Property<string>("SalesOrder")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShipTo")
@@ -605,8 +622,8 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("AccountNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("BillTo")
                         .HasColumnType("nvarchar(max)");
@@ -631,15 +648,6 @@ namespace ShippingApp.Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("SHIPRQ");
 
-                    b.Property<string>("PurchaseOrder")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SalesID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SemlineNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ShipTo")
                         .HasColumnType("nvarchar(max)");
 
@@ -648,9 +656,6 @@ namespace ShippingApp.Persistence.Migrations
 
                     b.Property<DateTime>("ShippingDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("ShippingRequestLogisticId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .ValueGeneratedOnAdd()
@@ -686,8 +691,20 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductLine")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PurchaseOrder")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<string>("SalelineNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SalesOrder")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShippingMode")
                         .HasColumnType("nvarchar(max)");
@@ -713,10 +730,13 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BillToCustomer")
+                    b.Property<string>("CustomDeclarationNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CustomDeclarationNumber")
+                    b.Property<string>("Dimension")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Forwarder")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<float>("GrossWeight")
@@ -728,14 +748,14 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<float>("NetWeight")
+                        .HasColumnType("real");
+
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReceiverAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReceiverCustomer")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ShippingRequestId")
                         .HasColumnType("int");
@@ -745,8 +765,9 @@ namespace ShippingApp.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ShippingRequestId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ShippingRequestId");
 
                     b.ToTable("ShippingRequestLogistics");
                 });
@@ -760,6 +781,12 @@ namespace ShippingApp.Persistence.Migrations
                         .HasAnnotation("SqlServer:IdentitySeed", 1)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CustomerName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -769,12 +796,21 @@ namespace ShippingApp.Persistence.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PartRevision")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Prefix")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("WO");
 
+                    b.Property<string>("ProcessRevision")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RefId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -850,6 +886,12 @@ namespace ShippingApp.Persistence.Migrations
 
             modelBuilder.Entity("ShippingApp.Domain.Entities.ReceivedMarkPrinting", b =>
                 {
+                    b.HasOne("ShippingApp.Domain.Entities.MovementRequest", "MovementRequest")
+                        .WithMany("ReceivedMarkPrintings")
+                        .HasForeignKey("MovementRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ShippingApp.Domain.Entities.Product", "Product")
                         .WithMany("ReceivedMarkPrintings")
                         .HasForeignKey("ProductId")
@@ -965,9 +1007,15 @@ namespace ShippingApp.Persistence.Migrations
 
             modelBuilder.Entity("ShippingApp.Domain.Entities.ShippingRequestLogistic", b =>
                 {
+                    b.HasOne("ShippingApp.Domain.Entities.Product", "Product")
+                        .WithMany("ShippingRequestLogistics")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ShippingApp.Domain.Entities.ShippingRequest", "ShippingRequest")
-                        .WithOne("ShippingRequestLogistic")
-                        .HasForeignKey("ShippingApp.Domain.Entities.ShippingRequestLogistic", "ShippingRequestId")
+                        .WithMany("ShippingRequestLogistics")
+                        .HasForeignKey("ShippingRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

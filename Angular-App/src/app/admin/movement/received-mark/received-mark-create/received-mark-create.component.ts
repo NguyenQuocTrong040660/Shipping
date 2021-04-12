@@ -40,7 +40,7 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
     return this.receivedMarkForm.get('receivedMarkMovements') as FormArray;
   }
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.movementRequests && changes.movementRequests.currentValue) {
@@ -66,7 +66,7 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
   _mapDataToMovementRequestItems(movementRequests: MovementRequestModel[]): SelectItem[] {
     return movementRequests.map((p) => ({
       value: p,
-      label: `Movement Requests: ${p.workOrdersCollection}`,
+      label: `Movement Requests: ${p.workOrdersCollection} SEQ -${p.id} `,
     }));
   }
 

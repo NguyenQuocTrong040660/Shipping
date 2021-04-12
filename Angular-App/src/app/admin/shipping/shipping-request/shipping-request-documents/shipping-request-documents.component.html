@@ -1,4 +1,5 @@
-<p-dialog styleClass="p-fluid w-83" [position]="'right'" [header]="titleDialog" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog styleClass="p-fluid w-83" [position]="'right'" [header]="titleDialog" [modal]="true"
+  [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="shippingRequestDocumentsForm">
       <div class="p-grid">
@@ -89,7 +90,8 @@
   <ng-template pTemplate="footer">
     <div class="p-grid p-nogutter p-justify-between">
       <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-      <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" [disabled]="shippingRequestDocumentsForm.invalid" (click)="onSubmit()"></button>
+      <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+        [disabled]="shippingRequestDocumentsForm.invalid" (click)="onSubmit()"></button>
     </div>
   </ng-template>
 </p-dialog>

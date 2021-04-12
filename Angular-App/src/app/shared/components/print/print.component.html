@@ -11,19 +11,21 @@
       <tr>
         <td>
           <div class="print__content">
-            <div class="print__header">
-              <div class="print__company-name">SPARTON VIETNAM</div>
+            <!-- <div class="print__header">
+              <div class="print__company-name">SPARTRONICS VIETNAM</div>
               <div class="print__company-info"></div>
-            </div>
+            </div> -->
             <div class="print__detail">
               <table>
-                <tr *ngIf="printData && printData.receivedMark && printData.receivedMark.identifier" class="print__identity">
+                <tr *ngIf="printData && printData.receivedMark && printData.receivedMark.identifier"
+                  class="print__identity">
                   <td>Received ID</td>
                   <td class="print__value">: {{ printData.receivedMark.identifier }}</td>
                 </tr>
                 <tr>
                   <td>P/N</td>
-                  <td class="print__value">: {{ printData && printData.product ? printData.product.productNumber : '' }}</td>
+                  <td class="print__value">: {{ printData && printData.product ? printData.product.productNumber : '' }}
+                  </td>
                 </tr>
                 <tr>
                   <td>Qty</td>
@@ -36,12 +38,14 @@
                 </tr>
                 <tr>
                   <td>Date</td>
-                  <td class="print__value">: {{ printData && printData.printingDate ? (printData.printingDate | date: 'dd/MM/yyyy') : '' }}</td>
+                  <td class="print__value">: {{ printData && printData.printingDate ? (printData.printingDate | date:
+                    'dd/MM/yyyy') : '' }}</td>
                 </tr>
 
                 <tr>
                   <td colspan="2">
-                    <ngx-barcode *ngIf="printData && printData.receivedMark" [bc-value]="printData.receivedMark.identifier"></ngx-barcode>
+                    <ngx-barcode *ngIf="printData && printData.receivedMark"
+                      [bc-value]="printData.receivedMark.identifier"></ngx-barcode>
                   </td>
                 </tr>
               </table>
@@ -74,12 +78,13 @@
         <td>
           <div class="print__content">
             <div class="print__header">
-              <div class="print__company-name">SPARTON VIETNAM</div>
+              <div class="print__company-name">SPARTRONICS VIETNAM</div>
               <div class="print__company-info"></div>
             </div>
             <div class="print__detail">
               <table>
-                <tr *ngIf="printData && printData.shippingMark && printData.shippingMark.identifier" class="print__identity">
+                <tr *ngIf="printData && printData.shippingMark && printData.shippingMark.identifier"
+                  class="print__identity">
                   <td>Shipping Mark ID</td>
                   <td class="print__value">: {{ printData.shippingMark.identifier }}</td>
                 </tr>
@@ -100,7 +105,8 @@
 
                 <tr>
                   <td>Shipping Date</td>
-                  <td class="print__value">: {{ printData?.shippingMarkShipping?.shippingRequest?.shippingDate | date: 'dd/MM/yyyy' }}</td>
+                  <td class="print__value">: {{ printData?.shippingMarkShipping?.shippingRequest?.shippingDate | date:
+                    'dd/MM/yyyy' }}</td>
                 </tr>
 
                 <tr>
@@ -125,7 +131,8 @@
 
                 <tr>
                   <td colspan="2">
-                    <ngx-barcode *ngIf="printData && printData.shippingMark" [bc-value]="printData.shippingMark.identifier"></ngx-barcode>
+                    <ngx-barcode *ngIf="printData && printData.shippingMark"
+                      [bc-value]="printData.shippingMark.identifier"></ngx-barcode>
                   </td>
                 </tr>
               </table>
