@@ -9,6 +9,8 @@ namespace ShippingApp.Domain.Models
         public string CustomDeclarationNumber { get; set; }
         public string TrackingNumber { get; set; }
 
+        public int TotalPackages { get; set; }
+
         public string Forwarder { get; set; }
         public float NetWeight { get; set; }
         public string Dimension { get; set; }

@@ -88,10 +88,12 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
   }
 
   _mapToSelectItems(workOrders: WorkOrderModel[]): SelectItem[] {
-    return workOrders.map((p) => ({
-      value: p,
-      label: `Work Order Id: ${p.refId} | Product Number: ${p.product?.productNumber}`,
-    }));
+    return workOrders
+      .filter((i) => i.canSelected)
+      .map((p) => ({
+        value: p,
+        label: `Work Order Id: ${p.refId} | Product Number: ${p.product?.productNumber}`,
+      }));
   }
 
   initForm() {
@@ -131,6 +133,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Create Movement Request Successfully');
             this.initMovementRequests();
+            this.initWorkOrders();
             this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
@@ -154,6 +157,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
     this.isShowDialogEdit = false;
     this.isShowDialogHistory = false;
     this.selectedMovementRequest = null;
+    this.selectItems = null;
     this.movementRequestForm.reset();
   }
 
@@ -192,6 +196,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Movement Request Successfully');
             this.initMovementRequests();
+            this.initWorkOrders();
             this.hideDialog();
           } else {
             this.notificationService.error(result?.error);

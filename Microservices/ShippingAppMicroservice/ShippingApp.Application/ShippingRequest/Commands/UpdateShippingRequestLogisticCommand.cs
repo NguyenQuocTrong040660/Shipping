@@ -48,6 +48,7 @@ namespace ShippingApp.Application.ShippingRequest.Commands
             entity.Forwarder = request.ShippingRequestLogistic.Forwarder;
             entity.NetWeight = request.ShippingRequestLogistic.NetWeight;
             entity.Dimension = request.ShippingRequestLogistic.Dimension;
+            entity.TotalPackages = request.ShippingRequestLogistic.TotalPackages;
 
             await _context.SaveChangesAsync();
             return Result.Success();

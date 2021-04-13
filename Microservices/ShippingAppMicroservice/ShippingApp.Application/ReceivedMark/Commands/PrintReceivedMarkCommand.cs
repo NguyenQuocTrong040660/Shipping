@@ -67,7 +67,16 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 break;
             }
 
-            return _mapper.Map<ReceivedMarkPrintingModel>(printItem);
+            var result = _mapper.Map<ReceivedMarkPrintingModel>(printItem);
+
+            if (result != null)
+            {
+                result.WorkOrder = _mapper.Map<WorkOrderModel>((await _context.WorkOrderDetails
+                    .Include(x => x.WorkOrder)
+                    .FirstOrDefaultAsync(x => x.ProductId == result.ProductId)).WorkOrder);
+            }
+
+            return result;
         }
     }
 }

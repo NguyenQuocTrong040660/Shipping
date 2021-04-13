@@ -18,6 +18,9 @@ namespace ShippingApp.Domain.Models
         [IgnoreMap]
         public string WorkOrdersCollection { get; set; }
 
+        [IgnoreMap]
+        public  bool IsSelectedByReceivedMark { get; set; }
+
         public int Id { get; set; }
         public string Notes { get; set; }
         public string Prefix

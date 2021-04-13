@@ -129,7 +129,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       .getMovementRequests()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => (this.movementRequests = i),
+        (i) => (this.movementRequests = i.filter((x) => !x.isSelectedByReceivedMark)),
         (_) => (this.movementRequests = [])
       );
   }

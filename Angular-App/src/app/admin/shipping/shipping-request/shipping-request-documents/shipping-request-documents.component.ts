@@ -63,6 +63,10 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
     return this.shippingRequestDocumentsForm.get('netWeight');
   }
 
+  get totalPackagesControl() {
+    return this.shippingRequestDocumentsForm.get('totalPackages');
+  }
+
   constructor(private fb: FormBuilder, private shippingRequestClients: ShippingRequestClients, private notificationService: NotificationService) {}
 
   ngOnInit() {
@@ -85,6 +89,7 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
       grossWeight: [0, [Validators.required]],
       forwarder: ['', [Validators.required]],
       dimension: ['', [Validators.required]],
+      totalPackages: ['', [Validators.required]],
       notes: [''],
       productId: [0, [Validators.required]],
       lastModified: [null],
@@ -126,6 +131,7 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Update Shipping Request Document Successfully');
+            this.shippingRequestDocumentsForm.reset();
           } else {
             this.notificationService.error(result?.error);
           }

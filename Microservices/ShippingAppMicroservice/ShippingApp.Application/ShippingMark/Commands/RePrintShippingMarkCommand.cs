@@ -41,20 +41,25 @@ namespace ShippingApp.Application.ShippingMark.Commands
             shippingMarkPrinting.RePrintingBy = request.RePrintShippingMarkRequest.RePrintedBy;
             shippingMarkPrinting.RePrintingDate = DateTime.UtcNow;
 
-            if (await _context.SaveChangesAsync() > 0)
-            {
-                var result = _mapper.Map<ShippingMarkPrintingModel>(shippingMarkPrinting);
+            var result = await _context.SaveChangesAsync() > 0 ? _mapper.Map<ShippingMarkPrintingModel>(shippingMarkPrinting) : null;
 
+            if (result != null)
+            {
                 result.ShippingMarkShipping = _mapper.Map<ShippingMarkShippingModel>(await _context.ShippingMarkShippings
                     .Include(x => x.ShippingRequest)
                     .FirstOrDefaultAsync(x =>
                     x.ShippingMarkId == shippingMarkPrinting.ShippingMarkId &&
                     x.ProductId == shippingMarkPrinting.ProductId));
 
-                return result;
+                result.PurchaseOrder = (await _context.ShippingRequestDetails.FirstOrDefaultAsync(x => x.ProductId == result.ProductId && x.ShippingRequestId == result.ShippingMarkShipping.ShippingRequest.Id)).PurchaseOrder;
+                result.WorkOrder = _mapper.Map<WorkOrderModel>((await _context.WorkOrderDetails
+                    .Include(x => x.WorkOrder)
+                    .FirstOrDefaultAsync(x => x.ProductId == result.ProductId)).WorkOrder);
+                result.Weight = 0;
+                result.TotalPackages = await _context.ShippingMarkPrintings.CountAsync(x => x.ProductId == result.ProductId && x.ShippingMarkId == result.ShippingMarkId);
             }
 
-            return null;
+            return result;
         }
     }
 }

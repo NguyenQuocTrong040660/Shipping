@@ -18,6 +18,18 @@ namespace ShippingApp.Domain.Models
         [IgnoreMap]
         public ShippingMarkShippingModel ShippingMarkShipping { get; set; }
 
+        [IgnoreMap]
+        public WorkOrderModel WorkOrder { get; set; }
+
+        [IgnoreMap]
+        public string PurchaseOrder { get; set; }
+
+        [IgnoreMap]
+        public float Weight { get; set; }
+
+        [IgnoreMap]
+        public int TotalPackages { get; set; }
+
         public int Id { get; set; }
         public string Prefix
         {

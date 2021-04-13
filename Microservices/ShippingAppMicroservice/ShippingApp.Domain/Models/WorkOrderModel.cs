@@ -70,6 +70,15 @@ namespace ShippingApp.Domain.Models
             }
         }
 
+        [IgnoreMap]
+        public bool CanSelected
+        {
+            get
+            {
+                return Status.Equals(nameof(WorkOrderStatus.Start));
+            }
+        }
+
         public string PartRevision { get; set; }
         public string ProcessRevision { get; set; }
         public string CustomerName { get; set; }

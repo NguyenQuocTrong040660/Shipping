@@ -46,6 +46,7 @@ namespace ShippingApp.Application.MovementRequest.Queries
                     .ToListAsync();
 
                 item.WorkOrdersCollection = $"[{string.Join(",", movementDetails.Select(x => x.WorkOrder.RefId))}]";
+                item.IsSelectedByReceivedMark = await _context.ReceivedMarkMovements.AnyAsync(x => x.MovementRequestId == item.Id);
             }
             
             return movementRequests;

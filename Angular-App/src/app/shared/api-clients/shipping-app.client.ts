@@ -4168,6 +4168,7 @@ export interface CountryModel extends AuditableEntityModel {
 export interface MovementRequestModel extends AuditableEntityModel {
     identifier?: string | undefined;
     workOrdersCollection?: string | undefined;
+    isSelectedByReceivedMark?: boolean;
     id?: number;
     notes?: string | undefined;
     prefix?: string | undefined;
@@ -4197,6 +4198,7 @@ export interface WorkOrderModel extends AuditableEntityModel {
     product?: ProductModel | undefined;
     workOrderDetail?: WorkOrderDetailModel | undefined;
     remainQuantity?: number;
+    canSelected?: boolean;
     partRevision?: string | undefined;
     processRevision?: string | undefined;
     customerName?: string | undefined;
@@ -4303,6 +4305,7 @@ export interface ShippingRequestLogisticModel extends AuditableEntityModel {
     grossWeight?: number;
     customDeclarationNumber?: string | undefined;
     trackingNumber?: string | undefined;
+    totalPackages?: number;
     forwarder?: string | undefined;
     netWeight?: number;
     dimension?: string | undefined;
@@ -4326,6 +4329,10 @@ export interface ShippingMarkModel extends AuditableEntityModel {
 export interface ShippingMarkPrintingModel extends AuditableEntityModel {
     identifier?: string | undefined;
     shippingMarkShipping?: ShippingMarkShippingModel | undefined;
+    workOrder?: WorkOrderModel | undefined;
+    purchaseOrder?: string | undefined;
+    weight?: number;
+    totalPackages?: number;
     id?: number;
     prefix?: string | undefined;
     revision?: string | undefined;
@@ -4364,6 +4371,7 @@ export interface ShippingMarkSummaryModel extends AuditableEntityModel {
 
 export interface ReceivedMarkPrintingModel extends AuditableEntityModel {
     identifier?: string | undefined;
+    workOrder?: WorkOrderModel | undefined;
     id?: number;
     prefix?: string | undefined;
     sequence?: number;

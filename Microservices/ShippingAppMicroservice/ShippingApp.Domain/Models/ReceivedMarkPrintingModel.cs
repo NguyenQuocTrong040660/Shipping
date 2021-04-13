@@ -15,6 +15,10 @@ namespace ShippingApp.Domain.Models
             }
         }
 
+        [IgnoreMap]
+        public WorkOrderModel WorkOrder { get; set; }
+
+
         public int Id { get; set; }
         public string Prefix
         {
