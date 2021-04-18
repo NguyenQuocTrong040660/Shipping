@@ -7,13 +7,13 @@ import {
   ShippingMarkModel,
   ShippingMarkPrintingModel,
   ShippingMarkShippingModel,
-  ShippingMarkSummaryModel,
   ShippingRequestClients,
   ShippingRequestModel,
 } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
+import { EventType } from 'app/shared/enumerations/import-event-type.enum';
 import { ApplicationUser } from 'app/shared/models/application-user';
 import { AuthenticationService } from 'app/shared/services/authentication.service';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -38,7 +38,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   shippingRequests: ShippingRequestModel[] = [];
 
   currentShippingMark: ShippingMarkModel;
-  currentPrintShippingMarkSummary: ShippingMarkSummaryModel;
+  currentShippingMarkShippingModel: ShippingMarkShippingModel;
 
   shippingMarkPrintings: ShippingMarkPrintingModel[] = [];
   shippingMarkShippings: ShippingMarkShippingModel[] = [];
@@ -191,7 +191,11 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  hideDialog() {
+  hideDialog(eventType = EventType.HideDialog) {
+    if (eventType == EventType.RefreshData && this.selectedShippingMark) {
+      this.getShippingMarkMovementRequestsFullInfo(this.selectedShippingMark);
+    }
+
     this.isShowDialog = false;
     this.isShowDialogCreate = false;
     this.isShowDialogHistory = false;
@@ -275,12 +279,12 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   }
 
   printShippingMark() {
-    if (!this.currentShippingMark || !this.currentPrintShippingMarkSummary) {
+    if (!this.currentShippingMark || !this.currentShippingMarkShippingModel) {
       return;
     }
 
     const requestPrint: PrintShippingMarkRequest = {
-      productId: this.currentPrintShippingMarkSummary.productId,
+      productId: this.currentShippingMarkShippingModel.productId,
       shippingMarkId: this.currentShippingMark.id,
       printedBy: this.user.userName,
     };
@@ -293,7 +297,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           if (result) {
             this.printData = result;
             this.onPrint();
-            this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentPrintShippingMarkSummary.productId);
+            this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentShippingMarkShippingModel.productId);
           } else {
             this.notificationService.error('Print Shipping Mark Failed. Please try again');
           }
@@ -320,7 +324,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           if (result) {
             this.printData = result;
             this.onPrint();
-            this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentPrintShippingMarkSummary.productId);
+            this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentShippingMarkShippingModel.productId);
           } else {
             this.notificationService.error('Print Shipping Mark Failed. Please try again');
           }
@@ -329,39 +333,45 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  getShippingMarkSummaries(item: ShippingMarkModel) {
+  getShippingMarkMovementRequestsFullInfo(item: ShippingMarkModel) {
+    this.selectedShippingMark = item;
     const shippingMark = this.shippingMarks.find((i) => i.id === item.id);
 
-    if (shippingMark && shippingMark.shippingMarkSummaries && shippingMark.shippingMarkSummaries.length > 0) {
-      return;
-    }
-
     this.shippingMarkClients
-      .getShippingMarkSummaries(item.id)
+      .getShippingMarkShippingsFullInfo(item.id)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => (shippingMark.shippingMarkSummaries = i),
-        (_) => (shippingMark.shippingMarkSummaries = [])
+        (shippingMarkShippings) => {
+          shippingMark.shippingMarkShippings.forEach((item) => {
+            const shippingMarkShipping = shippingMarkShippings.find((i) => i.shippingMarkId === item.shippingMarkId && i.productId == item.productId);
+
+            item.product = shippingMarkShipping.product;
+            item.totalPackage = shippingMarkShipping.totalPackage;
+            item.totalQuantityPrinted = shippingMarkShipping.totalQuantityPrinted;
+            item.totalQuantity = shippingMarkShipping.totalQuantity;
+          });
+        },
+        (_) => {}
       );
   }
 
-  showDetailShippingMarkSummary(shippingMark: ShippingMarkModel, shippingMarkSummaryModel: ShippingMarkSummaryModel) {
-    if (!shippingMark || !shippingMarkSummaryModel) {
+  showDetailShippingMarkSummary(shippingMark: ShippingMarkModel, shippingMarkShippingModel: ShippingMarkShippingModel) {
+    if (!shippingMark || !shippingMarkShippingModel) {
       return;
     }
 
     this.currentShippingMark = shippingMark;
-    this.currentPrintShippingMarkSummary = shippingMarkSummaryModel;
+    this.currentShippingMarkShippingModel = shippingMarkShippingModel;
 
     this.shippingMarkPrintings = [];
     this.shippingMarkClients
-      .getShippingMarkPrintings(shippingMark.id, shippingMarkSummaryModel.productId)
+      .getShippingMarkPrintings(shippingMark.id, shippingMarkShippingModel.productId)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (shippingMarkPrintings) => {
           this.shippingMarkPrintings = shippingMarkPrintings;
           this.isShowDialogDetail = true;
-          this.titleDialog = `Product Number: ${shippingMarkSummaryModel.product.productNumber} - ${shippingMarkSummaryModel.product.productName}`;
+          this.titleDialog = `Product Number: ${shippingMarkShippingModel.product.productNumber} - ${shippingMarkShippingModel.product.productName}`;
         },
         (_) => this.notificationService.error('Failed to show detail')
       );
@@ -402,20 +412,6 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           );
       },
     });
-  }
-
-  getTotalQuantityPrinted(item: ShippingMarkSummaryModel) {
-    if (item && item.product && item.product.shippingMarkPrintings && item.product.shippingMarkPrintings.length > 0) {
-      return item.product.receivedMarkPrintings.reduce((a, b) => {
-        if (b.printCount !== 0) {
-          return a + b.quantity;
-        }
-
-        return a + 0;
-      }, 0);
-    }
-
-    return 0;
   }
 
   ngOnDestroy(): void {

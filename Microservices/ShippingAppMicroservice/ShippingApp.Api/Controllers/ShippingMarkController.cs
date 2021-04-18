@@ -150,17 +150,6 @@ namespace ShippingApp.Api.Controllers
             }));
         }
 
-        [HttpGet("ShippingMarkSummaries/{shippingMarkId}")]
-        [ProducesResponseType(typeof(List<ShippingMarkSummaryModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ShippingMarkSummaryModel>>> GetShippingMarkSummariesAsync(int shippingMarkId)
-        {
-            return Ok(await Mediator.Send(new GetShippingMarkSummariesByIdQuery
-            {
-                ShippingMarkId = shippingMarkId
-            }));
-        }
-
         [HttpGet("ShippingMarkPrintings/{shippingMarkId}/{productId}")]
         [ProducesResponseType(typeof(List<ShippingMarkPrintingModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -172,6 +161,14 @@ namespace ShippingApp.Api.Controllers
                 ShippingMarkId = shippingMarkId,
                 ProductId = productId
             }));
+        }
+
+        [HttpGet("ShippingMarkMovements/{shippingMarkId}")]
+        [ProducesResponseType(typeof(List<ShippingMarkShippingModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ShippingMarkShippingModel>>> GetShippingMarkShippingsFullInfoAsync(int shippingMarkId)
+        {
+            return Ok(await Mediator.Send(new GetShippingMarkMovementsFullInfoByIdQuery { ShippingMarkId = shippingMarkId }));
         }
     }
 }

@@ -1,12 +1,5 @@
 <ng-container *ngIf="printData && printData.receivedMark">
   <table>
-    <thead>
-      <tr>
-        <td>
-          <div class="header-space"></div>
-        </td>
-      </tr>
-    </thead>
     <tbody>
       <tr>
         <td>
@@ -14,36 +7,36 @@
             <div class="print__detail">
               <table>
                 <tr *ngIf="printData && printData.receivedMark && printData.receivedMark.identifier" class="print__identity">
-                  <td>Received ID</td>
+                  <td class="print__value">Received ID</td>
                   <td class="print__value">: {{ printData.receivedMark.identifier }}</td>
                 </tr>
 
                 <tr>
-                  <td>W/O</td>
+                  <td class="print__value">W/O</td>
                   <td class="print__value">: {{ printData && printData.workOrder ? printData.workOrder.refId : '' }}</td>
                 </tr>
 
                 <tr>
-                  <td>P/N</td>
+                  <td class="print__value">P/N</td>
                   <td class="print__value">: {{ printData && printData.product ? printData.product.productNumber : '' }}</td>
                 </tr>
                 <tr>
-                  <td>Qty</td>
+                  <td class="print__value">Qty</td>
                   <td class="print__value">: {{ printData && printData.quantity ? printData.quantity : '' }}</td>
                 </tr>
 
                 <tr>
-                  <td>Carton number</td>
+                  <td class="print__value">Carton number</td>
                   <td class="print__value">: {{ printData && printData.sequence ? printData.sequence : '' }}</td>
                 </tr>
                 <tr>
-                  <td>Date</td>
+                  <td class="print__value">Date</td>
                   <td class="print__value">: {{ printData && printData.printingDate ? (printData.printingDate | date: 'dd/MM/yyyy') : '' }}</td>
                 </tr>
 
                 <tr>
                   <td colspan="2">
-                    <ngx-barcode *ngIf="printData && printData.identifier" [bc-value]="printData.identifier"></ngx-barcode>
+                    <ngx-barcode *ngIf="printData && printData.identifier" [bc-height]="50" [bc-value]="printData.identifier"></ngx-barcode>
                   </td>
                 </tr>
               </table>
@@ -63,123 +56,108 @@
 </ng-container>
 
 <ng-container *ngIf="printData && printData.shippingMark">
-  <table>
-    <thead>
-      <tr>
-        <td>
-          <div class="header-space"></div>
-        </td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <div class="print__content">
-            <div class="print__header">
-              <div class="print__company-name">SPARTRONICS VIETNAM</div>
-              <div class="print__company-info"></div>
-            </div>
-            <div class="print__detail">
-              <table>
-                <tr *ngIf="printData && printData.shippingMark && printData.shippingMark.identifier" class="print__identity">
-                  <td>Shipping Mark ID</td>
-                  <td class="print__value">: {{ printData.shippingMark.identifier }}</td>
-                </tr>
+  <main class="shipping-mark">
+    <div class="row company-name">SPARTRONICS VIETNAM</div>
 
-                <tr>
-                  <td>P/N</td>
-                  <td class="print__value">: {{ printData?.product?.productNumber }}</td>
-                </tr>
-
-                <tr>
-                  <td>Qty</td>
-                  <td class="print__value">: {{ printData && printData.quantity ? printData.quantity : '' }}</td>
-                </tr>
-
-                <tr>
-                  <td>W/O</td>
-                  <td class="print__value">: {{ printData?.workOrder?.refId }}</td>
-                </tr>
-
-                <tr>
-                  <td>P/O</td>
-                  <td class="print__value">: {{ printData?.purchaseOrder }}</td>
-                </tr>
-
-                <tr>
-                  <td>Weight</td>
-                  <td class="print__value">: {{ printData?.weight }}</td>
-                </tr>
-
-                <tr>
-                  <td>Carton number</td>
-                  <td class="print__value">: {{ printData?.sequence }} / {{ printData?.totalPackages }}</td>
-                </tr>
-
-                <tr>
-                  <td>Shipping Date</td>
-                  <td class="print__value">: {{ printData?.shippingMarkShipping?.shippingRequest?.shippingDate | date: 'dd/MM/yyyy' }}</td>
-                </tr>
-
-                <tr>
-                  <td>Part Revision</td>
-                  <td class="print__value">: {{ printData?.product?.partRevisionRaw }}</td>
-                </tr>
-
-                <tr>
-                  <td>Drawing Revision</td>
-                  <td class="print__value">: {{ printData?.product?.processRevision }}</td>
-                </tr>
-
-                <tr>
-                  <td>Revision</td>
-                  <td class="print__value">: {{ printData && printData.revision ? printData.revision : '' }}</td>
-                </tr>
-
-                <tr>
-                  <td>Shipping To</td>
-                  <td class="print__value">: {{ printData?.shippingMarkShipping?.shippingRequest?.shipTo }}</td>
-                </tr>
-
-                <tr>
-                  <td colspan="2">Made in VietNam</td>
-                </tr>
-
-                <tr>
-                  <td colspan="2">
-                    <ngx-barcode *ngIf="printData && printData.identifier" [bc-value]="printData.identifier"></ngx-barcode>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td colspan="2">
-                    <ngx-barcode *ngIf="printData && printData.workOrder" [bc-value]="printData.workOrder.refId"></ngx-barcode>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td colspan="2">
-                    <ngx-barcode *ngIf="printData && printData.purchaseOrder" [bc-value]="printData.purchaseOrder"></ngx-barcode>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td colspan="2">
-                    <ngx-barcode *ngIf="printData && printData.quantity" [bc-value]="printData.quantity"></ngx-barcode>
-                  </td>
-                </tr>
-              </table>
-            </div>
+    <div class="row" style="width: 550px">
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">Mark</div>
+          <div>
+            <ngx-barcode [bc-height]="40" [bc-width]="0.5" [bc-display-value]="true" [bc-value]="printData?.identifier"></ngx-barcode>
           </div>
-        </td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td>
-          <div class="footer-space"></div>
-        </td>
-      </tr>
-    </tfoot>
-  </table>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">P/N</div>
+          <div>
+            <ngx-barcode [bc-display-value]="true" [bc-height]="40" [bc-width]="0.5" [bc-value]="printData?.product?.productNumber"></ngx-barcode>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">W/O</div>
+          <div>
+            <ngx-barcode [bc-display-value]="true" [bc-height]="40" [bc-width]="1" [bc-value]="printData?.printInfo?.workOrder?.refId"></ngx-barcode>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">Qty</div>
+          <div>
+            <ngx-barcode [bc-display-value]="true" [bc-height]="40" [bc-width]="1" [bc-value]="printData?.quantity"></ngx-barcode>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">P/O</div>
+          <div>
+            <ngx-barcode [bc-display-value]="true" [bc-height]="40" [bc-width]="1" [bc-value]="printData?.printInfo?.purchaseOrder"></ngx-barcode>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">CartonNumber</div>
+          <div class="print-value">{{ printData?.sequence }} / {{ printData?.printInfo?.totalPackages }}</div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">Weight</div>
+          <div class="print-value">{{ printData?.printInfo?.weight }}</div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">ShippingDate</div>
+          <div class="print-value">{{ printData?.printInfo?.shippingRequest?.shippingDate | date: 'dd/MM/yyyy' }}</div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">PartRevision</div>
+          <div class="print-value">{{ printData?.product?.partRevisionRaw }}</div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">DrawingRevision</div>
+          <div class="print-value">{{ printData?.product?.processRevision }}</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">Revision</div>
+          <div class="print-value">{{ printData?.product?.revision }}</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="row print-row">
+          <div class="print-label">MadeIn</div>
+          <div class="print-value">VietNam</div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="row print-row">
+          <div class="print-label">To</div>
+          <div class="print-value">{{ printData?.printInfo?.shippingRequest?.shipTo }}</div>
+        </div>
+      </div>
+    </div>
+  </main>
 </ng-container>

@@ -134,18 +134,19 @@ namespace Files.Api
             if (!env.IsProduction())
             {
                 app.UseDeveloperExceptionPage();
-                
-                // Enable middleware to serve generated Swagger as a JSON endpoint.
-                app.UseOpenApi();
-                app.UseSwaggerUi3();
-
-                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-                // specifying the Swagger JSON endpoint.
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Files API V1");
-                });
             }
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Files API V1");
+            });
+
 
             loggerfactory.AddSerilog();
             app.UseSerilogRequestLogging();

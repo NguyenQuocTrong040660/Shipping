@@ -44,7 +44,6 @@ namespace ShippingApp.Application.ShippingMark.Commands
             }
 
             var shippingMarkPrintings = new List<Entities.ShippingMarkPrinting>();
-            var shippingMarkSummaries = new List<Entities.ShippingMarkSummary>();
 
             var groupByProducts = request.ShippingMark.ShippingMarkShippings
                 .GroupBy(x => x.ProductId)
@@ -77,21 +76,13 @@ namespace ShippingApp.Application.ShippingMark.Commands
                     remainQty -= product.QtyPerPackage;
                     sequence++;
                 }
-
-                shippingMarkSummaries.Add(new Entities.ShippingMarkSummary
-                {
-                    ProductId = group.ProductId,
-                    TotalPackage = sequence - 1,
-                    TotalQuantity = group.ShippingQuantity
-                });
             }
 
             var shippingMark = new Entities.ShippingMark
             {
                 Notes = request.ShippingMark.Notes,
                 ShippingMarkPrintings = shippingMarkPrintings,
-                ShippingMarkShippings = BuildShippingMarkShippings(request.ShippingMark.ShippingMarkShippings),
-                ShippingMarkSummaries = shippingMarkSummaries
+                ShippingMarkShippings = BuildShippingMarkShippings(request.ShippingMark.ShippingMarkShippings)
             };
 
             await _context.ShippingMarks.AddAsync(shippingMark);

@@ -35,6 +35,8 @@ namespace ShippingApp.Domain.Models
         public string ShipTo { get; set; }
         public string ShipToAddress { get; set; }
 
+        public DateTime PickupDate { get; set; }
+
         public virtual ICollection<ShippingRequestLogisticModel> ShippingRequestLogistic { get; set; }
         public virtual ICollection<ShippingRequestDetailModel> ShippingRequestDetails { get; set; }
         public virtual ICollection<ShippingMarkModel> ShippingMarks { get; set; }

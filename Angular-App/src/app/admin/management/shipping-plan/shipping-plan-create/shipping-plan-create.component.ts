@@ -25,6 +25,7 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
 
   stepItems: MenuItem[];
   stepIndex = 0;
+  minDate = new Date();
 
   productCols: any[] = [];
   selectedProducts: ProductModel[] = [];

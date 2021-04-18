@@ -96,7 +96,7 @@
 </div>
 
 <!-- Edit Configuration Dialog -->
-<p-dialog header="Edit Configuration" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
+<p-dialog [closeOnEscape]="true" header="Edit Configuration" styleClass="p-fluid p-w-500" [modal]="true" [(visible)]="isShowEditDialog" (onHide)="hideEditDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="configurationForm">
       <div class="p-field">

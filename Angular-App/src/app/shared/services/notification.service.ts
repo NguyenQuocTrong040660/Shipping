@@ -8,11 +8,11 @@ import { NotificationSeverity } from '../enumerations/notification-severity';
 export class NotificationService {
   constructor(private messageService: MessageService) {}
 
-  error(detail: string, summary = 'Error', timeLife = 3000) {
+  error(detail: string, summary = 'Error', timeLife = 1500) {
     this.messageService.add({ severity: NotificationSeverity.error, summary: summary, detail: detail, life: timeLife });
   }
 
-  success(detail: string, summary = 'Success', timeLife = 3000) {
+  success(detail: string, summary = 'Success', timeLife = 1500) {
     this.messageService.add({
       severity: NotificationSeverity.success,
       summary: summary,

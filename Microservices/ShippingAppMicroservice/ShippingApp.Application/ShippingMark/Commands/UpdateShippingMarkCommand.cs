@@ -113,12 +113,6 @@ namespace ShippingApp.Application.ShippingMark.Commands
                     remainQty -= product.QtyPerPackage;
                     sequence++;
                 }
-
-                var shippingMarkSummary = await _context.ShippingMarkSummaries
-                    .FirstOrDefaultAsync(x => x.ProductId == group.ProductId && x.ShippingMarkId == request.Id);
-
-                shippingMarkSummary.TotalPackage = sequence - 1;
-                shippingMarkSummary.TotalQuantity = group.ShippingQuantity;
             }
 
             await _context.ShippingMarkPrintings.AddRangeAsync(shippingMarkPrintings);

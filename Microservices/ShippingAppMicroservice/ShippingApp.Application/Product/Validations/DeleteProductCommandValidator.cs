@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Application.Product.Commands;
@@ -23,10 +22,8 @@ namespace ShippingApp.Application.Product.Validations
                 .Must(NotExistInMovementRequestDetails)
                 .Must(NotExistInReceivedMarkMovements)
                 .Must(NotExistInReceivedMarkPrintings)
-                .Must(NotExistInReceivedMarkSummaries)
                 .Must(NotExistInShippingMarkPrintings)
                 .Must(NotExistInShippingMarkShippings)
-                .Must(NotExistInShippingMarkSummaries)
                 .Must(NotExistInShippingRequestLogistics)
                 .WithMessage("Failed to delete product");
         }
@@ -61,11 +58,6 @@ namespace ShippingApp.Application.Product.Validations
             return _context.ReceivedMarkPrintings.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
-        private bool NotExistInReceivedMarkSummaries(int productId)
-        {
-            return _context.ReceivedMarkSummaries.AsNoTracking().Any(x => x.ProductId == productId) == false;
-        }
-
         private bool NotExistInShippingMarkPrintings(int productId)
         {
             return _context.ShippingMarkPrintings.AsNoTracking().Any(x => x.ProductId == productId) == false;
@@ -74,11 +66,6 @@ namespace ShippingApp.Application.Product.Validations
         private bool NotExistInShippingMarkShippings(int productId)
         {
             return _context.ShippingMarkShippings.AsNoTracking().Any(x => x.ProductId == productId) == false;
-        }
-
-        private bool NotExistInShippingMarkSummaries(int productId)
-        {
-            return _context.ShippingMarkSummaries.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInShippingRequestLogistics(int productId)

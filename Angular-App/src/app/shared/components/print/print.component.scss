@@ -18,6 +18,11 @@
 
   &__value {
     padding-left: 10px;
+    font-size: 24px;
+  }
+
+  &__value__shipping {
+    font-size: 8px;
   }
 
   &__detail {
@@ -29,5 +34,39 @@
 @media screen {
   :host {
     display: none;
+  }
+}
+
+.shipping-mark {
+  .print-label {
+    text-align: center;
+    line-height: 50px;
+    font-size: 18px;
+    padding-right: 5px;
+  }
+
+  .row {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .col {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .print-row {
+  }
+
+  .company-name {
+    line-height: 50px;
+    font-size: 35px;
+  }
+
+  .print-value {
+    font-size: 18px;
+    line-height: 50px;
+    text-align: left;
+    font-weight: bold;
   }
 }

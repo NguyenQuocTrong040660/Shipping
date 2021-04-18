@@ -1,4 +1,4 @@
-<p-dialog [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [closeOnEscape]="true" [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
@@ -51,6 +51,25 @@
     <ng-container *ngIf="stepIndex === 1">
       <p-card>
         <ng-template pTemplate="content">
+          <ng-container *ngIf="isEnableScan; else disabledScan">
+            <div class="p-fluid p-grid">
+              <div class="p-field p-col-12">
+                <span class="p-input-icon-right">
+                  <i class="pi pi-spin pi-spinner" *ngIf="isShowLoading"></i>
+                  <input type="text" pInputText [formControl]="receivedMarkPrintingControl" />
+                </span>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #disabledScan>
+            <p-toolbar styleClass="p-mb-4">
+              <ng-template pTemplate="left"></ng-template>
+              <ng-template pTemplate="right">
+                <button label="Scan Received Mark" pButton pRipple type="button" icon="pi pi-wifi" class="p-button-help" (click)="enableScan()"></button>
+              </ng-template>
+            </p-toolbar>
+          </ng-template>
+
           <p-table dataKey="product.id" [value]="shippingMarkShippings">
             <ng-template pTemplate="header" let-columns>
               <tr>

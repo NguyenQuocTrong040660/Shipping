@@ -239,10 +239,7 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => {
-          this.notificationService.error('Add Product Failed. Please try again');
-          this.hideDialog();
-        }
+        (_) => this.notificationService.error('Add Product Failed. Please try again')
       );
   }
 
@@ -260,10 +257,7 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => {
-          this.notificationService.error('Update Product Failed. Please try again');
-          this.hideDialog();
-        }
+        (_) => this.notificationService.error('Update Product Failed. Please try again')
       );
   }
 

@@ -54,6 +54,8 @@ namespace ShippingApp.Application.MovementRequest.Commands
                 {
                     item.Quantity = movementRequestDetail.Quantity;
                 }
+
+                movementRequestDetail.IsDirect = item.IsDirect;
             }
 
             movementRequest.Notes = request.MovementRequest.Notes;

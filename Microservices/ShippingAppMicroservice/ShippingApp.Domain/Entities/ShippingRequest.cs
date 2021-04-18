@@ -19,6 +19,9 @@ namespace ShippingApp.Domain.Entities
         public string ShipTo { get; set; }
         public string ShipToAddress { get; set; }
 
+        public DateTime PickupDate { get; set; }
+
+
         public virtual ICollection<ShippingRequestLogistic> ShippingRequestLogistics { get; set; }
         public virtual ICollection<ShippingRequestDetail> ShippingRequestDetails { get; set; }
         public virtual ICollection<ShippingMarkShipping> ShippingMarkShippings { get; set; }

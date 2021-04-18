@@ -89,7 +89,7 @@
   </p-table>
 </div>
 
-<p-dialog [(visible)]="dialog" [header]="titleDialog" [modal]="true" styleClass="p-fluid p-w-500">
+<p-dialog [closeOnEscape]="true" [(visible)]="dialog" [header]="titleDialog" [modal]="true" styleClass="p-fluid p-w-500">
   <ng-template pTemplate="content">
     <form [formGroup]="productForm">
       <div class="p-field">

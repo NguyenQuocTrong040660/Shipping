@@ -55,16 +55,15 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      // { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Account Number', field: 'accountNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       // { header: 'Product Line', field: 'productLine', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      // { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Bill To', field: 'billTo', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Bill To Address', field: 'billToAddress', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Ship To', field: 'shipTo', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Ship To Address', field: 'shipToAddress', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Account Number', field: 'accountNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: 'Pickup Date', field: 'pickupDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
@@ -95,6 +94,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.shippingRequestForm = this.fb.group({
       id: [0],
       notes: [''],
+      pickupDate: [new Date()],
       customerName: [''],
       shippingDate: [new Date()],
       billTo: [''],
@@ -134,6 +134,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     const model = this.shippingRequestForm.value as ShippingRequestModel;
     model.id = 0;
     model.shippingDate = Utilities.ConvertDateBeforeSendToServer(model.shippingDate);
+    model.pickupDate = Utilities.ConvertDateBeforeSendToServer(model.pickupDate);
 
     this.shippingRequestClients
       .addShippingRequest(model)

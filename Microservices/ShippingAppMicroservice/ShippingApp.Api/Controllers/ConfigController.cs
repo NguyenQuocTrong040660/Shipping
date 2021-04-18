@@ -27,7 +27,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<List<ConfigModel>>> GetConfigs()
         {
-            return await Mediator.Send(new GetConfigsQuery { });
+            return Ok(await Mediator.Send(new GetConfigsQuery { }));
         }
 
         [HttpGet("{key}")]
@@ -35,8 +35,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ConfigModel>> GetConfigsByKeyAsync(string key)
         {
-            var result = await Mediator.Send(new GetConfigByKeyQuery { Key = key });
-            return Ok(result);
+            return Ok(await Mediator.Send(new GetConfigByKeyQuery { Key = key }));
         }
 
         [HttpPut("{key}")]
@@ -50,8 +49,7 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(model);
             }
 
-            var result = await Mediator.Send(new UpdateConfigCommand { Key = key, Config = model });
-            return Ok(result);
+            return Ok(await Mediator.Send(new UpdateConfigCommand { Key = key, Config = model }));
         }
     }
 }

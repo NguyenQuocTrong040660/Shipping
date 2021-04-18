@@ -1,4 +1,6 @@
-﻿namespace ShippingApp.Domain.Models
+﻿using AutoMapper;
+
+namespace ShippingApp.Domain.Models
 {
     public class ShippingMarkShippingModel : AuditableEntityModel
     {
@@ -6,6 +8,14 @@
         public int ProductId { get; set; }
         public int ShippingRequestId { get; set; }
         public int Quantity { get; set; }
+
+        [IgnoreMap]
+        public int TotalQuantity { get; set; }
+        [IgnoreMap]
+        public int TotalPackage { get; set; }
+        [IgnoreMap]
+        public int TotalQuantityPrinted { get; set; }
+
         public virtual ShippingMarkModel ShippingMark { get; set; }
         public virtual ShippingRequestModel ShippingRequest { get; set; }
         public virtual ProductModel Product { get; set; }

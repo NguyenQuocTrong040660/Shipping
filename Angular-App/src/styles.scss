@@ -1,6 +1,15 @@
-@import './assets/styles/custom-primeng.scss';
+@import 'assets/styles/custom-primeng.scss';
 
-/* You can add global styles to this file, and also import other style files*/
+html {
+  font-size: 0.875rem !important;
+}
+
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper,
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer,
+body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+  margin-left: 200px;
+}
+
 .pointer {
   cursor: pointer;
 }

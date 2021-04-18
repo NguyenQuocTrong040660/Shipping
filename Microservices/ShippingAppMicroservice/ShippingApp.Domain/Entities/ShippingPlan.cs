@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ShippingApp.Domain.Entities
 {
-    public class ShippingPlan: AuditableEntity
+    public class ShippingPlan : AuditableEntity
     {
         public int Id { get; set; }
         public string Prefix { get; set; }

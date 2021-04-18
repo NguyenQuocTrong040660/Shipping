@@ -35,7 +35,7 @@ export class ReceivedMarkUnstuffComponent implements OnInit {
   initForm() {
     this.receivedMarkUnstuffForm = this.fb.group({
       receivedMarkPrintingId: [0],
-      unstuffQuantity: [0, [Validators.required]],
+      unstuffQuantity: [0, [Validators.required, Validators.min(1)]],
     });
   }
 

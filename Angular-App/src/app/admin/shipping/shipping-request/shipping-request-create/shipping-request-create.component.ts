@@ -26,6 +26,9 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
   selectedShippingPlans: ShippingPlanModel[] = [];
 
   stepItems: MenuItem[];
+
+  minDate = new Date();
+
   stepIndex = 0;
 
   selectedProducts: ProductModel[] = [];
@@ -114,6 +117,11 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
         }
 
         const products = this.selectedShippingPlans.map((i) => i.product);
+
+        this.shippingRequestForm.patchValue({
+          pickupDate: Utilities.ConvertDateBeforeSendToServer(this.shippingRequestForm.get('pickupDate').value),
+        });
+
         this.selectedProducts = products;
 
         this.stepIndex += 1;

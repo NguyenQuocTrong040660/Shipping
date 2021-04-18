@@ -70,7 +70,6 @@ namespace ShippingApp.Application.ShippingRequest.Commands
 
             entity.ShippingRequestLogistics = shippingRequestLogistics;
 
-
             var result = await _shippingAppRepository.AddAsync(entity);
 
             var response = await BuildShippingResponse(entity);

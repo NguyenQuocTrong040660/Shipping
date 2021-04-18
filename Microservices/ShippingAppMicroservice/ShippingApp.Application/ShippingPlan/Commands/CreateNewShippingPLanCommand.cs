@@ -9,6 +9,8 @@ using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Application.Common.Results;
 using ShippingApp.Application.Config.Queries;
 using ShippingApp.Domain.Enumerations;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ShippingApp.Application.ShippingPlan.Commands
 {
@@ -22,14 +24,17 @@ namespace ShippingApp.Application.ShippingPlan.Commands
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly IShippingAppRepository<Entities.ShippingPlan> _shippingAppRepository;
+        private readonly IShippingAppDbContext _context;
 
         public CreateNewShippingPLanCommandHandler(IMapper mapper, 
             IMediator mediator,
+            IShippingAppDbContext context,
             IShippingAppRepository<Entities.ShippingPlan> shippingAppRepository)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<Result> Handle(CreateNewShippingPLanCommand request, CancellationToken cancellationToken)
@@ -53,6 +58,27 @@ namespace ShippingApp.Application.ShippingPlan.Commands
             if ((request.ShippingPlan.ShippingDate - DateTime.Now).TotalDays <= numberDays)
             {
                 return Result.Failure($"Shipping Date should be larger than submit date {numberDays} days");
+            }
+
+            try
+            {
+                var shippingPlanDb = _context.ShippingPlans
+                .Include(x => x.ShippingPlanDetails)    
+                .ThenInclude(x => x.Product)
+                .Where(x => x.SalesOrder == request.ShippingPlan.SalesOrder)
+                .Where(x => x.SalelineNumber == request.ShippingPlan.SalelineNumber)
+                .ToList()
+                .Where(x => x.ShippingPlanDetails.FirstOrDefault().Product.ProductNumber == request.ShippingPlan.Product.ProductNumber)
+                .FirstOrDefault();
+
+                if (shippingPlanDb != null)
+                {
+                    return Result.Failure($"Shipping Plan ({shippingPlanDb.SalesOrder}-{shippingPlanDb.SalelineNumber}-{shippingPlanDb.ShippingPlanDetails.FirstOrDefault().Product.ProductNumber}) already existed");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure($"Failed to create Shipping Plan");
             }
 
             var shippingPlan = _mapper.Map<Entities.ShippingPlan>(request.ShippingPlan);

@@ -16,6 +16,9 @@ namespace ShippingApp.Domain.Models
             }
         }
 
+        [IgnoreMap]
+        public string WorkOrdersMovementCollection { get; set; }
+
         public int Id { get; set; }
         public string Prefix
         {
@@ -26,11 +29,7 @@ namespace ShippingApp.Domain.Models
         }
         public string Notes { get; set; }
 
-        [IgnoreMap]
-        public string WorkOrdersMovementCollection { get; set; }
-
         public virtual ICollection<ReceivedMarkMovementModel> ReceivedMarkMovements { get; set; }
         public virtual ICollection<ReceivedMarkPrintingModel> ReceivedMarkPrintings { get; set; }
-        public virtual ICollection<ReceivedMarkSummaryModel> ReceivedMarkSummaries { get; set; }
     }
 }

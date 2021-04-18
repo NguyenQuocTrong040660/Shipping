@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShippingApp.Persistence.DBContext;
 
 namespace ShippingApp.Persistence.Migrations
 {
     [DbContext(typeof(ShippingAppDbContext))]
-    partial class ShippingAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210414134248_RemoveReceviedMarkSummary")]
+    partial class RemoveReceviedMarkSummary
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -454,6 +456,33 @@ namespace ShippingApp.Persistence.Migrations
                     b.ToTable("ShippingMarkShippings");
                 });
 
+            modelBuilder.Entity("ShippingApp.Domain.Entities.ShippingMarkSummary", b =>
+                {
+                    b.Property<int>("ShippingMarkId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalPackage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalQuantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("ShippingMarkId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ShippingMarkSummaries");
+                });
+
             modelBuilder.Entity("ShippingApp.Domain.Entities.ShippingPlan", b =>
                 {
                     b.Property<int>("Id")
@@ -586,9 +615,6 @@ namespace ShippingApp.Persistence.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("PickupDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Prefix")
                         .ValueGeneratedOnAdd()
@@ -891,6 +917,21 @@ namespace ShippingApp.Persistence.Migrations
                     b.HasOne("ShippingApp.Domain.Entities.ShippingRequest", "ShippingRequest")
                         .WithMany("ShippingMarkShippings")
                         .HasForeignKey("ShippingRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ShippingApp.Domain.Entities.ShippingMarkSummary", b =>
+                {
+                    b.HasOne("ShippingApp.Domain.Entities.Product", "Product")
+                        .WithMany("ShippingMarkSummaries")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShippingApp.Domain.Entities.ShippingMark", "ShippingMark")
+                        .WithMany("ShippingMarkSummaries")
+                        .HasForeignKey("ShippingMarkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

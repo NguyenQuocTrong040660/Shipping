@@ -203,10 +203,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
           this.notificationService.error(result?.error);
         }
       },
-      (_) => {
-        this.notificationService.error('Create Shipping Plan Failed. Please try again');
-        this.hideDialog();
-      }
+      (_) => this.notificationService.error('Create Shipping Plan Failed. Please try again')
     );
   }
 
@@ -248,10 +245,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => {
-          this.notificationService.error('Edit Shipping Plan Failed. Please try again');
-          this.hideDialog();
-        }
+        (_) => this.notificationService.error('Edit Shipping Plan Failed. Please try again')
       );
   }
 

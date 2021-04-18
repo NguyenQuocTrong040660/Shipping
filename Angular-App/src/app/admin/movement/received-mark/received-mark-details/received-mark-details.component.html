@@ -1,4 +1,4 @@
-<p-dialog [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [closeOnEscape]="true" [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-toolbar styleClass="p-mb-4">
       <ng-template pTemplate="left"></ng-template>

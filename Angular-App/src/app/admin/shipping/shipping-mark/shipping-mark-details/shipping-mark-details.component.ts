@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ShippingMarkPrintingModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
+import { EventType } from 'app/shared/enumerations/import-event-type.enum';
 import { ApplicationUser } from 'app/shared/models/application-user';
 import { ConfirmationService } from 'primeng/api';
 
@@ -38,7 +39,7 @@ export class ShippingMarkDetailsComponent implements OnInit {
   }
 
   hideDialog() {
-    this.hideDialogEvent.emit();
+    this.hideDialogEvent.emit(EventType.RefreshData);
   }
 
   printMark() {

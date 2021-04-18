@@ -27,7 +27,7 @@ export class PrintComponent implements OnInit, OnChanges {
 
       const sequence = this.printData.sequence ? this.printData.sequence : '';
 
-      document.title = currentDate + '_' + id + '_' + sequence;
+      // document.title = currentDate + '_' + id + '_' + sequence;
     }
   }
 

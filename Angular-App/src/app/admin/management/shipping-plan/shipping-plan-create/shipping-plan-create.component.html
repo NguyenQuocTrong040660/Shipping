@@ -1,4 +1,4 @@
-<p-dialog [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [closeOnEscape]="true" [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
@@ -66,6 +66,7 @@
                     id="shippingDate"
                     [formControl]="shippingDateControl"
                     appendTo="body"
+                    [minDate]="minDate"
                   ></p-calendar>
 
                   <ng-container *ngIf="shippingDateControl.invalid && (shippingDateControl.dirty || shippingDateControl.touched)">

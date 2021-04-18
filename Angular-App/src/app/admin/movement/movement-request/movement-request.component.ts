@@ -139,10 +139,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => {
-          this.notificationService.error('Create Movement Request Failed. Please try again');
-          this.hideDialog();
-        }
+        (_) => this.notificationService.error('Create Movement Request Failed. Please try again')
       );
   }
 
@@ -156,7 +153,6 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
     this.isShowDialogCreate = false;
     this.isShowDialogEdit = false;
     this.isShowDialogHistory = false;
-    this.selectedMovementRequest = null;
     this.selectItems = null;
     this.movementRequestForm.reset();
   }
@@ -202,10 +198,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => {
-          this.notificationService.error('Edit Movement Request Failed. Please try again');
-          this.hideDialog();
-        }
+        (_) => this.notificationService.error('Edit Movement Request Failed. Please try again')
       );
   }
 

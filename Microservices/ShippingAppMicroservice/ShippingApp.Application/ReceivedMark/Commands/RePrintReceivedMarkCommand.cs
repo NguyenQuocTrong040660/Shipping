@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using ShippingApp.Application.Common.Results;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Domain.Models;
 using System;

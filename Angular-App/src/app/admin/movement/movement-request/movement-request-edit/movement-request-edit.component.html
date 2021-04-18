@@ -1,4 +1,4 @@
-<p-dialog [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [closeOnEscape]="true" [position]="'right'" [header]="titleDialog" styleClass="p-fluid w-83" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <p-steps [model]="stepItems" [activeIndex]="stepIndex"></p-steps>
 
@@ -12,6 +12,7 @@
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
+                <th class="p-text-center">Shipping Direct</th>
                 <th class="p-text-center">Quantity<span class="p-invalid"> *</span></th>
                 <th style="width: 10rem"></th>
               </tr>
@@ -29,6 +30,10 @@
 
                 <td class="p-text-center">
                   {{ movementRequestDetail?.product?.qtyPerPackage }}
+                </td>
+
+                <td class="p-text-center">
+                  <p-inputSwitch [(ngModel)]="movementRequestDetail.isDirect"></p-inputSwitch>
                 </td>
 
                 <td class="p-text-center">
@@ -122,6 +127,7 @@
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
+                <th class="p-text-center">Shipping Direct</th>
                 <th class="p-text-center">Quantity</th>
               </tr>
             </ng-template>
@@ -138,6 +144,10 @@
 
                 <td class="p-text-center">
                   {{ movementRequestDetail?.product?.qtyPerPackage }}
+                </td>
+
+                <td class="p-text-center">
+                  <p-inputSwitch [(ngModel)]="movementRequestDetail.isDirect" [readonly]="true"></p-inputSwitch>
                 </td>
 
                 <td class="p-text-center">

@@ -11,8 +11,7 @@ namespace ShippingApp.Domain.Models
 
         [IgnoreMap]
         public string WorkOrderMomentRequest { get; set; }
-        [IgnoreMap]
-        public int TotalQuantity { get; set; }
+        
         [IgnoreMap]
         public int TotalPackage { get; set; }
         [IgnoreMap]

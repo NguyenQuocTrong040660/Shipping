@@ -29,7 +29,8 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
         public async Task<Result> Handle(UnstuffReceivedMarkCommand request, CancellationToken cancellationToken)
         {
-            var receivedMarkPrinting = await _context.ReceivedMarkPrintings.FindAsync(request.UnstuffReceivedMark.ReceivedMarkPrintingId);
+            var receivedMarkPrinting = await _context.ReceivedMarkPrintings
+                .FindAsync(request.UnstuffReceivedMark.ReceivedMarkPrintingId);
 
             if (receivedMarkPrinting == null)
             {

@@ -135,7 +135,7 @@
                   type="button"
                   pButton
                   pRipple
-                  (click)="getShippingMarkSummaries(item)"
+                  (click)="getShippingMarkMovementRequestsFullInfo(item)"
                   [pRowToggler]="item"
                   class="p-button-text p-button-rounded p-button-plain"
                   [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
@@ -151,7 +151,7 @@
       <tr>
         <td colspan="6" class="shipping-mark__expaned">
           <div>
-            <p-table class="shipping-mark__expaned-table" [value]="shippingMark.shippingMarkSummaries">
+            <p-table class="shipping-mark__expaned-table" [value]="shippingMark.shippingMarkShippings">
               <ng-template pTemplate="header">
                 <tr>
                   <th class="p-text-center">Product Number</th>
@@ -172,7 +172,7 @@
                   </td>
                   <td class="p-text-center">{{ item?.totalQuantity }}</td>
                   <td class="p-text-center">{{ item?.totalPackage }}</td>
-                  <td class="p-text-center">{{ getTotalQuantityPrinted(item) }}</td>
+                  <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
                   <td class="p-text-center">
                     <button
                       pButton
@@ -201,7 +201,7 @@
   [shippingMarkShippings]="shippingMarkShippings"
   [isShowDialog]="isShowDialogCreate"
   (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog()"
+  (hideDialogEvent)="hideDialog($event)"
   (selectedShippingRequestEvent)="handleSelectedShippingRequest($event)"
 >
 </app-shipping-mark-create>
@@ -213,7 +213,7 @@
   [user]="user"
   [canRePrint]="canRePrint"
   [shippingMarkPrintings]="shippingMarkPrintings"
-  (hideDialogEvent)="hideDialog()"
+  (hideDialogEvent)="hideDialog($event)"
   (printMarkEvent)="printShippingMark()"
   (rePrintMarkEvent)="handleRePrintMark($event)"
 >
@@ -225,7 +225,7 @@
   [shippingMark]="currentShippingMark"
   [isShowDialog]="isShowDialogEdit"
   (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog()"
+  (hideDialogEvent)="hideDialog($event)"
 >
 </app-shipping-mark-edit>
 

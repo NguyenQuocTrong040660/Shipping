@@ -16,19 +16,7 @@ namespace ShippingApp.Domain.Models
         }
 
         [IgnoreMap]
-        public ShippingMarkShippingModel ShippingMarkShipping { get; set; }
-
-        [IgnoreMap]
-        public WorkOrderModel WorkOrder { get; set; }
-
-        [IgnoreMap]
-        public string PurchaseOrder { get; set; }
-
-        [IgnoreMap]
-        public float Weight { get; set; }
-
-        [IgnoreMap]
-        public int TotalPackages { get; set; }
+        public PrintInfomation PrintInfo { get; set; }
 
         public int Id { get; set; }
         public string Prefix
@@ -56,5 +44,14 @@ namespace ShippingApp.Domain.Models
 
         public virtual ShippingMarkModel ShippingMark { get; set; }
         public virtual ProductModel Product { get; set; }
+    }
+
+    public class PrintInfomation
+    {
+        public ShippingRequestModel ShippingRequest { get; set; }
+        public WorkOrderModel WorkOrder { get; set; }
+        public string PurchaseOrder { get; set; }
+        public float Weight { get; set; }
+        public int TotalPackages { get; set; }
     }
 }

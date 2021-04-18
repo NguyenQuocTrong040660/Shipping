@@ -34,8 +34,8 @@ namespace ShippingApp.Application.ShippingMark.Commands
             var shippingMarkPrintings = await _context.ShippingMarkPrintings
                 .Include(x => x.Product)
                 .Include(x => x.ShippingMark)
-                .Where(x => x.ShippingMarkId == request.PrintShippingMarkRequest.ShippingMarkId
-                         && x.ProductId == request.PrintShippingMarkRequest.ProductId)
+                .Where(x => x.ShippingMarkId == request.PrintShippingMarkRequest.ShippingMarkId)
+                .Where(x => x.ProductId == request.PrintShippingMarkRequest.ProductId)
                 .Where(x => x.Status.Equals(nameof(ShippingMarkStatus.New)))
                 .OrderBy(x => x.Sequence)
                 .ToListAsync();
@@ -73,18 +73,21 @@ namespace ShippingApp.Application.ShippingMark.Commands
             
             if (result != null)
             {
-                result.ShippingMarkShipping = _mapper.Map<ShippingMarkShippingModel>(await _context.ShippingMarkShippings
-                        .Include(x => x.ShippingRequest)
-                        .FirstOrDefaultAsync(x =>
-                        x.ShippingMarkId == request.PrintShippingMarkRequest.ShippingMarkId &&
-                        x.ProductId == request.PrintShippingMarkRequest.ProductId));
+                var shippingRequest = _mapper.Map<ShippingRequestModel>((await _context.ShippingMarkShippings
+                    .Include(x => x.ShippingRequest)
+                    .ThenInclude(x => x.ShippingRequestDetails)
+                    .FirstOrDefaultAsync(x => x.ShippingMarkId == result.ShippingMarkId)).ShippingRequest);
 
-                result.PurchaseOrder = (await _context.ShippingRequestDetails.FirstOrDefaultAsync(x => x.ProductId == result.ProductId && x.ShippingRequestId == result.ShippingMarkShipping.ShippingRequest.Id)).PurchaseOrder;
-                result.WorkOrder = _mapper.Map<WorkOrderModel>((await _context.WorkOrderDetails
-                    .Include(x => x.WorkOrder)
-                    .FirstOrDefaultAsync(x => x.ProductId == result.ProductId)).WorkOrder);
-                result.Weight = 0;
-                result.TotalPackages = await _context.ShippingMarkPrintings.CountAsync(x => x.ProductId == result.ProductId && x.ShippingMarkId == result.ShippingMarkId);
+                result.PrintInfo = new PrintInfomation
+                {
+                    PurchaseOrder = shippingRequest.ShippingRequestDetails.FirstOrDefault().PurchaseOrder,
+                    ShippingRequest = shippingRequest,
+                    TotalPackages = await _context.ShippingMarkPrintings.CountAsync(x => x.ProductId == result.ProductId && x.ShippingMarkId == result.ShippingMarkId),
+                    Weight = 0,
+                    WorkOrder = _mapper.Map<WorkOrderModel>((await _context.WorkOrderDetails
+                        .Include(x => x.WorkOrder)
+                        .FirstOrDefaultAsync(x => x.ProductId == result.ProductId)).WorkOrder)
+                };
             }
 
             return result;

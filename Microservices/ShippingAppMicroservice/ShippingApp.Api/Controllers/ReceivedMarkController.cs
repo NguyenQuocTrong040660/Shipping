@@ -84,6 +84,11 @@ namespace ShippingApp.Api.Controllers
                 return BadRequest(model);
             }
 
+            if (model.UnstuffQuantity <= 0)
+            {
+                return Ok(Result.Failure("Unstuff Quantity could not less than 0"));
+            }
+
             return Ok(await Mediator.Send(new UnstuffReceivedMarkCommand { UnstuffReceivedMark = model }));
         }
 
@@ -169,14 +174,6 @@ namespace ShippingApp.Api.Controllers
             {
                 MovementRequests = movementRequests
             }));
-        }
-
-        [HttpGet("ReceivedMarkSummaries/{receivedMarkId}")]
-        [ProducesResponseType(typeof(List<ReceivedMarkSummaryModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ReceivedMarkSummaryModel>>> GetReceivedMarkSummariesAsync(int receivedMarkId)
-        {
-            return Ok(await Mediator.Send(new GetReceivedMarkSummariesByIdQuery { ReceivedMarkId = receivedMarkId }));
         }
 
         [HttpGet("ReceivedMarkMovements/{receivedMarkId}")]

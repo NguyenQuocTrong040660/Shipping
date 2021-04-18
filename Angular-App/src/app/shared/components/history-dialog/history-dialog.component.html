@@ -1,17 +1,9 @@
-<p-dialog header="History" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [closeOnEscape]="true" header="History" styleClass="p-fluid p-w-1000" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <div class="history__search-group">
       <label for="search">Search Id: </label>
       <input id="search" class="history__search-input" type="text" pInputText [(ngModel)]="searchText" (keydown.enter)="search()" />
-      <button
-        class="p-button-success history__search-button"
-        pButton
-        pRipple
-        label="Search"
-        icon="pi pi-search"
-        [disabled]="!searchText"
-        (click)="search()"
-      ></button>
+      <button class="p-button-success history__search-button" pButton pRipple label="Search" icon="pi pi-search" [disabled]="!searchText" (click)="search()"></button>
     </div>
 
     <p-table

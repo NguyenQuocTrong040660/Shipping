@@ -20,14 +20,12 @@ namespace ShippingApp.Application.Interfaces
         DbSet<Entities.ReceivedMark> ReceivedMarks { get; }
         DbSet<Entities.ReceivedMarkMovement> ReceivedMarkMovements { get; }
         DbSet<Entities.ReceivedMarkPrinting> ReceivedMarkPrintings { get; }
-        DbSet<Entities.ReceivedMarkSummary> ReceivedMarkSummaries { get; }
         DbSet<Entities.ShippingMark> ShippingMarks { get; }
         DbSet<Entities.ShippingRequest> ShippingRequests { get; }
         DbSet<Entities.ShippingRequestDetail> ShippingRequestDetails { get; }
         DbSet<Entities.ShippingRequestLogistic> ShippingRequestLogistics { get; }
         DbSet<Entities.ShippingMarkShipping> ShippingMarkShippings { get;  }
         DbSet<Entities.ShippingMarkPrinting> ShippingMarkPrintings { get; }
-        DbSet<Entities.ShippingMarkSummary> ShippingMarkSummaries { get; }
         DbSet<TEntity> SetEntity<TEntity>() where TEntity : class;
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken =  new CancellationToken());

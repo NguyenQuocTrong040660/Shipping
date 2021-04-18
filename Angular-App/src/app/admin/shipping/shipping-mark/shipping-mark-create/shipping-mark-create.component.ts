@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ProductModel, ReceivedMarkPrintingModel, ShippingMarkShippingModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import Utilities from 'app/shared/helpers/utilities';
 import { MenuItem, SelectItem } from 'primeng/api';
+import { debounceTime, map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-shipping-mark-create',
@@ -19,6 +20,7 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
   @Output() selectedShippingRequestEvent = new EventEmitter<any>();
+  @Output() scanEvent = new EventEmitter<any>();
 
   stepItems: MenuItem[];
   stepIndex = 0;
@@ -27,6 +29,10 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
   selectedShippingRequest: ShippingRequestModel;
 
   dataSummary: any[] = [];
+
+  isEnableScan = false;
+  isShowLoading = false;
+  receivedMarkPrintingControl: FormControl;
 
   get notesControl() {
     return this.shippingMarkForm.get('notes');
@@ -54,11 +60,35 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.stepItems = [{ label: 'Shipping Requests' }, { label: 'Products' }, { label: 'Summary' }];
+    this.receivedMarkPrintingControl = new FormControl();
+
+    this.receivedMarkPrintingControl.valueChanges
+      .pipe(
+        tap(() => {
+          this.isShowLoading = true;
+        }),
+        debounceTime(1000),
+        map((receivedMarkId) => {
+          this.shippingMarkShippings.forEach((item) => {
+            const receivedPrintingMark = item.product.receivedMarkPrintings.find((i) => i.identifier === receivedMarkId);
+            const receivedPrintingMarkSelected = item['selectedReceivedMarks'].find((i) => i.identifier === receivedMarkId);
+            if (receivedPrintingMark && !receivedPrintingMarkSelected) {
+              item['selectedReceivedMarks'] = [...item['selectedReceivedMarks'], receivedPrintingMark];
+            }
+
+            this.receivedMarkPrintingControl.patchValue('');
+          });
+        })
+      )
+      .subscribe((_) => {
+        this.isShowLoading = false;
+      });
   }
 
   hideDialog() {
     this.shippingMarkShippings = [];
     this.stepIndex = 0;
+    this.isEnableScan = false;
     this.shippingMarkForm.reset();
     this.hideDialogEvent.emit();
   }
@@ -176,5 +206,13 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
     }
 
     return totalShippingMarks;
+  }
+
+  scanReceivedMark() {
+    this.scanEvent.emit();
+  }
+
+  enableScan() {
+    this.isEnableScan = true;
   }
 }

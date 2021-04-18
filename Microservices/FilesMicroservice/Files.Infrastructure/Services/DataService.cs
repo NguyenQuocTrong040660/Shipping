@@ -40,7 +40,7 @@ namespace Files.Infrastructure.Services
             foreach (var item in data)
             {
                 var properties = typeof(T).GetProperties();
-               
+                
                 foreach (var prop in properties)
                 {
                     var value = prop.GetValue(item);
@@ -56,6 +56,7 @@ namespace Files.Infrastructure.Services
                         if (value == null)
                         {
                             itemInvalids.Add(item);
+
                             continue;
                         }
                     }

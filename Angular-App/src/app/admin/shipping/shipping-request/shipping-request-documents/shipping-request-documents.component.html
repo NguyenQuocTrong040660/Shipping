@@ -1,4 +1,4 @@
-<p-dialog styleClass="p-fluid w-83" [position]="'right'" [header]="titleDialog" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
+<p-dialog [closeOnEscape]="true" styleClass="p-fluid w-83" [position]="'right'" [header]="titleDialog" [modal]="true" [(visible)]="isShowDialog" (onHide)="hideDialog()">
   <ng-template pTemplate="content">
     <form [formGroup]="shippingRequestDocumentsForm">
       <div class="p-grid">
@@ -47,39 +47,39 @@
 
       <div class="shipping-request-document__border-top-group">
         <div class="p-field p-mt-20">
-          <label for="customDeclarationNumber">Customs Declaration Number</label>
+          <label for="customDeclarationNumber">Customs Declaration Number <span class="p-invalid"> *</span></label>
           <input pInputText id="customDeclarationNumber" [formControl]="customDeclarationNumberControl" type="text" />
         </div>
 
         <div class="p-grid">
           <div class="p-field p-col-4">
-            <label for="grossWeight">Gross Weight (Kg)</label>
+            <label for="grossWeight">Gross Weight (Kg) <span class="p-invalid"> *</span></label>
             <p-inputNumber id="grossWeight" [formControl]="grossWeightControl"> </p-inputNumber>
           </div>
 
           <div class="p-field p-col-4">
-            <label for="netWeight">Net Weight (Kg)</label>
+            <label for="netWeight">Net Weight (Kg) <span class="p-invalid"> *</span></label>
             <p-inputNumber id="netWeight" [formControl]="netWeightControl"> </p-inputNumber>
           </div>
 
           <div class="p-field p-col-4">
-            <label for="totalPackages">Total Packages</label>
+            <label for="totalPackages">Total Packages <span class="p-invalid"> *</span></label>
             <p-inputNumber id="totalPackages" [formControl]="totalPackagesControl"> </p-inputNumber>
           </div>
         </div>
 
         <div class="p-field">
-          <label for="trackingNumber">Tracking Number</label>
+          <label for="trackingNumber">Tracking Number <span class="p-invalid"> *</span></label>
           <input pInputText id="trackingNumber" [formControl]="trackingNumberControl" type="text" />
         </div>
 
         <div class="p-field">
-          <label for="forwarder">Forwarder</label>
+          <label for="forwarder">Forwarder <span class="p-invalid"> *</span></label>
           <input pInputText id="forwarder" [formControl]="forwarderControl" type="text" />
         </div>
 
         <div class="p-field">
-          <label for="dimension">Dimension</label>
+          <label for="dimension">Dimension <span class="p-invalid"> *</span></label>
           <input pInputText id="dimension" [formControl]="dimensionControl" type="text" />
         </div>
 

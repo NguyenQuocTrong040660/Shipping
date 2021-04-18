@@ -115,7 +115,7 @@
   </p-table>
 </div>
 
-<p-dialog header="Create Users" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowCreateDialog" (onHide)="hideCreateDialog()">
+<p-dialog [closeOnEscape]="true" header="Create Users" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowCreateDialog" (onHide)="hideCreateDialog()">
   <ng-template pTemplate="content">
     <p-toolbar styleClass="p-mb-2">
       <ng-template pTemplate="left">
@@ -224,7 +224,14 @@
   </ng-template>
 </p-dialog>
 
-<p-dialog header="Reset User Password" styleClass="p-fluid p-w-800" [modal]="true" [(visible)]="isShowSetNewPassworDialog" (onHide)="hideSetNewPasswordDialog()">
+<p-dialog
+  [closeOnEscape]="true"
+  header="Reset User Password"
+  styleClass="p-fluid p-w-800"
+  [modal]="true"
+  [(visible)]="isShowSetNewPassworDialog"
+  (onHide)="hideSetNewPasswordDialog()"
+>
   <ng-template pTemplate="content">
     <form [formGroup]="setNewPasswordForm">
       <div formArrayName="newPasswordForms">

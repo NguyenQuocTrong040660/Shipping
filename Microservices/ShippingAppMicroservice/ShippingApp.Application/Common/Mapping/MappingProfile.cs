@@ -30,8 +30,6 @@ namespace ShippingApp.Application.Common.Mapping
                .ReverseMap();
             CreateMap<Entities.ReceivedMarkPrinting, Models.ReceivedMarkPrintingModel>()
                .ReverseMap();
-            CreateMap<Entities.ReceivedMarkSummary, Models.ReceivedMarkSummaryModel>()
-               .ReverseMap();
 
 
             CreateMap<Entities.ShippingMark, Models.ShippingMarkModel>()
@@ -39,8 +37,6 @@ namespace ShippingApp.Application.Common.Mapping
             CreateMap<Entities.ShippingMarkPrinting, Models.ShippingMarkPrintingModel>()
                .ReverseMap();
             CreateMap<Entities.ShippingMarkShipping, Models.ShippingMarkShippingModel>()
-               .ReverseMap();
-            CreateMap<Entities.ShippingMarkSummary, Models.ShippingMarkSummaryModel>()
                .ReverseMap();
 
             CreateMap<Entities.ShippingRequest, Models.ShippingRequestModel>()
