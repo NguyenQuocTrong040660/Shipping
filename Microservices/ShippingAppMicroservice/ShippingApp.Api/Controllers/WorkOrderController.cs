@@ -66,7 +66,7 @@ namespace ShippingApp.Api.Controllers
                                                   .Select(g => new
                                                   {
                                                       ProductNumber = g.Key,
-                                                      Quantity = g.Sum(x => x.Quantity),
+                                                      Quantity = g.Sum(x => int.Parse(x.Quantity)),
                                                       WorkOders = g.ToList()
                                                   });
 
@@ -164,6 +164,51 @@ namespace ShippingApp.Api.Controllers
         public async Task<ActionResult<Result>> DeleteWorkOrderAysnc(int id)
         {
             return Ok(await Mediator.Send(new DeleteWorkOrderCommand { Id = id }));
+        }
+
+        [HttpPost("VerifyImportWorkOrder")]
+        [ProducesResponseType(typeof(List<ImportResult>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ImportResult>>> VerifyImportWorkOrderAsync([FromBody] List<WorkOrderImportModel> workOrderImports)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(workOrderImports);
+            }
+
+            var importResults = new List<ImportResult>();
+            var validator = new WorkOrderImportModelValidator();
+            var workOrdersDb = await Mediator.Send(new GetWorkOrdersQuery { });
+
+            foreach (var item in workOrderImports)
+            {
+                if (workOrdersDb.Any(x => x.RefId.Equals(item.WorkOrderId)))
+                {
+                    importResults.Add(ImportResult.Failure(new List<string> { "Work Order has been existed" }, item.WorkOrderId, item));
+                    continue;
+                }
+
+                var product = await Mediator.Send(new GetProductByProductNumberQuery { ProductNumber = item.ProductNumber });
+
+                if (product == null)
+                {
+                    importResults.Add(ImportResult.Failure(new List<string> { "Product has not been existed" }, item.WorkOrderId, item));
+                    continue;
+                }
+
+                var validateResult = validator.Validate(item);
+
+                if (!validateResult.IsValid)
+                {
+                    importResults.Add(ImportResult.Failure(validateResult.Errors.Select(x => x.ErrorMessage).ToList(), item.WorkOrderId, item));
+                }
+                else
+                {
+                    importResults.Add(ImportResult.Success(item.WorkOrderId, item));
+                }
+            }
+
+            return Ok(importResults);
         }
     }
 }

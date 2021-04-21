@@ -79,6 +79,7 @@ export class ImportComponent implements OnInit {
     switch (currentIndex) {
       case 0: {
         this.stepIndex += 1;
+        this.data = this.filterDuplicateData(this.data, this.typeImport);
         break;
       }
       case 1: {
@@ -92,7 +93,7 @@ export class ImportComponent implements OnInit {
 
         if (invalidItems.length > 0) {
           this.confirmationService.confirm({
-            message: 'There are some invalid data. Do you want to import them ?',
+            message: 'There are some invalid data. Do you want to import them?',
             header: 'Warning',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
@@ -114,6 +115,28 @@ export class ImportComponent implements OnInit {
     }
   }
 
+  filterDuplicateData(data: any[], typeImport: TemplateType): any[] {
+    switch (typeImport) {
+      case TemplateType.Product:
+        return data.reduce((acc, current) => {
+          const x = acc.find((item) => item.productNumber === current.productNumber);
+          return !x ? acc.concat([current]) : acc;
+        }, []);
+
+      case TemplateType.WorkOrder:
+        return data.reduce((acc, current) => {
+          const x = acc.find((item) => item.refId === current.refId);
+          return !x ? acc.concat([current]) : acc;
+        }, []);
+
+      case TemplateType.ShippingPlan:
+        return data.reduce((acc, current) => {
+          const x = acc.find((item) => item.salesOrder === current.salesOrder && item.productNumber === current.productNumber && item.salelineNumber === current.salelineNumber);
+          return !x ? acc.concat([current]) : acc;
+        }, []);
+    }
+  }
+
   async handleValidationDataImport(data: any[], typeImport: TemplateType) {
     const request: ValidateDataRequest = {
       data,
@@ -125,65 +148,41 @@ export class ImportComponent implements OnInit {
     switch (typeImport) {
       case TemplateType.Product:
         {
+          const validationResults = await this.productClients.verifyImportProduct(data).toPromise();
+
           data.forEach((item: ProductModel) => {
-            const invalidItem = invalidItems.find((i) => i.productNumber === item.productNumber);
-            item['valid'] = invalidItem ? false : true;
+            const validationResult = validationResults.find((i) => i.dataKey === item.productNumber);
+            item['valid'] = validationResult.isValid;
+            item['errorMessage'] = validationResult.errors && validationResult.errors.length > 0 ? validationResult.errors[0] : '';
             this.dataValidated.push(item);
-          });
-
-          const productNumbers = data.map((i) => i.productNumber);
-          const resultsProductClients = await this.productClients.verifyProduct(productNumbers).toPromise();
-          const existProductNumbers = resultsProductClients;
-
-          this.dataValidated.forEach((item) => {
-            if (item.valid) {
-              const productNumber = existProductNumbers.find((i) => i === item['productNumber']);
-              item['valid'] = !productNumber;
-            }
           });
         }
 
         break;
       case TemplateType.WorkOrder:
         {
-          data.forEach((item) => {
-            const invalidItem = invalidItems.find((i) => i.workOrderId === item.workOrderId);
-            item['valid'] = invalidItem ? false : true;
+          const validationResults = await this.workOrderClients.verifyImportWorkOrder(data).toPromise();
+
+          data.forEach((item: WorkOrderImportModel) => {
+            const validationResult = validationResults.find((i) => i.dataKey === item.workOrderId);
+            item['valid'] = validationResult.isValid;
+            item['errorMessage'] = validationResult.errors && validationResult.errors.length > 0 ? validationResult.errors[0] : '';
             this.dataValidated.push(item);
-          });
-
-          const productNumbers = data.map((i) => i.productNumber);
-          const resultsProductClients = await this.productClients.verifyProduct(productNumbers).toPromise();
-          const existProductNumbers = resultsProductClients;
-
-          this.dataValidated.forEach((item) => {
-            if (item.valid) {
-              const productNumber = existProductNumbers.find((i) => i === item['productNumber']);
-              item['valid'] = !!productNumber;
-            }
           });
         }
 
         break;
       case TemplateType.ShippingPlan:
         {
-          request.data.forEach((i) => (i['key'] = this.createUUID()));
+          const validationResults = await this.shippingPlanClients.verifyImportShippingPlan(data).toPromise();
 
-          data.forEach((item) => {
-            const invalidItem = invalidItems.find((i) => i.key === item.key);
-            item['valid'] = invalidItem ? false : true;
+          data.forEach((item: ShippingPlanImportModel) => {
+            const key = `${item.salesOrder}-${item.salelineNumber}-${item.productNumber}`;
+
+            const validationResult = validationResults.find((i) => i.dataKey === key);
+            item['valid'] = validationResult.isValid;
+            item['errorMessage'] = validationResult.errors && validationResult.errors.length > 0 ? validationResult.errors[0] : '';
             this.dataValidated.push(item);
-          });
-
-          const productNumbers = data.map((i) => i.productNumber);
-          const resultsProductClients = await this.productClients.verifyProduct(productNumbers).toPromise();
-          const existProductNumbers = resultsProductClients;
-
-          this.dataValidated.forEach((item) => {
-            if (item.valid) {
-              const productNumber = existProductNumbers.find((i) => i === item['productNumber']);
-              item['valid'] = !!productNumber;
-            }
           });
         }
 

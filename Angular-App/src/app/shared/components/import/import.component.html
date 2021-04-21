@@ -31,6 +31,11 @@
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Description</th>
                   <th class="p-text-center">Qty/ Pkg</th>
+
+                  <th class="p-text-center">Part Revision Raw</th>
+                  <th class="p-text-center">Part Revision Clean</th>
+                  <th class="p-text-center">Process Revision</th>
+
                   <th class="p-text-center">Notes</th>
                 </tr>
               </ng-template>
@@ -45,6 +50,17 @@
                   <td class="p-text-center">
                     {{ item?.qtyPerPackage }}
                   </td>
+
+                  <td>
+                    {{ item?.partRevisionRaw }}
+                  </td>
+                  <td>
+                    {{ item?.partRevisionClean }}
+                  </td>
+                  <td>
+                    {{ item?.processRevision }}
+                  </td>
+
                   <td>
                     {{ item?.notes }}
                   </td>
@@ -211,6 +227,11 @@
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Description</th>
                   <th class="p-text-center">Qty/ Pkg</th>
+
+                  <th class="p-text-center">Part Revision Raw</th>
+                  <th class="p-text-center">Part Revision Clean</th>
+                  <th class="p-text-center">Process Revision</th>
+
                   <th class="p-text-center">Notes</th>
                   <th class="p-text-center" [style.width.px]="120">Status</th>
                 </tr>
@@ -226,13 +247,28 @@
                   <td class="p-text-center">
                     {{ item?.qtyPerPackage }}
                   </td>
+
+                  <td>
+                    {{ item?.partRevisionRaw }}
+                  </td>
+                  <td>
+                    {{ item?.partRevisionClean }}
+                  </td>
+                  <td>
+                    {{ item?.processRevision }}
+                  </td>
+
                   <td>
                     {{ item?.notes }}
                   </td>
+
                   <td class="p-text-center">
                     <button
                       pButton
                       pRipple
+                      appendTo="body"
+                      [tooltipZIndex]="999999999"
+                      [pTooltip]="item?.errorMessage"
                       [ngClass]="item?.valid ? 'p-button-success' : 'p-button-danger'"
                       type="button"
                       [icon]="item?.valid ? 'pi pi-check-circle' : 'pi pi-ban'"
@@ -272,6 +308,9 @@
                     <button
                       pButton
                       pRipple
+                      appendTo="body"
+                      [tooltipZIndex]="999999999"
+                      [pTooltip]="item?.errorMessage"
                       [ngClass]="item?.valid ? 'p-button-success' : 'p-button-danger'"
                       type="button"
                       [icon]="item?.valid ? 'pi pi-check-circle' : 'pi pi-ban'"
@@ -385,6 +424,9 @@
                     <button
                       pButton
                       pRipple
+                      appendTo="body"
+                      [tooltipZIndex]="999999999"
+                      [pTooltip]="item?.errorMessage"
                       [ngClass]="item?.valid ? 'p-button-success' : 'p-button-danger'"
                       type="button"
                       [icon]="item?.valid ? 'pi pi-check-circle' : 'pi pi-ban'"
@@ -418,6 +460,11 @@
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Description</th>
                   <th class="p-text-center">Qty/ Pkg</th>
+
+                  <th class="p-text-center">Part Revision Raw</th>
+                  <th class="p-text-center">Part Revision Clean</th>
+                  <th class="p-text-center">Process Revision</th>
+
                   <th class="p-text-center">Notes</th>
                 </tr>
               </ng-template>
@@ -461,6 +508,17 @@
                   <td class="p-text-center">
                     {{ item?.quantity | number }}
                   </td>
+
+                  <td>
+                    {{ item?.partRevisionRaw }}
+                  </td>
+                  <td>
+                    {{ item?.partRevisionClean }}
+                  </td>
+                  <td>
+                    {{ item?.processRevision }}
+                  </td>
+
                   <td>
                     {{ item?.notes }}
                   </td>

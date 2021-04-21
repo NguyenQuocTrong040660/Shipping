@@ -48,12 +48,15 @@ namespace ShippingApp.Api.Controllers
             {
                 var item = shippingPlanImports.FirstOrDefault(i => i.ShippingPlanId == group.ShippingPlanId);
 
+                int Quantity = int.Parse(item.QuantityOrder);
+                float Price = float.Parse(item.SalesPrice);
+
                 var productDatabase = await Mediator.Send(new GetProductByProductNumberQuery
                 {
                     ProductNumber = item.ProductNumber
                 });
 
-                if (productDatabase == null || item.QuantityOrder * item.SalesPrice < 0 || group.ShippingPlans.Count > 1)
+                if (productDatabase == null || Quantity * Price < 0 || group.ShippingPlans.Count > 1)
                 {
                     _logger.LogError("Failed to import data with shippingPlanId {0}", group.ShippingPlanId);
                     invalidDatas.AddRange(group.ShippingPlans);
@@ -78,7 +81,7 @@ namespace ShippingApp.Api.Controllers
                     Notes = item?.Notes ?? string.Empty,
                     CustomerName = item?.CustomerName ?? string.Empty,
                     SalesOrder = item.SalesOrder,
-                    ShippingDate = item.ShippingDate,
+                    ShippingDate = DateTime.Parse(item.ShippingDate),
                     PurchaseOrder = item.PurchaseOrder,
                     SalelineNumber = item.SalelineNumber,
                     BillTo = item.BillTo,
@@ -92,9 +95,9 @@ namespace ShippingApp.Api.Controllers
                         new ShippingPlanDetailModel
                         {
                             ProductId = productDatabase.Id,
-                            Quantity = item.QuantityOrder,
-                            Price = item.SalesPrice,
-                            Amount = item.QuantityOrder * item.SalesPrice,
+                            Quantity = Quantity,
+                            Price = Price,
+                            Amount = Quantity * Price,
                             ShippingMode = item.ShippingMode,
                         }
                     }
@@ -119,7 +122,7 @@ namespace ShippingApp.Api.Controllers
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ShippingPlanModel), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<bool>> AddShippingPlanAsync([FromBody] ShippingPlanModel shippingPlan)
+        public async Task<ActionResult<Result>> AddShippingPlanAsync([FromBody] ShippingPlanModel shippingPlan)
         {
             if (!ModelState.IsValid)
             {
@@ -162,9 +165,57 @@ namespace ShippingApp.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<int>> DeletedShippingPlanAsync(int id)
+        public async Task<ActionResult<Result>> DeletedShippingPlanAsync(int id)
         {
             return Ok(await Mediator.Send(new DeleteShippingPlanCommand { Id = id }));
+        }
+
+        [HttpPost("VerifyImportShippingPlan")]
+        [ProducesResponseType(typeof(List<ImportResult>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ImportResult>>> VerifyImportShippingPlanAsync([FromBody] List<ShippingPlanImportModel> shippingPlans)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(shippingPlans);
+            }
+
+            var importResults = new List<ImportResult>();
+            var validator = new ShippingPlanImportModelValidator();
+
+            var shippingPlanDb = await Mediator.Send(new GetAllShippingPlanQuery { });
+
+            foreach (var item in shippingPlans)
+            {
+                string key = $"{item.SalesOrder}-{item.SalelineNumber}-{item.ProductNumber}";
+
+                if (shippingPlanDb.Any(x => x.RefId.Equals(key)))
+                {
+                    importResults.Add(ImportResult.Failure(new List<string> { "Shipping Plan has been existed" }, key, item));
+                    continue;
+                }
+
+                var product = await Mediator.Send(new GetProductByProductNumberQuery { ProductNumber = item.ProductNumber });
+
+                if (product == null)
+                {
+                    importResults.Add(ImportResult.Failure(new List<string> { "Product has not been existed" }, key, item));
+                    continue;
+                }
+
+                var validateResult = validator.Validate(item);
+
+                if (!validateResult.IsValid)
+                {
+                    importResults.Add(ImportResult.Failure(validateResult.Errors.Select(x => x.ErrorMessage).ToList(), key, item));
+                }
+                else
+                {
+                    importResults.Add(ImportResult.Success(key, item));
+                }
+            }
+
+            return Ok(importResults);
         }
     }
 }

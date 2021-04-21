@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using ShippingApp.Domain.Enumerations;
 using System;
 using System.Collections.Generic;
@@ -46,5 +47,26 @@ namespace ShippingApp.Domain.Models
 
         public virtual ICollection<ShippingMarkPrintingModel> ShippingMarkPrintings { get; set; }
         public virtual ICollection<ShippingMarkShippingModel> ShippingMarkShippings { get; set; }
+    }
+
+    public class ProductValidator : AbstractValidator<ProductModel>
+    {
+        public ProductValidator()
+        {
+            RuleFor(x => x.ProductNumber)
+                .NotEmpty().NotNull().WithMessage("Please specify a Product Number");
+
+            RuleFor(x => x.ProductName)
+                .NotEmpty().NotNull().WithMessage("Please specify a Product Name");
+
+            RuleFor(x => x.QtyPerPackage)
+               .NotNull().WithMessage("Please specify a QtyPerPackage")
+               .Must(BeNumber).WithMessage("QtyPerPackage must be a number");
+        }
+
+        private bool BeNumber(string arg)
+        {
+            return int.TryParse(arg, out _);
+        }
     }
 }

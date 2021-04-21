@@ -21,14 +21,14 @@ namespace Files.Domain.Template
         public string ProductNumber { get; set; }
 
         [ValidateDataType(IsNumber = true)]
-        public int QuantityOrder { get; set; }
+        public string QuantityOrder { get; set; }
 
         [ValidateDataType(IsDecimal = true)]
-        public float SalesPrice { get; set; }
+        public string SalesPrice { get; set; }
         public string ShippingMode { get; set; }
 
         [ValidateDataType(IsDateTime = true)]
-        public DateTime ShippingDate { get; set; }   
+        public string ShippingDate { get; set; }   
         public string Notes { get; set; }
 
         [ValidateDataType(IsRequired = true)]

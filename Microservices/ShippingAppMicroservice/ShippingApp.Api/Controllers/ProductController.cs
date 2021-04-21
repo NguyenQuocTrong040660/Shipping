@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -128,6 +129,45 @@ namespace ShippingApp.Api.Controllers
             }
 
             return Ok(existProduct);
+        }
+
+        [HttpPost("VerifyImportProduct")]
+        [ProducesResponseType(typeof(List<ImportResult>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ImportResult>>> VerifyImportProductAsync([FromBody] List<ProductModel> products)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(products);
+            }
+
+            var importResults = new List<ImportResult>();
+            var validator = new ProductValidator();
+
+            foreach (var item in products)
+            {
+                var product = await Mediator.Send(new GetProductByProductNumberQuery { ProductNumber = item.ProductNumber });
+
+                if (product == null)
+                {
+                    var validateResult = validator.Validate(item);
+
+                    if (!validateResult.IsValid)
+                    {
+                        importResults.Add(ImportResult.Failure(validateResult.Errors.Select(x => x.ErrorMessage).ToList(), item.ProductNumber, item));
+                    }
+                    else
+                    {
+                        importResults.Add(ImportResult.Success(item.ProductNumber, item));
+                    }
+                }
+                else
+                {
+                    importResults.Add(ImportResult.Failure(new List<string> { "Product has been issued" }, item.ProductNumber, item));
+                }
+            }
+
+            return Ok(importResults);
         }
     }
 }
