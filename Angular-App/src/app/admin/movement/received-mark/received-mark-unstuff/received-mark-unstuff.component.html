@@ -2,7 +2,11 @@
   <ng-template pTemplate="content">
     <form [formGroup]="receivedMarkUnstuffForm">
       <div class="p-field">
-        <label for="quantity">Quantity</label>
+        <label>Current quantity: {{ selectedReceivedMarkPrinting?.quantity }}</label>
+      </div>
+
+      <div class="p-field">
+        <label for="quantity">Quantity to unstuff</label>
         <p-inputNumber
           [ngClass]="{ 'ng-dirty': unstuffQuantityControl.invalid && (unstuffQuantityControl.dirty || unstuffQuantityControl.touched) }"
           [formControl]="unstuffQuantityControl"
@@ -10,10 +14,27 @@
         ></p-inputNumber>
 
         <ng-container *ngIf="unstuffQuantityControl.invalid && (unstuffQuantityControl.dirty || unstuffQuantityControl.touched)">
-          <small class="p-invalid p-error">Please specify a quantity to unstuff</small>
+          <small class="p-invalid p-error" *ngIf="!unstuffQuantityControl?.errors?.quantityNotValid">Please specify a quantity to unstuff</small>
+
+          <small class="p-invalid p-error" *ngIf="unstuffQuantityControl?.errors?.quantityNotValid">The input quantity must be less than current quantity</small>
         </ng-container>
       </div>
     </form>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-md-6">
+        <p-card header="Carton number: #{{ selectedReceivedMarkPrinting?.sequence }}" subheader="Quantity: {{ unstuffQuantityControl?.value }}" styleClass="p-card-shadow">
+        </p-card>
+      </div>
+      <div class="p-col-12 p-md-6">
+        <p-card
+          header="Carton number: #{{ receivedMarkPrintings && receivedMarkPrintings.length + 1 }}"
+          subheader="Quantity: {{ selectedReceivedMarkPrinting?.quantity - unstuffQuantityControl?.value }}"
+          styleClass="p-card-shadow"
+        >
+        </p-card>
+      </div>
+    </div>
   </ng-template>
 
   <ng-template pTemplate="footer">

@@ -11,6 +11,7 @@ export class ReceivedMarkUnstuffComponent implements OnInit {
   @Input() titleDialog = '';
   @Input() isShowDialog = false;
   @Input() selectedReceivedMarkPrinting: ReceivedMarkPrintingModel;
+  @Input() receivedMarkPrintings: ReceivedMarkPrintingModel[] = [];
 
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
@@ -36,6 +37,12 @@ export class ReceivedMarkUnstuffComponent implements OnInit {
     this.receivedMarkUnstuffForm = this.fb.group({
       receivedMarkPrintingId: [0],
       unstuffQuantity: [0, [Validators.required, Validators.min(1)]],
+    });
+
+    this.unstuffQuantityControl.valueChanges.subscribe((i) => {
+      if (i > this.selectedReceivedMarkPrinting.quantity) {
+        this.unstuffQuantityControl.setErrors({ quantityNotValid: true });
+      }
     });
   }
 

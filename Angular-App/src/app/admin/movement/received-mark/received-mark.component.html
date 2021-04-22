@@ -199,6 +199,7 @@
 <app-received-mark-unstuff
   [titleDialog]="titleDialogUnstufff"
   [isShowDialog]="isShowDialogUnstuff"
+  [receivedMarkPrintings]="receivedMarkPrintings"
   [selectedReceivedMarkPrinting]="selectedReceivedMarkPrinting"
   (submitEvent)="handleSubmitEventUnstuff($event)"
   (hideDialogEvent)="hideDialogUnStuff()"
@@ -244,6 +245,7 @@
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialogMergeDetail"
   [receivedMarkPrintings]="receivedMarkPrintings"
+  [selectedReceivedMarkPrintings]="selectedReceivedMarkPrintingMerged"
   (hideDialogEvent)="hideDialog($event)"
   (mergeMarkEvent)="handleMergeReceivedMarks($event)"
 >

@@ -74,9 +74,8 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
             const receivedPrintingMarkSelected = item['selectedReceivedMarks'].find((i) => i.identifier === receivedMarkId);
             if (receivedPrintingMark && !receivedPrintingMarkSelected) {
               item['selectedReceivedMarks'] = [...item['selectedReceivedMarks'], receivedPrintingMark];
+              this.receivedMarkPrintingControl.patchValue('');
             }
-
-            this.receivedMarkPrintingControl.patchValue('');
           });
         })
       )

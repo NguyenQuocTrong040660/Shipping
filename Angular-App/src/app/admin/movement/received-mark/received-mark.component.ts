@@ -41,6 +41,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   receivedMarkMovements: ReceivedMarkMovementModel[] = [];
   receivedMarkPrintings: ReceivedMarkPrintingModel[] = [];
   selectedReceivedMarkPrinting: ReceivedMarkPrintingModel;
+  selectedReceivedMarkPrintingMerged: ReceivedMarkPrintingModel[] = [];
 
   currentReceivedMark: ReceivedMarkModel;
   currentReceivedMarkMovementModel: ReceivedMarkMovementModel;
@@ -452,14 +453,17 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   handleMergeReceivedMarks($event: ReceivedMarkPrintingModel[]) {
+    this.selectedReceivedMarkPrintingMerged = $event;
+
     this.receivedMarkClients
-      .mergeReceivedMark($event)
+      .mergeReceivedMark(this.selectedReceivedMarkPrintingMerged)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (result) => {
           if (result && result.succeeded) {
             this.notificationService.success('Merged Received Marks Successfully');
             this.hideDialog(EventType.RefreshData);
+            this.selectedReceivedMarkPrintingMerged = [];
           } else {
             this.notificationService.error(result.error);
           }
