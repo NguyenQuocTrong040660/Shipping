@@ -2035,6 +2035,78 @@ export class ReceivedMarkClients {
         return _observableOf<ReceivedMarkPrintingModel>(<any>null);
     }
 
+    printReceivedMarkWithPrintingId(receivedMarkPrintingId: number, request: PrintReceivedMarkRequest): Observable<ReceivedMarkPrintingModel> {
+        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/print/{receivedMarkPrintingId}";
+        if (receivedMarkPrintingId === undefined || receivedMarkPrintingId === null)
+            throw new Error("The parameter 'receivedMarkPrintingId' must be defined.");
+        url_ = url_.replace("{receivedMarkPrintingId}", encodeURIComponent("" + receivedMarkPrintingId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPrintReceivedMarkWithPrintingId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPrintReceivedMarkWithPrintingId(<any>response_);
+                } catch (e) {
+                    return <Observable<ReceivedMarkPrintingModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ReceivedMarkPrintingModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPrintReceivedMarkWithPrintingId(response: HttpResponseBase): Observable<ReceivedMarkPrintingModel> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ReceivedMarkPrintingModel>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result204: any = null;
+            result204 = _responseText === "" ? null : <ReceivedMarkPrintingModel>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result204);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result400: any = null;
+            result400 = _responseText === "" ? null : <PrintReceivedMarkRequest>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ReceivedMarkPrintingModel>(<any>null);
+    }
+
     rePrintReceivedMark(request: RePrintReceivedMarkRequest): Observable<ReceivedMarkPrintingModel> {
         let url_ = this.baseUrl + "/api/shippingapp/receivedmark/reprint";
         url_ = url_.replace(/[?&]$/, "");

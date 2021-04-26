@@ -55,11 +55,8 @@
           </div>
 
           <div class="p-field">
-            <label for="pickupDate">Pickup Date<span class="p-invalid"> *</span></label>
+            <label for="pickupDate">Pickup Date</label>
             <p-calendar
-              [ngClass]="{
-                'ng-dirty': shippingRequestForm.get('pickupDate').invalid && (shippingRequestForm.get('pickupDate').dirty || shippingRequestForm.get('pickupDate').touched)
-              }"
               id="pickupDate"
               [formControl]="shippingRequestForm.get('pickupDate')"
               appendTo="body"
@@ -68,10 +65,6 @@
               hourFormat="24"
               [minDate]="minDate"
             ></p-calendar>
-
-            <ng-container *ngIf="shippingRequestForm.get('pickupDate').invalid && (shippingRequestForm.get('pickupDate').dirty || shippingRequestForm.get('pickupDate').touched)">
-              <small class="p-invalid p-error">Please select pickup date</small>
-            </ng-container>
           </div>
 
           <div class="p-field">

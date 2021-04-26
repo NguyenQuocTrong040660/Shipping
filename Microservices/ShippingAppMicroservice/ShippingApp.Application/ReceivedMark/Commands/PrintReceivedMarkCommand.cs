@@ -15,6 +15,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
     public class PrintReceivedMarkCommand : IRequest<ReceivedMarkPrintingModel>
     {
         public PrintReceivedMarkRequest PrintReceivedMarkRequest { get; set; }
+        public int? ReceivedMarkPrintingId { get; set; }
     }
 
     public class PrintReceivedMarkCommandHandler : IRequestHandler<PrintReceivedMarkCommand, ReceivedMarkPrintingModel>
@@ -47,24 +48,43 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             Entities.ReceivedMarkPrinting printItem = null;
 
-            for (int i = 0; i < receivedMarkPrintings.Count; i++)
+            if (request.ReceivedMarkPrintingId.HasValue)
             {
-                var itemPrint = receivedMarkPrintings[i];
+                printItem = receivedMarkPrintings.FirstOrDefault(i => i.Id == request.ReceivedMarkPrintingId.Value);
 
-                if (itemPrint.PrintCount != 0)
+                if (printItem == null  || printItem.PrintCount != 0)
                 {
-                    continue;
+                    return default;
                 }
 
-                itemPrint.PrintCount += 1;
-                itemPrint.Status = nameof(ReceivedMarkStatus.Storage);
-                itemPrint.PrintingBy = request.PrintReceivedMarkRequest.PrintedBy;
-                itemPrint.PrintingDate = DateTime.UtcNow;
+                printItem.PrintCount += 1;
+                printItem.Status = nameof(ReceivedMarkStatus.Storage);
+                printItem.PrintingBy = request.PrintReceivedMarkRequest.PrintedBy;
+                printItem.PrintingDate = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
+            }
+            else
+            {
+                for (int i = 0; i < receivedMarkPrintings.Count; i++)
+                {
+                    var itemPrint = receivedMarkPrintings[i];
 
-                printItem = itemPrint;
-                break;
+                    if (itemPrint.PrintCount != 0)
+                    {
+                        continue;
+                    }
+
+                    itemPrint.PrintCount += 1;
+                    itemPrint.Status = nameof(ReceivedMarkStatus.Storage);
+                    itemPrint.PrintingBy = request.PrintReceivedMarkRequest.PrintedBy;
+                    itemPrint.PrintingDate = DateTime.UtcNow;
+
+                    await _context.SaveChangesAsync();
+
+                    printItem = itemPrint;
+                    break;
+                }
             }
 
             var result = _mapper.Map<ReceivedMarkPrintingModel>(printItem);

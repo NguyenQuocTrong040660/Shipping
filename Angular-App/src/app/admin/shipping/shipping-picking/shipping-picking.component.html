@@ -3,44 +3,15 @@
 </div>
 
 <div class="card" [class.isPrinting]="printService.isPrinting">
-  <p-toolbar styleClass="p-mb-4">
-    <ng-template pTemplate="left"></ng-template>
-    <ng-template pTemplate="right">
-      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
-      <button
-        class="p-button-danger p-mr-2"
-        pButton
-        pRipple
-        icon="pi pi-trash"
-        label="Delete"
-        [disabled]="!selectedReceivedMark"
-        (click)="openDeleteDialog(selectedReceivedMark)"
-      ></button>
-
-      <button
-        class="p-button-success p-mr-2"
-        pButton
-        pRipple
-        label="Edit"
-        icon="pi pi-pencil"
-        [disabled]="!selectedReceivedMark"
-        (click)="openEditDialog(selectedReceivedMark)"
-      ></button>
-
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
-    </ng-template>
-  </p-toolbar>
-
   <p-table
-    #shippingRequestDataTable
+    #shippingMarkDataTable
     dataKey="id"
-    columnResizeMode="expand"
-    [value]="receivedMarks"
+    [value]="shippingMarks"
     [rows]="20"
     [columns]="cols"
     [paginator]="true"
     [scrollable]="true"
-    [(selection)]="selectedReceivedMark"
+    [(selection)]="selectedShippingMark"
     [expandedRowKeys]="expandedItems"
     [globalFilterFields]="fields"
   >
@@ -49,7 +20,7 @@
         <h5 class="p-m-0">{{ title | uppercase }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+          <input pInputText type="text" (input)="shippingMarkDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -95,7 +66,6 @@
                 <p-tableRadioButton [value]="item"></p-tableRadioButton>
               </td>
             </ng-container>
-
             <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
               <td>
                 {{ item[col.field] }}
@@ -118,7 +88,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
               <td class="p-text-center">
-                {{ item[col.field] | number }}
+                {{ item[col.field] }}
               </td>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
@@ -127,7 +97,7 @@
                   type="button"
                   pButton
                   pRipple
-                  (click)="getReceivedMarkMovementRequestsFullInfo(item)"
+                  (click)="getShippingMarkMovementRequestsFullInfo(item)"
                   [pRowToggler]="item"
                   class="p-button-text p-button-rounded p-button-plain"
                   [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
@@ -139,18 +109,17 @@
       </tr>
     </ng-template>
 
-    <ng-template pTemplate="rowexpansion" let-receivedMark>
+    <ng-template pTemplate="rowexpansion" let-shippingMark>
       <tr>
-        <td colspan="6" class="received-mark__expaned">
+        <td colspan="6" class="shipping-mark__expaned">
           <div>
-            <p-table class="received-mark__expaned-table" [value]="receivedMark.receivedMarkMovements">
+            <p-table class="shipping-mark__expaned-table" [value]="shippingMark.shippingMarkShippings">
               <ng-template pTemplate="header">
                 <tr>
-                  <th class="p-text-center">Movement Request - Work Order</th>
                   <th class="p-text-center">Product Number</th>
                   <th class="p-text-center">Description</th>
                   <th class="p-text-center">Qty/ Pkg</th>
-                  <th class="p-text-center">Quantity</th>
+                  <th class="p-text-center">Total Quantity</th>
                   <th class="p-text-center">Total Package</th>
                   <th class="p-text-center">Total Quantity Printed</th>
                   <th class="p-text-center"></th>
@@ -158,11 +127,12 @@
               </ng-template>
               <ng-template pTemplate="body" let-item>
                 <tr>
-                  <td>{{ item.workOrderMomentRequest }}</td>
                   <td>{{ item?.product?.productNumber }}</td>
                   <td>{{ item?.product?.productName }}</td>
-                  <td class="p-text-center">{{ item?.product?.qtyPerPackage }}</td>
-                  <td class="p-text-center">{{ item?.quantity }}</td>
+                  <td class="p-text-center">
+                    {{ item?.product?.qtyPerPackage }}
+                  </td>
+                  <td class="p-text-center">{{ item?.totalQuantity }}</td>
                   <td class="p-text-center">{{ item?.totalPackage }}</td>
                   <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
                   <td class="p-text-center">
@@ -172,18 +142,8 @@
                       pTooltip="Printing Details"
                       tooltipPosition="left"
                       icon="pi pi-briefcase"
-                      class="p-button-rounded p-button-text p-mr-1"
-                      (click)="showDetailReceivedMarkSummary(receivedMark, item)"
-                    ></button>
-
-                    <button
-                      pButton
-                      pRipple
-                      pTooltip="Merge Packages"
-                      tooltipPosition="left"
-                      icon="pi pi-link"
                       class="p-button-rounded p-button-text"
-                      (click)="showMergeReceivedMark(receivedMark, item)"
+                      (click)="showDetailShippingMarkSummary(shippingMark, item)"
                     ></button>
                   </td>
                 </tr>
@@ -196,59 +156,17 @@
   </p-table>
 </div>
 
-<app-received-mark-unstuff
-  [titleDialog]="titleDialogUnstufff"
-  [isShowDialog]="isShowDialogUnstuff"
-  [receivedMarkPrintings]="receivedMarkPrintings"
-  [selectedReceivedMarkPrinting]="selectedReceivedMarkPrinting"
-  (submitEvent)="handleSubmitEventUnstuff($event)"
-  (hideDialogEvent)="hideDialogUnStuff()"
-></app-received-mark-unstuff>
-
-<app-received-mark-create
-  [receivedMarkForm]="receivedMarkForm"
-  [titleDialog]="titleDialog"
-  [movementRequests]="movementRequests"
-  [receivedMarkMovements]="receivedMarkMovements"
-  [isShowDialog]="isShowDialogCreate"
-  (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog($event)"
-  (selectedMovementRequestsEvent)="handleSelectedMovementRequests()"
->
-</app-received-mark-create>
-
-<app-received-mark-edit
-  [receivedMarkForm]="receivedMarkForm"
-  [titleDialog]="titleDialog"
-  [receivedMark]="currentReceivedMark"
-  [isShowDialog]="isShowDialogEdit"
-  (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog($event)"
->
-</app-received-mark-edit>
-
-<app-received-mark-details
+<app-shipping-picking-detail
   [class.isPrinting]="printService.isPrinting"
   [titleDialog]="titleDialog"
   [isShowDialog]="isShowDialogDetail"
   [user]="user"
   [canRePrint]="canRePrint"
-  [receivedMarkPrintings]="receivedMarkPrintings"
+  [shippingMarkPrintings]="shippingMarkPrintings"
   (hideDialogEvent)="hideDialog($event)"
-  (printMarkEvent)="printReceivedMark($event)"
+  (printMarkEvent)="printShippingMark()"
   (rePrintMarkEvent)="handleRePrintMark($event)"
-  (unstuffMarkEvent)="openUnstuffDialog($event)"
 >
-</app-received-mark-details>
+</app-shipping-picking-detail>
 
-<app-received-mark-merge
-  [titleDialog]="titleDialog"
-  [isShowDialog]="isShowDialogMergeDetail"
-  [receivedMarkPrintings]="receivedMarkPrintings"
-  [selectedReceivedMarkPrintings]="selectedReceivedMarkPrintingMerged"
-  (hideDialogEvent)="hideDialog($event)"
-  (mergeMarkEvent)="handleMergeReceivedMarks($event)"
->
-</app-received-mark-merge>
-
-<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ReceivedMark" (hideDialogEvent)="hideDialog($event)"> </app-history-dialog>
+<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingMark" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

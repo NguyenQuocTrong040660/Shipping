@@ -316,7 +316,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  printReceivedMark() {
+  printReceivedMark($event: ReceivedMarkPrintingModel) {
     if (!this.currentReceivedMark || !this.currentReceivedMarkMovementModel) {
       return;
     }
@@ -328,21 +328,47 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       movementRequestId: this.currentReceivedMarkMovementModel.movementRequestId,
     };
 
-    this.receivedMarkClients
-      .printReceivedMark(requestPrint)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (result) => {
-          if (result) {
-            this.printData = result;
-            this.onPrint();
-            this.reLoadReceivedMarkPrintings(this.currentReceivedMark.id, this.currentReceivedMarkMovementModel.productId, this.currentReceivedMarkMovementModel.movementRequestId);
-          } else {
-            this.notificationService.error('Print Received Mark Failed. Please try again');
-          }
-        },
-        (_) => this.notificationService.error('Print Received Mark Failed. Please try again')
-      );
+    if ($event) {
+      this.receivedMarkClients
+        .printReceivedMarkWithPrintingId($event.id, requestPrint)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          (result) => {
+            if (result) {
+              this.printData = result;
+              this.onPrint();
+              this.reLoadReceivedMarkPrintings(
+                this.currentReceivedMark.id,
+                this.currentReceivedMarkMovementModel.productId,
+                this.currentReceivedMarkMovementModel.movementRequestId
+              );
+            } else {
+              this.notificationService.error('Print Received Mark Failed. Please try again');
+            }
+          },
+          (_) => this.notificationService.error('Print Received Mark Failed. Please try again')
+        );
+    } else {
+      this.receivedMarkClients
+        .printReceivedMark(requestPrint)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          (result) => {
+            if (result) {
+              this.printData = result;
+              this.onPrint();
+              this.reLoadReceivedMarkPrintings(
+                this.currentReceivedMark.id,
+                this.currentReceivedMarkMovementModel.productId,
+                this.currentReceivedMarkMovementModel.movementRequestId
+              );
+            } else {
+              this.notificationService.error('Print Received Mark Failed. Please try again');
+            }
+          },
+          (_) => this.notificationService.error('Print Received Mark Failed. Please try again')
+        );
+    }
   }
 
   handleRePrintMark(item: ReceivedMarkPrintingModel) {

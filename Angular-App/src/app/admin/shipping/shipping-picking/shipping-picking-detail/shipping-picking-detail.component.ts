@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ReceivedMarkPrintingModel } from 'app/shared/api-clients/shipping-app.client';
+import { ShippingMarkPrintingModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { EventType } from 'app/shared/enumerations/import-event-type.enum';
@@ -7,21 +7,20 @@ import { ApplicationUser } from 'app/shared/models/application-user';
 import { ConfirmationService } from 'primeng/api';
 
 @Component({
-  selector: 'app-received-mark-details',
-  templateUrl: './received-mark-details.component.html',
-  styleUrls: ['./received-mark-details.component.scss'],
+  selector: 'app-shipping-picking-detail',
+  templateUrl: './shipping-picking-detail.component.html',
+  styleUrls: ['./shipping-picking-detail.component.scss'],
 })
-export class ReceivedMarkDetailsComponent implements OnInit {
+export class ShippingPickingDetailComponent implements OnInit {
   @Input() titleDialog = '';
   @Input() isShowDialog = false;
   @Input() user: ApplicationUser;
   @Input() canRePrint = false;
-  @Input() receivedMarkPrintings: ReceivedMarkPrintingModel[] = [];
+  @Input() shippingMarkPrintings: ShippingMarkPrintingModel[] = [];
 
   @Output() hideDialogEvent = new EventEmitter<any>();
   @Output() printMarkEvent = new EventEmitter<any>();
   @Output() rePrintMarkEvent = new EventEmitter<any>();
-  @Output() unstuffMarkEvent = new EventEmitter<any>();
 
   cols: any[] = [];
   TypeColumn = TypeColumn;
@@ -43,20 +42,20 @@ export class ReceivedMarkDetailsComponent implements OnInit {
     this.hideDialogEvent.emit(EventType.RefreshData);
   }
 
-  printMark(receivedMarkPrinting: ReceivedMarkPrintingModel = null) {
+  printMark() {
     this.confirmationService.confirm({
       message: 'Do you want to print mark for this item?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
-      accept: () => this.printMarkEvent.emit(receivedMarkPrinting),
+      accept: () => this.printMarkEvent.emit(),
     });
   }
 
   getHelpText() {
-    return this.canRePrint ? '' : 'Received Mark has been printed. Please contact your manager to re-print';
+    return this.canRePrint ? '' : 'Shipping Mark has been printed. Please contact your manager to re-print';
   }
 
-  handleRePrintMark(receivedMarkPrinting: ReceivedMarkPrintingModel) {
+  handleRePrintMark(shippingMarkPrinting: ShippingMarkPrintingModel) {
     if (!this.canRePrint) {
       return;
     }
@@ -65,16 +64,11 @@ export class ReceivedMarkDetailsComponent implements OnInit {
       message: 'Do you want to re-print this mark?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
-      accept: () => this.rePrintMarkEvent.emit(receivedMarkPrinting),
+      accept: () => this.rePrintMarkEvent.emit(shippingMarkPrinting),
     });
   }
 
-  handleUnStuffMark(receivedMarkPrinting: ReceivedMarkPrintingModel) {
-    this.unstuffMarkEvent.emit(receivedMarkPrinting);
-  }
-
-
   remainItemToPrint() {
-    return this.receivedMarkPrintings.filter((i) => i.printCount === 0).length > 0;
+    return this.shippingMarkPrintings.filter((i) => i.printCount === 0).length > 0;
   }
 }

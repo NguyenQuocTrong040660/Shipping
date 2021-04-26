@@ -21,6 +21,11 @@ export const adminRoutes: Routes = [
         loadChildren: () => import('./shipping/shipping-mark/shipping-mark.module').then((m) => m.ShippingMarkModule),
         canActivate: [AuthenticationGuard],
       },
+      {
+        path: 'shipping-mark-picking',
+        loadChildren: () => import('./shipping/shipping-picking/shipping-picking.module').then((m) => m.ShippingPickingModule),
+        canActivate: [AuthenticationGuard],
+      },
       // Movement
       {
         path: 'movement-request',

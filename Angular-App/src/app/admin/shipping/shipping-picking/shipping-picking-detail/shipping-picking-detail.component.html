@@ -7,7 +7,7 @@
       </ng-template>
     </p-toolbar>
 
-    <p-table dataKey="id" [value]="receivedMarkPrintings" [rows]="10" [columns]="cols" [paginator]="true">
+    <p-table dataKey="id" [value]="shippingMarkPrintings" [rows]="20" [columns]="cols" [paginator]="true">
       <ng-template pTemplate="header" let-columns>
         <tr>
           <ng-container *ngFor="let col of columns">
@@ -68,20 +68,7 @@
 
               <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
                 <td class="p-text-center">
-                  <ng-container *ngIf="item['printCount'] === 0">
-                    <button
-                      [pTooltip]="'Print Mark'"
-                      pButton
-                      pRipple
-                      tooltipPosition="left"
-                      type="button"
-                      icon="pi pi-print"
-                      class="p-button-rounded p-button-danger p-button-text"
-                      (click)="printMark(item)"
-                    ></button>
-                  </ng-container>
-
-                  <ng-container *ngIf="item['printCount'] !== 0">
+                  <ng-container *ngIf="item['printCount'] !== 0; else noAction">
                     <button
                       [disabled]="!canRePrint"
                       [pTooltip]="getHelpText()"
@@ -94,17 +81,9 @@
                       (click)="handleRePrintMark(item)"
                     ></button>
                   </ng-container>
-
-                  <button
-                    (click)="handleUnStuffMark(item)"
-                    pButton
-                    pRipple
-                    tooltipPosition="left"
-                    type="button"
-                    pTooltip="Unstuff Mark"
-                    icon="pi pi-clone"
-                    class="p-button-rounded p-button-secondary p-button-text"
-                  ></button>
+                  <ng-template #noAction>
+                    <button [disabled]="true" pButton pRipple type="button" icon="pi pi-lock-open" class="p-button-rounded p-button-text"></button>
+                  </ng-template>
                 </td>
               </ng-container>
             </ng-container>

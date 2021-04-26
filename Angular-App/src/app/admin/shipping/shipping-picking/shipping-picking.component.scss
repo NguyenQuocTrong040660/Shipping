@@ -1,0 +1,22 @@
+p-dropdown {
+  ::ng-deep .p-dropdown {
+    width: 100% !important;
+  }
+}
+
+.shipping-mark {
+  &__expaned-table {
+    th,
+    td {
+      border: none;
+    }
+
+    th {
+      background-color: #bbe7fc;
+    }
+
+    td {
+      background-color: #e0f5ff;
+    }
+  }
+}

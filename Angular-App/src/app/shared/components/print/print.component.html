@@ -6,32 +6,32 @@
           <div class="print__content">
             <div class="print__detail">
               <table>
-                <tr *ngIf="printData && printData.receivedMark && printData.receivedMark.identifier" class="print__identity">
+                <tr class="print__identity">
                   <td class="print__value">Received ID</td>
-                  <td class="print__value">: {{ printData.receivedMark.identifier }}</td>
+                  <td class="print__value">: {{ printData?.receivedMark?.identifier }}</td>
                 </tr>
 
                 <tr>
                   <td class="print__value">W/O</td>
-                  <td class="print__value">: {{ printData && printData.workOrder ? printData.workOrder.refId : '' }}</td>
+                  <td class="print__value">: {{ printData?.workOrder?.refId }}</td>
                 </tr>
 
                 <tr>
                   <td class="print__value">P/N</td>
-                  <td class="print__value">: {{ printData && printData.product ? printData.product.productNumber : '' }}</td>
+                  <td class="print__value">: {{ printData?.product?.productNumbe }}</td>
                 </tr>
                 <tr>
                   <td class="print__value">Qty</td>
-                  <td class="print__value">: {{ printData && printData.quantity ? printData.quantity : '' }}</td>
+                  <td class="print__value">: {{ printData?.quantity }}</td>
                 </tr>
 
                 <tr>
                   <td class="print__value">Carton number</td>
-                  <td class="print__value">: {{ printData && printData.sequence ? printData.sequence : '' }}</td>
+                  <td class="print__value">: {{ printData?.sequence }}</td>
                 </tr>
                 <tr>
                   <td class="print__value">Date</td>
-                  <td class="print__value">: {{ printData && printData.printingDate ? (printData.printingDate | date: 'dd/MM/yyyy') : '' }}</td>
+                  <td class="print__value">: {{ printData?.printingDate | date: 'dd/MM/yyyy' }}</td>
                 </tr>
 
                 <tr>
