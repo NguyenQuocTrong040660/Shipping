@@ -34,9 +34,8 @@ namespace ShippingApp.Domain.Models
         public string PartRevisionClean { get; set; }
         public string ProcessRevision { get; set; }
 
-        public virtual ICollection<ShippingPlanDetailModel> ShippingPlanDetails { get; set; }
+        public virtual ICollection<ShippingPlanModel> ShippingPlans { get; set; }
         public virtual ICollection<MovementRequestDetailModel> MovementRequestDetails { get; set; }
-        public virtual ICollection<ShippingRequestDetailModel> ShippingRequestDetails { get; set; }
         public virtual ICollection<ShippingRequestLogisticModel> ShippingRequestLogistics { get; set; }
 
 

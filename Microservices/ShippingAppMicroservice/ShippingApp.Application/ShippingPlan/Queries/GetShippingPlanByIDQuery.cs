@@ -31,13 +31,9 @@ namespace ShippingApp.Application.ShippingPlan.Queries
         public async Task<ShippingPlanModel> Handle(GetShippingPlanByIdQuery request, CancellationToken cancellationToken)
         {
             var entity = await _context.ShippingPlans
-                .FirstOrDefaultAsync(x => x.Id == request.Id);
-
-            entity.ShippingPlanDetails = await _context.ShippingPlanDetails
                 .AsNoTracking()
                 .Include(x => x.Product)
-                .Where(i => i.ShippingPlanId == entity.Id)
-                .ToListAsync();
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
 
             return _mapper.Map<ShippingPlanModel>(entity);
         }

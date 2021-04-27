@@ -35,14 +35,15 @@ namespace ShippingApp.Application.ShippingMark.Queries
         {
             var shippingMarkShippings = new List<ShippingMarkShippingModel>();
 
-            var shippingRequestDetails = _mapper.Map<List<ShippingRequestDetailModel>>(await _context.ShippingRequestDetails
+            var shippingPlans = _mapper.Map<List<ShippingPlanModel>>(await _context.ShippingPlans
                      .AsNoTracking()
                      .Include(x => x.ShippingRequest)
                      .Include(x => x.Product)
+                     .Where(x => x.ShippingRequestId.HasValue)
                      .Where(x => x.ShippingRequestId == request.ShippingRequest.Id)
                      .ToListAsync());
 
-            var shippingRequestDetailsGroupByProduct = shippingRequestDetails
+            var shippingPlansGroupByProduct = shippingPlans
                 .GroupBy(x => x.ProductId)
                 .Select(x => new
                 {
@@ -53,7 +54,7 @@ namespace ShippingApp.Application.ShippingMark.Queries
                     x.FirstOrDefault().ShippingRequestId
                 });
 
-            foreach (var item in shippingRequestDetailsGroupByProduct)
+            foreach (var item in shippingPlansGroupByProduct)
             {
                 item.Product.ReceivedMarkPrintings = await GetReceivedMarkPrintingsStorage(item.ProductId);
 
@@ -63,7 +64,7 @@ namespace ShippingApp.Application.ShippingMark.Queries
                     Quantity = item.TotalQuantity,
                     Product = item.Product,
                     ShippingRequest = item.ShippingRequest,
-                    ShippingRequestId = item.ShippingRequestId,
+                    ShippingRequestId = item.ShippingRequestId.Value,
                     ShippingMarkId = 0
                 });
             }

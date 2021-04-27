@@ -29,13 +29,9 @@ namespace ShippingApp.Application.ShippingRequest.Queries
         public async Task<ShippingRequestModel> Handle(GetShippingRequestByIdQuery request, CancellationToken cancellationToken)
         {
             var entity = await _context.ShippingRequests
+                .Include(x => x.ShippingPlans)
+                .ThenInclude(x => x.Product)
                 .FirstOrDefaultAsync(x => x.Id == request.Id);
-
-            entity.ShippingRequestDetails = await _context.ShippingRequestDetails
-                .AsNoTracking()
-                .Include(x => x.Product)
-                .Where(i => i.ShippingRequestId == entity.Id)
-                .ToListAsync();
 
             return _mapper.Map<ShippingRequestModel>(entity);
         }

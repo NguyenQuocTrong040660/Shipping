@@ -22,63 +22,19 @@ namespace ShippingApp.Application.ShippingPlan.Commands
     {
         private readonly IShippingAppDbContext _context;
         private readonly IMapper _mapper;
-
-        public UpdateShippingPlanCommandHandler(IShippingAppDbContext context, IMapper mapper)
+        private readonly IShippingAppRepository<Entities.ShippingPlan> _shippingAppRepository;
+       
+        public UpdateShippingPlanCommandHandler(IShippingAppDbContext context, IMapper mapper, IShippingAppRepository<Entities.ShippingPlan> shippingAppRepository)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
         }
 
         public async Task<Result> Handle(UpdateShippingPlanCommand request, CancellationToken cancellationToken)
         {
-            var shippingPlan = await _context.ShippingPlans
-                .Include(x => x.ShippingPlanDetails)
-                .Where(x => x.Id == request.ShippingPlan.Id)
-                .FirstOrDefaultAsync();
-
-            if (shippingPlan == null)
-            {
-                throw new ArgumentNullException(nameof(shippingPlan));
-            }
-
-            foreach (var item in shippingPlan.ShippingPlanDetails)
-            {
-                var shippingPlanDetail = request.ShippingPlan.ShippingPlanDetails.FirstOrDefault(i => i.ProductId == item.ProductId);
-
-                if (shippingPlanDetail == null)
-                {
-                    _context.ShippingPlanDetails.Remove(item);
-                }
-                else
-                {
-                    item.Quantity = shippingPlanDetail.Quantity;
-                    item.Price = shippingPlanDetail.Price;
-                    item.Amount = shippingPlanDetail.Amount;
-                    item.ShippingMode = shippingPlanDetail.ShippingMode;
-                }
-            }
-
-            foreach (var item in request.ShippingPlan.ShippingPlanDetails)
-            {
-                var shippingPlanDetail = shippingPlan.ShippingPlanDetails.FirstOrDefault(i => i.ProductId == item.ProductId);
-
-                if (shippingPlanDetail == null)
-                {
-                    var shippingPlanDetailEntity = _mapper.Map<Entities.ShippingPlanDetail>(item);
-                    shippingPlanDetailEntity.ShippingPlanId = shippingPlan.Id;
-                    _context.ShippingPlanDetails.Add(shippingPlanDetailEntity);
-                }
-            }
-
-            shippingPlan.CustomerName = request.ShippingPlan.CustomerName;
-            shippingPlan.SalelineNumber = request.ShippingPlan.SalelineNumber;
-            shippingPlan.PurchaseOrder = request.ShippingPlan.PurchaseOrder;
-            shippingPlan.ShippingDate = request.ShippingPlan.ShippingDate;
-            shippingPlan.SalesOrder = request.ShippingPlan.SalesOrder;
-            shippingPlan.Notes = request.ShippingPlan.Notes;
-
-            await _context.SaveChangesAsync();
-
+            var shippingPlan = _mapper.Map<Entities.ShippingPlan>(request.ShippingPlan);
+            await _shippingAppRepository.Update(request.Id, shippingPlan);
             return Result.Success();
         }
     }

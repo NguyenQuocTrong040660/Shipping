@@ -64,21 +64,6 @@ namespace ShippingApp.Api.Controllers
             }));
         }
 
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ShippingRequestModel), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Result>> UpdateShippingRequestAsync(int id, 
-            [FromBody] ShippingRequestModel shippingRequest)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(shippingRequest);
-            }
-
-            return Ok(await Mediator.Send(new UpdateShippingRequestCommand { Id = id, ShippingRequest = shippingRequest }));
-        }
-
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

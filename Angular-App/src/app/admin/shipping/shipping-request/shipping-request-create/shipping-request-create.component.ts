@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ProductModel, ShippingPlanModel, ShippingRequestDetailModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductModel, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import Utilities from 'app/shared/helpers/utilities';
@@ -22,24 +22,22 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
   @Output() submitEvent = new EventEmitter<any>();
   @Output() hideDialogEvent = new EventEmitter<any>();
 
-  products: ProductModel[] = [];
   selectedShippingPlans: ShippingPlanModel[] = [];
 
   stepItems: MenuItem[];
 
   minDate = new Date();
-
   stepIndex = 0;
 
   selectedProducts: ProductModel[] = [];
-  shippingRequestDetails: ShippingRequestDetailModel[] = [];
+  shippingRequestDetails: ShippingPlanModel[] = [];
 
   TypeColumn = TypeColumn;
   productCols: any[] = [];
   productFields: any[] = [];
 
   get shippingRequestDetailsControl() {
-    return this.shippingRequestForm.get('shippingRequestDetails') as FormArray;
+    return this.shippingRequestForm.get('shippingPlans') as FormArray;
   }
 
   selecteShippingInfoItems: SelectItem[] = [];
@@ -116,19 +114,17 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
           return;
         }
 
-        const products = this.selectedShippingPlans.map((i) => i.product);
+        this.selectedProducts = this.selectedShippingPlans.map((i) => i.product);
 
         this.shippingRequestForm.patchValue({
           pickupDate: Utilities.ConvertDateBeforeSendToServer(this.shippingRequestForm.get('pickupDate').value),
         });
 
-        this.selectedProducts = products;
-
         this.stepIndex += 1;
         break;
       }
       case 2: {
-        this.shippingRequestDetails = this._mapToProductsToShippingRequestDetailModels(this.selectedProducts, this.selectedShippingPlans);
+        this.shippingRequestDetails = [...this.selectedShippingPlans];
         this.stepIndex += 1;
         break;
       }
@@ -160,18 +156,19 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
     this.submitEvent.emit();
   }
 
-  initShippingRequestDetailForm(shippingRequestDetailModel: ShippingRequestDetailModel) {
+  initShippingRequestDetailForm(shippingPlanModel: ShippingPlanModel) {
     return this.fb.group({
-      quantity: [shippingRequestDetailModel.quantity],
-      productId: [shippingRequestDetailModel.productId],
-      amount: [shippingRequestDetailModel.quantity * shippingRequestDetailModel.price],
-      price: [shippingRequestDetailModel.price],
-      shippingRequestId: [shippingRequestDetailModel.shippingRequestId],
-      shippingMode: [shippingRequestDetailModel.shippingMode],
-      salelineNumber: [shippingRequestDetailModel.salelineNumber],
-      purchaseOrder: [shippingRequestDetailModel.purchaseOrder],
-      salesOrder: [shippingRequestDetailModel.salesOrder],
-      productLine: [shippingRequestDetailModel.productLine],
+      id: [shippingPlanModel.id],
+      // quantity: [shippingPlanModel.quantity],
+      // productId: [shippingPlanModel.productId],
+      // amount: [shippingPlanModel.quantity * shippingPlanModel.price],
+      // price: [shippingPlanModel.price],
+      // shippingRequestId: [shippingPlanModel.shippingRequestId],
+      // shippingMode: [shippingPlanModel.shippingMode],
+      // salelineNumber: [shippingPlanModel.salelineNumber],
+      // purchaseOrder: [shippingPlanModel.purchaseOrder],
+      // salesOrder: [shippingPlanModel.salesOrder],
+      // productLine: [shippingPlanModel.productLine],
     });
   }
 
@@ -217,25 +214,5 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
       label: `Sale Order: ${p.salesOrder} | Saleline Number: ${p.salelineNumber} | Product Number: ${p.product?.productNumber} | Shipping Date: 
         ${Utilities.ConvertDateBeforeSendToServer(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
     }));
-  }
-
-  _mapToProductsToShippingRequestDetailModels(products: ProductModel[], shippingPlans: ShippingPlanModel[]): ShippingRequestDetailModel[] {
-    return shippingPlans.map((item, index) => {
-      return {
-        id: index + 1,
-        productId: item.product.id,
-        product: products.find((i) => i.id == item.product.id),
-        shippingRequest: null,
-        shippingRequestId: 0,
-        quantity: item.shippingPlanDetail.quantity,
-        price: item.shippingPlanDetail.price,
-        amount: item.shippingPlanDetail.amount,
-        shippingMode: item.shippingPlanDetail.shippingMode,
-        salelineNumber: item.salelineNumber,
-        purchaseOrder: item.purchaseOrder,
-        salesOrder: item.salesOrder,
-        productLine: item.productLine,
-      };
-    });
   }
 }

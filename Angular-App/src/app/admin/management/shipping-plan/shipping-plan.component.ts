@@ -58,7 +58,6 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      // { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
 
       { header: 'ReferenceId', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Customer Name', field: 'customerName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
@@ -69,9 +68,9 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       { header: 'Saleline Number', field: 'salelineNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Purchase Order', field: 'purchaseOrder', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
-      { header: 'Quantity ', subField: 'quantity', field: 'shippingPlanDetail', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Sale Price ', subField: 'price', field: 'shippingPlanDetail', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Shipping Mode ', subField: 'shippingMode', field: 'shippingPlanDetail', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Quantity ', field: 'quantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Sale Price ', field: 'price', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Shipping Mode ', field: 'shippingMode', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
       { header: 'Bill To', field: 'billTo', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Bill To Address', field: 'billToAddress', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
@@ -82,7 +81,6 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      // { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -115,9 +113,13 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       purchaseOrder: ['', [Validators.required]],
       shippingDate: ['', [Validators.required]],
       notes: [''],
+      quantity: [0, [Validators.required]],
+      productId: [0, [Validators.required]],
+      amount: [0, [Validators.required]],
+      price: [0, [Validators.required]],
+      shippingMode: [''],
       lastModifiedBy: [''],
       lastModified: [null],
-      shippingPlanDetails: this.fb.array([]),
     });
   }
 
@@ -275,36 +277,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     });
   }
 
-  getDetailShippingPlanById(shippingPlanId: number) {
-    const shippingPlanSelected = this.shippingPlans.find((i) => i.id === shippingPlanId);
-
-    if (shippingPlanSelected && shippingPlanSelected.shippingPlanDetails && shippingPlanSelected.shippingPlanDetails.length > 0) {
-      return;
-    }
-
-    this.shippingPlanClients
-      .getShippingPlanById(shippingPlanId)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (i: ShippingPlanModel) => (shippingPlanSelected.shippingPlanDetails = i.shippingPlanDetails),
-        (_) => (shippingPlanSelected.shippingPlanDetails = [])
-      );
-  }
-
   openHistoryDialog() {
     this.isShowDialogHistory = true;
-  }
-
-  onSelectedShippingPlan() {
-    if (this.selectedShippingPlan && this.selectedShippingPlan.id) {
-      this.shippingPlanClients
-        .getShippingPlanById(this.selectedShippingPlan.id)
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(
-          (i: ShippingPlanModel) => (this.selectedShippingPlan.shippingPlanDetails = i.shippingPlanDetails),
-          (_) => (this.selectedShippingPlan.shippingPlanDetails = [])
-        );
-    }
   }
 
   ngOnDestroy(): void {

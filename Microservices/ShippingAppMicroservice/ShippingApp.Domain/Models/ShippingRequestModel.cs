@@ -38,7 +38,7 @@ namespace ShippingApp.Domain.Models
         public DateTime PickupDate { get; set; }
 
         public virtual ICollection<ShippingRequestLogisticModel> ShippingRequestLogistic { get; set; }
-        public virtual ICollection<ShippingRequestDetailModel> ShippingRequestDetails { get; set; }
+        public virtual ICollection<ShippingPlanModel> ShippingPlans { get; set; }
         public virtual ICollection<ShippingMarkModel> ShippingMarks { get; set; }
     }
 }

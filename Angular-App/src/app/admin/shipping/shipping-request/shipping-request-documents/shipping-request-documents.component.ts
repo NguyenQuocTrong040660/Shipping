@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ShippingRequestClients, ShippingRequestDetailModel, ShippingRequestLogisticModel } from 'app/shared/api-clients/shipping-app.client';
+import { ShippingPlanModel, ShippingRequestClients, ShippingRequestLogisticModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -13,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./shipping-request-documents.component.scss'],
 })
 export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() selectedShippingRequestDetail: ShippingRequestDetailModel;
+  @Input() selectedShippingPlan: ShippingPlanModel;
 
   @Input() titleDialog: string;
   @Input() isShowDialog: boolean;
@@ -74,8 +74,8 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
   }
 
   ngOnChanges() {
-    if (this.selectedShippingRequestDetail) {
-      this._getShippingRequestDocument(this.selectedShippingRequestDetail.shippingRequestId, this.selectedShippingRequestDetail.productId);
+    if (this.selectedShippingPlan) {
+      this._getShippingRequestDocument(this.selectedShippingPlan.shippingRequestId, this.selectedShippingPlan.productId);
     }
   }
 
@@ -104,11 +104,7 @@ export class ShippingRequestDocumentsComponent implements OnInit, OnChanges, OnD
   }
 
   onSubmit() {
-    this._updateShippingRequestDocument(
-      this.selectedShippingRequestDetail.shippingRequestId,
-      this.selectedShippingRequestDetail.productId,
-      this.shippingRequestDocumentsForm.value
-    );
+    this._updateShippingRequestDocument(this.selectedShippingPlan.shippingRequestId, this.selectedShippingPlan.productId, this.shippingRequestDocumentsForm.value);
   }
 
   _getShippingRequestDocument(shippingRequestId: number, productId: number) {

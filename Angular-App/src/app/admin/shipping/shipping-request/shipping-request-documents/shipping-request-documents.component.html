@@ -4,44 +4,44 @@
       <div class="p-grid">
         <div class="p-field p-col-2">
           <div>Customer Name</div>
-          <strong>{{ selectedShippingRequestDetail?.shippingRequest?.customerName }}</strong>
+          <strong>{{ selectedShippingPlan?.customerName }}</strong>
         </div>
 
         <div class="p-field p-col-4">
           <div>Purchase Order</div>
-          <strong>{{ selectedShippingRequestDetail?.shippingRequest?.purchaseOrder }}</strong>
+          <strong>{{ selectedShippingPlan?.purchaseOrder }}</strong>
         </div>
 
         <div class="p-field p-col-2">
           <div>Account Number</div>
-          <strong>{{ selectedShippingRequestDetail?.shippingRequest?.accountNumber }}</strong>
+          <strong>{{ selectedShippingPlan?.accountNumber }}</strong>
         </div>
 
         <div class="p-field p-col-4">
           <div>Shipping Date</div>
-          <strong>{{ selectedShippingRequestDetail?.shippingRequest?.shippingDate | date: 'dd/MM/yyyy' }}</strong>
+          <strong>{{ selectedShippingPlan?.shippingDate | date: 'dd/MM/yyyy' }}</strong>
         </div>
       </div>
 
       <div class="p-grid">
         <div class="p-field p-col-2">
           <div>Bill To</div>
-          <strong>{{ selectedShippingRequestDetail?.shippingRequest?.billTo }}</strong>
+          <strong>{{ selectedShippingPlan?.billTo }}</strong>
         </div>
 
         <div class="p-field p-col-4">
           <div>Bill To Address</div>
-          <strong>{{ selectedShippingRequestDetail?.shippingRequest?.billToAddress }}</strong>
+          <strong>{{ selectedShippingPlan?.billToAddress }}</strong>
         </div>
 
         <div class="p-field p-col-2">
           <div>Ship To</div>
-          <strong>{{ selectedShippingRequestDetail?.shippingRequest?.shipTo }}</strong>
+          <strong>{{ selectedShippingPlan?.shipTo }}</strong>
         </div>
 
         <div class="p-field p-col-4">
           <div>Ship To Address</div>
-          <strong>{{ selectedShippingRequestDetail?.shippingRequest?.shipToAddress }}</strong>
+          <strong>{{ selectedShippingPlan?.shipToAddress }}</strong>
         </div>
       </div>
 

@@ -75,12 +75,14 @@ namespace ShippingApp.Application.ShippingMark.Commands
             {
                 var shippingRequest = _mapper.Map<ShippingRequestModel>((await _context.ShippingMarkShippings
                     .Include(x => x.ShippingRequest)
-                    .ThenInclude(x => x.ShippingRequestDetails)
+                    .ThenInclude(x => x.ShippingPlans)
                     .FirstOrDefaultAsync(x => x.ShippingMarkId == result.ShippingMarkId)).ShippingRequest);
 
                 result.PrintInfo = new PrintInfomation
                 {
-                    PurchaseOrder = shippingRequest.ShippingRequestDetails.FirstOrDefault().PurchaseOrder,
+                    PurchaseOrder = shippingRequest.ShippingPlans
+                                                    .FirstOrDefault(x => x.ProductId == result.ProductId)
+                                                    .PurchaseOrder,
                     ShippingRequest = shippingRequest,
                     TotalPackages = await _context.ShippingMarkPrintings.CountAsync(x => x.ProductId == result.ProductId && x.ShippingMarkId == result.ShippingMarkId),
                     Weight = 0,

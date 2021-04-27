@@ -29,8 +29,7 @@ namespace ShippingApp.Application.ShippingPlan.Queries
         public async Task<List<ShippingPlanModel>> Handle(GetAllShippingPlanQuery request, CancellationToken cancellationToken)
         {
             var shippingPlans = await _shippingAppRepository.GetDbSet()
-                .Include(x => x.ShippingPlanDetails)
-                .ThenInclude(x => x.Product)
+                .Include(x => x.Product)
                 .AsNoTracking()
                 .ToListAsync();
 

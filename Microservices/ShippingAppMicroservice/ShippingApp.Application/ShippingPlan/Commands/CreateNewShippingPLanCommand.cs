@@ -62,18 +62,19 @@ namespace ShippingApp.Application.ShippingPlan.Commands
 
             try
             {
-                var shippingPlanDb = _context.ShippingPlans
-                .Include(x => x.ShippingPlanDetails)    
-                .ThenInclude(x => x.Product)
-                .Where(x => x.SalesOrder == request.ShippingPlan.SalesOrder)
-                .Where(x => x.SalelineNumber == request.ShippingPlan.SalelineNumber)
-                .ToList()
-                .Where(x => x.ShippingPlanDetails.FirstOrDefault().Product.ProductNumber == request.ShippingPlan.Product.ProductNumber)
-                .FirstOrDefault();
+                var shippingPlans = await _context.ShippingPlans
+                .Include(x => x.Product)
+                .ToListAsync();
+
+                var shippingPlanDb = shippingPlans
+                                        .Where(x => x.SalesOrder == request.ShippingPlan.SalesOrder)
+                                        .Where(x => x.SalelineNumber == request.ShippingPlan.SalelineNumber)
+                                        .Where(x => x.Product.ProductNumber == request.ShippingPlan.Product.ProductNumber)
+                                        .FirstOrDefault();
 
                 if (shippingPlanDb != null)
                 {
-                    return Result.Failure($"Shipping Plan ({shippingPlanDb.SalesOrder}-{shippingPlanDb.SalelineNumber}-{shippingPlanDb.ShippingPlanDetails.FirstOrDefault().Product.ProductNumber}) already existed");
+                    return Result.Failure($"Shipping Plan ({shippingPlanDb.SalesOrder}-{shippingPlanDb.SalelineNumber}-{shippingPlanDb.Product.ProductNumber}) already existed");
                 }
             }
             catch (Exception ex)

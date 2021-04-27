@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ProductModel, ShippingPlanClients, ShippingPlanDetailModel, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductModel, ShippingPlanClients, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { MenuItem } from 'primeng/api';
@@ -30,8 +30,8 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
   productCols: any[] = [];
   selectedProducts: ProductModel[] = [];
 
-  shippingDetailModels: ShippingPlanDetails[] = [];
-  clonedshippingDetailModels: { [s: string]: ShippingPlanDetails } = {};
+  // shippingDetailModels: ShippingPlanDetails[] = [];
+  // clonedshippingDetailModels: { [s: string]: ShippingPlanDetails } = {};
 
   TypeColumn = TypeColumn;
   private destroyed$ = new Subject<void>();
@@ -92,7 +92,7 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
 
   hideDialog() {
     this.selectedProducts = [];
-    this.shippingDetailModels = [];
+    // this.shippingDetailModels = [];
     this.stepIndex = 0;
     this.hideDialogEvent.emit();
   }
@@ -101,31 +101,31 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
     switch (currentIndex) {
       case 0: {
         if (this.isEdit) {
-          this._getDetailShippingPlan();
+          // this._getDetailShippingPlan();
         }
         break;
       }
       case 1: {
         if (this.isEdit) {
-          this._getDetailShippingPlan();
+          //this._getDetailShippingPlan();
         }
 
-        this.shippingDetailModels = this._mapToProductsToShippingDetailModels(this.selectedProducts);
+        // this.shippingDetailModels = this._mapToProductsToShippingDetailModels(this.selectedProducts);
 
-        if (this.selectedShippingPlan) {
-          const { shippingPlanDetails } = this.selectedShippingPlan;
+        // if (this.selectedShippingPlan) {
+        //   const { shippingPlanDetails } = this.selectedShippingPlan;
 
-          this.shippingDetailModels.forEach((item) => {
-            const shippingPlanDetail = shippingPlanDetails.find((i) => item.productId === i.productId);
+        //   this.shippingDetailModels.forEach((item) => {
+        //     const shippingPlanDetail = shippingPlanDetails.find((i) => item.productId === i.productId);
 
-            if (shippingPlanDetail) {
-              item.amount = shippingPlanDetail.amount;
-              item.quantity = shippingPlanDetail.quantity;
-              item.price = shippingPlanDetail.price;
-              item.shippingMode = shippingPlanDetail.shippingMode;
-            }
-          });
-        }
+        //     if (shippingPlanDetail) {
+        //       item.amount = shippingPlanDetail.amount;
+        //       item.quantity = shippingPlanDetail.quantity;
+        //       item.price = shippingPlanDetail.price;
+        //       item.shippingMode = shippingPlanDetail.shippingMode;
+        //     }
+        //   });
+        // }
         break;
       }
     }
@@ -137,95 +137,91 @@ export class ShippingPlanCreateComponent implements OnInit, OnChanges {
     this.stepIndex -= 1;
   }
 
-  onRowEditInit(shippingDetailModel: ShippingPlanDetails) {
-    shippingDetailModel.isEditRow = true;
-    this.clonedshippingDetailModels[shippingDetailModel.productId] = { ...shippingDetailModel };
-  }
+  // onRowEditInit(shippingDetailModel: ShippingPlanDetails) {
+  //   shippingDetailModel.isEditRow = true;
+  //   this.clonedshippingDetailModels[shippingDetailModel.productId] = { ...shippingDetailModel };
+  // }
 
-  onRowDelete(shippingDetailModel: ShippingPlanDetails) {
-    this.selectedProducts = this.selectedProducts.filter((i) => i.id !== shippingDetailModel.productId);
-    this.shippingDetailModels = this.shippingDetailModels.filter((i) => i.productId !== shippingDetailModel.productId);
-  }
+  // onRowDelete(shippingDetailModel: ShippingPlanDetails) {
+  //   this.selectedProducts = this.selectedProducts.filter((i) => i.id !== shippingDetailModel.productId);
+  //   this.shippingDetailModels = this.shippingDetailModels.filter((i) => i.productId !== shippingDetailModel.productId);
+  // }
 
-  onRowEditSave(shippingDetailModel: ShippingPlanDetails) {
-    shippingDetailModel.isEditRow = false;
-    const entity = this.shippingDetailModels.find((i) => i.productId === shippingDetailModel.productId);
-    entity.quantity = shippingDetailModel.quantity;
-    entity.amount = shippingDetailModel.quantity * shippingDetailModel.price;
-    delete this.clonedshippingDetailModels[shippingDetailModel.productId];
-  }
+  // onRowEditSave(shippingDetailModel: ShippingPlanDetails) {
+  //   shippingDetailModel.isEditRow = false;
+  //   const entity = this.shippingDetailModels.find((i) => i.productId === shippingDetailModel.productId);
+  //   entity.quantity = shippingDetailModel.quantity;
+  //   entity.amount = shippingDetailModel.quantity * shippingDetailModel.price;
+  //   delete this.clonedshippingDetailModels[shippingDetailModel.productId];
+  // }
 
-  onRowEditCancel(shippingDetailModel: ShippingPlanDetails, index: number) {
-    this.shippingDetailModels[index] = this.clonedshippingDetailModels[shippingDetailModel.productId];
-    this.shippingDetailModels[index].isEditRow = false;
-    delete this.clonedshippingDetailModels[shippingDetailModel.productId];
-  }
+  // onRowEditCancel(shippingDetailModel: ShippingPlanDetails, index: number) {
+  //   this.shippingDetailModels[index] = this.clonedshippingDetailModels[shippingDetailModel.productId];
+  //   this.shippingDetailModels[index].isEditRow = false;
+  //   delete this.clonedshippingDetailModels[shippingDetailModel.productId];
+  // }
 
-  allowMoveToCompleteStep(shippingDetailModels: ShippingPlanDetails[]): boolean {
-    const haveFilledDataRows = shippingDetailModels.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
-    const haveNotEditRows = shippingDetailModels.every((d) => d.isEditRow === false);
+  // allowMoveToCompleteStep(shippingDetailModels: ShippingPlanDetails[]): boolean {
+  //   const haveFilledDataRows = shippingDetailModels.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
+  //   const haveNotEditRows = shippingDetailModels.every((d) => d.isEditRow === false);
 
-    return haveFilledDataRows && haveNotEditRows && this.shippingDetailModels.length > 0;
-  }
+  //   return haveFilledDataRows && haveNotEditRows && this.shippingDetailModels.length > 0;
+  // }
 
   onSubmit() {
     this.shippingPlanDetailsControl.clear();
 
-    if (this.shippingDetailModels && this.shippingDetailModels.length > 0) {
-      this.shippingDetailModels.forEach((i) => {
-        this.shippingPlanDetailsControl.push(this.initShippingPlanDetailsForm(i));
-      });
-    }
+    // if (this.shippingDetailModels && this.shippingDetailModels.length > 0) {
+    //   this.shippingDetailModels.forEach((i) => {
+    //     this.shippingPlanDetailsControl.push(this.initShippingPlanDetailsForm(i));
+    //   });
+    // }
 
     this.submitEvent.emit();
   }
 
-  initShippingPlanDetailsForm(shippingPlanDetailModel: ShippingPlanDetails) {
-    return this.fb.group({
-      quantity: [shippingPlanDetailModel.quantity],
-      productId: [shippingPlanDetailModel.productId],
-      amount: [shippingPlanDetailModel.quantity * shippingPlanDetailModel.price],
-      price: [shippingPlanDetailModel.price],
-      shippingPlanId: [shippingPlanDetailModel.shippingPlanId],
-      shippingMode: [shippingPlanDetailModel.shippingMode],
-    });
-  }
+  // initShippingPlanDetailsForm(shippingPlanDetailModel: ShippingPlanDetails) {
+  //   return this.fb.group({
+  //     quantity: [shippingPlanDetailModel.quantity],
+  //     productId: [shippingPlanDetailModel.productId],
+  //     amount: [shippingPlanDetailModel.quantity * shippingPlanDetailModel.price],
+  //     price: [shippingPlanDetailModel.price],
+  //     shippingPlanId: [shippingPlanDetailModel.shippingPlanId],
+  //     shippingMode: [shippingPlanDetailModel.shippingMode],
+  //   });
+  // }
 
-  _mapToProductsToShippingDetailModels(products: ProductModel[]): ShippingPlanDetails[] {
-    return products.map((item, index) => {
-      return {
-        id: index + 1,
-        productId: item.id,
-        product: item,
-        shippingPlan: null,
-        shippingPlanId: 0,
-        quantity: 0,
-        price: 0,
-        amount: 0,
-        isEditRow: false,
-      };
-    });
-  }
+  // _mapToProductsToShippingDetailModels(products: ProductModel[]): ShippingPlanDetails[] {
+  //   return products.map((item, index) => {
+  //     return {
+  //       id: index + 1,
+  //       productId: item.id,
+  //       product: item,
+  //       shippingPlan: null,
+  //       shippingPlanId: 0,
+  //       quantity: 0,
+  //       price: 0,
+  //       amount: 0,
+  //       isEditRow: false,
+  //     };
+  //   });
+  // }
 
-  _getDetailShippingPlan() {
-    const { id } = this.selectedShippingPlan;
-    let { shippingPlanDetails } = this.selectedShippingPlan;
-    shippingPlanDetails = [];
+  // _getDetailShippingPlan() {
+  //   const { id } = this.selectedShippingPlan;
+  //   let { shippingPlanDetails } = this.selectedShippingPlan;
+  //   shippingPlanDetails = [];
 
-    this.shippingPlanClients
-      .getShippingPlanById(id)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (i: ShippingPlanModel) => {
-          shippingPlanDetails = i.shippingPlanDetails;
-          const products = shippingPlanDetails.map((p) => p.product);
-          this.selectedProducts = products;
-        },
-        (_) => (shippingPlanDetails = [])
-      );
-  }
-}
-
-export interface ShippingPlanDetails extends ShippingPlanDetailModel {
-  isEditRow?: boolean;
+  //   this.shippingPlanClients
+  //     .getShippingPlanById(id)
+  //     .pipe(takeUntil(this.destroyed$))
+  //     .subscribe(
+  //       (i: ShippingPlanModel) => {
+  //         shippingPlanDetails = i.shippingPlanDetails;
+  //         const products = shippingPlanDetails.map((p) => p.product);
+  //         this.selectedProducts = products;
+  //       },
+  //       (_) => (shippingPlanDetails = [])
+  //     );
+  // }
 }

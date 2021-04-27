@@ -81,7 +81,7 @@ namespace Communication.Application.Email.Commands
                                         <td style='border: 1px solid #000000;'>{4}</td>
                                     </tr>";
 
-            foreach (var item in shippingRequest.ShippingRequestDetails)
+            foreach (var item in shippingRequest.ShippingPlans)
             {
                 var itemString = string.Format(shippingRequestString, item.Product.ProductNumber, item.Quantity,
                     item.Price.ToString("C"), item.Amount.ToString("C"), item.ShippingMode);

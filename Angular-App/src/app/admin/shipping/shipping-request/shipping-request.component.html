@@ -115,7 +115,7 @@
       <tr>
         <td [attr.colspan]="cols.length" class="shipping-request__expaned">
           <div>
-            <p-table class="shipping-request__expaned-table" [value]="shippingRequest.shippingRequestDetails">
+            <p-table class="shipping-request__expaned-table" [value]="shippingRequest.shippingPlans">
               <ng-template pTemplate="header">
                 <tr>
                   <th class="p-text-center">Product Number</th>
@@ -193,10 +193,5 @@
 
 <app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingRequest" (hideDialogEvent)="hideDialog()"> </app-history-dialog>
 
-<app-shipping-request-documents
-  [selectedShippingRequestDetail]="selectedShippingRequestDetail"
-  [titleDialog]="titleDialog"
-  [isShowDialog]="isShowDialogDocuments"
-  (hideDialogEvent)="hideDialog()"
->
+<app-shipping-request-documents [selectedShippingPlan]="selectedShippingPlan" [titleDialog]="titleDialog" [isShowDialog]="isShowDialogDocuments" (hideDialogEvent)="hideDialog()">
 </app-shipping-request-documents>

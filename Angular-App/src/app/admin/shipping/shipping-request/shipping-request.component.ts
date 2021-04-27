@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CommunicationClient } from 'app/shared/api-clients/communications.client';
-import { ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestDetailModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import { ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -39,7 +39,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   TypeColumn = TypeColumn;
   HistoryDialogType = HistoryDialogType;
 
-  selectedShippingRequestDetail: ShippingRequestDetailModel;
+  selectedShippingPlan: ShippingPlanModel;
 
   private destroyed$ = new Subject<void>();
 
@@ -83,9 +83,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       .getAllShippingPlan()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => {
-          this.shippingPlans = i;
-        },
+        (i) => (this.shippingPlans = i.filter((x) => x.shippingRequestId === null)),
         (_) => (this.shippingPlans = [])
       );
   }
@@ -101,7 +99,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       billToAddress: [''],
       shipTo: [''],
       shipToAddress: [''],
-      shippingRequestDetails: this.fb.array([]),
+      shippingPlans: this.fb.array([]),
       lastModifiedBy: [''],
       lastModified: [null],
     });
@@ -146,10 +144,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
           this.initShippingRequest();
           this.hideDialog();
         },
-        (_) => {
-          this.notificationService.error('Create Shipping Request Failed. Please try again');
-          this.hideDialog();
-        }
+        (_) => this.notificationService.error('Create Shipping Request Failed. Please try again')
       );
   }
 
@@ -195,7 +190,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
   getDetailShippingRequestById(shippingRequestId: number) {
     const shippingRequestSelected = this.shippingRequests.find((i) => i.id === shippingRequestId);
 
-    if (shippingRequestSelected && shippingRequestSelected.shippingRequestDetails && shippingRequestSelected.shippingRequestDetails.length > 0) {
+    if (shippingRequestSelected && shippingRequestSelected.shippingPlans && shippingRequestSelected.shippingPlans.length > 0) {
       return;
     }
 
@@ -203,8 +198,8 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       .getShippingRequestById(shippingRequestId)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i: ShippingRequestModel) => (shippingRequestSelected.shippingRequestDetails = i.shippingRequestDetails),
-        (_) => (shippingRequestSelected.shippingRequestDetails = [])
+        (i: ShippingRequestModel) => (shippingRequestSelected.shippingPlans = i.shippingPlans),
+        (_) => (shippingRequestSelected.shippingPlans = [])
       );
   }
 
@@ -212,13 +207,13 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     this.isShowDialogHistory = true;
   }
 
-  openDocumentsDialog(selectedShippingRequestDetail: ShippingRequestDetailModel) {
-    const shippingRequestSelected = this.shippingRequests.find((i) => i.id === selectedShippingRequestDetail.shippingRequestId);
-    this.selectedShippingRequestDetail = selectedShippingRequestDetail;
-    this.selectedShippingRequestDetail.shippingRequest = shippingRequestSelected;
+  openDocumentsDialog(selectedShippingPlan: ShippingPlanModel) {
+    const shippingRequestSelected = this.shippingRequests.find((i) => i.id === selectedShippingPlan.shippingRequestId);
+    this.selectedShippingPlan = selectedShippingPlan;
+    this.selectedShippingPlan.shippingRequest = shippingRequestSelected;
 
     this.isShowDialogDocuments = true;
-    this.titleDialog = 'Shipping Documents for Sales Order: ' + this.selectedShippingRequestDetail.salesOrder;
+    this.titleDialog = 'Shipping Documents for Sales Order: ' + this.selectedShippingPlan.salesOrder;
   }
 
   ngOnDestroy(): void {
