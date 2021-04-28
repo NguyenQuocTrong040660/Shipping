@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ShippingApp.Persistence.Migrations
 {
-    public partial class InitDatabase : Migration
+    public partial class CreateDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -168,7 +168,8 @@ namespace ShippingApp.Persistence.Migrations
                     BillTo = table.Column<string>(nullable: true),
                     BillToAddress = table.Column<string>(nullable: true),
                     ShipTo = table.Column<string>(nullable: true),
-                    ShipToAddress = table.Column<string>(nullable: true)
+                    ShipToAddress = table.Column<string>(nullable: true),
+                    PickupDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -225,34 +226,6 @@ namespace ShippingApp.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ReceivedMarkMovements_ReceivedMarks_ReceivedMarkId",
-                        column: x => x.ReceivedMarkId,
-                        principalTable: "ReceivedMarks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ReceivedMarkSummaries",
-                columns: table => new
-                {
-                    ReceivedMarkId = table.Column<int>(nullable: false),
-                    ProductId = table.Column<int>(nullable: false),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModified = table.Column<DateTime>(nullable: true),
-                    TotalQuantity = table.Column<int>(nullable: false),
-                    TotalPackage = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReceivedMarkSummaries", x => new { x.ReceivedMarkId, x.ProductId });
-                    table.ForeignKey(
-                        name: "FK_ReceivedMarkSummaries_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ReceivedMarkSummaries_ReceivedMarks_ReceivedMarkId",
                         column: x => x.ReceivedMarkId,
                         principalTable: "ReceivedMarks",
                         principalColumn: "Id",
@@ -350,34 +323,6 @@ namespace ShippingApp.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ShippingMarkSummaries",
-                columns: table => new
-                {
-                    ShippingMarkId = table.Column<int>(nullable: false),
-                    ProductId = table.Column<int>(nullable: false),
-                    LastModifiedBy = table.Column<string>(nullable: true),
-                    LastModified = table.Column<DateTime>(nullable: true),
-                    TotalQuantity = table.Column<int>(nullable: false),
-                    TotalPackage = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ShippingMarkSummaries", x => new { x.ShippingMarkId, x.ProductId });
-                    table.ForeignKey(
-                        name: "FK_ShippingMarkSummaries_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ShippingMarkSummaries_ShippingMarks_ShippingMarkId",
-                        column: x => x.ShippingMarkId,
-                        principalTable: "ShippingMarks",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ShippingPlanDetails",
                 columns: table => new
                 {
@@ -455,12 +400,12 @@ namespace ShippingApp.Persistence.Migrations
                     Price = table.Column<float>(nullable: false),
                     ShippingMode = table.Column<string>(nullable: true),
                     Amount = table.Column<float>(nullable: false),
-                    ShippingRequestId = table.Column<int>(nullable: false),
-                    ProductId = table.Column<int>(nullable: false),
                     PurchaseOrder = table.Column<string>(nullable: true),
                     SalesOrder = table.Column<string>(nullable: true),
                     SalelineNumber = table.Column<string>(nullable: true),
-                    ProductLine = table.Column<int>(nullable: false)
+                    ProductLine = table.Column<int>(nullable: false),
+                    ProductId = table.Column<int>(nullable: false),
+                    ShippingRequestId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -491,6 +436,7 @@ namespace ShippingApp.Persistence.Migrations
                     GrossWeight = table.Column<float>(nullable: false),
                     CustomDeclarationNumber = table.Column<string>(nullable: true),
                     TrackingNumber = table.Column<string>(nullable: true),
+                    TotalPackages = table.Column<int>(nullable: false),
                     Forwarder = table.Column<string>(nullable: true),
                     NetWeight = table.Column<float>(nullable: false),
                     Dimension = table.Column<string>(nullable: true),
@@ -617,11 +563,6 @@ namespace ShippingApp.Persistence.Migrations
                 column: "ShippingMarkId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReceivedMarkSummaries_ProductId",
-                table: "ReceivedMarkSummaries",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ShippingMarkPrintings_ProductId",
                 table: "ShippingMarkPrintings",
                 column: "ProductId");
@@ -640,11 +581,6 @@ namespace ShippingApp.Persistence.Migrations
                 name: "IX_ShippingMarkShippings_ShippingRequestId",
                 table: "ShippingMarkShippings",
                 column: "ShippingRequestId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ShippingMarkSummaries_ProductId",
-                table: "ShippingMarkSummaries",
-                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShippingPlanDetails_ProductId",
@@ -700,9 +636,6 @@ namespace ShippingApp.Persistence.Migrations
                 name: "ReceivedMarkPrintings");
 
             migrationBuilder.DropTable(
-                name: "ReceivedMarkSummaries");
-
-            migrationBuilder.DropTable(
                 name: "ShippingMarkHistory");
 
             migrationBuilder.DropTable(
@@ -710,9 +643,6 @@ namespace ShippingApp.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "ShippingMarkShippings");
-
-            migrationBuilder.DropTable(
-                name: "ShippingMarkSummaries");
 
             migrationBuilder.DropTable(
                 name: "ShippingPlanDetails");

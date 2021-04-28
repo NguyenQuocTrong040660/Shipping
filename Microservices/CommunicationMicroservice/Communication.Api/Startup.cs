@@ -22,6 +22,8 @@ using System.Text;
 using OpenApiSecurityScheme = NSwag.OpenApiSecurityScheme;
 using Communication.Api.Configs;
 using Communication.Domain.Configs;
+using Microsoft.Extensions.Hosting;
+using AutoMapper;
 
 namespace Communication.Api
 {
@@ -37,19 +39,13 @@ namespace Communication.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options =>
-              options.Filters.Add(new ApiExceptionFilterAttribute())).AddFluentValidation();
-
-            //services.AddMigrationServices();
-
-            services.AddSingleton<ICurrentUserService, CurrentUserService>();
-            services.AddSingleton<IEnvironmentApplication, EnvironmentApplication>();
-
+            services.AddScoped<IEnvironmentApplication, EnvironmentApplication>();
+            services.AddAutoMapper(typeof(Startup));
             services.AddHealthChecks();
 
             services.AddOpenApiDocument(configure =>
             {
-                configure.Title = "Communication Microservice API";
+                configure.Title = "COMMUNICATION API";
 
                 configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
                 {
@@ -61,19 +57,32 @@ namespace Communication.Api
 
                 configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
+
+            services.AddControllers(options =>
+              options.Filters.Add(new ApiExceptionFilterAttribute())).AddFluentValidation();
+
+            services.AddMvc().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
-            ConfigureAuthenticationServices(services);
 
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "GREXSOLUTIONS",
-                                  builder =>
-                                  {
-                                      builder.WithOrigins()
-                                            .AllowAnyHeader()
-                                            .AllowAnyMethod()
-                                            .AllowAnyOrigin();
-                                  });
+                builder =>
+                {
+                    builder.WithOrigins(
+                                        "http://api-gatewayapi.tamcammedia.com.vn/",
+                                        "https://api-gatewayapi.tamcammedia.com.vn/",
+                                        "http://www.api-gatewayapi.tamcammedia.com.vn/",
+                                        "https://www.api-gatewayapi.tamcammedia.com.vn/"
+                                        )
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowAnyOrigin();
+                });
             });
 
             services.Configure<IISServerOptions>(options =>
@@ -85,7 +94,9 @@ namespace Communication.Api
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
+
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
+
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddPersistence(Configuration);
@@ -93,34 +104,6 @@ namespace Communication.Api
             services.AddInfrastructure(Configuration);
 
             services.Configure<AppSettings>(Configuration);
-        }
-
-        private void ConfigureAuthenticationServices(IServiceCollection services)
-        {
-            string secret = Configuration["JWTTokenConfig:Secret"];
-            string issuer = Configuration["JWTTokenConfig:Issuer"];
-            string audience = Configuration["JWTTokenConfig:Audience"];
-
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = true;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = issuer,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)),
-                    ValidAudience = audience,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(5)
-                };
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -133,19 +116,19 @@ namespace Communication.Api
                 app.UseSwaggerUi3();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Communication Microservice API V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "News Application API V1");
                 });
             //}
 
             loggerfactory.AddSerilog();
             app.UseHealthChecks("/health");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors("GREXSOLUTIONS");
 
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

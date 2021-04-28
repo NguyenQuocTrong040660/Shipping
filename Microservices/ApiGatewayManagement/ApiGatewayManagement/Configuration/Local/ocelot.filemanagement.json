@@ -1,17 +1,17 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/communication/{everything}",
+      "DownstreamPathTemplate": "/api/filemanagement/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5005
+          "Port": 5002
         }
       ],
-      "UpstreamPathTemplate": "/api/communication/{everything}",
+      "UpstreamPathTemplate": "/api/filemanagement/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "communication"
+      "SwaggerKey": "filemanagement"
     }
   ]
 }

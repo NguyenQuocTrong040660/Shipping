@@ -6,36 +6,36 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAPrEDblrR7kS3HCgtixyu1QAAAAACAAAAAAAQZgAAAAEAACAAAADRySkKtXA3yTHXWB2Fd5P7MhoCxBr4/ZE2SXe4+pc05wAAAAAOgAAAAAIAACAAAAD8IaZecEZSU1LC38eAMyQFA7iKQ+GBHMp75sl/9Z9DJyAAAAAVEcnLcSBj7wlUMePrCvvjpcl3gDqLAPplJSyqK8QEmEAAAACsRYLLq5MDWVVeB2McSj9ozkXq5aJcCiO5URlDz4AannhUqngXnH6aa71hwVml4YgS2yMqSH3yzKD02iys8Tt6</EncryptedPassword>
-    <_PublishTargetUrl>C:\inetpub\wwwroot\spartronics\Api-Gateway</_PublishTargetUrl>
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAuslm1UGXoEqmMt0K6YgyKAAAAAACAAAAAAAQZgAAAAEAACAAAAArWuD83ESnnz8pfWIhvrVpfDwfB6zH1wqbzqE+sjd2eQAAAAAOgAAAAAIAACAAAAD5eK69jv5yko7W3drp+vZkBFAXXJMeZaY7YKumKbac1SAAAADukr206pCwPFJcnpEa756RpM3BfgVHDEDlnwODhHHreUAAAACYYnzST8IxSfbfDe78vj8mBZe9DpoFmcVclx6uS2YH3ofbO8vwlWXCR8tswTT1TERJn6+jy2Mx+qDJqJbKXIXW</EncryptedPassword>
+    <_PublishTargetUrl>C:\Deployment\IIS_Server\Spartronics\api-apigateway</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="ApiGatewayManagement.deps.json">
-      <publishTime>02/03/2021 09:57:30</publishTime>
+      <publishTime>04/24/2021 14:23:15</publishTime>
     </File>
     <File Include="ApiGatewayManagement.dll">
-      <publishTime>02/03/2021 09:57:28</publishTime>
+      <publishTime>04/24/2021 14:23:15</publishTime>
     </File>
     <File Include="ApiGatewayManagement.exe">
-      <publishTime>02/03/2021 09:57:28</publishTime>
+      <publishTime>04/24/2021 14:23:15</publishTime>
     </File>
     <File Include="ApiGatewayManagement.pdb">
-      <publishTime>02/03/2021 09:57:28</publishTime>
+      <publishTime>04/24/2021 14:23:15</publishTime>
     </File>
     <File Include="ApiGatewayManagement.runtimeconfig.json">
-      <publishTime>02/01/2021 13:31:17</publishTime>
+      <publishTime>04/24/2021 14:20:16</publishTime>
     </File>
     <File Include="appsettings.Development.json">
-      <publishTime>01/12/2021 13:21:48</publishTime>
+      <publishTime>03/31/2021 09:33:15</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>01/12/2021 13:21:48</publishTime>
+      <publishTime>03/31/2021 09:33:15</publishTime>
     </File>
     <File Include="appsettings.Local.json">
-      <publishTime>01/12/2021 13:21:48</publishTime>
+      <publishTime>03/31/2021 09:33:15</publishTime>
     </File>
     <File Include="appsettings.Production.json">
-      <publishTime>01/12/2021 13:21:48</publishTime>
+      <publishTime>04/08/2021 08:15:34</publishTime>
     </File>
     <File Include="CacheManager.Core.dll">
       <publishTime>12/06/2018 15:18:30</publishTime>
@@ -50,46 +50,58 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/13/2020 01:31:35</publishTime>
     </File>
     <File Include="Configuration/Development/configuration.global.json">
-      <publishTime>01/12/2021 13:21:48</publishTime>
+      <publishTime>03/31/2021 09:33:15</publishTime>
+    </File>
+    <File Include="Configuration/Development/ocelot.album.json">
+      <publishTime>03/31/2021 03:48:11</publishTime>
     </File>
     <File Include="Configuration/Development/ocelot.communication.json">
-      <publishTime>12/14/2020 09:34:25</publishTime>
+      <publishTime>04/05/2021 16:46:47</publishTime>
     </File>
     <File Include="Configuration/Development/ocelot.customerservice.json">
-      <publishTime>02/01/2021 13:26:53</publishTime>
+      <publishTime>02/09/2021 14:29:27</publishTime>
+    </File>
+    <File Include="Configuration/Development/ocelot.filemanagement.json">
+      <publishTime>04/08/2021 09:04:55</publishTime>
     </File>
     <File Include="Configuration/Development/ocelot.news.json">
-      <publishTime>01/12/2021 13:21:48</publishTime>
+      <publishTime>03/31/2021 09:33:15</publishTime>
     </File>
     <File Include="Configuration/Development/ocelot.product.json">
       <publishTime>12/14/2020 09:34:25</publishTime>
     </File>
     <File Include="Configuration/Development/ocelot.SwaggerEndPoints.json">
-      <publishTime>02/01/2021 13:26:53</publishTime>
+      <publishTime>04/08/2021 08:51:32</publishTime>
     </File>
     <File Include="Configuration/Development/ocelot.user.json">
-      <publishTime>01/12/2021 13:21:48</publishTime>
+      <publishTime>03/31/2021 09:33:15</publishTime>
     </File>
     <File Include="Configuration/Local/configuration.global.json">
-      <publishTime>01/12/2021 13:21:48</publishTime>
+      <publishTime>03/31/2021 09:33:15</publishTime>
+    </File>
+    <File Include="Configuration/Local/ocelot.album.json">
+      <publishTime>03/31/2021 03:48:11</publishTime>
     </File>
     <File Include="Configuration/Local/ocelot.communication.json">
-      <publishTime>12/14/2020 09:34:25</publishTime>
+      <publishTime>04/05/2021 16:46:47</publishTime>
     </File>
     <File Include="Configuration/Local/ocelot.customerservice.json">
-      <publishTime>02/01/2021 13:26:53</publishTime>
+      <publishTime>02/09/2021 14:29:27</publishTime>
+    </File>
+    <File Include="Configuration/Local/ocelot.filemanagement.json">
+      <publishTime>04/08/2021 09:09:38</publishTime>
     </File>
     <File Include="Configuration/Local/ocelot.news.json">
-      <publishTime>01/12/2021 13:21:48</publishTime>
+      <publishTime>03/31/2021 09:33:15</publishTime>
     </File>
     <File Include="Configuration/Local/ocelot.product.json">
       <publishTime>12/28/2020 16:00:28</publishTime>
     </File>
     <File Include="Configuration/Local/ocelot.SwaggerEndPoints.json">
-      <publishTime>02/01/2021 13:26:53</publishTime>
+      <publishTime>04/08/2021 08:51:17</publishTime>
     </File>
     <File Include="Configuration/Local/ocelot.user.json">
-      <publishTime>01/15/2021 11:50:36</publishTime>
+      <publishTime>03/31/2021 09:33:15</publishTime>
     </File>
     <File Include="Configuration/ocelot.communication.json">
       <publishTime>12/13/2020 01:10:06</publishTime>
@@ -107,25 +119,31 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/13/2020 00:10:41</publishTime>
     </File>
     <File Include="Configuration/Production/configuration.global.json">
-      <publishTime>02/01/2021 13:22:57</publishTime>
+      <publishTime>04/08/2021 17:31:43</publishTime>
+    </File>
+    <File Include="Configuration/Production/ocelot.album.json">
+      <publishTime>04/08/2021 01:34:01</publishTime>
     </File>
     <File Include="Configuration/Production/ocelot.communication.json">
-      <publishTime>12/25/2020 13:01:52</publishTime>
+      <publishTime>04/24/2021 14:19:05</publishTime>
     </File>
     <File Include="Configuration/Production/ocelot.customerservice.json">
-      <publishTime>02/01/2021 13:27:35</publishTime>
+      <publishTime>02/09/2021 16:04:00</publishTime>
+    </File>
+    <File Include="Configuration/Production/ocelot.filemanagement.json">
+      <publishTime>04/12/2021 13:57:28</publishTime>
     </File>
     <File Include="Configuration/Production/ocelot.news.json">
-      <publishTime>02/01/2021 13:23:24</publishTime>
+      <publishTime>04/08/2021 08:15:34</publishTime>
     </File>
     <File Include="Configuration/Production/ocelot.product.json">
       <publishTime>12/29/2020 13:54:02</publishTime>
     </File>
     <File Include="Configuration/Production/ocelot.SwaggerEndPoints.json">
-      <publishTime>02/01/2021 13:44:39</publishTime>
+      <publishTime>04/24/2021 14:23:07</publishTime>
     </File>
     <File Include="Configuration/Production/ocelot.user.json">
-      <publishTime>02/01/2021 13:22:56</publishTime>
+      <publishTime>04/08/2021 08:15:34</publishTime>
     </File>
     <File Include="Configuration/prod_ocelot.communication.json">
       <publishTime>12/12/2020 20:54:57</publishTime>
@@ -149,16 +167,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>10/23/2019 17:50:26</publishTime>
     </File>
     <File Include="Microsoft.AspNetCore.Authentication.JwtBearer.dll">
-      <publishTime>09/23/2020 23:12:38</publishTime>
+      <publishTime>08/21/2020 21:29:30</publishTime>
     </File>
     <File Include="Microsoft.AspNetCore.JsonPatch.dll">
-      <publishTime>07/22/2020 23:05:10</publishTime>
+      <publishTime>08/21/2020 21:26:58</publishTime>
     </File>
     <File Include="Microsoft.AspNetCore.MiddlewareAnalysis.dll">
       <publishTime>03/14/2020 05:26:04</publishTime>
     </File>
     <File Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll">
-      <publishTime>07/22/2020 23:18:28</publishTime>
+      <publishTime>08/21/2020 21:37:38</publishTime>
     </File>
     <File Include="Microsoft.DotNet.PlatformAbstractions.dll">
       <publishTime>11/22/2017 10:48:10</publishTime>
@@ -257,7 +275,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/25/2020 17:51:28</publishTime>
     </File>
     <File Include="ocelot.json">
-      <publishTime>02/01/2021 13:26:53</publishTime>
+      <publishTime>04/15/2021 12:16:31</publishTime>
     </File>
     <File Include="runtimes/unix/lib/netcoreapp2.1/System.Data.SqlClient.dll">
       <publishTime>09/13/2019 02:41:04</publishTime>
@@ -326,7 +344,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/24/2019 19:49:50</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>02/03/2021 09:57:30</publishTime>
+      <publishTime>04/24/2021 14:23:15</publishTime>
     </File>
   </ItemGroup>
 </Project>

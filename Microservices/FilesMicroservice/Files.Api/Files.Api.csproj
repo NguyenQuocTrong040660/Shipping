@@ -47,6 +47,7 @@
     <Folder Include="logs\" />
     <Folder Include="wwwroot\files\" />
     <Folder Include="wwwroot\templates\" />
+    <Folder Include="wwwroot\test\" />
     <Folder Include="wwwroot\videos\" />
     <Folder Include="wwwroot\photos\" />
   </ItemGroup>
@@ -59,9 +60,6 @@
 
   <ItemGroup>
     <Content Update="wwwroot\files\7_2_202146_190554403ProductTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\templates\ProductTemplate.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

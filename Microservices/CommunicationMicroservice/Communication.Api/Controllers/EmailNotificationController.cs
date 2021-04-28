@@ -26,20 +26,20 @@ namespace Communication.Api.Controllers
             _environment = environment ?? throw new ArgumentNullException(nameof(environment));
         }
 
-        [HttpPut("testing/{to}")]
-        public async Task<ActionResult<Result>> TestSendEmail(string to, [FromBody] string content)
-        {
-            if (_environment.IsProduction())
-            {
-                return NoContent();
-            }
+        //[HttpPut("testing/{to}")]
+        //public async Task<ActionResult<Result>> TestSendEmail(string to, [FromBody] string content)
+        //{
+        //    if (_environment.IsProduction())
+        //    {
+        //        return NoContent();
+        //    }
 
-            return Ok(await Mediator.Send(new SendEmailForTestingCommand
-            {
-                To = to,
-                Content = content
-            }));
-        }
+        //    return Ok(await Mediator.Send(new SendEmailForTestingCommand
+        //    {
+        //        To = to,
+        //        Content = content
+        //    }));
+        //}
 
         [HttpPost("users")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
@@ -90,6 +90,23 @@ namespace Communication.Api.Controllers
             return Ok(await Mediator.Send(new SendShippingRequestEmailCommand
             {
                 ShippingRequest = shippingRequest
+            }));
+        }
+
+        [HttpPost("customer-comment")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CustomerItemModel), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Result>> SendEmailCustomerCommentAsync([FromBody] CustomerItemModel customerItem)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(customerItem);
+            }
+
+            return Ok(await Mediator.Send(new SendCustomerCommentEmailCommand
+            {
+                customerItemModel = customerItem
             }));
         }
     }

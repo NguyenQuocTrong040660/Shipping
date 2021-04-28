@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using MMLib.SwaggerForOcelot.DependencyInjection;
 using Serilog;
 using Serilog.Events;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -16,22 +17,6 @@ namespace ApiGatewayManagement
         public async static Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var hostingEnvironment = services.GetService<IWebHostEnvironment>();
-                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("start");
-
-                Log.Logger = new LoggerConfiguration()
-                        .MinimumLevel.Debug()
-                        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                        .Enrich.FromLogContext()
-                        .WriteTo.Console()
-                        .WriteTo.RollingFile(Path.Combine($"{hostingEnvironment.ContentRootPath}\\logs", "log-{Date}.txt"))
-                        .CreateLogger();
-            }
 
             await host.RunAsync();
         }

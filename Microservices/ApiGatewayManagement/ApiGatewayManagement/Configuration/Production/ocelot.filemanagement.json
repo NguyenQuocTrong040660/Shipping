@@ -1,0 +1,16 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/filemanagement/{everything}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "api-filemanagement.spartronics.com"
+        }
+      ],
+      "UpstreamPathTemplate": "/api/filemanagement/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "SwaggerKey": "filemanagement"
+    }
+  ]
+}

@@ -6,27 +6,73 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAPrEDblrR7kS3HCgtixyu1QAAAAACAAAAAAAQZgAAAAEAACAAAADBEnkEY9tRUvPUlCyg3p0FYHP9afBdAKuGbMuMt0zGDQAAAAAOgAAAAAIAACAAAAB5XvivqILrtiOO1yk3q1sSs96A86E7GMwKEobtqoX1MyAAAADjQyZibmulZSGveEgpvTV2lzZi51Okx556hNxsnMke50AAAAAI2SBAyakOD3X+WgwSC6PTXDhCClBEJcvDv7kWgXoOIJku+RIiSYE7hBH1aF7D2Hwniw31QxkHg/Krq40f+XKt</EncryptedPassword>
-    <_PublishTargetUrl>C:\inetpub\wwwroot\spartronics\Api-Commnunication</_PublishTargetUrl>
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAuslm1UGXoEqmMt0K6YgyKAAAAAACAAAAAAAQZgAAAAEAACAAAACGf7zwx+yZE0IAbdZipfKIJn8DIa1/sNQj9pzca5zJygAAAAAOgAAAAAIAACAAAABRu6MLu1PoIxDaibO+RiQgrmEe3m0ZCsZ99zlzGQfXSCAAAAB2/njMCo5lt8u6Pxe5gNdoDzUPWtnEJG1AjOlZ9SBj7kAAAABF+5clXHo/8hSh5/qgCN44L8NA3YKxpTJaAlskXRT/e1j1r8dNxNf8Jy7aqRdu7hNWdpYvx8jVbULTCShZn30m</EncryptedPassword>
+    <_PublishTargetUrl>C:\Deployment\IIS_Server\Spartronics\api-commnunication</_PublishTargetUrl>
+    <History>True|2021-04-27T02:49:58.3962589Z;</History>
   </PropertyGroup>
   <ItemGroup>
     <File Include="appsettings.Development.json">
-      <publishTime>02/01/2021 13:08:21</publishTime>
+      <publishTime>04/12/2021 09:12:10</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>02/01/2021 13:07:53</publishTime>
+      <publishTime>04/27/2021 09:48:00</publishTime>
     </File>
     <File Include="appsettings.Local.json">
-      <publishTime>02/01/2021 13:07:53</publishTime>
+      <publishTime>04/12/2021 09:12:10</publishTime>
     </File>
     <File Include="appsettings.Production.json">
-      <publishTime>02/01/2021 13:08:41</publishTime>
+      <publishTime>04/12/2021 09:12:10</publishTime>
     </File>
     <File Include="AutoMapper.dll">
       <publishTime>07/01/2020 16:00:54</publishTime>
     </File>
     <File Include="AutoMapper.Extensions.Microsoft.DependencyInjection.dll">
       <publishTime>07/16/2020 16:22:44</publishTime>
+    </File>
+    <File Include="Communication.Api.deps.json">
+      <publishTime>04/27/2021 09:49:23</publishTime>
+    </File>
+    <File Include="Communication.Api.dll">
+      <publishTime>04/27/2021 09:48:51</publishTime>
+    </File>
+    <File Include="Communication.Api.exe">
+      <publishTime>04/27/2021 09:48:51</publishTime>
+    </File>
+    <File Include="Communication.Api.pdb">
+      <publishTime>04/27/2021 09:48:51</publishTime>
+    </File>
+    <File Include="Communication.Api.runtimeconfig.json">
+      <publishTime>04/27/2021 09:48:52</publishTime>
+    </File>
+    <File Include="Communication.Application.dll">
+      <publishTime>04/27/2021 09:48:47</publishTime>
+    </File>
+    <File Include="Communication.Application.pdb">
+      <publishTime>04/27/2021 09:48:47</publishTime>
+    </File>
+    <File Include="Communication.Domain.dll">
+      <publishTime>04/27/2021 09:48:45</publishTime>
+    </File>
+    <File Include="Communication.Domain.pdb">
+      <publishTime>04/27/2021 09:48:45</publishTime>
+    </File>
+    <File Include="Communication.Infrastructure.dll">
+      <publishTime>04/27/2021 09:48:49</publishTime>
+    </File>
+    <File Include="Communication.Infrastructure.pdb">
+      <publishTime>04/27/2021 09:48:49</publishTime>
+    </File>
+    <File Include="Communication.Migration.dll">
+      <publishTime>04/27/2021 09:48:50</publishTime>
+    </File>
+    <File Include="Communication.Migration.pdb">
+      <publishTime>04/27/2021 09:48:50</publishTime>
+    </File>
+    <File Include="Communication.Persistence.dll">
+      <publishTime>04/27/2021 09:48:47</publishTime>
+    </File>
+    <File Include="Communication.Persistence.pdb">
+      <publishTime>04/27/2021 09:48:47</publishTime>
     </File>
     <File Include="CustomerService.Api.deps.json">
       <publishTime>02/01/2021 17:40:05</publishTime>
@@ -73,17 +119,23 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="CustomerService.Persistence.pdb">
       <publishTime>02/01/2021 17:40:01</publishTime>
     </File>
+    <File Include="FluentValidation.AspNetCore.dll">
+      <publishTime>03/15/2021 18:02:48</publishTime>
+    </File>
     <File Include="FluentValidation.DependencyInjectionExtensions.dll">
-      <publishTime>08/19/2020 08:39:24</publishTime>
+      <publishTime>03/15/2021 18:02:46</publishTime>
     </File>
     <File Include="FluentValidation.dll">
-      <publishTime>08/19/2020 08:39:24</publishTime>
+      <publishTime>03/15/2021 18:02:44</publishTime>
     </File>
     <File Include="MediatR.dll">
       <publishTime>07/27/2020 17:48:46</publishTime>
     </File>
     <File Include="MediatR.Extensions.Microsoft.DependencyInjection.dll">
       <publishTime>07/27/2020 18:36:00</publishTime>
+    </File>
+    <File Include="Microsoft.AspNetCore.Authentication.JwtBearer.dll">
+      <publishTime>09/23/2020 23:12:38</publishTime>
     </File>
     <File Include="Microsoft.AspNetCore.JsonPatch.dll">
       <publishTime>11/16/2019 11:17:28</publishTime>
@@ -100,50 +152,59 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Microsoft.Data.SqlClient.dll">
       <publishTime>05/15/2020 23:07:32</publishTime>
     </File>
+    <File Include="Microsoft.DotNet.PlatformAbstractions.dll">
+      <publishTime>11/22/2017 10:48:10</publishTime>
+    </File>
     <File Include="Microsoft.EntityFrameworkCore.Abstractions.dll">
-      <publishTime>07/22/2020 02:48:28</publishTime>
+      <publishTime>08/21/2020 00:57:42</publishTime>
     </File>
     <File Include="Microsoft.EntityFrameworkCore.dll">
-      <publishTime>07/22/2020 02:48:46</publishTime>
+      <publishTime>08/21/2020 00:58:10</publishTime>
     </File>
     <File Include="Microsoft.EntityFrameworkCore.Relational.dll">
-      <publishTime>07/22/2020 02:48:54</publishTime>
+      <publishTime>08/21/2020 00:58:16</publishTime>
     </File>
     <File Include="Microsoft.EntityFrameworkCore.SqlServer.dll">
-      <publishTime>07/22/2020 02:49:00</publishTime>
+      <publishTime>08/21/2020 00:58:20</publishTime>
     </File>
     <File Include="Microsoft.Extensions.Caching.Abstractions.dll">
-      <publishTime>07/22/2020 00:41:22</publishTime>
+      <publishTime>08/20/2020 23:49:04</publishTime>
     </File>
     <File Include="Microsoft.Extensions.Caching.Memory.dll">
-      <publishTime>07/22/2020 00:42:08</publishTime>
+      <publishTime>08/20/2020 23:49:30</publishTime>
     </File>
     <File Include="Microsoft.Extensions.Configuration.Abstractions.dll">
-      <publishTime>07/22/2020 00:41:40</publishTime>
+      <publishTime>08/20/2020 23:49:38</publishTime>
     </File>
     <File Include="Microsoft.Extensions.Configuration.Binder.dll">
-      <publishTime>07/22/2020 00:42:58</publishTime>
+      <publishTime>08/20/2020 23:50:00</publishTime>
     </File>
     <File Include="Microsoft.Extensions.Configuration.dll">
-      <publishTime>07/22/2020 00:42:58</publishTime>
+      <publishTime>08/20/2020 23:49:38</publishTime>
     </File>
     <File Include="Microsoft.Extensions.DependencyInjection.Abstractions.dll">
-      <publishTime>07/22/2020 00:42:08</publishTime>
+      <publishTime>08/20/2020 23:49:48</publishTime>
     </File>
     <File Include="Microsoft.Extensions.DependencyInjection.dll">
-      <publishTime>07/22/2020 00:41:46</publishTime>
+      <publishTime>08/20/2020 23:49:38</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.DependencyModel.dll">
+      <publishTime>11/22/2017 10:48:14</publishTime>
     </File>
     <File Include="Microsoft.Extensions.Logging.Abstractions.dll">
-      <publishTime>07/22/2020 00:42:32</publishTime>
+      <publishTime>08/20/2020 23:51:02</publishTime>
     </File>
     <File Include="Microsoft.Extensions.Logging.dll">
-      <publishTime>07/22/2020 00:43:04</publishTime>
+      <publishTime>08/20/2020 23:51:08</publishTime>
     </File>
     <File Include="Microsoft.Extensions.Options.dll">
-      <publishTime>07/22/2020 00:41:46</publishTime>
+      <publishTime>08/20/2020 23:49:28</publishTime>
+    </File>
+    <File Include="Microsoft.Extensions.PlatformAbstractions.dll">
+      <publishTime>06/22/2016 09:14:56</publishTime>
     </File>
     <File Include="Microsoft.Extensions.Primitives.dll">
-      <publishTime>07/22/2020 00:42:02</publishTime>
+      <publishTime>08/20/2020 23:49:56</publishTime>
     </File>
     <File Include="Microsoft.Identity.Client.dll">
       <publishTime>04/29/2019 22:04:14</publishTime>
@@ -166,11 +227,32 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Microsoft.OpenApi.dll">
       <publishTime>09/15/2019 16:25:40</publishTime>
     </File>
+    <File Include="Namotion.Reflection.dll">
+      <publishTime>03/20/2020 14:05:10</publishTime>
+    </File>
     <File Include="Newtonsoft.Json.Bson.dll">
       <publishTime>11/27/2018 23:10:18</publishTime>
     </File>
     <File Include="Newtonsoft.Json.dll">
       <publishTime>11/09/2019 00:56:44</publishTime>
+    </File>
+    <File Include="NJsonSchema.dll">
+      <publishTime>07/19/2020 22:40:32</publishTime>
+    </File>
+    <File Include="NSwag.Annotations.dll">
+      <publishTime>08/03/2020 16:44:02</publishTime>
+    </File>
+    <File Include="NSwag.AspNetCore.dll">
+      <publishTime>08/03/2020 16:44:30</publishTime>
+    </File>
+    <File Include="NSwag.Core.dll">
+      <publishTime>08/03/2020 16:43:54</publishTime>
+    </File>
+    <File Include="NSwag.Generation.AspNetCore.dll">
+      <publishTime>08/03/2020 16:44:16</publishTime>
+    </File>
+    <File Include="NSwag.Generation.dll">
+      <publishTime>08/03/2020 16:44:16</publishTime>
     </File>
     <File Include="Product.Api.deps.json">
       <publishTime>12/31/2020 13:51:38</publishTime>
@@ -241,11 +323,41 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll">
       <publishTime>05/15/2018 13:29:44</publishTime>
     </File>
+    <File Include="Serilog.AspNetCore.dll">
+      <publishTime>07/24/2020 01:43:08</publishTime>
+    </File>
     <File Include="Serilog.dll">
-      <publishTime>01/16/2019 23:25:02</publishTime>
+      <publishTime>09/10/2020 02:20:18</publishTime>
+    </File>
+    <File Include="Serilog.Extensions.Hosting.dll">
+      <publishTime>05/27/2020 00:12:08</publishTime>
     </File>
     <File Include="Serilog.Extensions.Logging.dll">
       <publishTime>08/21/2019 23:09:16</publishTime>
+    </File>
+    <File Include="Serilog.Extensions.Logging.File.dll">
+      <publishTime>02/18/2020 09:40:10</publishTime>
+    </File>
+    <File Include="Serilog.Formatting.Compact.dll">
+      <publishTime>10/17/2019 05:18:46</publishTime>
+    </File>
+    <File Include="Serilog.Settings.Configuration.dll">
+      <publishTime>06/02/2019 00:57:40</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.Async.dll">
+      <publishTime>06/26/2017 22:28:16</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.Console.dll">
+      <publishTime>10/22/2017 16:48:40</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.Debug.dll">
+      <publishTime>03/21/2018 21:19:06</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.File.dll">
+      <publishTime>10/17/2019 05:25:34</publishTime>
+    </File>
+    <File Include="Serilog.Sinks.RollingFile.dll">
+      <publishTime>01/03/2017 03:05:26</publishTime>
     </File>
     <File Include="Swashbuckle.AspNetCore.Swagger.dll">
       <publishTime>06/25/2020 21:14:40</publishTime>
@@ -275,7 +387,19 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/15/2018 13:29:44</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>02/01/2021 17:40:05</publishTime>
+      <publishTime>04/27/2021 09:49:24</publishTime>
+    </File>
+    <File Include="wwwroot/EmailTemplates/CustomerComment.html">
+      <publishTime>04/26/2021 10:59:53</publishTime>
+    </File>
+    <File Include="wwwroot/EmailTemplates/ForgotPassword.html">
+      <publishTime>04/05/2021 16:51:31</publishTime>
+    </File>
+    <File Include="wwwroot/EmailTemplates/Registration.html">
+      <publishTime>04/05/2021 16:51:31</publishTime>
+    </File>
+    <File Include="wwwroot/EmailTemplates/ShippingRequest.html">
+      <publishTime>04/05/2021 16:51:31</publishTime>
     </File>
     <File Include="wwwroot/images/10_12_202024_2099185774gioi-ngoi-sao-choi-xe-do-chiec-xau-nhuc-mat-chiec-dep-me-ly-2.jpg">
       <publishTime>12/12/2020 20:05:17</publishTime>
@@ -392,7 +516,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>12/23/2020 17:42:47</publishTime>
     </File>
     <File Include="wwwroot/logo-havana1.png">
-      <publishTime>01/15/2021 09:13:22</publishTime>
+      <publishTime>04/05/2021 18:10:39</publishTime>
     </File>
   </ItemGroup>
 </Project>

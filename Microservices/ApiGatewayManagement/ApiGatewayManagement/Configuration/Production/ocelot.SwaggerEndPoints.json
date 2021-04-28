@@ -6,27 +6,17 @@
         {
           "Name": "User API",
           "Version": "v1",
-          "Url": "https://api-user.spartronics.com.vn:8080/swagger/v1/swagger.json"
+          "Url": "https://api-user.spartronics.com/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "files",
+      "Key": "filemanagement",
       "Config": [
         {
-          "Name": "Files API",
+          "Name": "FileManagement API",
           "Version": "v1",
-          "Url": "https://api-files.spartronics.com.vn:8080/swagger/v1/swagger.json"
-        }
-      ]
-    },
-    {
-      "Key": "shippingapp",
-      "Config": [
-        {
-          "Name": "Shipping Application API",
-          "Version": "v1",
-          "Url": "https://api-shippingapp.spartronics.com.vn:8080/swagger/v1/swagger.json"
+          "Url": "https://api-album.spartronics.com/swagger/v1/swagger.json"
         }
       ]
     },
@@ -36,7 +26,17 @@
         {
           "Name": "Communication API",
           "Version": "v1",
-          "Url": "https://api-communication.spartronics.com.vn:8080/swagger/v1/swagger.json"
+          "Url": "https://api-communication.spartronics.com/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "shippingapp",
+      "Config": [
+        {
+          "Name": "Shipping App API",
+          "Version": "v1",
+          "Url": "https://api-shippingapp.spartronics.com/swagger/v1/swagger.json"
         }
       ]
     }

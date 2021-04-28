@@ -11,22 +11,22 @@
       ]
     },
     {
-      "Key": "files",
+      "Key": "news",
       "Config": [
         {
-          "Name": "Files API",
+          "Name": "News API",
           "Version": "v1",
-          "Url": "https://localhost:5002/swagger/v1/swagger.json"
+          "Url": "https://localhost:5003/swagger/v1/swagger.json"
         }
       ]
     },
     {
-      "Key": "shippingapp",
+      "Key": "filemanagement",
       "Config": [
         {
-          "Name": "Shipping Application API",
+          "Name": "FileManagement API",
           "Version": "v1",
-          "Url": "https://localhost:5003/swagger/v1/swagger.json"
+          "Url": "https://localhost:5002/swagger/v1/swagger.json"
         }
       ]
     },
@@ -34,9 +34,9 @@
       "Key": "communication",
       "Config": [
         {
-          "Name": "Commnunication API",
+          "Name": "Communication API",
           "Version": "v1",
-          "Url": "https://localhost:5004/swagger/v1/swagger.json"
+          "Url": "https://localhost:5005/swagger/v1/swagger.json"
         }
       ]
     }

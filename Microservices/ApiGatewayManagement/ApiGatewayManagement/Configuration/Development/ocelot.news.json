@@ -1,17 +1,17 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/files/{everything}",
+      "DownstreamPathTemplate": "/api/news/{everything}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5002
+          "Port": 5003
         }
       ],
-      "UpstreamPathTemplate": "/api/files/{everything}",
+      "UpstreamPathTemplate": "/api/news/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
-      "SwaggerKey": "files"
+      "SwaggerKey": "news"
     }
   ]
 }

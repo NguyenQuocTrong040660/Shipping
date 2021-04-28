@@ -46,24 +46,22 @@ namespace ApiGatewayManagement
                 builder =>
                 {
                     builder.WithOrigins(
-                                        //LOCAL
-                                        "http://grexsolutionsdemo.ddns.net:1003/",
-                                        "https://grexsolutionsdemo.ddns.net:1003/",
-                                        "http://www.grexsolutionsdemo.ddns.net:1003/",
-                                        "https://www.grexsolutionsdemo.ddns.net:1003/",
+                                //MAIN PAGE
+                                "http://tamcammedia.com.vn/",
+                                "https://tamcammedia.com.vn/",
+                                "http://www.spartronics.com/",
+                                "https://www.spartronics.com/",
 
-                                        //MAIN PAGE
-                                        "http://shippingapp.spartronics.com/",
-                                        "https://shippingapp.spartronics.com/",
-                                        "http://www.spartronics.com.vn/",
-                                        "https://www.spartronics.com.vn/"
-
-                                        )
-                                        .AllowAnyHeader()
-                                        .AllowAnyMethod()
-                                        .AllowAnyOrigin();
+                                //ADMIN PAGE
+                                "http://app-admin.spartronics.com/",
+                                "https://app-admin.spartronics.com/",
+                                "http://www.app-admin.spartronics.com/",
+                                "https://www.app-admin.spartronics.com/"
+                                )
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowAnyOrigin();
                 });
-
             });
 
             // Customise default API behaviour
@@ -71,8 +69,6 @@ namespace ApiGatewayManagement
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
-
-            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
 
             services.AddOpenApiDocument(configure =>
             {
@@ -89,7 +85,7 @@ namespace ApiGatewayManagement
                 configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
 
-
+            services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             ConfigureAuthenticationServices(services);
         }
 
@@ -122,8 +118,6 @@ namespace ApiGatewayManagement
             //if (!env.IsProduction())
             //{
                 app.UseDeveloperExceptionPage();
-
-                // Enable middleware to serve generated Swagger as a JSON endpoint.
                 app.UseOpenApi();
                 app.UseSwaggerForOcelotUI(opt =>
                 {
@@ -136,8 +130,7 @@ namespace ApiGatewayManagement
             app.UseSerilogRequestLogging();
             app.UseHealthChecks("/health");
 
-            //Disable Temporary
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors("GREXSOLUTIONS");

@@ -5,7 +5,7 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "api-communication.spartronics.com.vn:8080"
+          "Host": "api-communication.spartronics.com"
         }
       ],
       "UpstreamPathTemplate": "/api/communication/{everything}",
