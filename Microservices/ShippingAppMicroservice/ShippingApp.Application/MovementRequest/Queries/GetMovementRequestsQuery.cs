@@ -35,7 +35,7 @@ namespace ShippingApp.Application.MovementRequest.Queries
                 .GetDbSet()
                 .AsNoTracking()
                 .OrderByDescending(x => x.LastModified)
-                .ToListAsync());
+                .ToListAsync(cancellationToken));
 
             foreach (var item in movementRequests)
             {

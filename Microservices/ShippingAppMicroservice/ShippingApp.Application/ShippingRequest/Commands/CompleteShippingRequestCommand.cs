@@ -21,9 +21,9 @@ namespace ShippingApp.Application.ShippingRequest.Commands
     {
         private readonly IShippingAppDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<UpdateShippingRequestCommandHandler> _logger;
+        private readonly ILogger<CompleteShippingRequestCommandHandler> _logger;
 
-        public CompleteShippingRequestCommandHandler(IShippingAppDbContext context, IMapper mapper, ILogger<UpdateShippingRequestCommandHandler> logger)
+        public CompleteShippingRequestCommandHandler(IShippingAppDbContext context, IMapper mapper, ILogger<CompleteShippingRequestCommandHandler> logger)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _context = context ?? throw new ArgumentNullException(nameof(context));

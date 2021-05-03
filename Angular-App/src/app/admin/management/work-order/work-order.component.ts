@@ -180,6 +180,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
 
   openCreateDialog() {
     this.titleDialog = 'Create Work Order';
+    this.workOrderForm.reset();
     this.isShowDialogCreate = true;
     this.isEdit = false;
   }
@@ -216,10 +217,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => {
-          this.notificationService.error('Create Work Order Failed. Please try again');
-          this.hideDialog();
-        }
+        (_) => this.notificationService.error('Create Work Order Failed. Please try again')
       );
   }
 

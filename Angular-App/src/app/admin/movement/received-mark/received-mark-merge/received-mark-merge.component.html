@@ -16,6 +16,78 @@
       </ng-template>
     </p-toolbar>
 
+    <p-table styleClass="p-mb-4" dataKey="id" [value]="initPreviewReceivedMarkPrintings(selectedReceivedMarkPrintings)" [columns]="cols">
+      <ng-template pTemplate="caption">
+        <div class="table-header">Preview</div>
+      </ng-template>
+
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <ng-container *ngFor="let col of columns">
+            <ng-container [ngSwitch]="col.type">
+              <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+                <th class="p-text-center" style="width: 3rem"></th>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+                <th class="p-text-center" style="width: 8rem">
+                  {{ col.header }}
+                </th>
+              </ng-container>
+
+              <ng-container *ngSwitchDefault>
+                <th class="p-text-center">
+                  {{ col.header }}
+                </th>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length" class="text-center">Please select marks to merge</td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-item let-columns="columns">
+        <tr>
+          <ng-container *ngFor="let col of columns">
+            <ng-container [ngSwitch]="col.type">
+              <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+                <td class="p-text-center"></td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] | date: 'dd/MM/yyyy' }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+                <td>
+                  {{ item[col.field][col.subField] }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] }}
+                </td>
+              </ng-container>
+              <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
+                <td class="p-text-center">
+                  {{ item[col.field] | number }}
+                </td>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </ng-template>
+    </p-table>
+
     <p-table dataKey="id" [value]="receivedMarkPrintings" [(selection)]="selectedReceivedMarkPrintings" [rows]="10" [columns]="cols" [paginator]="true">
       <ng-template pTemplate="header" let-columns>
         <tr>

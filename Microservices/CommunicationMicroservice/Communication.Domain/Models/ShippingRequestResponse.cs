@@ -22,10 +22,10 @@ namespace Communication.Domain.Models
         public string Notes { get; set; }
         public string PurchaseOrder { get; set; }
         public int ShippingRequestLogisticId { get; set; }
-        public virtual ICollection<ShippingRequestDetailModel> ShippingRequestDetails { get; set; }
+        public virtual ICollection<ShippingPlanModel> ShippingPlans { get; set; }
     }
 
-    public class ShippingRequestDetailModel
+    public class ShippingPlanModel
     {
         public int Quantity { get; set; }
         public float Price { get; set; }

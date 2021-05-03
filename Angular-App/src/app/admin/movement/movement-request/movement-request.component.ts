@@ -114,7 +114,10 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
       this.movementRequestClients.generateMovementRequests(workOrders).subscribe(
         (movementRequestDetails) => {
           this.movementRequestDetails = movementRequestDetails;
-          this.movementRequestDetails.forEach((i, index) => (i['id'] = ++index));
+          this.movementRequestDetails.forEach((i, index) => {
+            i['id'] = ++index;
+            i.quantity = i.workOrder.remainQuantity;
+          });
         },
         (_) => (this.movementRequestDetails = [])
       );
@@ -153,7 +156,6 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
     this.isShowDialogCreate = false;
     this.isShowDialogEdit = false;
     this.isShowDialogHistory = false;
-    this.selectItems = null;
     this.movementRequestForm.reset();
   }
 

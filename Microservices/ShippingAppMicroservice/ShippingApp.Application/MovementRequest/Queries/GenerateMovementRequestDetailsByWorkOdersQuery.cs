@@ -34,10 +34,11 @@ namespace ShippingApp.Application.MovementRequest.Queries
             {
                 var workOrderDetails = _mapper.Map<List<WorkOrderDetailModel>>(await _context.WorkOrderDetails
                     .AsNoTracking()
-                    .Include(x => x.WorkOrder)
                     .Include(x => x.Product)
+                    .Include(x => x.WorkOrder)
+                    .ThenInclude(x => x.MovementRequestDetails)
                     .Where(x => x.WorkOrderId == item.Id)
-                    .ToListAsync());
+                    .ToListAsync(cancellationToken));
 
                 movementRequestDetails.AddRange(workOrderDetails.Select(x => new MovementRequestDetailModel
                 {

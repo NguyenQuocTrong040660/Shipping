@@ -11,6 +11,7 @@ using ShippingApp.Domain.Enumerations;
 using ShippingApp.Application.Config.Queries;
 using ShippingApp.Application.Product.Queries;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShippingApp.Application.ShippingRequest.Commands
 {
@@ -24,12 +25,15 @@ namespace ShippingApp.Application.ShippingRequest.Commands
         private readonly IMapper _mapper;
         private readonly IShippingAppRepository<Entities.ShippingRequest> _shippingAppRepository;
         private readonly IMediator _mediator;
+        private readonly IShippingAppDbContext _context;
 
         public CreateShippingRequestCommandHandler(IMapper mapper,
             IMediator mediator,
+            IShippingAppDbContext context,
             IShippingAppRepository<Entities.ShippingRequest> shippingAppRepository)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _shippingAppRepository = shippingAppRepository ?? throw new ArgumentNullException(nameof(shippingAppRepository));
         }
@@ -58,9 +62,11 @@ namespace ShippingApp.Application.ShippingRequest.Commands
 
             var entity = _mapper.Map<Entities.ShippingRequest>(request.ShippingRequest);
 
+            entity.ShippingPlans = _context.ShippingPlans.ToList().Where(x => request.ShippingRequest.ShippingPlans.Any(s => s.Id == x.Id)).ToList();
+
             var shippingRequestLogistics = new List<Entities.ShippingRequestLogistic>();
 
-            foreach (var item in entity.ShippingRequestDetails)
+            foreach (var item in entity.ShippingPlans)
             {
                 shippingRequestLogistics.Add(new Entities.ShippingRequestLogistic
                 {
@@ -96,7 +102,7 @@ namespace ShippingApp.Application.ShippingRequest.Commands
 
             var shippingRequestModel = _mapper.Map<ShippingRequestModel>(entity);
 
-            foreach (var item in shippingRequestModel.ShippingRequestDetails)
+            foreach (var item in shippingRequestModel.ShippingPlans)
             {
                 item.Product = await _mediator.Send(new GetProductByIdQuery { Id = item.ProductId });
             }

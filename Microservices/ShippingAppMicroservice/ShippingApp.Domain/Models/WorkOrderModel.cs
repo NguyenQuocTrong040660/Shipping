@@ -75,6 +75,11 @@ namespace ShippingApp.Domain.Models
         {
             get
             {
+                if (Status == null)
+                {
+                    return true;
+                }
+
                 return Status.Equals(nameof(WorkOrderStatus.Start));
             }
         }

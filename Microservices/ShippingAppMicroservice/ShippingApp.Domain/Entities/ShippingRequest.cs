@@ -23,7 +23,7 @@ namespace ShippingApp.Domain.Entities
 
 
         public virtual ICollection<ShippingRequestLogistic> ShippingRequestLogistics { get; set; }
-        public virtual ICollection<ShippingRequestDetail> ShippingRequestDetails { get; set; }
+        public virtual ICollection<ShippingPlan> ShippingPlans { get; set; }
         public virtual ICollection<ShippingMarkShipping> ShippingMarkShippings { get; set; }
     }
 }

@@ -33,12 +33,10 @@ namespace ShippingApp.Application.ShippingPlan.Queries
         public async Task<ShippingPlanModel> Handle(GetShippingPlanByRefIdQuery request, CancellationToken cancellationToken)
         {
             var entity = await _context.ShippingPlans
-                .AsNoTracking()
-                .Include(x => x.ShippingPlanDetails)
-                .ThenInclude(x => x.Product)
+                .Include(x => x.Product)
                 .FirstOrDefaultAsync(x => x.SalelineNumber == request.SalelineNumber 
                                         && x.SalesOrder == request.SalesOrder 
-                                        && x.ShippingPlanDetails.First().Product.ProductNumber == request.ProductNumber);
+                                        && x.Product.ProductNumber == request.ProductNumber, cancellationToken);
 
             return _mapper.Map<ShippingPlanModel>(entity);
         }

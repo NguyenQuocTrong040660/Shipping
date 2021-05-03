@@ -11,7 +11,6 @@ namespace ShippingApp.Application.Interfaces
         DbSet<Entities.Country> Countries { get; }
         DbSet<Entities.Product> Products { get; }
         DbSet<Entities.ShippingPlan> ShippingPlans { get; }
-        DbSet<Entities.ShippingPlanDetail> ShippingPlanDetails { get; }
         DbSet<Entities.MovementRequest> MovementRequests { get; }
         DbSet<Entities.MovementRequestDetail> MovementRequestDetails { get; }
         DbSet<Entities.WorkOrder> WorkOrders { get; }
@@ -22,7 +21,6 @@ namespace ShippingApp.Application.Interfaces
         DbSet<Entities.ReceivedMarkPrinting> ReceivedMarkPrintings { get; }
         DbSet<Entities.ShippingMark> ShippingMarks { get; }
         DbSet<Entities.ShippingRequest> ShippingRequests { get; }
-        DbSet<Entities.ShippingRequestDetail> ShippingRequestDetails { get; }
         DbSet<Entities.ShippingRequestLogistic> ShippingRequestLogistics { get; }
         DbSet<Entities.ShippingMarkShipping> ShippingMarkShippings { get;  }
         DbSet<Entities.ShippingMarkPrinting> ShippingMarkPrintings { get; }

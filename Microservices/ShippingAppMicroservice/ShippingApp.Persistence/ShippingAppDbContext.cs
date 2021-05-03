@@ -22,7 +22,6 @@ namespace ShippingApp.Persistence.DBContext
         public DbSet<Country> Countries { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ShippingPlan> ShippingPlans { get; set; }
-        public DbSet<ShippingPlanDetail> ShippingPlanDetails { get; set; }
         public DbSet<MovementRequest> MovementRequests { get; set; }
         public DbSet<MovementRequestDetail> MovementRequestDetails { get; set; }
         public DbSet<WorkOrder> WorkOrders { get; set; }
@@ -38,7 +37,6 @@ namespace ShippingApp.Persistence.DBContext
         public DbSet<ShippingMarkPrinting> ShippingMarkPrintings { get; set; }
 
         public DbSet<ShippingRequest> ShippingRequests { get; set; }
-        public DbSet<ShippingRequestDetail> ShippingRequestDetails { get; set; }
         public DbSet<ShippingRequestLogistic> ShippingRequestLogistics { get; set; }
 
         public DbSet<TEntity> SetEntity<TEntity>() where TEntity : class

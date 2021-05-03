@@ -51,37 +51,37 @@ namespace ShippingApp.Domain.Models
         public string BillToAddress { get; set; }
         public string ShipTo { get; set; }
         public string ShipToAddress { get; set; }
+
         public int AccountNumber { get; set; }
         public int ProductLine { get; set; }
 
+        public int Quantity { get; set; }
+        public float Price { get; set; }
+        public string ShippingMode { get; set; }
+        public float Amount { get; set; }
+
+        public int ProductId { get; set; }
+        public virtual ProductModel Product { get; set; }
+
+        public int? ShippingRequestId { get; set; }
+        public virtual ShippingRequestModel ShippingRequest { get; set; }
+
         [IgnoreMap]
-        public ProductModel Product
+        public string Status
         {
             get
             {
-                if (ShippingPlanDetails == null || !ShippingPlanDetails.Any())
-                {
-                    return null;
-                }
-
-                return ShippingPlanDetails.ToArray()[0].Product;
+                return ShippingRequestId.HasValue ? "Close" : "Start";
             }
         }
 
         [IgnoreMap]
-        public ShippingPlanDetailModel ShippingPlanDetail
+        public bool CanSelected
         {
             get
             {
-                if (ShippingPlanDetails == null || !ShippingPlanDetails.Any())
-                {
-                    return null;
-                }
-
-                return ShippingPlanDetails.ToArray()[0];
+                return ShippingRequestId.HasValue;
             }
         }
-
-        public virtual ICollection<ShippingPlanDetailModel> ShippingPlanDetails { get; set; }
     }
 }

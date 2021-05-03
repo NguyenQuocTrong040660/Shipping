@@ -16,8 +16,7 @@ namespace ShippingApp.Application.Product.Validations
             _context = context ?? throw new ArgumentNullException(nameof(context));
 
             RuleFor(x => x.Id)
-                .Must(NotExistInShippingPlanDetails)
-                .Must(NotExistInShippingRequestDetails)
+                .Must(NotExistInShippingPlans)
                 .Must(NotExistInWorkOrderDetails)
                 .Must(NotExistInMovementRequestDetails)
                 .Must(NotExistInReceivedMarkMovements)
@@ -28,16 +27,11 @@ namespace ShippingApp.Application.Product.Validations
                 .WithMessage("Failed to delete product");
         }
 
-        private bool NotExistInShippingPlanDetails(int productId)
+        private bool NotExistInShippingPlans(int productId)
         {
-            return _context.ShippingPlanDetails.AsNoTracking().Any(x => x.ProductId == productId) == false;
+            return _context.ShippingPlans.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
-
-        private bool NotExistInShippingRequestDetails(int productId)
-        {
-            return _context.ShippingRequestDetails.AsNoTracking().Any(x => x.ProductId == productId) == false;
-        }
-
+        
         private bool NotExistInWorkOrderDetails(int productId)
         {
             return _context.WorkOrderDetails.AsNoTracking().Any(x => x.ProductId == productId) == false;

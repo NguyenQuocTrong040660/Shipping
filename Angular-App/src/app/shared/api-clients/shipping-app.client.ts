@@ -3589,72 +3589,6 @@ export class ShippingRequestClients {
         return _observableOf<ShippingRequestModel>(<any>null);
     }
 
-    updateShippingRequest(id: number, shippingRequest: ShippingRequestModel): Observable<Result> {
-        let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(shippingRequest);
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdateShippingRequest(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUpdateShippingRequest(<any>response_);
-                } catch (e) {
-                    return <Observable<Result>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<Result>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUpdateShippingRequest(response: HttpResponseBase): Observable<Result> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
-            return _observableOf(result200);
-            }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ShippingRequestModel>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            }));
-        } else if (status === 401) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result401: any = null;
-            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<Result>(<any>null);
-    }
-
     deleteShippingRequestAysnc(id: number): Observable<Result> {
         let url_ = this.baseUrl + "/api/shippingapp/shippingrequest/{id}";
         if (id === undefined || id === null)
@@ -4405,27 +4339,14 @@ export interface ProductModel extends AuditableEntityModel {
     partRevisionRaw?: string | undefined;
     partRevisionClean?: string | undefined;
     processRevision?: string | undefined;
-    shippingPlanDetails?: ShippingPlanDetailModel[] | undefined;
+    shippingPlans?: ShippingPlanModel[] | undefined;
     movementRequestDetails?: MovementRequestDetailModel[] | undefined;
-    shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
     shippingRequestLogistics?: ShippingRequestLogisticModel[] | undefined;
     workOrderDetails?: WorkOrderDetailModel[] | undefined;
     receivedMarkMovements?: ReceivedMarkMovementModel[] | undefined;
     receivedMarkPrintings?: ReceivedMarkPrintingModel[] | undefined;
     shippingMarkPrintings?: ShippingMarkPrintingModel[] | undefined;
     shippingMarkShippings?: ShippingMarkShippingModel[] | undefined;
-}
-
-export interface ShippingPlanDetailModel extends AuditableEntityModel {
-    id?: number;
-    quantity?: number;
-    price?: number;
-    shippingMode?: string | undefined;
-    amount?: number;
-    shippingPlanId?: number;
-    productId?: number;
-    product?: ProductModel | undefined;
-    shippingPlan?: ShippingPlanModel | undefined;
 }
 
 export interface ShippingPlanModel extends AuditableEntityModel {
@@ -4445,25 +4366,16 @@ export interface ShippingPlanModel extends AuditableEntityModel {
     shipToAddress?: string | undefined;
     accountNumber?: number;
     productLine?: number;
-    product?: ProductModel | undefined;
-    shippingPlanDetail?: ShippingPlanDetailModel | undefined;
-    shippingPlanDetails?: ShippingPlanDetailModel[] | undefined;
-}
-
-export interface ShippingRequestDetailModel extends AuditableEntityModel {
-    id?: number;
     quantity?: number;
     price?: number;
     shippingMode?: string | undefined;
     amount?: number;
-    shippingRequestId?: number;
     productId?: number;
-    salelineNumber?: string | undefined;
-    purchaseOrder?: string | undefined;
-    salesOrder?: string | undefined;
-    productLine?: number;
     product?: ProductModel | undefined;
+    shippingRequestId?: number | undefined;
     shippingRequest?: ShippingRequestModel | undefined;
+    status?: string | undefined;
+    canSelected?: boolean;
 }
 
 export interface ShippingRequestModel extends AuditableEntityModel {
@@ -4481,7 +4393,7 @@ export interface ShippingRequestModel extends AuditableEntityModel {
     shipToAddress?: string | undefined;
     pickupDate?: Date;
     shippingRequestLogistic?: ShippingRequestLogisticModel[] | undefined;
-    shippingRequestDetails?: ShippingRequestDetailModel[] | undefined;
+    shippingPlans?: ShippingPlanModel[] | undefined;
     shippingMarks?: ShippingMarkModel[] | undefined;
 }
 

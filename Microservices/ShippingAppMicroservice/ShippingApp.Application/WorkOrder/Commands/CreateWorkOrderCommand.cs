@@ -35,6 +35,11 @@ namespace ShippingApp.Application.WorkOrder.Commands
 
         public async Task<Result> Handle(CreateWorkOrderCommand request, CancellationToken cancellationToken)
         {
+            if (_context.WorkOrders.Any(x => x.RefId.ToUpper() == request.WorkOrder.RefId.ToUpper()))
+            {
+                return Result.Failure($"Work Order has been existed with refId {request.WorkOrder.RefId}");
+            }
+
             var entity = _mapper.Map<Entities.WorkOrder>(request.WorkOrder);
 
             entity.WorkOrderDetails.ToList().ForEach(i => {

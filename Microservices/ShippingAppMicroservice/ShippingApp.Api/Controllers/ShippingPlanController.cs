@@ -90,17 +90,11 @@ namespace ShippingApp.Api.Controllers
                     ShipToAddress = item.ShipToAddress,
                     ProductLine = item.ProductLine,
                     AccountNumber = item.AccountNumber,
-                    ShippingPlanDetails = new List<ShippingPlanDetailModel>()
-                    {
-                        new ShippingPlanDetailModel
-                        {
-                            ProductId = productDatabase.Id,
-                            Quantity = Quantity,
-                            Price = Price,
-                            Amount = Quantity * Price,
-                            ShippingMode = item.ShippingMode,
-                        }
-                    }
+                    ProductId = productDatabase.Id,
+                    Quantity = Quantity,
+                    Price = Price,
+                    Amount = Quantity * Price,
+                    ShippingMode = item.ShippingMode
                 };
                 
                 var result = await Mediator.Send(new CreateNewShippingPLanCommand 
