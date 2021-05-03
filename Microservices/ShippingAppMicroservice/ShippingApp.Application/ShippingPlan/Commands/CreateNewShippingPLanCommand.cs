@@ -64,7 +64,7 @@ namespace ShippingApp.Application.ShippingPlan.Commands
             {
                 var shippingPlans = await _context.ShippingPlans
                 .Include(x => x.Product)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
                 var shippingPlanDb = shippingPlans
                                         .Where(x => x.SalesOrder == request.ShippingPlan.SalesOrder)

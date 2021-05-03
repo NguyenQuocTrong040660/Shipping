@@ -31,7 +31,7 @@ namespace ShippingApp.Application.ShippingPlan.Queries
             var shippingPlans = await _shippingAppRepository.GetDbSet()
                 .Include(x => x.Product)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return _mapper.Map<List<ShippingPlanModel>>(shippingPlans);
         }

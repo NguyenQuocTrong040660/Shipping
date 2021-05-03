@@ -26,7 +26,7 @@ namespace ShippingApp.Application.Product.Queries
 
         public async Task<ProductModel> Handle(GetProductByProductNumberQuery request, CancellationToken cancellationToken)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(i => i.ProductNumber.Equals(request.ProductNumber));
+            var product = await _context.Products.FirstOrDefaultAsync(i => i.ProductNumber.Equals(request.ProductNumber), cancellationToken);
             return _mapper.Map<ProductModel>(product);
         }
     }

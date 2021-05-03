@@ -83,7 +83,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       .getAllShippingPlan()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => (this.shippingPlans = i.filter((x) => x.shippingRequestId === null)),
+        (i) => (this.shippingPlans = i.filter((x) => x.canSelected)),
         (_) => (this.shippingPlans = [])
       );
   }

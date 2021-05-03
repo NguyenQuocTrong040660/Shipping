@@ -76,3 +76,22 @@
 textarea {
   resize: none;
 }
+
+.customer-badge {
+  border-radius: 2px;
+  padding: 0.25em 0.5rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+}
+
+.customer-badge.status-Close {
+  background-color: #ffcdd2;
+  color: #c63737;
+}
+
+.customer-badge.status-Start {
+  background-color: #c8e6c9;
+  color: #256029;
+}

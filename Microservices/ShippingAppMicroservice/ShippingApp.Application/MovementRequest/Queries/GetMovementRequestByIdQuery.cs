@@ -33,7 +33,7 @@ namespace ShippingApp.Application.MovementRequest.Queries
                .ThenInclude(i => i.WorkOrder)
                .ThenInclude(i => i.WorkOrderDetails)
                .ThenInclude(i => i.Product)
-               .FirstOrDefaultAsync(i => i.Id == request.Id);
+               .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
 
             return _mapper.Map<MovementRequestModel>(entity);
         }

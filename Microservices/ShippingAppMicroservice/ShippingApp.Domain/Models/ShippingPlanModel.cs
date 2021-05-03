@@ -65,5 +65,23 @@ namespace ShippingApp.Domain.Models
 
         public int? ShippingRequestId { get; set; }
         public virtual ShippingRequestModel ShippingRequest { get; set; }
+
+        [IgnoreMap]
+        public string Status
+        {
+            get
+            {
+                return ShippingRequestId.HasValue ? "Close" : "Start";
+            }
+        }
+
+        [IgnoreMap]
+        public bool CanSelected
+        {
+            get
+            {
+                return ShippingRequestId.HasValue;
+            }
+        }
     }
 }

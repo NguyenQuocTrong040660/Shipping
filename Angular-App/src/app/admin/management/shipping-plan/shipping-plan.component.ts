@@ -29,8 +29,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
 
   shippingPlanForm: FormGroup;
 
-  isEdit = false;
-  isShowDialog = false;
+  isShowDialogCreate = false;
+  isShowDialogEdit = false;
   isShowDialogHistory = false;
 
   cols: any[] = [];
@@ -78,6 +78,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       { header: 'Ship To Address', field: 'shipToAddress', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
       { header: 'Shipping Date', field: 'shippingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+
+      { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
@@ -112,14 +114,25 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       salelineNumber: [0, [Validators.required]],
       purchaseOrder: ['', [Validators.required]],
       shippingDate: ['', [Validators.required]],
-      notes: [''],
-      quantity: [0, [Validators.required]],
-      productId: [0, [Validators.required]],
-      amount: [0, [Validators.required]],
-      price: [0, [Validators.required]],
+
+      billTo: ['', [Validators.required]],
+      billToAddress: ['', [Validators.required]],
+      shipTo: ['', [Validators.required]],
+      shipToAddress: ['', [Validators.required]],
+
+      accountNumber: ['', [Validators.required]],
+      productLine: ['', [Validators.required]],
+      shippingRequestId: [null],
+
+      quantity: [0],
+      productId: [0],
+      amount: [0],
+      price: [0],
       shippingMode: [''],
+
       lastModifiedBy: [''],
       lastModified: [null],
+      notes: [''],
     });
   }
 
@@ -160,13 +173,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
       .getAllShippingPlan()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => {
-          this.shippingPlans = i;
-
-          if (this.selectedShippingPlan) {
-            this.selectedShippingPlan = this.shippingPlans.find((s) => s.id === this.selectedShippingPlan.id);
-          }
-        },
+        (i) => (this.shippingPlans = i),
         (_) => (this.shippingPlans = [])
       );
   }
@@ -182,11 +189,9 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   openCreateDialog() {
-    this.selectedShippingPlan = null;
     this.shippingPlanForm.reset();
     this.titleDialog = 'Create Shipping Plan';
-    this.isShowDialog = true;
-    this.isEdit = false;
+    this.isShowDialogCreate = true;
   }
 
   onCreate() {
@@ -200,7 +205,6 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
           this.notificationService.success('Create Shipping Plan Successfully');
           this.initShippingPlans();
           this.hideDialog();
-          this.selectedShippingPlan = null;
         } else {
           this.notificationService.error(result?.error);
         }
@@ -209,30 +213,28 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     );
   }
 
-  onSubmit() {
-    if (this.shippingPlanForm.invalid) {
-      return;
-    }
-
-    this.isEdit ? this.onEdit() : this.onCreate();
-  }
-
   openEditDialog() {
-    this.isShowDialog = true;
     this.titleDialog = 'Edit Shipping Plan';
-    this.isEdit = true;
-    this.shippingPlanForm.patchValue(this.selectedShippingPlan);
+    this.shippingPlanForm.patchValue({
+      ...this.selectedShippingPlan,
+      ...{
+        shippingDate: new Date(this.selectedShippingPlan.shippingDate),
+      },
+    });
+    this.isShowDialogEdit = true;
   }
 
   hideDialog() {
-    this.isShowDialog = false;
+    this.isShowDialogCreate = false;
+    this.isShowDialogEdit = false;
     this.isShowDialogHistory = false;
-    this.isShowDialog = false;
+    this.selectedShippingPlan = null;
+    this.shippingPlanForm.reset();
   }
 
   onEdit() {
-    const { id, shippingDate } = this.shippingPlanForm.value;
-    this.shippingPlanForm.value.shippingDate = Utilities.ConvertDateBeforeSendToServer(shippingDate);
+    let { id, shippingDate } = this.shippingPlanForm.value as ShippingPlanModel;
+    shippingDate = Utilities.ConvertDateBeforeSendToServer(shippingDate);
 
     this.shippingPlanClients
       .updateShippingPlan(id, this.shippingPlanForm.value)
@@ -252,7 +254,6 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
   }
 
   openDeleteDialog(shippingPlan: ShippingPlanModel) {
-    this.isEdit = false;
     this.confirmationService.confirm({
       message: 'Do you confirm to delete this item?',
       header: 'Confirm',

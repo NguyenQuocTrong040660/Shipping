@@ -4374,6 +4374,8 @@ export interface ShippingPlanModel extends AuditableEntityModel {
     product?: ProductModel | undefined;
     shippingRequestId?: number | undefined;
     shippingRequest?: ShippingRequestModel | undefined;
+    status?: string | undefined;
+    canSelected?: boolean;
 }
 
 export interface ShippingRequestModel extends AuditableEntityModel {

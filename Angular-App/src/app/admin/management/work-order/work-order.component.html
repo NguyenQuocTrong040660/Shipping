@@ -93,7 +93,12 @@
               {{ item[col.field][col.subField] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              {{ item[col.field] }}
+              <ng-container *ngIf="col.field === 'status'; else notStatusColumn">
+                <span *ngIf="col.field === 'status'" [class]="'customer-badge status-' + item[col.field]">{{ item[col.field] }}</span>
+              </ng-container>
+              <ng-template #notStatusColumn>
+                {{ item[col.field] }}
+              </ng-template>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
               <button

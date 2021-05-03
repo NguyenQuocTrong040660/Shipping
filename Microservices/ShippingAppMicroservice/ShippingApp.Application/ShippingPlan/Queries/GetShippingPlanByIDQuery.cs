@@ -33,7 +33,7 @@ namespace ShippingApp.Application.ShippingPlan.Queries
             var entity = await _context.ShippingPlans
                 .AsNoTracking()
                 .Include(x => x.Product)
-                .FirstOrDefaultAsync(x => x.Id == request.Id);
+                .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             return _mapper.Map<ShippingPlanModel>(entity);
         }

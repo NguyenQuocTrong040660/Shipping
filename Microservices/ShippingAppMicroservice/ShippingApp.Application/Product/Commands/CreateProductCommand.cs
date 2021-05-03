@@ -33,7 +33,7 @@ namespace ShippingApp.Application.Product.Commands
 
         public async Task<Result> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var entityInDb = await _context.Products.FirstOrDefaultAsync(i => i.ProductNumber.Equals(request.Product.ProductNumber));
+            var entityInDb = await _context.Products.FirstOrDefaultAsync(i => i.ProductNumber.Equals(request.Product.ProductNumber), cancellationToken);
 
             if (entityInDb != null)
             {

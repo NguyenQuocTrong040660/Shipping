@@ -6,11 +6,11 @@ import { WidthColumn } from 'app/shared/configs/width-column';
 import { MenuItem } from 'primeng/api';
 
 @Component({
-  selector: 'app-shipping-plan-create',
-  templateUrl: './shipping-plan-create.component.html',
-  styleUrls: ['./shipping-plan-create.component.scss'],
+  selector: 'app-shipping-plan-edit',
+  templateUrl: './shipping-plan-edit.component.html',
+  styleUrls: ['./shipping-plan-edit.component.scss'],
 })
-export class ShippingPlanCreateComponent implements OnInit {
+export class ShippingPlanEditComponent implements OnInit {
   @Input() shippingPlanForm: FormGroup;
   @Input() titleDialog: string;
   @Input() isShowDialog: boolean;
@@ -122,10 +122,17 @@ export class ShippingPlanCreateComponent implements OnInit {
   nextPage(currentIndex: number) {
     switch (currentIndex) {
       case 0: {
+        this.selectedProduct = this.products.find((i) => i.id == this.productControl.value);
         break;
       }
       case 1: {
+        this.selectedProduct['quantity'] = this.quantityControl.value;
+        this.selectedProduct['price'] = this.priceControl.value;
+        this.selectedProduct['shippingMode'] = this.shippingModeControl.value;
+        this.selectedProduct['amount'] = this.amountControl.value;
+
         this.productDetails = JSON.parse(JSON.stringify([this.selectedProduct]));
+
         break;
       }
     }
@@ -159,7 +166,7 @@ export class ShippingPlanCreateComponent implements OnInit {
 
   allowMoveToCompleteStep(productDetails: ProductDetail[]): boolean {
     const haveFilledDataRows = productDetails.filter((i) => i.quantity === 0 || i.price === 0 || i.amount === 0).length === 0;
-    const haveNotEditRows = productDetails.every((d) => d.isEditRow === false);
+    const haveNotEditRows = productDetails.every((d) => !!d.isEditRow === false);
 
     return haveFilledDataRows && haveNotEditRows && this.productDetails.length > 0;
   }

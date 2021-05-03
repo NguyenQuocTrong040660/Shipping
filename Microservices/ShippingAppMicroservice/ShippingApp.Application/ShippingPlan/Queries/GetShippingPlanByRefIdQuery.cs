@@ -36,7 +36,7 @@ namespace ShippingApp.Application.ShippingPlan.Queries
                 .Include(x => x.Product)
                 .FirstOrDefaultAsync(x => x.SalelineNumber == request.SalelineNumber 
                                         && x.SalesOrder == request.SalesOrder 
-                                        && x.Product.ProductNumber == request.ProductNumber);
+                                        && x.Product.ProductNumber == request.ProductNumber, cancellationToken);
 
             return _mapper.Map<ShippingPlanModel>(entity);
         }

@@ -94,7 +94,12 @@
               {{ item[col.field][col.subField] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              {{ item[col.field] }}
+              <ng-container *ngIf="col.field === 'status'; else notStatusColumn">
+                <span *ngIf="col.field === 'status'" [class]="'customer-badge status-' + item[col.field]">{{ item[col.field] }}</span>
+              </ng-container>
+              <ng-template #notStatusColumn>
+                {{ item[col.field] }}
+              </ng-template>
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
               {{ item[col.field] | number }}
@@ -154,12 +159,20 @@
   [shippingPlanForm]="shippingPlanForm"
   [products]="products"
   [titleDialog]="titleDialog"
-  [isShowDialog]="isShowDialog"
-  [selectedShippingPlan]="selectedShippingPlan"
-  [isEdit]="isEdit"
-  (submitEvent)="onSubmit()"
+  [isShowDialog]="isShowDialogCreate"
+  (submitEvent)="onCreate()"
   (hideDialogEvent)="hideDialog()"
 >
 </app-shipping-plan-create>
+
+<app-shipping-plan-edit
+  [shippingPlanForm]="shippingPlanForm"
+  [products]="products"
+  [titleDialog]="titleDialog"
+  [isShowDialog]="isShowDialogEdit"
+  (submitEvent)="onEdit()"
+  (hideDialogEvent)="hideDialog()"
+>
+</app-shipping-plan-edit>
 
 <app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingPlan" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

@@ -45,7 +45,9 @@ export class MovementRequestCreateComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.movementRequestDetails && this.movementRequestDetails && this.movementRequestDetails.length > 0) {
-      this.movementRequestDetails.forEach((m) => (m.isEditRow = false));
+      this.movementRequestDetails.forEach((m) => {
+        m.isEditRow = false;
+      });
     }
   }
 

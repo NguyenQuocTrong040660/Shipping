@@ -40,6 +40,19 @@ export class ReceivedMarkMergeComponent implements OnInit {
     this.hideDialogEvent.emit(EventType.RefreshData);
   }
 
+  initPreviewReceivedMarkPrintings(receivedMarkPrintings: ReceivedMarkPrintingModel[]) {
+    if (receivedMarkPrintings && receivedMarkPrintings.length === 0) {
+      return [];
+    }
+
+    const receivedMarkPrinting = JSON.parse(JSON.stringify(receivedMarkPrintings[0]));
+
+    receivedMarkPrinting.sequence = '#';
+    receivedMarkPrinting.quantity = receivedMarkPrintings.reduce((i, j) => i + j.quantity, 0);
+
+    return [receivedMarkPrinting];
+  }
+
   mergeReceivedMarks() {
     if (this.selectedReceivedMarkPrintings && this.selectedReceivedMarkPrintings.length <= 1) {
       this.notificationService.error('Please select at least two packages to merge');
