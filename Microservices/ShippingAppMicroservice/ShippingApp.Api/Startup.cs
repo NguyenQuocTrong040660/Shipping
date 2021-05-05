@@ -69,13 +69,18 @@ namespace ShippingApp.Api
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "GREXSOLUTIONS",
-                                  builder =>
-                                  {
-                                      builder.WithOrigins()
-                                            .AllowAnyHeader()
-                                            .AllowAnyMethod()
-                                            .AllowAnyOrigin();
-                                  });
+                builder =>
+                {
+                    builder.WithOrigins(
+                                        "http://api-gatewayapi.spartronics.com:8001/",
+                                        "https://api-gatewayapi.spartronics.com:8001/",
+                                        "http://www.api-gatewayapi.spartronics.com:8001/",
+                                        "https://www.api-gatewayapi.spartronics.com:8001/"
+                                        )
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowAnyOrigin();
+                });
             });
 
             services.Configure<IISServerOptions>(options =>
@@ -139,7 +144,7 @@ namespace ShippingApp.Api
             loggerfactory.AddSerilog();
             app.UseHealthChecks("/health");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors("GREXSOLUTIONS");

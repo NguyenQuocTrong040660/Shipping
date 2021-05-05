@@ -4,7 +4,7 @@
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup>
-    <ActiveDebugProfile>Localhost</ActiveDebugProfile>
+    <ActiveDebugProfile>Production</ActiveDebugProfile>
     <NameOfLastUsedPublishProfile>FTPProfile</NameOfLastUsedPublishProfile>
   </PropertyGroup>
 </Project>

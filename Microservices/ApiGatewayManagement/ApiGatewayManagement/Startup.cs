@@ -47,16 +47,14 @@ namespace ApiGatewayManagement
                 {
                     builder.WithOrigins(
                                 //MAIN PAGE
-                                "http://tamcammedia.com.vn/",
-                                "https://tamcammedia.com.vn/",
-                                "http://www.spartronics.com/",
-                                "https://www.spartronics.com/",
-
-                                //ADMIN PAGE
-                                "http://app-admin.spartronics.com/",
-                                "https://app-admin.spartronics.com/",
-                                "http://www.app-admin.spartronics.com/",
-                                "https://www.app-admin.spartronics.com/"
+                                "http://shippingapp.spartronics.com",
+                                "https://shippingapp.spartronics.com",
+                                "http://www.shippingapp.spartronics.com",
+                                "https://www.shippingapp.spartronics.com",
+                                "http://shippingapp.spartronics.com:80",
+                                "https://shippingapp.spartronics.com:80",
+                                "http://www.shippingapp.spartronics.com:80",
+                                "https://www.shippingapp.spartronics.com:80"
                                 )
                             .AllowAnyHeader()
                             .AllowAnyMethod()
@@ -130,7 +128,7 @@ namespace ApiGatewayManagement
             app.UseSerilogRequestLogging();
             app.UseHealthChecks("/health");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors("GREXSOLUTIONS");

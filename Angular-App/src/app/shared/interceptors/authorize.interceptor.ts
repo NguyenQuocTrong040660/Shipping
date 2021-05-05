@@ -5,12 +5,12 @@ import { States, StateService } from '../services/state.service';
 
 @Injectable()
 export class AuthorizeInterceptor implements HttpInterceptor {
-  constructor(private injector: Injector) {}
+  constructor(private injector: Injector) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const stateService = this.injector.get<StateService>(StateService);
     const accessToken = stateService.select(States.AccessToken);
-    const isApi = request.url.startsWith('/api/');
+    const isApi = request.url.includes('/api/');
 
     if (accessToken && isApi) {
       request = request.clone({

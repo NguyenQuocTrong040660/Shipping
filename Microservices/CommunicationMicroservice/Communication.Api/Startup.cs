@@ -74,10 +74,10 @@ namespace Communication.Api
                 builder =>
                 {
                     builder.WithOrigins(
-                                        "http://api-gatewayapi.tamcammedia.com.vn/",
-                                        "https://api-gatewayapi.tamcammedia.com.vn/",
-                                        "http://www.api-gatewayapi.tamcammedia.com.vn/",
-                                        "https://www.api-gatewayapi.tamcammedia.com.vn/"
+                                        "http://api-gatewayapi.spartronics.com:8001/",
+                                        "https://api-gatewayapi.spartronics.com:8001/",
+                                        "http://www.api-gatewayapi.spartronics.com:8001/",
+                                        "https://www.api-gatewayapi.spartronics.com:8001/"
                                         )
                                         .AllowAnyHeader()
                                         .AllowAnyMethod()

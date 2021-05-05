@@ -10,8 +10,8 @@ using ShippingApp.Persistence.DBContext;
 namespace ShippingApp.Persistence.Migrations
 {
     [DbContext(typeof(ShippingAppDbContext))]
-    [Migration("20210427151446_UpdateShipping")]
-    partial class UpdateShipping
+    [Migration("20210505021848_CreateDB")]
+    partial class CreateDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

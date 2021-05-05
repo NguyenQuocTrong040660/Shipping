@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Files.Api.Controllers
 {
-    [Route("api/files/[controller]")]
+    [Route("api/filemanagement/[controller]")]
     [ApiController]
     public class BaseController : ControllerBase
     {

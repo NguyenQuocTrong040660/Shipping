@@ -2,14 +2,14 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/user/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "api-user.spartronics.com"
         }
       ],
       "UpstreamPathTemplate": "/api/user/{everything}",
-      "UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"],
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
       "SwaggerKey": "user"
     }
   ]

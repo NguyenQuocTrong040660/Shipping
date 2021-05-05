@@ -45,10 +45,10 @@ namespace UserManagement.Api
                 builder =>
                 {
                     builder.WithOrigins(
-                                        "http://api-gatewayapi.spartronics.com/",
-                                        "https://api-gatewayapi.spartronics.com/",
-                                        "http://www.api-gatewayapi.spartronics.com/",
-                                        "https://www.api-gatewayapi.spartronics.com/"
+                                        "http://api-gatewayapi.spartronics.com:8001/",
+                                        "https://api-gatewayapi.spartronics.com:8001/",
+                                        "http://www.api-gatewayapi.spartronics.com:8001/",
+                                        "https://www.api-gatewayapi.spartronics.com:8001/"
                                         )
                                         .AllowAnyHeader()
                                         .AllowAnyMethod()
@@ -142,7 +142,7 @@ namespace UserManagement.Api
 
             app.UseHealthChecks("/health");
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseCors("GREXSOLUTIONS");

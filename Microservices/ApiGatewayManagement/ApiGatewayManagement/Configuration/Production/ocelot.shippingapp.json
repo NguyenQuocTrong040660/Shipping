@@ -2,14 +2,19 @@
   "Routes": [
     {
       "DownstreamPathTemplate": "/api/shippingapp/{everything}",
-      "DownstreamScheme": "https",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "api-shippingapp.spartronics.com.vn:8080"
+          "Host": "api-shippingapp.spartronics.com"
         }
       ],
       "UpstreamPathTemplate": "/api/shippingapp/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
       "SwaggerKey": "shippingapp"
     }
   ]

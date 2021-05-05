@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://localhost:4000",
+    "target": "http://api-gatewayapi.spartronics.com:8001",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

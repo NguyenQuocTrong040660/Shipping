@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private notificationService: NotificationService,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => (this.returnUrl = params['returnUrl'] || ''));
