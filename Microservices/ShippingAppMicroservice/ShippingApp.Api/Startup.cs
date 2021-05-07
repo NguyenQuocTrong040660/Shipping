@@ -72,6 +72,10 @@ namespace ShippingApp.Api
                 builder =>
                 {
                     builder.WithOrigins(
+                                        "http://vtnportal.spartronics.com:8001/",
+                                        "https://vtnportal.spartronics.com:8001/",
+                                        "http://www.vtnportal.spartronics.com:8001/",
+                                        "https://www.vtnportal.spartronics.com:8001/",
                                         "http://api-gatewayapi.spartronics.com:8001/",
                                         "https://api-gatewayapi.spartronics.com:8001/",
                                         "http://www.api-gatewayapi.spartronics.com:8001/",
@@ -132,14 +136,13 @@ namespace ShippingApp.Api
             if (!env.IsProduction())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shipping Application API V1");
+                });
             }
-
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shipping Application API V1");
-            });
 
             loggerfactory.AddSerilog();
             app.UseHealthChecks("/health");

@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://api-gatewayapi.spartronics.com:8001",
+    "target": "http://vtnportal.spartronics.com:8001",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

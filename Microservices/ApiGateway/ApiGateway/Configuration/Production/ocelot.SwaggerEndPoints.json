@@ -1,0 +1,44 @@
+{
+  "SwaggerEndPoints": [
+    {
+      "Key": "user",
+      "Config": [
+        {
+          "Name": "User API",
+          "Version": "v1",
+          "Url": "http://vtnportal.spartronics.com:8002/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "filemanagement",
+      "Config": [
+        {
+          "Name": "FileManagement API",
+          "Version": "v1",
+          "Url": "http://vtnportal.spartronics.com:8005/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "communication",
+      "Config": [
+        {
+          "Name": "Communication API",
+          "Version": "v1",
+          "Url": "http://vtnportal.spartronics.com:8003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "shippingapp",
+      "Config": [
+        {
+          "Name": "Shipping App API",
+          "Version": "v1",
+          "Url": "http://vtnportal.spartronics.com:8004/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

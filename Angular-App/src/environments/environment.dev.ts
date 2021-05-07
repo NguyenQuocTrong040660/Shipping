@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'http://api-gatewayapi.spartronics.com:8001',
+  baseUrl: 'http://vtnportal.spartronics.com:8001',
 };

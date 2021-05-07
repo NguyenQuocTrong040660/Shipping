@@ -1,0 +1,22 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/shippingapp/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "vtnportal.spartronics.com",
+          "Port": 8004
+        }
+      ],
+      "UpstreamPathTemplate": "/api/shippingapp/{everything}",
+      "UpstreamHttpMethod": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "SwaggerKey": "shippingapp"
+    }
+  ]
+}

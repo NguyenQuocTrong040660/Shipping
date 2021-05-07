@@ -49,6 +49,10 @@ namespace Files.Api
                                   builder =>
                                   {
                                       builder.WithOrigins(
+                                                "http://vtnportal.spartronics.com:8001/",
+                                                "https://vtnportal.spartronics.com:8001/",
+                                                "http://www.vtnportal.spartronics.com:8001/",
+                                                "https://www.vtnportal.spartronics.com:8001/",
                                                 "http://api-gatewayapi.spartronics.com:8001/",
                                                 "https://api-gatewayapi.spartronics.com:8001/",
                                                 "http://www.api-gatewayapi.spartronics.com:8001/",
@@ -134,19 +138,13 @@ namespace Files.Api
             if (!env.IsProduction())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseOpenApi();
+                app.UseSwaggerUi3();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Files API V1");
+                });
             }
-
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseOpenApi();
-            app.UseSwaggerUi3();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Files API V1");
-            });
-
 
             loggerfactory.AddSerilog();
             app.UseSerilogRequestLogging();
