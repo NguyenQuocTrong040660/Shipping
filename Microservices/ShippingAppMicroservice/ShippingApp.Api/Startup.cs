@@ -66,21 +66,14 @@ namespace ShippingApp.Api
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
             ConfigureAuthenticationServices(services);
 
+            var validDomains = Configuration.GetSection("ValidDomains").GetChildren().Select(x => x.Value).ToArray();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "GREXSOLUTIONS",
                 builder =>
                 {
-                    builder.WithOrigins(
-                                        "http://vtnportal.spartronics.com:8001/",
-                                        "https://vtnportal.spartronics.com:8001/",
-                                        "http://www.vtnportal.spartronics.com:8001/",
-                                        "https://www.vtnportal.spartronics.com:8001/",
-                                        "http://api-gatewayapi.spartronics.com:8001/",
-                                        "https://api-gatewayapi.spartronics.com:8001/",
-                                        "http://www.api-gatewayapi.spartronics.com:8001/",
-                                        "https://www.api-gatewayapi.spartronics.com:8001/"
-                                        )
+                    builder.WithOrigins(validDomains)
                                         .AllowAnyHeader()
                                         .AllowAnyMethod()
                                         .AllowAnyOrigin();
