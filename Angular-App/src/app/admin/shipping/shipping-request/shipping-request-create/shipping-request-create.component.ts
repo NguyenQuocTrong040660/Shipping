@@ -43,7 +43,7 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
   selecteShippingInfoItems: SelectItem[] = [];
   selectedShippingInfo: any;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.shippingPlans && changes.shippingPlans.currentValue) {

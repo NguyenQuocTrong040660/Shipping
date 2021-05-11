@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'http://api-gatewayapi.spartronics.com:8001',
+  baseUrl: 'http://vtnportal.spartronics.com:8001',
 };
