@@ -16,7 +16,7 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
   user: ApplicationUser;
   private destroyed$ = new Subject<void>();
 
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(private authenticationService: AuthenticationService) { }
 
   ngOnInit(): void {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user) => {
@@ -36,12 +36,12 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
             routerLink: '/shipping-request',
           },
           {
-            label: 'Shipping Mark',
+            label: 'Pickup Order',
             icon: 'pi pi-tags',
             routerLink: '/shipping-mark',
           },
           {
-            label: 'Shipping Mark Picking',
+            label: 'Shipping Mark',
             icon: 'pi pi-th-large',
             routerLink: '/shipping-mark-picking',
           },

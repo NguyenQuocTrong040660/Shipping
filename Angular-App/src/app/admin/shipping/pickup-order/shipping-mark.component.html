@@ -2,59 +2,32 @@
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left"></ng-template>
     <ng-template pTemplate="right">
-      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
-      <button
-        class="p-button-danger p-mr-2"
-        pButton
-        pRipple
-        icon="pi pi-trash"
-        label="Delete"
-        [disabled]="!selectedShippingMark"
-        (click)="openDeleteDialog(selectedShippingMark)"
-      ></button>
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
+        (click)="openCreateDialog()"></button>
+      <button class="p-button-danger p-mr-2" pButton pRipple icon="pi pi-trash" label="Delete"
+        [disabled]="!selectedShippingMark" (click)="openDeleteDialog(selectedShippingMark)"></button>
 
-      <button
-        class="p-button-success p-mr-2"
-        pButton
-        pRipple
-        label="Edit"
-        icon="pi pi-pencil"
-        [disabled]="!selectedShippingMark"
-        (click)="openEditDialog(selectedShippingMark)"
-      ></button>
+      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil"
+        [disabled]="!selectedShippingMark" (click)="openEditDialog(selectedShippingMark)"></button>
 
-      <button
-        class="p-button-help p-mr-2"
-        pButton
-        pRipple
-        label="Confirm"
-        icon="pi pi-check-circle"
-        [disabled]="!selectedShippingMark"
-        (click)="completeShippingRequest(selectedShippingMark)"
-      ></button>
+      <button class="p-button-help p-mr-2" pButton pRipple label="Confirm" icon="pi pi-check-circle"
+        [disabled]="!selectedShippingMark" (click)="completeShippingRequest(selectedShippingMark)"></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History"
+        (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
 
-  <p-table
-    #shippingMarkDataTable
-    dataKey="id"
-    [value]="shippingMarks"
-    [rows]="20"
-    [columns]="cols"
-    [paginator]="true"
-    [scrollable]="true"
-    [(selection)]="selectedShippingMark"
-    [expandedRowKeys]="expandedItems"
-    [globalFilterFields]="fields"
-  >
+  <p-table #shippingMarkDataTable dataKey="id" [value]="shippingMarks" [rows]="20" [columns]="cols" [paginator]="true"
+    [scrollable]="true" [(selection)]="selectedShippingMark" [expandedRowKeys]="expandedItems"
+    [globalFilterFields]="fields">
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">{{ title | uppercase }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="shippingMarkDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+          <input pInputText type="text" (input)="shippingMarkDataTable.filterGlobal($event.target.value, 'contains')"
+            placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -127,15 +100,9 @@
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
               <td class="p-text-center">
-                <button
-                  type="button"
-                  pButton
-                  pRipple
-                  (click)="getShippingMarkMovementRequestsFullInfo(item)"
-                  [pRowToggler]="item"
-                  class="p-button-text p-button-rounded p-button-plain"
-                  [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
-                ></button>
+                <button type="button" pButton pRipple (click)="getShippingMarkMovementRequestsFullInfo(item)"
+                  [pRowToggler]="item" class="p-button-text p-button-rounded p-button-plain"
+                  [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"></button>
               </td>
             </ng-container>
           </ng-container>
@@ -149,27 +116,27 @@
           <div>
             <p-table class="shipping-mark__expaned-table" [value]="shippingMark.shippingMarkShippings">
               <ng-template pTemplate="header">
-                <tr>
-                  <th class="p-text-center">Product Number</th>
-                  <th class="p-text-center">Description</th>
-                  <th class="p-text-center">Qty/ Pkg</th>
-                  <th class="p-text-center">Total Quantity</th>
-                  <th class="p-text-center">Total Package</th>
-                  <th class="p-text-center">Total Quantity Printed</th>
-                  <th class="p-text-center"></th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-item>
-                <tr>
-                  <td>{{ item?.product?.productNumber }}</td>
-                  <td>{{ item?.product?.productName }}</td>
-                  <td class="p-text-center">
-                    {{ item?.product?.qtyPerPackage }}
-                  </td>
-                  <td class="p-text-center">{{ item?.totalQuantity }}</td>
-                  <td class="p-text-center">{{ item?.totalPackage }}</td>
-                  <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
-                  <td class="p-text-center">
+      <tr>
+        <th class="p-text-center">Product Number</th>
+        <th class="p-text-center">Description</th>
+        <th class="p-text-center">Qty/ Pkg</th>
+        <th class="p-text-center">Total Quantity</th>
+        <th class="p-text-center">Total Package</th>
+        <th class="p-text-center">Total Quantity Printed</th>
+        <!-- <th class="p-text-center"></th> -->
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>{{ item?.product?.productNumber }}</td>
+        <td>{{ item?.product?.productName }}</td>
+        <td class="p-text-center">
+          {{ item?.product?.qtyPerPackage }}
+        </td>
+        <td class="p-text-center">{{ item?.totalQuantity }}</td>
+        <td class="p-text-center">{{ item?.totalPackage }}</td>
+        <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
+        <!-- <td class="p-text-center">
                     <button
                       pButton
                       pRipple
@@ -179,37 +146,27 @@
                       class="p-button-rounded p-button-text"
                       (click)="showDetailShippingMarkSummary(shippingMark, item)"
                     ></button>
-                  </td>
-                </tr>
-              </ng-template>
-            </p-table>
-          </div>
-        </td>
+                  </td> -->
       </tr>
     </ng-template>
   </p-table>
 </div>
+</td>
+</tr>
+</ng-template>
+</p-table>
+</div>
 
-<app-shipping-mark-create
-  [shippingMarkForm]="shippingMarkForm"
-  [titleDialog]="titleDialog"
-  [shippingRequests]="shippingRequests"
-  [shippingMarkShippings]="shippingMarkShippings"
-  [isShowDialog]="isShowDialogCreate"
-  (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog($event)"
-  (selectedShippingRequestEvent)="handleSelectedShippingRequest($event)"
->
+<app-shipping-mark-create [shippingMarkForm]="shippingMarkForm" [titleDialog]="titleDialog"
+  [shippingRequests]="shippingRequests" [shippingMarkShippings]="shippingMarkShippings"
+  [isShowDialog]="isShowDialogCreate" (submitEvent)="onSubmit()" (hideDialogEvent)="hideDialog($event)"
+  (selectedShippingRequestEvent)="handleSelectedShippingRequest($event)">
 </app-shipping-mark-create>
 
-<app-shipping-mark-edit
-  [shippingMarkForm]="shippingMarkForm"
-  [titleDialog]="titleDialog"
-  [shippingMark]="currentShippingMark"
-  [isShowDialog]="isShowDialogEdit"
-  (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog($event)"
->
+<app-shipping-mark-edit [shippingMarkForm]="shippingMarkForm" [titleDialog]="titleDialog"
+  [shippingMark]="currentShippingMark" [isShowDialog]="isShowDialogEdit" (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog($event)">
 </app-shipping-mark-edit>
 
-<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingMark" (hideDialogEvent)="hideDialog()"> </app-history-dialog>
+<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingMark"
+  (hideDialogEvent)="hideDialog()"> </app-history-dialog>

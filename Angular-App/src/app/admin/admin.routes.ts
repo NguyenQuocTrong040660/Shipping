@@ -18,12 +18,12 @@ export const adminRoutes: Routes = [
       },
       {
         path: 'shipping-mark',
-        loadChildren: () => import('./shipping/shipping-mark/shipping-mark.module').then((m) => m.ShippingMarkModule),
+        loadChildren: () => import('./shipping/pickup-order/shipping-mark.module').then((m) => m.ShippingMarkModule),
         canActivate: [AuthenticationGuard],
       },
       {
         path: 'shipping-mark-picking',
-        loadChildren: () => import('./shipping/shipping-picking/shipping-picking.module').then((m) => m.ShippingPickingModule),
+        loadChildren: () => import('./shipping/shipping-mark/shipping-picking.module').then((m) => m.ShippingPickingModule),
         canActivate: [AuthenticationGuard],
       },
       // Movement

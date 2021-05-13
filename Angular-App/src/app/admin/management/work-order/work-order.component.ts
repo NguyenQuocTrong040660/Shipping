@@ -55,11 +55,12 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private filesClient: FilesClient,
     private importService: ImportService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: '....', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
       { header: 'Work Order Id', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
       { header: 'Product Number', subField: 'productNumber', field: 'product', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
@@ -72,7 +73,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
 
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+
     ];
 
     this.fields = this.cols.map((i) => i.field);

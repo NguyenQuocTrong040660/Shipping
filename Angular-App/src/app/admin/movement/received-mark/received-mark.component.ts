@@ -76,18 +76,19 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private fb: FormBuilder,
     private movementRequestClients: MovementRequestClients
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
 
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
+      { header: '.....', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
       { header: 'Movement Request - Work Order', field: 'workOrdersMovementCollection', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -416,7 +417,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
             item.totalQuantityPrinted = receivedMarkMovement.totalQuantityPrinted;
           });
         },
-        (_) => {}
+        (_) => { }
       );
   }
 
