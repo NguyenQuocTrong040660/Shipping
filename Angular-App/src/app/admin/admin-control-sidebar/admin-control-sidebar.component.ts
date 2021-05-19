@@ -38,12 +38,12 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
           {
             label: 'Pickup Order',
             icon: 'pi pi-tags',
-            routerLink: '/shipping-mark',
+            routerLink: '/pickup-order',
           },
           {
             label: 'Shipping Mark',
             icon: 'pi pi-th-large',
-            routerLink: '/shipping-mark-picking',
+            routerLink: '/shipping-mark',
           },
         ],
       },

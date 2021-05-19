@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'http://vtnportal.spartronics.com:8001',
+  // baseUrl: 'http://vtnportal.spartronics.com:8001',
+  baseUrl: 'https://localhost:4000',
 };

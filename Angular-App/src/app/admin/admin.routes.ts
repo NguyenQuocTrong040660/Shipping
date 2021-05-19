@@ -22,7 +22,7 @@ export const adminRoutes: Routes = [
         canActivate: [AuthenticationGuard],
       },
       {
-        path: 'shipping-mark-picking',
+        path: 'pickup-order',
         loadChildren: () => import('./shipping/shipping-mark/shipping-picking.module').then((m) => m.ShippingPickingModule),
         canActivate: [AuthenticationGuard],
       },

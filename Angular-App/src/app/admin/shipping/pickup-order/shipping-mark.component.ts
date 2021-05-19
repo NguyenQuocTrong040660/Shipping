@@ -27,7 +27,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./shipping-mark.component.scss'],
 })
 export class ShippingMarkComponent implements OnInit, OnDestroy {
-  title = 'Pickup Order';
+  title = 'Shipping Mark';
   titleDialog = '';
 
   shippingMarkForm: FormGroup;
