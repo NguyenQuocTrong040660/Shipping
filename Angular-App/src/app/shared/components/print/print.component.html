@@ -18,7 +18,7 @@
 
                 <tr>
                   <td class="print__value">P/N</td>
-                  <td class="print__value">: {{ printData?.product?.productNumbe }}</td>
+                  <td class="print__value">: {{ printData?.product?.productNumber }}</td>
                 </tr>
                 <tr>
                   <td class="print__value">Qty</td>
@@ -36,7 +36,7 @@
 
                 <tr>
                   <td colspan="2">
-                    <ngx-barcode *ngIf="printData && printData.identifier" [bc-height]="50" [bc-value]="printData.identifier"></ngx-barcode>
+                    <ngx-barcode [bc-height]="50" [bc-value]="printData?.identifier"></ngx-barcode>
                   </td>
                 </tr>
               </table>
@@ -45,13 +45,6 @@
         </td>
       </tr>
     </tbody>
-    <tfoot>
-      <tr>
-        <td>
-          <div class="footer-space"></div>
-        </td>
-      </tr>
-    </tfoot>
   </table>
 </ng-container>
 

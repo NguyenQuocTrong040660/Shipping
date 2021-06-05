@@ -15,16 +15,17 @@ export class PrintComponent implements OnInit, OnChanges {
   @HostListener('window:afterprint')
   onafterprint() {
     document.title = 'Shipping Application';
+    this.printData = null;
   }
 
   ngOnChanges() {
     if (this.printService.isPrinting) {
-      // const currentDate = new Date().toISOString().split('T')[0].split('-').join('');
-      // const receivedMarkId = this.printData.receivedMark && this.printData.receivedMark.identifier ? this.printData.receivedMark.identifier : '';
-      // const shippingMarkId = this.printData.shippingMark && this.printData.shippingMark.identifier ? this.printData.shippingMark.identifier : '';
-      // const id = receivedMarkId + shippingMarkId;
-      // const sequence = this.printData.sequence ? this.printData.sequence : '';
-      // document.title = currentDate + '_' + id + '_' + sequence;
+      const currentDate = new Date().toISOString().split('T')[0].split('-').join('');
+      const receivedMarkId = this.printData.receivedMark && this.printData.receivedMark.identifier ? this.printData.receivedMark.identifier : '';
+      const shippingMarkId = this.printData.shippingMark && this.printData.shippingMark.identifier ? this.printData.shippingMark.identifier : '';
+      const id = receivedMarkId + shippingMarkId;
+      const sequence = this.printData.sequence ? this.printData.sequence : '';
+      document.title = currentDate + '_' + id + '_' + sequence;
     }
   }
 
