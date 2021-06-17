@@ -13,7 +13,7 @@ namespace ShippingApp.Application.WorkOrder.Validations
         {
             RuleFor(x => x.WorkOrder.RefId)
                 .NotEmpty().NotNull()
-                .WithMessage("RefId could not be null");
+                .WithMessage("Reference Id could not be empty");
         }
     }
 }

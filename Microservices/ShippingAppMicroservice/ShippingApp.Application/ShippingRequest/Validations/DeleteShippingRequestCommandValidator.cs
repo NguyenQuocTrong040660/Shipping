@@ -18,7 +18,7 @@ namespace ShippingApp.Application.ShippingRequest.Validations
 
             RuleFor(x => x.Id)
                 .Must(NotExistInShippingMarkShippings)
-                .WithMessage("Failed to delete shipping request");
+                .WithMessage("Can't delete Shipping Request linked with Shipping Mark");
         }
 
         private bool NotExistInShippingMarkShippings(int shippingRequestId)

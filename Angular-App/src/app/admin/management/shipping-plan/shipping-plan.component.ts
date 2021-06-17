@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { ConfirmationService } from 'primeng/api';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
-import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
 import { ImportComponent } from 'app/shared/components/import/import.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subject } from 'rxjs';
@@ -14,6 +13,8 @@ import { takeUntil } from 'rxjs/operators';
 import { EventType } from 'app/shared/enumerations/import-event-type.enum';
 import { ImportService } from 'app/shared/services/import.service';
 import Utilities from 'app/shared/helpers/utilities';
+import { FilesClient, TemplateType } from 'app/shared/api-clients/files/files.client';
+import { CommonService } from 'app/shared/services/common.service';
 
 @Component({
   templateUrl: './shipping-plan.component.html',
@@ -52,7 +53,8 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private filesClient: FilesClient,
     private fb: FormBuilder,
-    private importService: ImportService
+    private importService: ImportService,
+    private commonService: CommonService
   ) {}
 
   ngOnInit() {
@@ -209,7 +211,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
           this.notificationService.error(result?.error);
         }
       },
-      (_) => this.notificationService.error('Create Shipping Plan Failed. Please try again')
+      (error) => this.commonService.getErrorMessagesFromResponse(error).forEach((msg) => this.notificationService.error(msg))
     );
   }
 
@@ -249,7 +251,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => this.notificationService.error('Edit Shipping Plan Failed. Please try again')
+        (error) => this.commonService.getErrorMessagesFromResponse(error).forEach((msg) => this.notificationService.error(msg))
       );
   }
 
@@ -272,7 +274,7 @@ export class ShippingPlanComponent implements OnInit, OnDestroy {
                 this.notificationService.error(result?.error);
               }
             },
-            (_) => this.notificationService.error('Delete Shipping Plan Failed. Please try again')
+            (error) => this.commonService.getErrorMessagesFromResponse(error).forEach((msg) => this.notificationService.error(msg))
           );
       },
     });

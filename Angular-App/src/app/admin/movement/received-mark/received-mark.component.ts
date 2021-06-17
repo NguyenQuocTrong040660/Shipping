@@ -10,7 +10,7 @@ import {
   ReceivedMarkPrintingModel,
   RePrintReceivedMarkRequest,
   UnstuffReceivedMarkRequest,
-} from 'app/shared/api-clients/shipping-app.client';
+} from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -76,7 +76,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private fb: FormBuilder,
     private movementRequestClients: MovementRequestClients
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
@@ -88,7 +88,6 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -408,16 +407,16 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (receivedMarkMovements) => {
-          receivedMark.receivedMarkMovements.forEach((item) => {
+          receivedMark.receivedMarkMovements.forEach((item: ReceivedMarkMovementModel) => {
             const receivedMarkMovement = receivedMarkMovements.find(
-              (i) => i.receivedMarkId === item.receivedMarkId && i.productId == item.productId && i.movementRequestId == item.movementRequestId
+              (i) => i.receivedMarkId === item.receivedMarkId && i.productId === item.productId && i.movementRequestId === item.movementRequestId
             );
             item.product = receivedMarkMovement.product;
             item.totalPackage = receivedMarkMovement.totalPackage;
             item.totalQuantityPrinted = receivedMarkMovement.totalQuantityPrinted;
           });
         },
-        (_) => { }
+        (_) => {}
       );
   }
 
@@ -507,4 +506,5 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
 
 export interface ReceivedMarkMovement extends ReceivedMarkMovementModel {
   isEditRow?: boolean;
+  inputQuantity?: number;
 }

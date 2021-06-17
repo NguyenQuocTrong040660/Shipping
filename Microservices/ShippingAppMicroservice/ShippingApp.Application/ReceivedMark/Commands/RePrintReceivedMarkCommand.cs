@@ -29,7 +29,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
         {
             var receivedMarkPrinting = await _context.ReceivedMarkPrintings
                 .Include(x => x.Product)
-                .FirstOrDefaultAsync(x => x.Id == request.RePrintReceivedMarkRequest.ReceivedMarkPrintingId);
+                .FirstOrDefaultAsync(x => x.Id == request.RePrintReceivedMarkRequest.ReceivedMarkPrintingId, cancellationToken);
 
             if (receivedMarkPrinting == null)
             {
@@ -40,7 +40,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             receivedMarkPrinting.RePrintingBy = request.RePrintReceivedMarkRequest.RePrintedBy;
             receivedMarkPrinting.RePrintingDate = DateTime.UtcNow;
 
-            var result = await _context.SaveChangesAsync() > 0
+            var result = await _context.SaveChangesAsync(cancellationToken) > 0
                     ? _mapper.Map<ReceivedMarkPrintingModel>(receivedMarkPrinting)
                     : null;
 
@@ -48,7 +48,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             {
                 result.WorkOrder = _mapper.Map<WorkOrderModel>((await _context.WorkOrderDetails
                     .Include(x => x.WorkOrder)
-                    .FirstOrDefaultAsync(x => x.ProductId == result.ProductId)).WorkOrder);
+                    .FirstOrDefaultAsync(x => x.ProductId == result.ProductId, cancellationToken)).WorkOrder);
             }
 
             return result;

@@ -45,7 +45,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                                                 .Where(x => x.ReceivedMarkId == firstReceivedMarkPrinting.ReceivedMarkId)
                                                 .Where(x => x.MovementRequestId == firstReceivedMarkPrinting.MovementRequestId)
                                                 .Where(x => !x.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))
-                                                .ToListAsync();
+                                                .ToListAsync(cancellationToken);
 
             var receivedMarkPrintingsDelete = query
                                                 .Where(x => request.ReceivedMarkPrintings.Any(i => i.Id == x.Id))
@@ -74,7 +74,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 MovementRequestId = firstReceivedMarkPrinting.MovementRequestId
             });
 
-            return await  _context.SaveChangesAsync() > 0 
+            return await  _context.SaveChangesAsync(cancellationToken) > 0 
                 ? Result.Success() 
                 : Result.Failure("Failed to merge received marks");
         }

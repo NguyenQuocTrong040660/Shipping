@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { API_BASE_URL as USER_BASE_URL, UserClient } from './user.client';
-import { API_BASE_URL as FILES_BASE_URL, FilesClient } from './files.client';
+import { API_BASE_URL as USER_BASE_URL, UserClient } from './user/user.client';
+import { API_BASE_URL as FILES_BASE_URL, FilesClient } from './files/files.client';
 import {
   API_BASE_URL as SHIPPING_BASE_URL,
   ConfigClients,
@@ -14,9 +14,9 @@ import {
   ShippingPlanClients,
   ShippingRequestClients,
   WorkOrderClients,
-} from './shipping-app.client';
+} from './shipping-app/shipping-app.client';
 import { environment } from 'environments/environment';
-import { API_BASE_URL as COMMUNICATIONS_BASE_URL, CommunicationClient } from './communications.client';
+import { API_BASE_URL as COMMUNICATIONS_BASE_URL, CommunicationClient } from './communication/communications.client';
 
 @NgModule({
   declarations: [],

@@ -2,7 +2,7 @@ import { takeUntil } from 'rxjs/operators';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ConfigClients, ConfigModel } from 'app/shared/api-clients/shipping-app.client';
+import { ConfigClients, ConfigModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { Subject } from 'rxjs';

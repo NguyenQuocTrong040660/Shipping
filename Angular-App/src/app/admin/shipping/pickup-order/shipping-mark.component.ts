@@ -9,7 +9,7 @@ import {
   ShippingMarkShippingModel,
   ShippingRequestClients,
   ShippingRequestModel,
-} from 'app/shared/api-clients/shipping-app.client';
+} from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -70,7 +70,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
     private shippingRequestClients: ShippingRequestClients,
     private authenticationService: AuthenticationService,
     private confirmationService: ConfirmationService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
@@ -83,7 +83,6 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -343,8 +342,8 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (shippingMarkShippings) => {
-          shippingMark.shippingMarkShippings.forEach((item) => {
-            const shippingMarkShipping = shippingMarkShippings.find((i) => i.shippingMarkId === item.shippingMarkId && i.productId == item.productId);
+          shippingMark.shippingMarkShippings.forEach((item: ShippingMarkShippingModel) => {
+            const shippingMarkShipping = shippingMarkShippings.find((i) => i.shippingMarkId === item.shippingMarkId && i.productId === item.productId);
 
             item.product = shippingMarkShipping.product;
             item.totalPackage = shippingMarkShipping.totalPackage;
@@ -352,7 +351,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
             item.totalQuantity = shippingMarkShipping.totalQuantity;
           });
         },
-        (_) => { }
+        (_) => {}
       );
   }
 

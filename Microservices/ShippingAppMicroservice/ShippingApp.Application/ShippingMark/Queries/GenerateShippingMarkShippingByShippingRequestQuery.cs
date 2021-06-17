@@ -78,7 +78,7 @@ namespace ShippingApp.Application.ShippingMark.Queries
                         .AsNoTracking()
                         .Where(x => x.ProductId == productId)
                         .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.Storage)))
-                        .OrderBy(x => x.LastModified)
+                        .OrderBy(x => x.Id)
                         .ToListAsync();
 
             return _mapper.Map<List<ReceivedMarkPrintingModel>>(data);

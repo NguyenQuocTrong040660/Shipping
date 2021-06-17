@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { MovementRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import { MovementRequestModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { MenuItem, SelectItem } from 'primeng/api';
 import { ReceivedMarkMovement } from '../received-mark.component';
 
@@ -40,7 +40,7 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
     return this.receivedMarkForm.get('receivedMarkMovements') as FormArray;
   }
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.movementRequests && changes.movementRequests.currentValue) {
@@ -82,9 +82,10 @@ export class ReceivedMarkCreateComponent implements OnInit, OnChanges {
 
   initReceivedMarkMovementForm(receivedMarkMovement: ReceivedMarkMovement) {
     return this.fb.group({
-      quantity: [receivedMarkMovement.quantity],
+      quantity: [receivedMarkMovement.inputQuantity],
       productId: [receivedMarkMovement.productId],
       movementRequestId: [receivedMarkMovement.movementRequestId],
+      workOrderId: [receivedMarkMovement.workOrderId],
       receivedMarkId: 0,
     });
   }

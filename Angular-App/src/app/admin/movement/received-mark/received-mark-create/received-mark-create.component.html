@@ -51,11 +51,12 @@
           <p-table dataKey="id" [value]="receivedMarkMovements" editMode="row">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th class="p-text-center">Work Order Id</th>
+                <th class="p-text-center">Movement - Work Order</th>
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
-                <th class="p-text-center">Quantity<span class="p-invalid"> *</span></th>
+                <th class="p-text-center">Movement Quantity</th>
+                <th class="p-text-center">Received Quantity<span class="p-invalid"> *</span></th>
                 <th style="width: 10rem"></th>
               </tr>
             </ng-template>
@@ -78,12 +79,16 @@
                 </td>
 
                 <td class="p-text-center">
+                  {{ item.quantity | number }}
+                </td>
+
+                <td class="p-text-center">
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                      <p-inputNumber [(ngModel)]="item.quantity" required></p-inputNumber>
+                      <p-inputNumber [(ngModel)]="item.inputQuantity" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ item?.quantity | number }}
+                      {{ item?.inputQuantity | number }}
                     </ng-template>
                   </p-cellEditor>
                 </td>
@@ -158,11 +163,12 @@
           <p-table dataKey="id" [value]="receivedMarkMovements">
             <ng-template pTemplate="header" let-columns>
               <tr>
-                <th class="p-text-center">Work Order Id</th>
+                <th class="p-text-center">Movement - Work Order</th>
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
-                <th class="p-text-center">Quantity<span class="p-invalid"> *</span></th>
+                <th class="p-text-center">Movement Quantity</th>
+                <th class="p-text-center">Received Quantity</th>
               </tr>
             </ng-template>
 
@@ -185,6 +191,10 @@
 
                 <td class="p-text-center">
                   {{ item?.quantity | number }}
+                </td>
+
+                <td class="p-text-center">
+                  {{ item?.inputQuantity | number }}
                 </td>
               </tr>
             </ng-template>

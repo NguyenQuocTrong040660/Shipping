@@ -33,7 +33,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                 .AsNoTracking()
                 .Include(x => x.Product)
                 .Where(x => x.ReceivedMarkId == request.ReceivedMarkId)
-                .ToListAsync());
+                .ToListAsync(cancellationToken));
 
             foreach (var item in receivedMarkMovements)
             {
@@ -43,7 +43,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                   .Where(x => x.MovementRequestId == item.MovementRequestId)
                   .Where(x => x.ReceivedMarkId == item.ReceivedMarkId)
                   .Where(x => !x.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))
-                  .ToListAsync();
+                  .ToListAsync(cancellationToken);
 
                 item.TotalPackage = receivedMarkPrintings.Count;
                 item.TotalQuantityPrinted = receivedMarkPrintings

@@ -20,6 +20,9 @@ import { ApiClientModule } from './shared/api-clients/api-client.module';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ImportService } from './shared/services/import.service';
+import { CommonService } from './shared/services/common.service';
+
+const CUSTOM_SERVICES = [LoadingService, NotificationService, AuthenticationService, MessageService, ConfirmationService, DialogService, ImportService, CommonService];
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,13 +39,7 @@ import { ImportService } from './shared/services/import.service';
     RouterModule.forRoot(appRoutes, { preloadingStrategy: QuicklinkStrategy }),
   ],
   providers: [
-    LoadingService,
-    NotificationService,
-    AuthenticationService,
-    MessageService,
-    ConfirmationService,
-    DialogService,
-    ImportService,
+    ...CUSTOM_SERVICES,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,

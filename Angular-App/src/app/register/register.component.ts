@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserClient } from 'app/shared/api-clients/user.client';
+import { UserClient } from 'app/shared/api-clients/user/user.client';
 import { MessageService } from 'primeng/api';
 
 @Component({

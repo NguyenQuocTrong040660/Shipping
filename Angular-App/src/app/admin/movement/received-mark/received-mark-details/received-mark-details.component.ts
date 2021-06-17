@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ReceivedMarkPrintingModel } from 'app/shared/api-clients/shipping-app.client';
+import { ReceivedMarkPrintingModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { EventType } from 'app/shared/enumerations/import-event-type.enum';
@@ -72,7 +72,6 @@ export class ReceivedMarkDetailsComponent implements OnInit {
   handleUnStuffMark(receivedMarkPrinting: ReceivedMarkPrintingModel) {
     this.unstuffMarkEvent.emit(receivedMarkPrinting);
   }
-
 
   remainItemToPrint() {
     return this.receivedMarkPrintings.filter((i) => i.printCount === 0).length > 0;

@@ -1,7 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ConfirmationService, SelectItem } from 'primeng/api';
-import { MovementRequestClients, MovementRequestDetailModel, MovementRequestModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import {
+  MovementRequestClients,
+  MovementRequestDetailModel,
+  MovementRequestModel,
+  WorkOrderClients,
+  WorkOrderModel,
+} from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { NotificationService } from 'app/shared/services/notification.service';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
@@ -46,7 +52,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
     private movementRequestClients: MovementRequestClients,
     private confirmationService: ConfirmationService,
     private fb: FormBuilder
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -56,7 +62,6 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-
     ];
 
     this.colFields = this.cols.map((i) => i.field);
@@ -258,4 +263,5 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
 
 export interface MovementRequestDetail extends MovementRequestDetailModel {
   isEditRow?: boolean;
+  inputQuantity?: number;
 }

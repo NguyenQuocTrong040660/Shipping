@@ -39,7 +39,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                 && x.ProductId == request.ProductId)
                 .Where(x => !x.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))
                 .OrderBy(x => x.Sequence)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return _mapper.Map<List<ReceivedMarkPrintingModel>>(receivedMarkPrintings);
         }

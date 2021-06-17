@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { StateService } from '../services/state.service';
-import { UserClient } from 'app/shared/api-clients/user.client';
+import { UserClient } from 'app/shared/api-clients/user/user.client';
 import { environment } from '../../../environments/environment';
 
 @Injectable({

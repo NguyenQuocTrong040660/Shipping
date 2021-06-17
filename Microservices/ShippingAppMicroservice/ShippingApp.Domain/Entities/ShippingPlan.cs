@@ -18,7 +18,7 @@ namespace ShippingApp.Domain.Entities
         public string BillToAddress { get; set; }
         public string ShipTo { get; set; }
         public string ShipToAddress { get; set; }
-        public int AccountNumber { get; set; }
+        public string AccountNumber { get; set; }
         public int ProductLine { get; set; }
 
         public int Quantity { get; set; }

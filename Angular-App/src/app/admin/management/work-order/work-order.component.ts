@@ -1,4 +1,4 @@
-import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel, WorkOrderDetailModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel, WorkOrderDetailModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -7,7 +7,7 @@ import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
+import { FilesClient, TemplateType } from 'app/shared/api-clients/files/files.client';
 import { ImportComponent } from 'app/shared/components/import/import.component';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -55,7 +55,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private filesClient: FilesClient,
     private importService: ImportService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -63,17 +63,21 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
       { header: '....', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
       { header: 'Work Order Id', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
-      { header: 'Product Number', subField: 'productNumber', field: 'product', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Description', subField: 'productName', field: 'product', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Order Qty ', subField: 'quantity', field: 'workOrderDetail', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
-      { header: 'Remain Qty ', field: 'remainQuantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Description', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
-      { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Order Qty', subField: 'quantity', field: 'workOrderDetail', width: WidthColumn.QuantityColumn, type: TypeColumn.SubFieldColumn },
+
+      { header: 'Move Qty', field: 'momentQuantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
+      { header: 'Recv Qty', field: 'receviedMarkQuantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
+
+      { header: 'Remain Qty', field: 'remainQuantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
+
+      { header: 'Status', field: 'status', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
       { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
 
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-
     ];
 
     this.fields = this.cols.map((i) => i.field);

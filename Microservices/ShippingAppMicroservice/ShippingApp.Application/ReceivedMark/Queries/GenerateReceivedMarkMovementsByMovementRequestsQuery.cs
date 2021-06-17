@@ -39,7 +39,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                     .Include(x => x.WorkOrder)
                     .Include(x => x.MovementRequest)
                     .Where(x => x.MovementRequestId == item.Id)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
 
                 receivedMarkMovements.AddRange(movementRequestDetails.Select(x => new ReceivedMarkMovementModel
                 {
@@ -49,6 +49,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                     MovementRequest = _mapper.Map<MovementRequestModel>(x.MovementRequest),
                     MovementRequestId = x.MovementRequestId,
                     ReceivedMarkId = 0,
+                    WorkOrderId = x.WorkOrder.Id,
                     WorkOrderMomentRequest = $"{string.Concat(x.MovementRequest.Prefix, x.MovementRequest.Id ,"-", x.WorkOrder.RefId)}"
                 }).ToList());
             }

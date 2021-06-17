@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { ProductModel, ReceivedMarkPrintingModel, ShippingMarkShippingModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductModel, ReceivedMarkPrintingModel, ShippingMarkShippingModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import Utilities from 'app/shared/helpers/utilities';
 import { MenuItem, SelectItem } from 'primeng/api';
 import { debounceTime, map, tap } from 'rxjs/operators';

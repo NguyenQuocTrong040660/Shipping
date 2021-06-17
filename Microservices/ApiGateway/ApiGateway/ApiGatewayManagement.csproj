@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\**" />
-    <Content Remove="Controllers\**" />
-    <EmbeddedResource Remove="Controllers\**" />
-    <None Remove="Controllers\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="MMLib.SwaggerForOcelot" Version="2.6.1" />
 	<PackageReference Include="MMLib.Ocelot.Provider.AppConfiguration" Version="1.1.0" />
@@ -28,7 +21,6 @@
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.5.1" />
-	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
 	<PackageReference Include="NSwag.AspNetCore" Version="13.7.0" />
 	<PackageReference Include="NSwag.MSBuild" Version="13.7.0">
       <PrivateAssets>all</PrivateAssets>

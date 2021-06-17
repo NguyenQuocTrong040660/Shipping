@@ -17,14 +17,24 @@ namespace ShippingApp.Application.Product.Validations
 
             RuleFor(x => x.Id)
                 .Must(NotExistInShippingPlans)
+                 .WithMessage("Can't delete Product already linked with Shipping Plan")
+
                 .Must(NotExistInWorkOrderDetails)
+                 .WithMessage("Can't delete Product already linked with Work Order")
+
                 .Must(NotExistInMovementRequestDetails)
+                 .WithMessage("Can't delete Product already linked with Movement Request")
+
                 .Must(NotExistInReceivedMarkMovements)
                 .Must(NotExistInReceivedMarkPrintings)
+                 .WithMessage("Can't delete Product already linked with Received Mark")
+
                 .Must(NotExistInShippingMarkPrintings)
                 .Must(NotExistInShippingMarkShippings)
+                 .WithMessage("Can't delete Product already linked with Shipping Mark")
+
                 .Must(NotExistInShippingRequestLogistics)
-                .WithMessage("Failed to delete product");
+                 .WithMessage("Can't delete Product already linked with Shipping Request");
         }
 
         private bool NotExistInShippingPlans(int productId)

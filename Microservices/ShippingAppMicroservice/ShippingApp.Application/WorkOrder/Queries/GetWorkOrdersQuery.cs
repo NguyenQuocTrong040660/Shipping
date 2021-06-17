@@ -31,7 +31,10 @@ namespace ShippingApp.Application.WorkOrder.Queries
 
         public async Task<List<WorkOrderModel>> Handle(GetWorkOrdersQuery request, CancellationToken cancellationToken)
         {
-            var workOrders = await _context.WorkOrders.OrderByDescending(i => i.LastModified).ToListAsync();
+            var workOrders = await _context.WorkOrders
+                .AsNoTracking()
+                .OrderBy(x => x.Id)
+                .ToListAsync(cancellationToken);
 
             foreach (var item in workOrders)
             {
@@ -39,15 +42,31 @@ namespace ShippingApp.Application.WorkOrder.Queries
                     .AsNoTracking()
                     .Include(x => x.Product)
                     .Where(x => x.WorkOrderId == item.Id)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
 
                 item.MovementRequestDetails = await _context.MovementRequestDetails
                     .AsNoTracking()
                     .Where(x => x.WorkOrderId == item.Id)
-                    .ToListAsync();
+                    .ToListAsync(cancellationToken);
             }
 
-            return _mapper.Map<List<WorkOrderModel>>(workOrders);
+            var result = _mapper.Map<List<WorkOrderModel>>(workOrders);
+
+            foreach (var item in result)
+            {
+                item.ReceviedMarkQuantity = await PopulateReceviedMarkQuantityAsync(item, cancellationToken);
+            }
+
+            return result;
+        }
+
+        private async Task<int> PopulateReceviedMarkQuantityAsync(WorkOrderModel item, CancellationToken cancellationToken)
+        {
+            var receivedMarkMovements = await _context.ReceivedMarkMovements
+                .Where(x => x.WorkOrderId == item.Id)
+                .ToListAsync(cancellationToken);
+
+            return receivedMarkMovements.Sum(x => x.Quantity);
         }
     }
 }

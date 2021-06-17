@@ -83,7 +83,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             await _context.ReceivedMarkPrintings.AddAsync(firstReceivedMark);
             await _context.ReceivedMarkPrintings.AddAsync(secondReceivedMark);
 
-            return await  _context.SaveChangesAsync() > 0 
+            return await  _context.SaveChangesAsync(cancellationToken) > 0 
                 ? Result.Success() 
                 : Result.Failure("Failed to unstuff received mark");
         }

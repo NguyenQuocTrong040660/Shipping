@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AttachmentDto, AttachmentTypeDto, FilesClient } from 'app/shared/api-clients/files.client';
+import { AttachmentDto, AttachmentTypeDto, FilesClient } from 'app/shared/api-clients/files/files.client';
 import { environment } from 'environments/environment';
 import { ConfirmationService, MessageService } from 'primeng/api';
 

@@ -42,7 +42,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 int remainQty = receivedMarkMovement.Quantity;
                 var product = await _context.Products
                                     .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.ProductId);
+                                    .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.ProductId, cancellationToken);
                 int sequence = 1;
 
                 while (remainQty > 0)
@@ -70,7 +70,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             await _context.ReceivedMarks.AddAsync(receivedMark);
 
-            return await _context.SaveChangesAsync() > 0
+            return await _context.SaveChangesAsync(cancellationToken) > 0
                 ? Result.Success()
                 : Result.Failure("Failed to create received mark");
         }
@@ -82,6 +82,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 MovementRequestId = x.MovementRequestId,
                 ProductId = x.ProductId,
                 Quantity = x.Quantity,
+                WorkOrderId = x.WorkOrderId,
                 ReceivedMarkId = 0,
             }).ToList();
         }

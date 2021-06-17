@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
-import { ProductModel } from 'app/shared/api-clients/communications.client';
-import { WorkOrderModel } from 'app/shared/api-clients/shipping-app.client';
+import { WorkOrderModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { MenuItem } from 'primeng/api';
 import { WorkOrderDetail } from '../work-order.component';

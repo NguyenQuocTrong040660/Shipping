@@ -8,6 +8,7 @@ namespace ShippingApp.Domain.Models
         public int ProductId { get; set; }
         public int MovementRequestId { get; set; }
         public int Quantity { get; set; }
+        public int WorkOrderId { get; set; }
 
         [IgnoreMap]
         public string WorkOrderMomentRequest { get; set; }

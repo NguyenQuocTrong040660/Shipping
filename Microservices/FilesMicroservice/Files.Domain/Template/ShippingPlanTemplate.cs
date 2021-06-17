@@ -39,7 +39,7 @@ namespace Files.Domain.Template
         public string ShipTo { get; set; }
         [ValidateDataType(IsRequired = true)]
         public string ShipToAddress { get; set; }
-        public int AccountNumber { get; set; }
+        public string AccountNumber { get; set; }
         public int ProductLine { get; set; }
     }
 }

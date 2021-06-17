@@ -1,8 +1,8 @@
 import { Router } from '@angular/router';
-import { ChangePasswordRequest } from './../../../shared/api-clients/user.client';
+import { ChangePasswordRequest } from '../../../shared/api-clients/user/user.client';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
-import { UserClient } from 'app/shared/api-clients/user.client';
+import { UserClient } from 'app/shared/api-clients/user/user.client';
 import { ApplicationUser } from 'app/shared/models/application-user';
 import { AuthenticationService } from 'app/shared/services/authentication.service';
 import { NotificationService } from 'app/shared/services/notification.service';

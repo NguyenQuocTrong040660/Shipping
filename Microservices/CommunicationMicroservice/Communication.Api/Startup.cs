@@ -160,8 +160,7 @@ namespace Communication.Api
             app.UseRouting();
             app.UseCors("GREXSOLUTIONS");
 
-            //app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

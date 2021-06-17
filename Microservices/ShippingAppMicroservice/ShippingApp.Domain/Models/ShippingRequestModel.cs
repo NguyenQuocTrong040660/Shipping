@@ -27,7 +27,7 @@ namespace ShippingApp.Domain.Models
         public string Notes { get; set; }
         public string Status { get; set; }
         
-        public int AccountNumber { get; set; }
+        public string AccountNumber { get; set; }
         public DateTime ShippingDate { get; set; }
         public string CustomerName { get; set; }
         public string BillTo { get; set; }

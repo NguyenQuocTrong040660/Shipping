@@ -17,7 +17,7 @@ namespace ShippingApp.Application.ReceivedMark.Validations
 
             RuleFor(x => x.Id)
                 .Must(NotHaveAnyMarkPrinted)
-                .WithMessage("Failed to delete received mark");
+                .WithMessage("Can't delete Received Mark already printed");
         }
         
         private bool NotHaveAnyMarkPrinted(int receivedMarkId)

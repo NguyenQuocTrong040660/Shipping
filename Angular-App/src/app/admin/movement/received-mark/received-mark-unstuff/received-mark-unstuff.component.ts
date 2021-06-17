@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ReceivedMarkPrintingModel } from 'app/shared/api-clients/shipping-app.client';
+import { ReceivedMarkPrintingModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 
 @Component({
   selector: 'app-received-mark-unstuff',

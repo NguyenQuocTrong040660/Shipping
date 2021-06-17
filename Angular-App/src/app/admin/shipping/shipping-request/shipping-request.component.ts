@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { CommunicationClient } from 'app/shared/api-clients/communications.client';
-import { ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import { CommunicationClient } from 'app/shared/api-clients/communication/communications.client';
+import { ShippingPlanClients, ShippingPlanModel, ShippingRequestClients, ShippingRequestModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { HistoryDialogType } from 'app/shared/enumerations/history-dialog-type.enum';
@@ -50,7 +50,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private fb: FormBuilder,
     private communicationClient: CommunicationClient
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.cols = [
@@ -69,7 +69,6 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
-
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -84,7 +83,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
       .getAllShippingPlan()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (i) => (this.shippingPlans = i.filter((x) => x.canSelected == false)),
+        (i) => (this.shippingPlans = i.filter((x) => x.canSelected === false)),
         (_) => (this.shippingPlans = [])
       );
   }

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using MMLib.Ocelot.Provider.AppConfiguration;
 using NSwag;
 using NSwag.Generation.Processors.Security;
@@ -14,7 +12,6 @@ using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Serilog;
 using System.Linq;
-using System.Text;
 
 namespace ApiGatewayManagement
 {
@@ -88,30 +85,6 @@ namespace ApiGatewayManagement
             });
 
             services.AddLogging(loggingBuilder => loggingBuilder.AddSerilog(dispose: true));
-            ConfigureAuthenticationServices(services);
-        }
-
-        private void ConfigureAuthenticationServices(IServiceCollection services)
-        {
-            string secret = Configuration["JWTTokenConfig:Secret"];
-
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -136,9 +109,6 @@ namespace ApiGatewayManagement
 
             app.UseRouting();
             app.UseCors("GREXSOLUTIONS");
-
-            app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseOcelot().Wait();
 

@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ShippingApp.Application.Common.Exceptions;
+using ShippingApp.Application.Common.Results;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShippingApp.Api.Filters
 {
@@ -72,7 +74,17 @@ namespace ShippingApp.Api.Filters
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
             };
 
-            context.Result = new BadRequestObjectResult(details);
+            List<string> errorMessages = new List<string>();
+
+            foreach (var item in exception.Errors)
+            {
+                errorMessages.AddRange(item.Value);
+            }
+
+            if  (errorMessages.Any())
+            {
+                context.Result = new OkObjectResult(Result.Failure(errorMessages.First()));
+            }
 
             context.ExceptionHandled = true;
         }

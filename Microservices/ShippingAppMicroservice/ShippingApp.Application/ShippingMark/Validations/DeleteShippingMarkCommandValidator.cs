@@ -17,8 +17,9 @@ namespace ShippingApp.Application.ShippingMark.Validations
 
             RuleFor(x => x.Id)
                 .Must(NotExistInReceivedMarkPrintings)
+                .WithMessage("Can't delete Shipping Mark linked with Received Mark")
                 .Must(NotHaveAnyMarkPrinted)
-                .WithMessage("Failed to delete shipping mark");
+                .WithMessage("Can't delete Shipping Mark already Printed");
         }
         
         private bool NotExistInReceivedMarkPrintings(int shippingMarkId)

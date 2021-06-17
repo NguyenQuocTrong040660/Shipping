@@ -1,6 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ProductModel, ReceivedMarkPrintingModel, ShippingMarkModel, ShippingMarkShippingModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app.client';
+import {
+  ProductModel,
+  ReceivedMarkPrintingModel,
+  ShippingMarkModel,
+  ShippingMarkShippingModel,
+  ShippingRequestModel,
+} from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { MenuItem } from 'primeng/api';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ConfirmationService } from 'primeng/api';
-import { ProductClients, ProductModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductClients, ProductModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
@@ -9,9 +9,10 @@ import { WidthColumn } from 'app/shared/configs/width-column';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ImportComponent } from 'app/shared/components/import/import.component';
-import { FilesClient, TemplateType } from 'app/shared/api-clients/files.client';
+import { FilesClient, TemplateType } from 'app/shared/api-clients/files/files.client';
 import { ImportService } from 'app/shared/services/import.service';
 import { EventType } from 'app/shared/enumerations/import-event-type.enum';
+import { CommonService } from 'app/shared/services/common.service';
 
 @Component({
   selector: 'app-product',
@@ -73,13 +74,14 @@ export class ProductComponent implements OnInit, OnDestroy {
     private productClients: ProductClients,
     private dialogService: DialogService,
     private filesClient: FilesClient,
-    private importService: ImportService
+    private importService: ImportService,
+    private commonService: CommonService
   ) {}
 
   ngOnInit() {
     this.cols = [
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
-      { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
+      // { header: 'Id', field: 'identifier', width: WidthColumn.IdentityColumn, type: TypeColumn.NormalColumn },
       { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Description', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Qty/ Pkg', field: 'qtyPerPackage', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
@@ -148,7 +150,7 @@ export class ProductComponent implements OnInit, OnDestroy {
   initForm() {
     this.productForm = this.fb.group({
       id: [0],
-      productName: ['', [Validators.required]],
+      productName: [''],
       productNumber: ['', [Validators.required]],
       notes: [''],
       qtyPerPackage: ['', [Validators.required, Validators.min(0)]],
@@ -208,7 +210,7 @@ export class ProductComponent implements OnInit, OnDestroy {
                 this.notificationService.error(result?.error);
               }
             },
-            (_) => this.notificationService.error('Delete Product Failed. Please try again')
+            (error) => this.commonService.getErrorMessagesFromResponse(error).forEach((msg) => this.notificationService.error(msg))
           );
       },
     });
@@ -239,7 +241,7 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => this.notificationService.error('Add Product Failed. Please try again')
+        (error) => this.commonService.getErrorMessagesFromResponse(error).forEach((msg) => this.notificationService.error(msg))
       );
   }
 
@@ -257,7 +259,7 @@ export class ProductComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => this.notificationService.error('Update Product Failed. Please try again')
+        (error) => this.commonService.getErrorMessagesFromResponse(error).forEach((msg) => this.notificationService.error(msg))
       );
   }
 

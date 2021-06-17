@@ -34,8 +34,8 @@ namespace ShippingApp.Application.WorkOrder.Queries
                .GetDbSet()
                .Include(i => i.WorkOrderDetails).ThenInclude(i => i.Product)
                .Include(x => x.MovementRequestDetails).ThenInclude(x => x.Product)
-               .OrderByDescending(i => i.LastModified)
-               .FirstOrDefaultAsync(i => i.Id == request.Id);
+               .OrderBy(x => x.Id)
+               .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
 
             foreach (var item in workOrder.MovementRequestDetails)
             {

@@ -35,8 +35,8 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                 .GetDbSet()
                 .AsNoTracking()
                 .Include(x => x.ReceivedMarkMovements)
-                .OrderByDescending(x => x.LastModified)
-                .ToListAsync());
+                .OrderBy(x => x.Id)
+                .ToListAsync(cancellationToken));
 
             foreach (var item in receivedMarks)
             {
@@ -47,7 +47,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                     var movementRequest = await _context.MovementRequests
                         .Include(x => x.MovementRequestDetails)
                         .ThenInclude(x => x.WorkOrder)
-                        .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.MovementRequestId);
+                        .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.MovementRequestId, cancellationToken);
 
                     receivedMarkMovement.WorkOrderMomentRequest = $"{movementRequest.Prefix}{movementRequest.Id}-{movementRequest.MovementRequestDetails.FirstOrDefault(x => x.ProductId == receivedMarkMovement.ProductId).WorkOrder.RefId}";
                 }

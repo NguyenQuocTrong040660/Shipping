@@ -4,10 +4,8 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Entities = ShippingApp.Domain.Entities;
 using ShippingApp.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace ShippingApp.Application.ReceivedMark.Queries
 {
@@ -31,12 +29,15 @@ namespace ShippingApp.Application.ReceivedMark.Queries
             var entity = await _context.ReceivedMarks
                  .AsNoTracking()
                  .Include(x => x.ReceivedMarkMovements)
-                 .FirstOrDefaultAsync(x => x.Id == request.Id);
+                 .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
             foreach (var item in entity.ReceivedMarkMovements)
             {
-                item.Product = await _context.Products.FindAsync(item.ProductId);
-                item.MovementRequest = await _context.MovementRequests.FindAsync(item.MovementRequestId);
+                item.Product = await _context.Products
+                    .FindAsync(item.ProductId);
+
+                item.MovementRequest = await _context.MovementRequests
+                    .FindAsync(item.MovementRequestId);
             }
 
             return _mapper.Map<ReceivedMarkModel>(entity);

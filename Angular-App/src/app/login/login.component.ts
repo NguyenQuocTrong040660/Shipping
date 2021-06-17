@@ -1,5 +1,5 @@
 import { environment } from 'environments/environment';
-import { IdentityResult } from './../shared/api-clients/user.client';
+import { IdentityResult } from '../shared/api-clients/user/user.client';
 import { takeUntil } from 'rxjs/operators';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private notificationService: NotificationService,
     private route: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => (this.returnUrl = params['returnUrl'] || ''));

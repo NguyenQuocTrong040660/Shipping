@@ -17,7 +17,7 @@ namespace ShippingApp.Application.WorkOrder.Validations
 
             RuleFor(x => x.Id)
                 .Must(NotExistInMovementRequestDetails)
-                .WithMessage("Failed to delete work order");
+                .WithMessage("Can't delete Work Order already linked with Movement Request");
         }
         
         private bool NotExistInMovementRequestDetails(int workOrderId)

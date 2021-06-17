@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { ProductModel, ShippingPlanModel } from 'app/shared/api-clients/shipping-app.client';
+import { ProductModel, ShippingPlanModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import Utilities from 'app/shared/helpers/utilities';
@@ -43,7 +43,7 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
   selecteShippingInfoItems: SelectItem[] = [];
   selectedShippingInfo: any;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.shippingPlans && changes.shippingPlans.currentValue) {
@@ -211,7 +211,7 @@ export class ShippingRequestCreateComponent implements OnInit, OnChanges {
   _mapToSelectShippingPlanItem(shippingPlans: ShippingPlanModel[]): SelectItem[] {
     return shippingPlans.map((p) => ({
       value: p,
-      label: `Sale Order: ${p.salesOrder} | Saleline Number: ${p.salelineNumber} | Product Number: ${p.product?.productNumber} | Shipping Date: 
+      label: `Sale Order: ${p.salesOrder} | Saleline Number: ${p.salelineNumber} | Product Number: ${p.product?.productNumber} | Shipping Date:
         ${Utilities.ConvertDateBeforeSendToServer(p.shippingDate).toISOString().split('T')[0].split('-').reverse().join('/')}`,
     }));
   }

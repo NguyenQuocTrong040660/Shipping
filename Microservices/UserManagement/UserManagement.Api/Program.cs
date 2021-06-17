@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using UserManagement.Domain.Common;
-using UserManagement.Infrastructure.Identity;
 using UserManagement.Infrastructure.Persistence;
 
 namespace UserManagement.Api

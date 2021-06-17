@@ -60,7 +60,9 @@ namespace ShippingApp.Application.ShippingMark.Commands
             foreach (var group in groupByProducts)
             {
                 int remainQty = group.ShippingQuantity;
-                var product = await _context.Products.AsNoTracking().FirstOrDefaultAsync(x => x.Id == group.ProductId);
+                var product = await _context.Products.AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == group.ProductId, cancellationToken);
+
                 int sequence = 1;
 
                 while (remainQty > 0)
@@ -86,7 +88,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
             };
 
             await _context.ShippingMarks.AddAsync(shippingMark);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             foreach (var item in request.ShippingMark.ReceivedMarkPrintings)
             {
@@ -101,7 +103,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                 receivedMarkPrinting.Status = nameof(ReceivedMarkStatus.Reserved);
             }
 
-            return await _context.SaveChangesAsync() > 0
+            return await _context.SaveChangesAsync(cancellationToken) > 0
                 ? Result.Success()
                 : Result.Failure("Failed to create shipping mark");
         }

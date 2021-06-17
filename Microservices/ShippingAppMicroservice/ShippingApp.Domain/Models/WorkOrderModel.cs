@@ -8,14 +8,6 @@ namespace ShippingApp.Domain.Models
 {
     public class WorkOrderModel : AuditableEntityModel
     {
-        [IgnoreMap]
-        public string Identifier
-        {
-            get
-            {
-                return string.Concat(Prefix, Id);
-            }
-        }
         public int Id { get; set; }
         public string Prefix
         {
@@ -27,6 +19,50 @@ namespace ShippingApp.Domain.Models
         public string RefId { get; set; }
         public string Notes { get; set; }
         public string Status { get; set; }
+        public string PartRevision { get; set; }
+        public string ProcessRevision { get; set; }
+        public string CustomerName { get; set; }
+        public DateTime? CreatedDate { get; set; }
+
+        public virtual ICollection<WorkOrderDetailModel> WorkOrderDetails { get; set; }
+        public virtual ICollection<MovementRequestDetailModel> MovementRequestDetails { get; set; }
+
+        [IgnoreMap]
+        public string Identifier
+        {
+            get
+            {
+                return string.Concat(Prefix, Id);
+            }
+        }
+
+        [IgnoreMap]
+        public string ProductName
+        {
+            get
+            {
+                if (Product == null)
+                {
+                    return string.Empty;
+                }
+
+                return Product.ProductName;
+            }
+        }
+
+        [IgnoreMap]
+        public string ProductNumber
+        {
+            get
+            {
+                if (Product == null)
+                {
+                    return string.Empty;
+                }
+
+                return Product.ProductNumber;
+            }
+        }
 
         [IgnoreMap]
         public ProductModel Product
@@ -61,12 +97,29 @@ namespace ShippingApp.Domain.Models
         {
             get
             {
-                if (WorkOrderDetail == null || MovementRequestDetails == null)
+                if (WorkOrderDetail == null)
                 {
                     return 0;
                 }
 
-                return WorkOrderDetail.Quantity - MovementRequestDetails.Sum(x => x.Quantity);
+                return WorkOrderDetail.Quantity - ReceviedMarkQuantity;
+            }
+        }
+
+        [IgnoreMap]
+        public int ReceviedMarkQuantity { get; set; }
+
+        [IgnoreMap]
+        public int MomentQuantity
+        {
+            get
+            {
+                if (MovementRequestDetails == null || !MovementRequestDetails.Any())
+                {
+                    return 0;
+                }
+
+                return MovementRequestDetails.Sum(x => x.Quantity);
             }
         }
 
@@ -83,13 +136,5 @@ namespace ShippingApp.Domain.Models
                 return Status.Equals(nameof(WorkOrderStatus.Start));
             }
         }
-
-        public string PartRevision { get; set; }
-        public string ProcessRevision { get; set; }
-        public string CustomerName { get; set; }
-        public DateTime? CreatedDate { get; set; }
-
-        public virtual ICollection<WorkOrderDetailModel> WorkOrderDetails { get; set; }
-        public virtual ICollection<MovementRequestDetailModel> MovementRequestDetails { get; set; }
     }
 }

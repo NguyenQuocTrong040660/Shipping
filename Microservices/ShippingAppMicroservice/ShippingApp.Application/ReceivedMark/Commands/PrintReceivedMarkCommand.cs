@@ -39,7 +39,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                          && x.MovementRequestId == request.PrintReceivedMarkRequest.MovementRequestId)
                 .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.New)))
                 .OrderBy(x => x.Sequence)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             if (receivedMarkPrintings == null || !receivedMarkPrintings.Any())
             {
@@ -62,7 +62,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 printItem.PrintingBy = request.PrintReceivedMarkRequest.PrintedBy;
                 printItem.PrintingDate = DateTime.UtcNow;
 
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
             else
             {
@@ -80,7 +80,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                     itemPrint.PrintingBy = request.PrintReceivedMarkRequest.PrintedBy;
                     itemPrint.PrintingDate = DateTime.UtcNow;
 
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(cancellationToken);
 
                     printItem = itemPrint;
                     break;
@@ -93,7 +93,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             {
                 result.WorkOrder = _mapper.Map<WorkOrderModel>((await _context.WorkOrderDetails
                     .Include(x => x.WorkOrder)
-                    .FirstOrDefaultAsync(x => x.ProductId == result.ProductId)).WorkOrder);
+                    .FirstOrDefaultAsync(x => x.ProductId == result.ProductId, cancellationToken)).WorkOrder);
             }
 
             return result;

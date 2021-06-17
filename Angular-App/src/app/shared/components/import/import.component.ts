@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { FilesClient, TemplateType, ValidateDataRequest } from 'app/shared/api-clients/files.client';
-import { ProductClients, ProductModel, ShippingPlanClients, ShippingPlanImportModel, WorkOrderClients, WorkOrderImportModel } from 'app/shared/api-clients/shipping-app.client';
+import { FilesClient, TemplateType, ValidateDataRequest } from 'app/shared/api-clients/files/files.client';
+import {
+  ProductClients,
+  ProductModel,
+  ShippingPlanClients,
+  ShippingPlanImportModel,
+  WorkOrderClients,
+  WorkOrderImportModel,
+} from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { EventType } from 'app/shared/enumerations/import-event-type.enum';
 import { ImportService } from 'app/shared/services/import.service';
 import { NotificationService } from 'app/shared/services/notification.service';

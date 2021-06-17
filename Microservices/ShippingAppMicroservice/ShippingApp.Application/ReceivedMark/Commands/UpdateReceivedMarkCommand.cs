@@ -44,12 +44,12 @@ namespace ShippingApp.Application.ReceivedMark.Commands
             var receivedMarkPrintingsGenerated = await _context.ReceivedMarkPrintings
                 .Where(i => i.ReceivedMarkId == request.Id)
                 .Where(x => x.Status.Equals(nameof(ShippingMarkStatus.New)))
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             var receivedMarkPrintingsPrinted = await _context.ReceivedMarkPrintings
                .Where(i => i.ReceivedMarkId == request.Id)
                .Where(x => !receivedMarkPrintingsGenerated.Contains(x))
-               .ToListAsync();
+               .ToListAsync(cancellationToken);
            
             foreach (var receivedMarkMovement in request.ReceivedMark.ReceivedMarkMovements)
             {
@@ -70,7 +70,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
                 var product = await _context.Products
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.ProductId);
+                    .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.ProductId, cancellationToken);
 
                 var lastItem = receivedMarkPrintingsPrinted
                     .Where(x => x.ProductId == receivedMarkMovement.ProductId)
@@ -97,7 +97,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 var receivedMarkMovements = await _context.ReceivedMarkMovements
                                                           .Where(i => i.ReceivedMarkId == request.Id)
                                                           .Where(i => i.ProductId == receivedMarkMovement.ProductId)
-                                                          .ToListAsync();
+                                                          .ToListAsync(cancellationToken);
 
                 foreach (var item in receivedMarkMovements)
                 {
@@ -121,11 +121,11 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             var receivedMark = await _context.ReceivedMarks
                 .Where(x => x.Id == request.Id)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken);
 
             receivedMark.Notes = request.ReceivedMark.Notes;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

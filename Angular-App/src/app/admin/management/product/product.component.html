@@ -93,20 +93,6 @@
   <ng-template pTemplate="content">
     <form [formGroup]="productForm">
       <div class="p-field">
-        <label for="productName">Description<span class="p-invalid"> *</span></label>
-        <input
-          [ngClass]="{ 'ng-dirty': productNameControl.invalid && (productNameControl.dirty || productNameControl.touched) }"
-          pInputText
-          id="productName"
-          [formControl]="productNameControl"
-          type="text"
-        />
-        <ng-container *ngIf="productNameControl.invalid && (productNameControl.dirty || productNameControl.touched)">
-          <small class="p-invalid p-error">Please enter a valid Description</small>
-        </ng-container>
-      </div>
-
-      <div class="p-field">
         <label for="productNumber">Product Number<span class="p-invalid"> *</span></label>
         <input
           [ngClass]="{ 'ng-dirty': productNumberControl.invalid && (productNumberControl.dirty || productNumberControl.touched) }"
@@ -134,7 +120,21 @@
       </div>
 
       <div class="p-field">
-        <label for="partRevision">Part Revision Raw<span class="p-invalid"> *</span></label>
+        <label for="productName">Description</label>
+        <input
+          [ngClass]="{ 'ng-dirty': productNameControl.invalid && (productNameControl.dirty || productNameControl.touched) }"
+          pInputText
+          id="productName"
+          [formControl]="productNameControl"
+          type="text"
+        />
+        <ng-container *ngIf="productNameControl.invalid && (productNameControl.dirty || productNameControl.touched)">
+          <small class="p-invalid p-error">Please enter a valid Description</small>
+        </ng-container>
+      </div>
+
+      <div class="p-field">
+        <label for="partRevision">Part Revision Raw</label>
         <input
           [ngClass]="{ 'ng-dirty': partRevisionRawControl.invalid && (partRevisionRawControl.dirty || partRevisionRawControl.touched) }"
           pInputText
@@ -145,7 +145,7 @@
       </div>
 
       <div class="p-field">
-        <label for="partRevisionClean">Part Revision Clean<span class="p-invalid"> *</span></label>
+        <label for="partRevisionClean">Part Revision Clean</label>
         <input
           [ngClass]="{ 'ng-dirty': partRevisionCleanControl.invalid && (partRevisionCleanControl.dirty || partRevisionCleanControl.touched) }"
           pInputText
@@ -156,7 +156,7 @@
       </div>
 
       <div class="p-field">
-        <label for="processRevision">Process Revision<span class="p-invalid"> *</span></label>
+        <label for="processRevision">Process Revision</label>
         <input
           [ngClass]="{ 'ng-dirty': processRevisionControl.invalid && (processRevisionControl.dirty || processRevisionControl.touched) }"
           pInputText

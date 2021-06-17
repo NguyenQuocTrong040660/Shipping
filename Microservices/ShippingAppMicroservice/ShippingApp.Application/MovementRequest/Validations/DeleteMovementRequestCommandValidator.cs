@@ -17,12 +17,14 @@ namespace ShippingApp.Application.MovementRequest.Validations
 
             RuleFor(x => x.Id)
                 .Must(NotExistInReceivedMarkMovements)
-                .WithMessage("Failed to delete movement request");
+                .WithMessage("Can't delete Movement Request already linked to Received Mark");
         }
 
         private bool NotExistInReceivedMarkMovements(int movementRequestId)
         {
-            return _context.ReceivedMarkMovements.AsNoTracking().Any(x => x.MovementRequestId == movementRequestId) == false;
+            return _context.ReceivedMarkMovements
+                .AsNoTracking()
+                .Any(x => x.MovementRequestId == movementRequestId) == false;
         }
     }
 }

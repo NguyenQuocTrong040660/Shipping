@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { environment } from 'environments/environment';
 import { BehaviorSubject, Observable, of, Subscription, throwError } from 'rxjs';
 import { catchError, delay, finalize, tap } from 'rxjs/operators';
-import { LoginRequest, IdentityResult, RefreshTokenRequest, UserClient } from '../api-clients/user.client';
+import { LoginRequest, IdentityResult, RefreshTokenRequest, UserClient } from '../api-clients/user/user.client';
 import { Roles } from '../enumerations/roles.enum';
 import Logger from '../helpers/logger';
 import { ApplicationUser } from '../models/application-user';

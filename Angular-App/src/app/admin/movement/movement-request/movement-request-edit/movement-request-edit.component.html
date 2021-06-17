@@ -20,7 +20,7 @@
 
             <ng-template pTemplate="body" let-movementRequestDetail let-editing="editing" let-ri="rowIndex">
               <tr [pEditableRow]="movementRequestDetail">
-                <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
+                <td>{{ movementRequestDetail?.workOrder?.refId }}</td>
                 <td>
                   {{ movementRequestDetail?.product?.productNumber }}
                 </td>
@@ -134,7 +134,7 @@
 
             <ng-template pTemplate="body" let-movementRequestDetail>
               <tr>
-                <td>{{ movementRequestDetail?.workOrder?.identifier }}</td>
+                <td>{{ movementRequestDetail?.workOrder?.refId }}</td>
                 <td>
                   {{ movementRequestDetail?.product?.productNumber }}
                 </td>

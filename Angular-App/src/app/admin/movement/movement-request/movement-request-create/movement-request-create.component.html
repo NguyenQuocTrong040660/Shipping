@@ -55,7 +55,9 @@
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
                 <th class="p-text-center">Shipping Direct</th>
-                <th class="p-text-center">Quantity<span class="p-invalid"> *</span></th>
+                <th class="p-text-center">Work Order Quantity</th>
+                <th class="p-text-center">Remain Quantity</th>
+                <th class="p-text-center">Movement Quantity<span class="p-invalid"> *</span></th>
                 <th style="width: 10rem"></th>
               </tr>
             </ng-template>
@@ -79,12 +81,18 @@
                 </td>
 
                 <td class="p-text-center">
+                  {{ movementRequestDetail?.quantity }}
+                </td>
+
+                <td class="p-text-center">0</td>
+
+                <td class="p-text-center">
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                      <p-inputNumber [(ngModel)]="movementRequestDetail.quantity" required></p-inputNumber>
+                      <p-inputNumber [(ngModel)]="movementRequestDetail.inputQuantity" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ movementRequestDetail?.quantity | number }}
+                      {{ movementRequestDetail?.inputQuantity | number }}
                     </ng-template>
                   </p-cellEditor>
                 </td>
@@ -165,7 +173,9 @@
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
                 <th class="p-text-center">Shipping Direct</th>
-                <th class="p-text-center">Quantity</th>
+                <th class="p-text-center">Work Order Quantity</th>
+                <th class="p-text-center">Remain Quantity</th>
+                <th class="p-text-center">Movement Quantity</th>
               </tr>
             </ng-template>
 
@@ -188,6 +198,12 @@
 
                 <td class="p-text-center">
                   {{ movementRequestDetail?.quantity | number }}
+                </td>
+
+                <td class="p-text-center">0</td>
+
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.inputQuantity | number }}
                 </td>
               </tr>
             </ng-template>
