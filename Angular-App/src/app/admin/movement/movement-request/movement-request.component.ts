@@ -122,7 +122,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
           this.movementRequestDetails = movementRequestDetails;
           this.movementRequestDetails.forEach((i, index) => {
             i['id'] = ++index;
-            i.quantity = i.workOrder.remainQuantity;
+            i.quantity = 0;
           });
         },
         (_) => (this.movementRequestDetails = [])
@@ -263,5 +263,4 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
 
 export interface MovementRequestDetail extends MovementRequestDetailModel {
   isEditRow?: boolean;
-  inputQuantity?: number;
 }

@@ -6,19 +6,6 @@ namespace ShippingApp.Domain.Models
 {
     public class ReceivedMarkPrintingModel : AuditableEntityModel
     {
-        [IgnoreMap]
-        public string Identifier
-        {
-            get
-            {
-                return string.Concat(Prefix, Id);
-            }
-        }
-
-        [IgnoreMap]
-        public WorkOrderModel WorkOrder { get; set; }
-
-
         public int Id { get; set; }
         public string Prefix
         {
@@ -51,5 +38,17 @@ namespace ShippingApp.Domain.Models
 
         public int MovementRequestId { get; set; }
         public virtual MovementRequestModel MovementRequest { get; set; }
+
+        [IgnoreMap]
+        public string Identifier
+        {
+            get
+            {
+                return string.Concat(Prefix, Id);
+            }
+        }
+
+        [IgnoreMap]
+        public WorkOrderModel WorkOrder { get; set; }
     }
 }

@@ -41,7 +41,11 @@ namespace UserManagement.Infrastructure.Persistence
                     },
                     new IdentityRole
                     {
-                        Name = Roles.Manager
+                        Name = Roles.WarehouseSupervisor
+                    },
+                     new IdentityRole
+                    {
+                        Name = Roles.QASupervisor
                     },
                     new IdentityRole
                     {
@@ -105,6 +109,11 @@ namespace UserManagement.Infrastructure.Persistence
                 {
                     UserName = "user06",
                     Email = "user06@gmail.com",
+                },
+                new ApplicationUser
+                {
+                    UserName = "user07",
+                    Email = "user07@gmail.com",
                 }
             };
 
@@ -112,10 +121,11 @@ namespace UserManagement.Infrastructure.Persistence
             {
                 Roles.ITAdministrator,// userName: user01
                 Roles.ShippingDept,   // userName: user02
-                Roles.Manager,        // userName: user03
+                Roles.WarehouseSupervisor,        // userName: user03
                 Roles.LogisticsDept,  // userName: user04
                 Roles.PlanningDept,   // userName: user05
                 Roles.FAQDept,        // userName: user06
+                Roles.QASupervisor,        // userName: user07
             };
 
             for (int i = 0; i < users.Count; i++)

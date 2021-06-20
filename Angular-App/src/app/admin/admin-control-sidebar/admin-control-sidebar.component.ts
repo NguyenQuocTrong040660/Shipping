@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UserRole } from 'app/shared/constants/user-role.constants';
+import { Roles } from 'app/shared/enumerations/roles.enum';
 import { ApplicationUser } from 'app/shared/models/application-user';
 import { AuthenticationService } from 'app/shared/services/authentication.service';
 import { MenuItem } from 'primeng/api';
@@ -16,7 +16,7 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
   user: ApplicationUser;
   private destroyed$ = new Subject<void>();
 
-  constructor(private authenticationService: AuthenticationService) { }
+  constructor(private authenticationService: AuthenticationService) {}
 
   ngOnInit(): void {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user) => {
@@ -87,13 +87,13 @@ export class AdminControlSidebarComponent implements OnInit, OnDestroy {
       {
         label: 'Setting',
         icon: 'pi pi-pw pi-file',
-        visible: this._viewedByRoles([UserRole.SystemAdministrator, UserRole.ITAdministrator]),
+        visible: this._viewedByRoles([Roles.SystemAdministrator, Roles.ITAdministrator]),
         items: [
           {
             label: 'User',
             icon: 'pi pi-users',
             routerLink: '/user-management',
-            visible: this._viewedByRoles([UserRole.SystemAdministrator, UserRole.ITAdministrator]),
+            visible: this._viewedByRoles([Roles.SystemAdministrator, Roles.ITAdministrator]),
           },
           {
             label: 'Configuration',

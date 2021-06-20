@@ -5,7 +5,6 @@
         public const string SystemAdministrator = nameof(SystemAdministrator);
         public const string ITAdministrator = nameof(ITAdministrator);
         public const string ShippingDept = nameof(ShippingDept);
-        public const string Manager = nameof(Manager);
 
         public const string WarehouseSupervisor = nameof(WarehouseSupervisor);
         public const string QASupervisor = nameof(QASupervisor);

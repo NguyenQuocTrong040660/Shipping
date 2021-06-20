@@ -48,7 +48,11 @@ export class UserManagementComponent implements OnInit {
     private communicationClient: CommunicationClient,
     private notificationService: NotificationService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) {
+    this.initUsers();
+    this.initRoles();
+    this.initSetNewPasswordForm();
+  }
 
   ngOnInit() {
     this.cols = [
@@ -60,11 +64,8 @@ export class UserManagementComponent implements OnInit {
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];
-    this.fields = this.cols.map((i) => i.field);
 
-    this.initUsers();
-    this.initRoles();
-    this.initSetNewPasswordForm();
+    this.fields = this.cols.map((i) => i.field);
   }
 
   initUsers() {
@@ -168,7 +169,7 @@ export class UserManagementComponent implements OnInit {
     this.isShowSetNewPassworDialog = true;
 
     this.selectedUsers.forEach((u, index) => {
-      this.newPasswordForms.push(this.newPasswordFormsInit(u.email, index));
+      this.newPasswordForms.push(this.newPasswordFormsInit(u.userName, index));
     });
   }
 
@@ -177,9 +178,9 @@ export class UserManagementComponent implements OnInit {
     this.resetSetNewPasswordForm();
   }
 
-  newPasswordFormsInit(email: string, index: number): FormGroup {
+  newPasswordFormsInit(userName: string, index: number): FormGroup {
     return new FormGroup({
-      email: new FormControl(email, [Validators.required, Validators.email]),
+      userName: new FormControl({ value: userName, disabled: true }),
       confirmEmail: new FormControl('', [Validators.required, this._matchEmailContent(index)]),
     });
   }

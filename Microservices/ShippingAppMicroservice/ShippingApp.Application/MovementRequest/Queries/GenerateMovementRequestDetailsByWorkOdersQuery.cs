@@ -40,18 +40,33 @@ namespace ShippingApp.Application.MovementRequest.Queries
                     .Where(x => x.WorkOrderId == item.Id)
                     .ToListAsync(cancellationToken));
 
-                movementRequestDetails.AddRange(workOrderDetails.Select(x => new MovementRequestDetailModel
+                foreach (var workOrderDetail in workOrderDetails)
                 {
-                    ProductId = x.ProductId,
-                    Quantity = x.Quantity,
-                    WorkOrderId = x.WorkOrderId,
-                    WorkOrder = x.WorkOrder,
-                    MovementRequestId = 0,
-                    Product = x.Product,
-                }).ToList());
+                    var workOrder = workOrderDetail.WorkOrder;
+                    workOrder.ReceviedMarkQuantity = await PopulateReceviedMarkQuantityAsync(workOrder.Id, cancellationToken);
+
+                    movementRequestDetails.Add(new MovementRequestDetailModel
+                    {
+                        ProductId = workOrderDetail.ProductId,
+                        Quantity = 0,
+                        WorkOrderId = workOrderDetail.WorkOrderId,
+                        WorkOrder = workOrder,
+                        MovementRequestId = 0,
+                        Product = workOrderDetail.Product,
+                    });
+                }
             }
 
             return movementRequestDetails;
+        }
+
+        private async Task<int> PopulateReceviedMarkQuantityAsync(int wokrOrderId, CancellationToken cancellationToken)
+        {
+            var receivedMarkMovements = await _context.ReceivedMarkMovements
+                .Where(x => x.WorkOrderId == wokrOrderId)
+                .ToListAsync(cancellationToken);
+
+            return receivedMarkMovements.Sum(x => x.Quantity);
         }
     }
 }

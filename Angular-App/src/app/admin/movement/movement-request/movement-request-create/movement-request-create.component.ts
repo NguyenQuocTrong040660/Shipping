@@ -74,7 +74,7 @@ export class MovementRequestCreateComponent implements OnInit, OnChanges {
 
   initMovementRequestDetailForm(movementRequestDetail: MovementRequestDetail) {
     return this.fb.group({
-      quantity: [movementRequestDetail.inputQuantity],
+      quantity: [movementRequestDetail.quantity],
       productId: [movementRequestDetail.productId],
       workOrderId: [movementRequestDetail.workOrderId],
       isDirect: [movementRequestDetail.isDirect],
@@ -83,7 +83,7 @@ export class MovementRequestCreateComponent implements OnInit, OnChanges {
   }
 
   allowMoveToCompleteStep(movementRequestDetails: MovementRequestDetail[]): boolean {
-    const haveFilledDataRows = movementRequestDetails.filter((i) => i.inputQuantity === 0).length === 0;
+    const haveFilledDataRows = movementRequestDetails.filter((i) => i.quantity === 0).length === 0;
     const haveNotEditRows = movementRequestDetails.every((d) => d.isEditRow === false);
 
     return haveFilledDataRows && haveNotEditRows && this.movementRequestDetails.length > 0;
@@ -102,7 +102,7 @@ export class MovementRequestCreateComponent implements OnInit, OnChanges {
   onRowEditSave(movementRequestDetailModel: MovementRequestDetail) {
     movementRequestDetailModel.isEditRow = false;
     const entity = this.movementRequestDetails.find((i) => i['id'] === movementRequestDetailModel['id']);
-    entity.inputQuantity = movementRequestDetailModel.inputQuantity;
+    entity.quantity = movementRequestDetailModel.quantity;
     delete this.clonedMovementRequestDetailModels[movementRequestDetailModel['id']];
   }
 

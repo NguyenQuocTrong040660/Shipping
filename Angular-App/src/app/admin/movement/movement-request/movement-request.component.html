@@ -2,29 +2,50 @@
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left"></ng-template>
     <ng-template pTemplate="right">
-      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create"
-        (click)="openCreateDialog()"></button>
-      <button class="p-button-danger p-mr-2" pButton pRipple icon="pi pi-trash" label="Delete"
-        [disabled]="!selectedMovementRequest" (click)="openDeleteDialog(selectedMovementRequest)"></button>
+      <button class="p-button-info p-mr-2" pButton pRipple icon="pi pi-plus" label="Create" (click)="openCreateDialog()"></button>
+      <button
+        class="p-button-danger p-mr-2"
+        pButton
+        pRipple
+        icon="pi pi-trash"
+        label="Delete"
+        [disabled]="!selectedMovementRequest"
+        (click)="openDeleteDialog(selectedMovementRequest)"
+      ></button>
 
-      <button class="p-button-success p-mr-2" pButton pRipple label="Edit" icon="pi pi-pencil"
-        [disabled]="!selectedMovementRequest" (click)="openEditDialog(selectedMovementRequest)"></button>
+      <button
+        class="p-button-success p-mr-2"
+        pButton
+        pRipple
+        label="Edit"
+        icon="pi pi-pencil"
+        [disabled]="!selectedMovementRequest"
+        (click)="openEditDialog(selectedMovementRequest)"
+      ></button>
 
-      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History"
-        (click)="openHistoryDialog()"></button>
+      <button class="p-button-warning" pButton pRipple icon="pi pi-search" label="History" (click)="openHistoryDialog()"></button>
     </ng-template>
   </p-toolbar>
 
-  <p-table #movementRequestDataTable dataKey="id" columnResizeMode="expand" [value]="movementRequests" [rows]="20"
-    [columns]="cols" [paginator]="true" [scrollable]="true" [globalFilterFields]="colFields"
-    [(selection)]="selectedMovementRequest" [expandedRowKeys]="expandedItems">
+  <p-table
+    #movementRequestDataTable
+    dataKey="id"
+    columnResizeMode="expand"
+    [value]="movementRequests"
+    [rows]="20"
+    [columns]="cols"
+    [paginator]="true"
+    [scrollable]="true"
+    [globalFilterFields]="colFields"
+    [(selection)]="selectedMovementRequest"
+    [expandedRowKeys]="expandedItems"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">{{ title | uppercase }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="movementRequestDataTable.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search..." />
+          <input pInputText type="text" (input)="movementRequestDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -81,9 +102,15 @@
               {{ item[col.field] }}
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
-              <button type="button" pButton pRipple (click)="getDetailMovementRequest(item)" [pRowToggler]="item"
+              <button
+                type="button"
+                pButton
+                pRipple
+                (click)="getDetailMovementRequest(item)"
+                [pRowToggler]="item"
                 class="p-button-text p-button-rounded p-button-plain"
-                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"></button>
+                [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
+              ></button>
             </ng-container>
           </ng-container>
         </td>
@@ -96,41 +123,51 @@
           <div>
             <p-table class="movement-request__expaned-table" [value]="movementRequest.movementRequestDetails">
               <ng-template pTemplate="header">
-      <tr>
-        <th>Work Order Id</th>
-        <th>Product Number</th>
-        <th>Description</th>
-        <th>Qty/ Pkg</th>
-        <th>Moved Qty</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-item>
-      <tr>
-        <td>{{ item?.workOrder?.refId }}</td>
-        <td>{{ item?.product?.productNumber }}</td>
-        <td>{{ item?.product?.productName }}</td>
-        <td>{{ item?.product?.qtyPerPackage }}</td>
-        <td>{{ item?.quantity | number }}</td>
+                <tr>
+                  <th>Work Order Id</th>
+                  <th>Product Number</th>
+                  <th>Description</th>
+                  <th>Qty/ Pkg</th>
+                  <th>Moved Qty</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>{{ item?.workOrder?.refId }}</td>
+                  <td>{{ item?.product?.productNumber }}</td>
+                  <td>{{ item?.product?.productName }}</td>
+                  <td>{{ item?.product?.qtyPerPackage }}</td>
+                  <td>{{ item?.quantity | number }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
       </tr>
     </ng-template>
   </p-table>
 </div>
-</td>
-</tr>
-</ng-template>
-</p-table>
-</div>
 
-<app-movement-request-create [movementRequestForm]="movementRequestForm"
-  [movementRequestDetails]="movementRequestDetails" [titleDialog]="titleDialog" [selectItems]="selectItems"
-  [isShowDialog]="isShowDialogCreate" (submitEvent)="onSubmit()" (hideDialogEvent)="hideDialog()"
-  (selectedWorkOrdersEvent)="handleSelectedWorkOrders()">
+<app-movement-request-create
+  [movementRequestForm]="movementRequestForm"
+  [movementRequestDetails]="movementRequestDetails"
+  [titleDialog]="titleDialog"
+  [selectItems]="selectItems"
+  [isShowDialog]="isShowDialogCreate"
+  (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
+  (selectedWorkOrdersEvent)="handleSelectedWorkOrders()"
+>
 </app-movement-request-create>
 
-<app-movement-request-edit [movementRequestForm]="movementRequestForm" [movementRequest]="selectedMovementRequest"
-  [titleDialog]="titleDialog" [isShowDialog]="isShowDialogEdit" (submitEvent)="onSubmit()"
-  (hideDialogEvent)="hideDialog()">
+<app-movement-request-edit
+  [movementRequestForm]="movementRequestForm"
+  [movementRequest]="selectedMovementRequest"
+  [titleDialog]="titleDialog"
+  [isShowDialog]="isShowDialogEdit"
+  (submitEvent)="onSubmit()"
+  (hideDialogEvent)="hideDialog()"
+>
 </app-movement-request-edit>
 
-<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.MovementRequest"
-  (hideDialogEvent)="hideDialog()"> </app-history-dialog>
+<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.MovementRequest" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

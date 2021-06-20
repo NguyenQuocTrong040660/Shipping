@@ -1,3 +1,4 @@
+import { NotificationService } from 'app/shared/services/notification.service';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ProductModel, ReceivedMarkPrintingModel, ShippingMarkShippingModel, ShippingRequestModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
@@ -50,7 +51,7 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
     return this.shippingMarkForm.get('receivedMarkPrintings') as FormArray;
   }
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private notificationService: NotificationService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.shippingRequests && changes.shippingRequests.currentValue) {
@@ -158,6 +159,12 @@ export class ShippingMarkCreateComponent implements OnInit, OnChanges {
         break;
       }
       case 1: {
+        if (this.shippingMarkForm.invalid || this.canNavigateToSummaryStep()) {
+          this.notificationService.error('Received Mark quantity does not match Shipping quantity');
+
+          return;
+        }
+
         this.dataSummary = [];
         this.stepIndex += 1;
 

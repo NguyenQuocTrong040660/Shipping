@@ -1394,12 +1394,6 @@ export class ProductClients {
             result404 = _responseText === "" ? null : <Result>JSON.parse(_responseText, this.jsonParseReviver);
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             }));
-        } else if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result400: any = null;
-            result400 = _responseText === "" ? null : <ValidationProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
-            }));
         } else if (status === 401) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result401: any = null;
@@ -4529,10 +4523,6 @@ export interface ReceivedMarkMovementModel extends AuditableEntityModel {
     receivedMark?: ReceivedMarkModel | undefined;
     movementRequest?: MovementRequestModel | undefined;
     product?: ProductModel | undefined;
-}
-
-export interface ValidationProblemDetails extends ProblemDetails {
-    errors?: { [key: string]: string[]; } | undefined;
 }
 
 export interface ImportResult {

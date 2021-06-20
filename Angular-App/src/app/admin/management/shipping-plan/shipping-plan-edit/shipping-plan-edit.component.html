@@ -147,9 +147,9 @@
                   <label for="billToAddressControl">Bill To Address<span class="p-invalid"> *</span></label>
                   <input
                     [ngClass]="{ 'ng-dirty': billToAddressControl.invalid && (billToAddressControl.dirty || billToAddressControl.touched) }"
+                    [formControl]="billToAddressControl"
                     pInputText
                     id="billToAddressControl"
-                    [formControl]="billToAddressControl"
                     type="text"
                   />
 
@@ -162,12 +162,13 @@
               <div class="p-col-6">
                 <div class="p-field">
                   <label for="accountNumberControl">Account Number<span class="p-invalid"> *</span></label>
-                  <p-inputNumber
+                  <input
                     [ngClass]="{ 'ng-dirty': accountNumberControl.invalid && (accountNumberControl.dirty || accountNumberControl.touched) }"
+                    pInputText
                     id="accountNumberControl"
+                    type="text"
                     [formControl]="accountNumberControl"
-                  >
-                  </p-inputNumber>
+                  />
 
                   <ng-container *ngIf="accountNumberControl.invalid && (accountNumberControl.dirty || accountNumberControl.touched)">
                     <small class="p-invalid p-error">Please specify a account number</small>
@@ -327,15 +328,15 @@
                 <td class="p-text-center">
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                      <p-inputNumber [(ngModel)]="item.price" required mode="decimal" required></p-inputNumber>
+                      <p-inputNumber [minFractionDigits]="5" [(ngModel)]="item.price" required mode="decimal" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ item?.price | number }}
+                      {{ item?.price | number: '1.1-5' }}
                     </ng-template>
                   </p-cellEditor>
                 </td>
                 <td class="p-text-center">
-                  {{ item?.amount | number }}
+                  {{ item?.amount | number: '1.1-5' }}
                 </td>
 
                 <td class="p-text-center">
@@ -437,11 +438,11 @@
                 </td>
 
                 <td class="p-text-center">
-                  {{ item?.price | number }}
+                  {{ item?.price | number: '1.1-5' }}
                 </td>
 
                 <td class="p-text-center">
-                  {{ item?.amount | number }}
+                  {{ item?.amount | number: '1.1-5' }}
                 </td>
               </tr>
             </ng-template>

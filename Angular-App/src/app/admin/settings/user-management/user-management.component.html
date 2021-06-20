@@ -239,27 +239,10 @@
           <div [formGroupName]="i">
             <div class="create-user-form__group-inline p-grid">
               <div class="p-field p-col-5">
-                <label for="email">Email<span class="p-invalid"> *</span></label>
-                <input
-                  id="email"
-                  type="email"
-                  pInputText
-                  disabled
-                  [ngClass]="{
-                    'ng-dirty':
-                      newPasswordForms.controls[i].get('email').invalid && (newPasswordForms.controls[i].get('email').dirty || newPasswordForms.controls[i].get('email').touched)
-                  }"
-                  [formControl]="newPasswordForms.controls[i].get('email')"
-                  aria-describedby="email-error"
-                />
-                <ng-container
-                  *ngIf="
-                    newPasswordForms.controls[i].get('email').invalid && (newPasswordForms.controls[i].get('email').dirty || newPasswordForms.controls[i].get('email').touched)
-                  "
-                >
-                  <small class="p-invalid p-error">Please specify a valid email</small>
-                </ng-container>
+                <label for="userName">Username</label>
+                <input id="userName" type="text" pInputText disabled [formControl]="newPasswordForms.controls[i].get('userName')" aria-describedby="email-error" />
               </div>
+
               <div class="p-field p-col-6">
                 <label for="confirmEmail">Confirm Email<span class="p-invalid"> *</span></label>
                 <input

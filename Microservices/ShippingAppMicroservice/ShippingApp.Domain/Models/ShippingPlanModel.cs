@@ -8,29 +8,6 @@ namespace ShippingApp.Domain.Models
 {
     public class ShippingPlanModel : AuditableEntityModel
     {
-        [IgnoreMap]
-        public string Identifier
-        {
-            get
-            {
-                return string.Concat(Prefix, Id);
-            }
-        }
-
-        [IgnoreMap]
-        public string RefId
-        {
-            get
-            {
-                if (Product == null)
-                {
-                    return string.Empty;
-                }
-
-                return string.Join("-", SalesOrder, SalelineNumber, Product.ProductNumber);
-            }
-        }
-
         public int Id { get; set; }
         public string Prefix
         {
@@ -81,6 +58,29 @@ namespace ShippingApp.Domain.Models
             get
             {
                 return ShippingRequestId.HasValue;
+            }
+        }
+
+        [IgnoreMap]
+        public string Identifier
+        {
+            get
+            {
+                return string.Concat(Prefix, Id);
+            }
+        }
+
+        [IgnoreMap]
+        public string RefId
+        {
+            get
+            {
+                if (Product == null)
+                {
+                    return string.Empty;
+                }
+
+                return string.Join("-", SalesOrder, SalelineNumber, Product.ProductNumber);
             }
         }
     }

@@ -142,8 +142,8 @@
                   <td>{{ item?.product?.productName }}</td>
                   <td>{{ item?.product?.qtyPerPackage }}</td>
                   <td>{{ item?.quantity | number }}</td>
-                  <td>{{ item?.price | number }}</td>
-                  <td>{{ item?.amount | number }}</td>
+                  <td>{{ item?.price | number: '1.1-5' }}</td>
+                  <td>{{ item?.amount | number: '1.1-5' }}</td>
                   <td>{{ item?.shippingMode }}</td>
                 </tr>
               </ng-template>

@@ -32,7 +32,7 @@ export class PrintService {
   }
 
   canRePrint(user: ApplicationUser) {
-    if (user && user.roles && user.roles.length > 0 && user.roles.includes(Roles.Manager)) {
+    if (user && user.roles && user.roles.length > 0 && user.roles.includes(Roles.WarehouseSupervisor)) {
       return true;
     }
 

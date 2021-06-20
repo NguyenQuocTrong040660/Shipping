@@ -13,7 +13,9 @@
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
                 <th class="p-text-center">Shipping Direct</th>
-                <th class="p-text-center">Quantity<span class="p-invalid"> *</span></th>
+                <th class="p-text-center">Work Order Quantity</th>
+                <th class="p-text-center">Remain Quantity</th>
+                <th class="p-text-center">Movement Quantity<span class="p-invalid"> *</span></th>
                 <th style="width: 10rem"></th>
               </tr>
             </ng-template>
@@ -29,11 +31,19 @@
                 </td>
 
                 <td class="p-text-center">
-                  {{ movementRequestDetail?.product?.qtyPerPackage }}
+                  {{ movementRequestDetail?.product?.qtyPerPackage | number }}
                 </td>
 
                 <td class="p-text-center">
                   <p-inputSwitch [(ngModel)]="movementRequestDetail.isDirect"></p-inputSwitch>
+                </td>
+
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.workOrder?.workOrderDetail?.quantity | number }}
+                </td>
+
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.workOrder?.remainQuantity | number }}
                 </td>
 
                 <td class="p-text-center">
@@ -128,7 +138,9 @@
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
                 <th class="p-text-center">Shipping Direct</th>
-                <th class="p-text-center">Quantity</th>
+                <th class="p-text-center">Work Order Quantity</th>
+                <th class="p-text-center">Remain Quantity</th>
+                <th class="p-text-center">Movement Quantity<span class="p-invalid"> *</span></th>
               </tr>
             </ng-template>
 
@@ -143,11 +155,19 @@
                 </td>
 
                 <td class="p-text-center">
-                  {{ movementRequestDetail?.product?.qtyPerPackage }}
+                  {{ movementRequestDetail?.product?.qtyPerPackage | number }}
                 </td>
 
                 <td class="p-text-center">
                   <p-inputSwitch [(ngModel)]="movementRequestDetail.isDirect" [readonly]="true"></p-inputSwitch>
+                </td>
+
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.workOrder?.workOrderDetail?.quantity | number }}
+                </td>
+
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.workOrder?.remainQuantity | number }}
                 </td>
 
                 <td class="p-text-center">

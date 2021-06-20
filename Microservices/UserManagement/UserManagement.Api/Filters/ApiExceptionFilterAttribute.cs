@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UserManagement.Application.Common.Exceptions;
+using UserManagement.Application.Common.Results;
 
 namespace UserManagement.Api.Filters
 {
@@ -72,8 +74,17 @@ namespace UserManagement.Api.Filters
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
             };
 
-            context.Result = new BadRequestObjectResult(details);
+            List<string> errorMessages = new List<string>();
 
+            foreach (var item in exception.Errors)
+            {
+                errorMessages.AddRange(item.Value);
+            }
+
+            if (errorMessages.Any())
+            {
+                context.Result = new OkObjectResult(Result.Failure(errorMessages.First()));
+            }
             context.ExceptionHandled = true;
         }
 

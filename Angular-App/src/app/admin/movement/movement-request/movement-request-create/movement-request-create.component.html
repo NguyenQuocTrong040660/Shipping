@@ -73,7 +73,7 @@
                 </td>
 
                 <td class="p-text-center">
-                  {{ movementRequestDetail?.product?.qtyPerPackage }}
+                  {{ movementRequestDetail?.product?.qtyPerPackage | number }}
                 </td>
 
                 <td class="p-text-center">
@@ -81,18 +81,20 @@
                 </td>
 
                 <td class="p-text-center">
-                  {{ movementRequestDetail?.quantity }}
+                  {{ movementRequestDetail?.workOrder?.workOrderDetail?.quantity | number }}
                 </td>
 
-                <td class="p-text-center">0</td>
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.workOrder?.remainQuantity | number }}
+                </td>
 
                 <td class="p-text-center">
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                      <p-inputNumber [(ngModel)]="movementRequestDetail.inputQuantity" required></p-inputNumber>
+                      <p-inputNumber [(ngModel)]="movementRequestDetail.quantity" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ movementRequestDetail?.inputQuantity | number }}
+                      {{ movementRequestDetail?.quantity | number }}
                     </ng-template>
                   </p-cellEditor>
                 </td>
@@ -189,7 +191,7 @@
                   {{ movementRequestDetail?.product?.productName }}
                 </td>
                 <td class="p-text-center">
-                  {{ movementRequestDetail?.product?.qtyPerPackage }}
+                  {{ movementRequestDetail?.product?.qtyPerPackage | number }}
                 </td>
 
                 <td class="p-text-center">
@@ -197,13 +199,15 @@
                 </td>
 
                 <td class="p-text-center">
-                  {{ movementRequestDetail?.quantity | number }}
+                  {{ movementRequestDetail?.workOrder?.workOrderDetail?.quantity | number }}
                 </td>
 
-                <td class="p-text-center">0</td>
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.workOrder?.remainQuantity | number }}
+                </td>
 
                 <td class="p-text-center">
-                  {{ movementRequestDetail?.inputQuantity | number }}
+                  {{ movementRequestDetail?.quantity | number }}
                 </td>
               </tr>
             </ng-template>

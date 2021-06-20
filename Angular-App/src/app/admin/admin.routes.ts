@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { UserRole } from 'app/shared/constants/user-role.constants';
+import { Roles } from 'app/shared/enumerations/roles.enum';
 import { AuthenticationGuard } from 'app/shared/guards/authentication.guard';
 import { RoleGuard } from 'app/shared/guards/role.guard';
 import { AdminComponent } from './admin.component';
@@ -58,13 +58,13 @@ export const adminRoutes: Routes = [
         path: 'user-management',
         loadChildren: () => import('./settings/user-management/user-management.module').then((m) => m.UserManagementModule),
         canActivate: [AuthenticationGuard, RoleGuard],
-        data: { roles: [UserRole.SystemAdministrator, UserRole.ITAdministrator] },
+        data: { roles: [Roles.SystemAdministrator, Roles.ITAdministrator] },
       },
       {
         path: 'configuration',
         loadChildren: () => import('./settings/configuration/configuration.module').then((m) => m.ConfigurationModule),
         canActivate: [AuthenticationGuard, RoleGuard],
-        data: { roles: [UserRole.SystemAdministrator, UserRole.ITAdministrator] },
+        data: { roles: [Roles.SystemAdministrator, Roles.ITAdministrator] },
       },
       {
         path: 'user-profile',
