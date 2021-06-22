@@ -37,29 +37,17 @@ namespace ApiGatewayManagement
             services.AddOcelot().AddAppConfiguration();
             services.AddSwaggerForOcelot(Configuration);
 
+            var validDomains = Configuration.GetSection("ValidDomains").GetChildren().Select(x => x.Value).ToArray();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "GREXSOLUTIONS",
                 builder =>
                 {
-                    builder.WithOrigins(
-                                //MAIN PAGE
-                                "http://shippingapp.spartronics.com",
-                                "https://shippingapp.spartronics.com",
-                                "http://www.shippingapp.spartronics.com",
-                                "https://www.shippingapp.spartronics.com",
-                                "http://shippingapp.spartronics.com:80",
-                                "https://shippingapp.spartronics.com:80",
-                                "http://www.shippingapp.spartronics.com:80",
-                                "https://www.shippingapp.spartronics.com:80",
-                                "http://vtnportal.spartronics.com:8008",
-                                "https://vtnportal.spartronics.com:8008",
-                                "http://www.vtnportal.spartronics.com:8008",
-                                "https://www.vtnportal.spartronics.com:8008"
-                                )
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowAnyOrigin();
+                    builder.WithOrigins(validDomains)
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowAnyOrigin();
                 });
             });
 
@@ -90,8 +78,8 @@ namespace ApiGatewayManagement
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory)
         {
-            if (!env.IsProduction())
-            {
+            //if (!env.IsProduction())
+            //{
                 app.UseDeveloperExceptionPage();
                 app.UseOpenApi();
                 app.UseSwaggerForOcelotUI(opt =>
@@ -99,7 +87,7 @@ namespace ApiGatewayManagement
                     opt.SwaggerEndpoint("/swagger/v1/swagger.json", "GatewayApi API V1");
                     opt.PathToSwaggerGenerator = "/swagger/docs";
                 });
-            }
+            //}
 
             loggerfactory.AddSerilog();
             app.UseSerilogRequestLogging();

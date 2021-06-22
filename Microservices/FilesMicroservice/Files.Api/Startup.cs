@@ -43,25 +43,18 @@ namespace Files.Api
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
 
+            var validDomains = Configuration.GetSection("ValidDomains").GetChildren().Select(x => x.Value).ToArray();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "GREXSOLUTIONS",
-                                  builder =>
-                                  {
-                                      builder.WithOrigins(
-                                                "http://vtnportal.spartronics.com:8001/",
-                                                "https://vtnportal.spartronics.com:8001/",
-                                                "http://www.vtnportal.spartronics.com:8001/",
-                                                "https://www.vtnportal.spartronics.com:8001/",
-                                                "http://api-gatewayapi.spartronics.com:8001/",
-                                                "https://api-gatewayapi.spartronics.com:8001/",
-                                                "http://www.api-gatewayapi.spartronics.com:8001/",
-                                                "https://www.api-gatewayapi.spartronics.com:8001/"
-                                            )
-                                            .AllowAnyHeader()
-                                            .AllowAnyMethod()
-                                            .AllowAnyOrigin();
-                                  });
+                builder =>
+                {
+                    builder.WithOrigins(validDomains)
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowAnyOrigin();
+                });
             });
 
             services.Configure<IISServerOptions>(options =>
@@ -135,8 +128,8 @@ namespace Files.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory)
         {
-            if (!env.IsProduction())
-            {
+            //if (!env.IsProduction())
+            //{
                 app.UseDeveloperExceptionPage();
                 app.UseOpenApi();
                 app.UseSwaggerUi3();
@@ -144,7 +137,7 @@ namespace Files.Api
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Files API V1");
                 });
-            }
+            //}
 
             loggerfactory.AddSerilog();
             app.UseSerilogRequestLogging();

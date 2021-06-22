@@ -126,8 +126,8 @@ namespace ShippingApp.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerfactory)
         {
-            if (!env.IsProduction())
-            {
+            //if (!env.IsProduction())
+            //{
                 app.UseDeveloperExceptionPage();
                 app.UseOpenApi();
                 app.UseSwaggerUi3();
@@ -135,7 +135,7 @@ namespace ShippingApp.Api
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Shipping Application API V1");
                 });
-            }
+            //}
 
             loggerfactory.AddSerilog();
             app.UseHealthChecks("/health");
