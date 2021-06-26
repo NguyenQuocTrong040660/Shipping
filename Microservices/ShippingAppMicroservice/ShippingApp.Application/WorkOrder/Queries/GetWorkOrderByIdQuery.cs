@@ -32,7 +32,7 @@ namespace ShippingApp.Application.WorkOrder.Queries
         {
             var workOrder = await _shippingAppRepository
                .GetDbSet()
-               .Include(i => i.WorkOrderDetails).ThenInclude(i => i.Product)
+               .Include(i => i.Product)
                .Include(x => x.MovementRequestDetails).ThenInclude(x => x.Product)
                .OrderBy(x => x.Id)
                .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);

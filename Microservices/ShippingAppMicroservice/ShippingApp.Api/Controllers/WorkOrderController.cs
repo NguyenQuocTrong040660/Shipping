@@ -49,6 +49,18 @@ namespace ShippingApp.Api.Controllers
             {
                 var item = workOrderImports.FirstOrDefault(i => i.WorkOrderId == group.WorkOrderId);
 
+                var productDatabase = await Mediator.Send(new GetProductByProductNumberQuery
+                {
+                    ProductNumber = item.ProductNumber
+                });
+
+                if (productDatabase == null)
+                {
+                    _logger.LogError("Could not find any product with {0}", item.ProductNumber);
+                    invalidworkOrders.Add(item);
+                    continue;
+                }
+
                 var workOrder = new WorkOrderModel
                 {
                     Notes = item?.Notes ?? string.Empty,
@@ -56,10 +68,10 @@ namespace ShippingApp.Api.Controllers
                     CreatedDate = DateTime.Now,
                     PartRevision = item.PartRevision,
                     CustomerName = item.CustomerName,
-                    ProcessRevision = item.ProcessRevision
+                    ProcessRevision = item.ProcessRevision,
+                    ProductId = productDatabase.Id,
+                    Quantity = int.Parse(item.Quantity),
                 };
-
-                var workOderDetails = new List<WorkOrderDetailModel>();
 
                 var groupByProduct = group.WorkOrderDetails
                                                   .GroupBy(x => x.ProductNumber)
@@ -74,33 +86,8 @@ namespace ShippingApp.Api.Controllers
                 {
                     invalidworkOrders.AddRange(group.WorkOrderDetails);
                     _logger.LogError("Work Order can only have one Product");
-
                     continue;
                 }
-
-                foreach (var product in groupByProduct)
-                {
-                    var productDatabase = await Mediator.Send(new GetProductByProductNumberQuery
-                    {
-                        ProductNumber = product.ProductNumber
-                    });
-
-                    if (productDatabase == null)
-                    {
-                        _logger.LogError("Could not find any product with {0}", product.ProductNumber);
-                        invalidworkOrders.AddRange(product.WorkOders);
-                        continue;
-                    }
-
-                    workOderDetails.Add(new WorkOrderDetailModel
-                    {
-                        ProductId = productDatabase.Id,
-                        Quantity = product.Quantity,
-                        WorkOrderId = workOrder.Id,
-                    });
-                }
-
-                workOrder.WorkOrderDetails = workOderDetails;
 
                 var result = await Mediator.Send(new CreateWorkOrderCommand { WorkOrder = workOrder });
 

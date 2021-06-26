@@ -8,7 +8,7 @@ namespace ShippingApp.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<ReceivedMarkMovement> builder)
         {
-            builder.HasKey(sc => new { sc.ReceivedMarkId, sc.MovementRequestId, sc.ProductId });
+            builder.HasKey(sc => new { sc.ReceivedMarkId, sc.MovementRequestId, sc.ProductId, sc.WorkOrderId });
 
             builder.HasOne<ReceivedMark>(sc => sc.ReceivedMark).WithMany(s => s.ReceivedMarkMovements)
                 .HasForeignKey(r => r.ReceivedMarkId);

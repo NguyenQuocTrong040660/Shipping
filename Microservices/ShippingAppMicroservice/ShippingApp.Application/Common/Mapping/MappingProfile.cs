@@ -45,8 +45,6 @@ namespace ShippingApp.Application.Common.Mapping
 
             CreateMap<Entities.WorkOrder, Models.WorkOrderModel>()
                .ReverseMap();
-            CreateMap<Entities.WorkOrderDetail, Models.WorkOrderDetailModel>()
-              .ReverseMap();
 
             CreateMap<Entities.Config, Models.ConfigModel>()
               .ReverseMap();

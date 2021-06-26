@@ -15,6 +15,7 @@ namespace ShippingApp.Application.MovementRequest.Queries
     {
         public List<WorkOrderModel> WorkOrderModels { get; set; }
     }
+
     public class GenerateMovementRequestDetailsByWorkOdersQueryHandler : IRequestHandler<GenerateMovementRequestDetailsByWorkOdersQuery, List<MovementRequestDetailModel>>
     {
         private readonly IShippingAppDbContext _context;
@@ -32,29 +33,23 @@ namespace ShippingApp.Application.MovementRequest.Queries
 
             foreach (var item in request.WorkOrderModels)
             {
-                var workOrderDetails = _mapper.Map<List<WorkOrderDetailModel>>(await _context.WorkOrderDetails
+                var workOrder = _mapper.Map<WorkOrderModel>(await _context.WorkOrders
                     .AsNoTracking()
                     .Include(x => x.Product)
-                    .Include(x => x.WorkOrder)
                     .ThenInclude(x => x.MovementRequestDetails)
-                    .Where(x => x.WorkOrderId == item.Id)
-                    .ToListAsync(cancellationToken));
+                    .FirstOrDefaultAsync(x => x.Id == item.Id, cancellationToken));
 
-                foreach (var workOrderDetail in workOrderDetails)
+                workOrder.ReceviedMarkQuantity = await PopulateReceviedMarkQuantityAsync(workOrder.Id, cancellationToken);
+
+                movementRequestDetails.Add(new MovementRequestDetailModel
                 {
-                    var workOrder = workOrderDetail.WorkOrder;
-                    workOrder.ReceviedMarkQuantity = await PopulateReceviedMarkQuantityAsync(workOrder.Id, cancellationToken);
-
-                    movementRequestDetails.Add(new MovementRequestDetailModel
-                    {
-                        ProductId = workOrderDetail.ProductId,
-                        Quantity = 0,
-                        WorkOrderId = workOrderDetail.WorkOrderId,
-                        WorkOrder = workOrder,
-                        MovementRequestId = 0,
-                        Product = workOrderDetail.Product,
-                    });
-                }
+                    ProductId = workOrder.ProductId,
+                    Quantity = 0,
+                    WorkOrderId = workOrder.Id,
+                    WorkOrder = workOrder,
+                    MovementRequestId = 0,
+                    Product = workOrder.Product,
+                });
             }
 
             return movementRequestDetails;

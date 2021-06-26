@@ -29,6 +29,13 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
         public async Task<Result> Handle(MergeReceivedMarkCommand request, CancellationToken cancellationToken)
         {
+            var workOrders = request.ReceivedMarkPrintings.Select(x => x.WorkOrderId).ToList();
+
+            if (workOrders.Distinct().Count() != 1)
+            {
+                return Result.Failure("All packages should be belongs to one work order");
+            }
+
             var quantityMerged = request.ReceivedMarkPrintings.Sum(x => x.Quantity);
 
             var firstReceivedMarkPrinting = request.ReceivedMarkPrintings.FirstOrDefault();
@@ -71,7 +78,8 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                 ProductId = firstReceivedMarkPrinting.ProductId,
                 Sequence = sequence,
                 Status = nameof(ReceivedMarkStatus.New),
-                MovementRequestId = firstReceivedMarkPrinting.MovementRequestId
+                MovementRequestId = firstReceivedMarkPrinting.MovementRequestId,
+                WorkOrderId = firstReceivedMarkPrinting.WorkOrderId
             });
 
             return await  _context.SaveChangesAsync(cancellationToken) > 0 

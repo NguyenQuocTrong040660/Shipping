@@ -42,10 +42,6 @@ namespace ShippingApp.Application.WorkOrder.Commands
 
             var entity = _mapper.Map<Entities.WorkOrder>(request.WorkOrder);
 
-            entity.WorkOrderDetails.ToList().ForEach(i => {
-                i.Product = null;
-            });
-
             entity.Status = nameof(WorkOrderStatus.Start);
 
             return await _shippingAppRepository.AddAsync(entity);

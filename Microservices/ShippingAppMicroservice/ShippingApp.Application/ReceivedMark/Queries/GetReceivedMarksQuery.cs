@@ -45,11 +45,12 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                 foreach (var receivedMarkMovement in item.ReceivedMarkMovements)
                 {
                     var movementRequest = await _context.MovementRequests
-                        .Include(x => x.MovementRequestDetails)
-                        .ThenInclude(x => x.WorkOrder)
                         .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.MovementRequestId, cancellationToken);
 
-                    receivedMarkMovement.WorkOrderMomentRequest = $"{movementRequest.Prefix}{movementRequest.Id}-{movementRequest.MovementRequestDetails.FirstOrDefault(x => x.ProductId == receivedMarkMovement.ProductId).WorkOrder.RefId}";
+                    var workOrder = await _context.WorkOrders
+                        .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.WorkOrderId, cancellationToken);
+
+                    receivedMarkMovement.WorkOrderMomentRequest = $"{movementRequest.Prefix}{movementRequest.Id}-{workOrder.RefId}";
                 }
 
                 item.WorkOrdersMovementCollection = $"{string.Join(", ", item.ReceivedMarkMovements.Select(x => x.WorkOrderMomentRequest))} ";

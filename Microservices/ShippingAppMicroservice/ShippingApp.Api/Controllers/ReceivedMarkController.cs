@@ -43,6 +43,14 @@ namespace ShippingApp.Api.Controllers
             return Ok(await Mediator.Send(new GetReceivedMarksQuery { }));
         }
 
+        [HttpGet("WorkOrder")]
+        [ProducesResponseType(typeof(List<WorkOrderModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<WorkOrderModel>>> GetReceivedMarkGroupByWorkOrders()
+        {
+            return Ok(await Mediator.Send(new GetReceivedMarksGroupByWorkOrdersQuery { }));
+        }
+
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ReceivedMarkModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -211,20 +219,20 @@ namespace ShippingApp.Api.Controllers
             return Ok(await Mediator.Send(new GetReceivedMarkMovementsFullInfoByIdQuery { ReceivedMarkId = receivedMarkId }));
         }
 
-        [HttpGet("ReceivedMarkPrintings/{receivedMarkId}/{productId}/{movementRequestId}")]
+        [HttpGet("ReceivedMarkMovements/WorkOrder/{workOrderId}")]
+        [ProducesResponseType(typeof(List<ReceivedMarkMovementModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReceivedMarkMovementModel>>> GetReceivedMarkMovementsFullInfoByWorkOrderAsync(int workOrderId)
+        {
+            return Ok(await Mediator.Send(new GetReceivedMarkMovementsFullInfoByWorkOrderIdQuery { WorkOrderId = workOrderId }));
+        }
+
+        [HttpGet("ReceivedMarkPrintings")]
         [ProducesResponseType(typeof(List<ReceivedMarkPrintingModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<List<ReceivedMarkPrintingModel>>> GetReceivedMarkPrintingsAsync(
-            int receivedMarkId, int productId, int movementRequestId)
+        public async Task<ActionResult<List<ReceivedMarkPrintingModel>>> GetReceivedMarkPrintingsAsync([FromQuery] GetReceivedMarkPrintingsByIdQuery query)
         {
-            var result = await Mediator.Send(new GetReceivedMarkPrintingsByIdQuery 
-            { 
-                ReceivedMarkId = receivedMarkId, 
-                ProductId = productId,
-                MovementRequestId = movementRequestId
-            });
-
-            return Ok(result);
+            return await Mediator.Send(query);
         }
     }
 }

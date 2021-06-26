@@ -1662,6 +1662,59 @@ export class ReceivedMarkClients {
         return _observableOf<ReceivedMarkModel[]>(<any>null);
     }
 
+    getReceivedMarkGroupByWorkOrders(): Observable<WorkOrderModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/workorder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetReceivedMarkGroupByWorkOrders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetReceivedMarkGroupByWorkOrders(<any>response_);
+                } catch (e) {
+                    return <Observable<WorkOrderModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<WorkOrderModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetReceivedMarkGroupByWorkOrders(response: HttpResponseBase): Observable<WorkOrderModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <WorkOrderModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<WorkOrderModel[]>(<any>null);
+    }
+
     getReceivedMarkById(id: number): Observable<ReceivedMarkModel> {
         let url_ = this.baseUrl + "/api/shippingapp/receivedmark/{id}";
         if (id === undefined || id === null)
@@ -2289,17 +2342,76 @@ export class ReceivedMarkClients {
         return _observableOf<ReceivedMarkMovementModel[]>(<any>null);
     }
 
-    getReceivedMarkPrintings(receivedMarkId: number, productId: number, movementRequestId: number): Observable<ReceivedMarkPrintingModel[]> {
-        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/receivedmarkprintings/{receivedMarkId}/{productId}/{movementRequestId}";
-        if (receivedMarkId === undefined || receivedMarkId === null)
-            throw new Error("The parameter 'receivedMarkId' must be defined.");
-        url_ = url_.replace("{receivedMarkId}", encodeURIComponent("" + receivedMarkId));
-        if (productId === undefined || productId === null)
-            throw new Error("The parameter 'productId' must be defined.");
-        url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
-        if (movementRequestId === undefined || movementRequestId === null)
-            throw new Error("The parameter 'movementRequestId' must be defined.");
-        url_ = url_.replace("{movementRequestId}", encodeURIComponent("" + movementRequestId));
+    getReceivedMarkMovementsFullInfoByWorkOrder(workOrderId: number): Observable<ReceivedMarkMovementModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/receivedmarkmovements/workorder/{workOrderId}";
+        if (workOrderId === undefined || workOrderId === null)
+            throw new Error("The parameter 'workOrderId' must be defined.");
+        url_ = url_.replace("{workOrderId}", encodeURIComponent("" + workOrderId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetReceivedMarkMovementsFullInfoByWorkOrder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetReceivedMarkMovementsFullInfoByWorkOrder(<any>response_);
+                } catch (e) {
+                    return <Observable<ReceivedMarkMovementModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ReceivedMarkMovementModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetReceivedMarkMovementsFullInfoByWorkOrder(response: HttpResponseBase): Observable<ReceivedMarkMovementModel[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <ReceivedMarkMovementModel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return _observableOf(result200);
+            }));
+        } else if (status === 401) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result401: any = null;
+            result401 = _responseText === "" ? null : <ProblemDetails>JSON.parse(_responseText, this.jsonParseReviver);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result401);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ReceivedMarkMovementModel[]>(<any>null);
+    }
+
+    getReceivedMarkPrintings(receivedMarkId: number | undefined, workOrderId: number | undefined, movementRequestId: number | undefined): Observable<ReceivedMarkPrintingModel[]> {
+        let url_ = this.baseUrl + "/api/shippingapp/receivedmark/receivedmarkprintings?";
+        if (receivedMarkId === null)
+            throw new Error("The parameter 'receivedMarkId' cannot be null.");
+        else if (receivedMarkId !== undefined)
+            url_ += "ReceivedMarkId=" + encodeURIComponent("" + receivedMarkId) + "&";
+        if (workOrderId === null)
+            throw new Error("The parameter 'workOrderId' cannot be null.");
+        else if (workOrderId !== undefined)
+            url_ += "WorkOrderId=" + encodeURIComponent("" + workOrderId) + "&";
+        if (movementRequestId === null)
+            throw new Error("The parameter 'movementRequestId' cannot be null.");
+        else if (movementRequestId !== undefined)
+            url_ += "MovementRequestId=" + encodeURIComponent("" + movementRequestId) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -4287,15 +4399,15 @@ export interface CountryModel extends AuditableEntityModel {
 }
 
 export interface MovementRequestModel extends AuditableEntityModel {
-    identifier?: string | undefined;
-    workOrdersCollection?: string | undefined;
-    isSelectedByReceivedMark?: boolean;
     id?: number;
     notes?: string | undefined;
     prefix?: string | undefined;
     movementRequestDetails?: MovementRequestDetailModel[] | undefined;
     receivedMarks?: ReceivedMarkModel[] | undefined;
     receivedMarkPrintings?: ReceivedMarkPrintingModel[] | undefined;
+    identifier?: string | undefined;
+    workOrdersCollection?: string | undefined;
+    isSelectedByReceivedMark?: boolean;
 }
 
 export interface MovementRequestDetailModel extends AuditableEntityModel {
@@ -4319,25 +4431,18 @@ export interface WorkOrderModel extends AuditableEntityModel {
     processRevision?: string | undefined;
     customerName?: string | undefined;
     createdDate?: Date | undefined;
-    workOrderDetails?: WorkOrderDetailModel[] | undefined;
+    quantity?: number;
+    productId?: number;
+    product?: ProductModel | undefined;
     movementRequestDetails?: MovementRequestDetailModel[] | undefined;
     identifier?: string | undefined;
     productName?: string | undefined;
     productNumber?: string | undefined;
-    product?: ProductModel | undefined;
-    workOrderDetail?: WorkOrderDetailModel | undefined;
     remainQuantity?: number;
     receviedMarkQuantity?: number;
     momentQuantity?: number;
     canSelected?: boolean;
-}
-
-export interface WorkOrderDetailModel extends AuditableEntityModel {
-    quantity?: number;
-    workOrderId?: number;
-    workOrder?: WorkOrderModel | undefined;
-    productId?: number;
-    product?: ProductModel | undefined;
+    receivedMarkMovements?: ReceivedMarkMovementModel[] | undefined;
 }
 
 export interface ProductModel extends AuditableEntityModel {
@@ -4354,7 +4459,7 @@ export interface ProductModel extends AuditableEntityModel {
     shippingPlans?: ShippingPlanModel[] | undefined;
     movementRequestDetails?: MovementRequestDetailModel[] | undefined;
     shippingRequestLogistics?: ShippingRequestLogisticModel[] | undefined;
-    workOrderDetails?: WorkOrderDetailModel[] | undefined;
+    workOrders?: WorkOrderModel[] | undefined;
     receivedMarkMovements?: ReceivedMarkMovementModel[] | undefined;
     receivedMarkPrintings?: ReceivedMarkPrintingModel[] | undefined;
     shippingMarkPrintings?: ShippingMarkPrintingModel[] | undefined;
@@ -4362,8 +4467,6 @@ export interface ProductModel extends AuditableEntityModel {
 }
 
 export interface ShippingPlanModel extends AuditableEntityModel {
-    identifier?: string | undefined;
-    refId?: string | undefined;
     id?: number;
     prefix?: string | undefined;
     customerName?: string | undefined;
@@ -4388,6 +4491,8 @@ export interface ShippingPlanModel extends AuditableEntityModel {
     shippingRequest?: ShippingRequestModel | undefined;
     status?: string | undefined;
     canSelected?: boolean;
+    identifier?: string | undefined;
+    refId?: string | undefined;
 }
 
 export interface ShippingRequestModel extends AuditableEntityModel {
@@ -4436,10 +4541,6 @@ export interface ShippingMarkModel extends AuditableEntityModel {
 }
 
 export interface ShippingMarkPrintingModel extends AuditableEntityModel {
-    identifier?: string | undefined;
-    printInfo?: PrintInfomation | undefined;
-    id?: number;
-    prefix?: string | undefined;
     revision?: string | undefined;
     sequence?: number;
     quantity?: number;
@@ -4453,6 +4554,10 @@ export interface ShippingMarkPrintingModel extends AuditableEntityModel {
     shippingMarkId?: number;
     shippingMark?: ShippingMarkModel | undefined;
     product?: ProductModel | undefined;
+    identifier?: string | undefined;
+    printInfo?: PrintInfomation | undefined;
+    id?: number;
+    prefix?: string | undefined;
 }
 
 export interface PrintInfomation {
@@ -4468,17 +4573,15 @@ export interface ShippingMarkShippingModel extends AuditableEntityModel {
     productId?: number;
     shippingRequestId?: number;
     quantity?: number;
-    totalQuantity?: number;
-    totalPackage?: number;
-    totalQuantityPrinted?: number;
     shippingMark?: ShippingMarkModel | undefined;
     shippingRequest?: ShippingRequestModel | undefined;
     product?: ProductModel | undefined;
+    totalQuantity?: number;
+    totalPackage?: number;
+    totalQuantityPrinted?: number;
 }
 
 export interface ReceivedMarkPrintingModel extends AuditableEntityModel {
-    identifier?: string | undefined;
-    workOrder?: WorkOrderModel | undefined;
     id?: number;
     prefix?: string | undefined;
     sequence?: number;
@@ -4499,6 +4602,9 @@ export interface ReceivedMarkPrintingModel extends AuditableEntityModel {
     shippingMark?: ShippingMarkModel | undefined;
     movementRequestId?: number;
     movementRequest?: MovementRequestModel | undefined;
+    workOrderId?: number;
+    workOrder?: WorkOrderModel | undefined;
+    identifier?: string | undefined;
 }
 
 export interface ReceivedMarkModel extends AuditableEntityModel {
@@ -4517,12 +4623,12 @@ export interface ReceivedMarkMovementModel extends AuditableEntityModel {
     movementRequestId?: number;
     quantity?: number;
     workOrderId?: number;
-    workOrderMomentRequest?: string | undefined;
-    totalPackage?: number;
-    totalQuantityPrinted?: number;
     receivedMark?: ReceivedMarkModel | undefined;
     movementRequest?: MovementRequestModel | undefined;
     product?: ProductModel | undefined;
+    workOrderMomentRequest?: string | undefined;
+    totalPackage?: number;
+    totalQuantityPrinted?: number;
 }
 
 export interface ImportResult {

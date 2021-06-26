@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ProductModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
 import { MenuItem } from 'primeng/api';
-import { WorkOrderDetail } from '../work-order.component';
+import { WorkOrder } from '../work-order.component';
 
 @Component({
   selector: 'app-work-order-create',
@@ -20,8 +20,8 @@ export class WorkOrderCreateComponent implements OnInit {
   @Output() hideDialogEvent = new EventEmitter<any>();
 
   selectedProduct: ProductModel;
-  workOrderDetails: WorkOrderDetail[] = [];
-  clonedWorkOrderDetailModels: { [s: string]: WorkOrderDetail } = {};
+  workOrders: WorkOrder[] = [];
+  clonedWorkOrders: { [s: string]: WorkOrder } = {};
 
   stepItems: MenuItem[];
   stepIndex = 0;
@@ -32,7 +32,7 @@ export class WorkOrderCreateComponent implements OnInit {
   productCols: any[] = [];
   productFields: any[] = [];
 
-  constructor(private fb: FormBuilder) {}
+  constructor() {}
 
   get notesControl() {
     return this.workOrderForm.get('notes');
@@ -42,8 +42,12 @@ export class WorkOrderCreateComponent implements OnInit {
     return this.workOrderForm.get('refId');
   }
 
-  get workOrderDetailsControl() {
-    return this.workOrderForm.get('workOrderDetails') as FormArray;
+  get quantityControl() {
+    return this.workOrderForm.get('quantity');
+  }
+
+  get productIdControl() {
+    return this.workOrderForm.get('productId');
   }
 
   ngOnInit(): void {
@@ -61,56 +65,43 @@ export class WorkOrderCreateComponent implements OnInit {
 
   hideDialog() {
     this.selectedProduct = null;
-    this.workOrderDetails = [];
+    this.workOrders = [];
     this.stepIndex = 0;
+
     this.workOrderForm.reset();
     this.hideDialogEvent.emit();
   }
 
   onSubmit() {
-    this.workOrderDetailsControl.clear();
-
-    this.workOrderDetails.forEach((i) => {
-      this.workOrderDetailsControl.push(this.initWorkOrderDetailForm(i));
-    });
-
     this.submitEvent.emit();
   }
 
-  initWorkOrderDetailForm(workOrderDetail: WorkOrderDetail) {
-    return this.fb.group({
-      quantity: [workOrderDetail.quantity],
-      productId: [workOrderDetail.productId],
-      workOrderId: [workOrderDetail.workOrderId],
-    });
+  onRowEditInit(workOrder: WorkOrder) {
+    workOrder.isEditRow = true;
+    this.clonedWorkOrders[workOrder.productId] = { ...workOrder };
   }
 
-  onRowEditInit(workOrderDetail: WorkOrderDetail) {
-    workOrderDetail.isEditRow = true;
-    this.clonedWorkOrderDetailModels[workOrderDetail.productId] = { ...workOrderDetail };
+  onRowEditSave(workOrder: WorkOrder) {
+    workOrder.isEditRow = false;
+    const entity = this.workOrders.find((i) => i.productId === workOrder.productId);
+    entity.quantity = workOrder.quantity;
+    delete this.clonedWorkOrders[workOrder.productId];
   }
 
-  onRowEditSave(workOrderDetail: WorkOrderDetail) {
-    workOrderDetail.isEditRow = false;
-    const entity = this.workOrderDetails.find((i) => i.productId === workOrderDetail.productId);
-    entity.quantity = workOrderDetail.quantity;
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
+  onRowEditCancel(workOrder: WorkOrder, index: number) {
+    this.clonedWorkOrders[index] = this.clonedWorkOrders[workOrder.productId];
+    this.workOrders[index].isEditRow = false;
+    delete this.clonedWorkOrders[workOrder.productId];
   }
 
-  onRowEditCancel(workOrderDetail: WorkOrderDetail, index: number) {
-    this.workOrderDetails[index] = this.clonedWorkOrderDetailModels[workOrderDetail.productId];
-    this.workOrderDetails[index].isEditRow = false;
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
+  allowMoveToCompleteStep(workOrders: WorkOrder[]): boolean {
+    const haveFilledDataRows = workOrders.filter((i) => i.quantity === 0).length === 0;
+    const haveNotEditRows = workOrders.every((d) => d.isEditRow === false);
+
+    return haveFilledDataRows && haveNotEditRows && this.workOrders.length > 0;
   }
 
-  allowMoveToCompleteStep(workOrderDetails: WorkOrderDetail[]): boolean {
-    const haveFilledDataRows = workOrderDetails.filter((i) => i.quantity === 0).length === 0;
-    const haveNotEditRows = workOrderDetails.every((d) => d.isEditRow === false);
-
-    return haveFilledDataRows && haveNotEditRows && this.workOrderDetails.length > 0;
-  }
-
-  _mapToProductsToWorkOrderDetails(products: ProductModel[]): WorkOrderDetail[] {
+  _mapToProductsToWorkOrders(products: ProductModel[]): WorkOrder[] {
     return products.map((item, index) => {
       return {
         id: index + 1,
@@ -126,10 +117,16 @@ export class WorkOrderCreateComponent implements OnInit {
   nextPage(currentIndex: number) {
     switch (currentIndex) {
       case 0: {
-        this.workOrderDetails = this._mapToProductsToWorkOrderDetails([this.selectedProduct]);
+        this.workOrders = this._mapToProductsToWorkOrders([this.selectedProduct]);
         break;
       }
       case 1: {
+        const workOrder = this.workOrders && this.workOrders.length && this.workOrders[0];
+
+        if (workOrder) {
+          this.productIdControl.setValue(workOrder.productId);
+          this.quantityControl.setValue(workOrder.quantity);
+        }
         break;
       }
     }

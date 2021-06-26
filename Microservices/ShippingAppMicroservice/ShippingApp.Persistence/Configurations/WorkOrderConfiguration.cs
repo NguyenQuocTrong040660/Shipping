@@ -11,6 +11,11 @@ namespace ShippingApp.Persistence.Configurations
         {
             builder.Property(t => t.Id).UseIdentityColumn();
             builder.Property(t => t.Prefix).HasDefaultValue(PrefixTable.WorkOrder);
+
+            builder.HasOne<Product>(s => s.Product)
+             .WithMany(g => g.WorkOrders)
+             .HasForeignKey(s => s.ProductId)
+             .IsRequired(false);
         }
     }
 }

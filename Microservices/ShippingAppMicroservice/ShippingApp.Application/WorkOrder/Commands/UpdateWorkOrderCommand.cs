@@ -28,7 +28,6 @@ namespace ShippingApp.Application.WorkOrder.Commands
         public async Task<Result> Handle(UpdateWorkOrderCommand request, CancellationToken cancellationToken)
         {
             var workOrder = await _context.WorkOrders
-                .Include(x => x.WorkOrderDetails)
                 .Where(x => x.Id == request.WorkOrder.Id)
                 .FirstOrDefaultAsync();
             
@@ -37,22 +36,10 @@ namespace ShippingApp.Application.WorkOrder.Commands
                 throw new ArgumentNullException(nameof(workOrder));
             }
 
-            foreach (var item in workOrder.WorkOrderDetails)
-            {
-                var woDetail = request.WorkOrder.WorkOrderDetails.FirstOrDefault(i => i.ProductId == item.ProductId);
-
-                if (woDetail == null)
-                {
-                    _context.WorkOrderDetails.Remove(item);
-                }
-                else
-                {
-                    item.Quantity = woDetail.Quantity;
-                }
-            }
-
             workOrder.Notes = request.WorkOrder.Notes;
             workOrder.RefId = request.WorkOrder.RefId;
+            workOrder.Quantity = request.WorkOrder.Quantity;
+            workOrder.ProductId = request.WorkOrder.ProductId;
 
             await _context.SaveChangesAsync();
 

@@ -43,7 +43,7 @@ namespace ShippingApp.Application.MovementRequest.Commands
         private async Task UpdateWorkOrderAsync()
         {
             var workOrders = await _context.WorkOrders
-                    .Include(x => x.WorkOrderDetails)
+                    .Include(x => x.Product)
                     .Include(x => x.MovementRequestDetails)
                     .ToListAsync();
 
@@ -64,12 +64,12 @@ namespace ShippingApp.Application.MovementRequest.Commands
 
         private int GetRemainQuantityWorkOrder(Entities.WorkOrder workOrder)
         {
-            if (workOrder.WorkOrderDetails == null || workOrder.MovementRequestDetails == null || !workOrder.MovementRequestDetails.Any())
+            if (workOrder.MovementRequestDetails == null || !workOrder.MovementRequestDetails.Any())
             {
-                return workOrder.WorkOrderDetails.First().Quantity;
+                return workOrder.Quantity;
             }
 
-            return workOrder.WorkOrderDetails.First().Quantity - workOrder.MovementRequestDetails.Sum(x => x.Quantity);
+            return workOrder.Quantity - workOrder.MovementRequestDetails.Sum(x => x.Quantity);
         }
     }
 }

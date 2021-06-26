@@ -24,7 +24,11 @@ namespace ShippingApp.Domain.Models
         public string CustomerName { get; set; }
         public DateTime? CreatedDate { get; set; }
 
-        public virtual ICollection<WorkOrderDetailModel> WorkOrderDetails { get; set; }
+        public int Quantity { get; set; }
+
+        public int ProductId { get; set; }
+        public virtual ProductModel Product { get; set; }
+
         public virtual ICollection<MovementRequestDetailModel> MovementRequestDetails { get; set; }
 
         [IgnoreMap]
@@ -65,44 +69,11 @@ namespace ShippingApp.Domain.Models
         }
 
         [IgnoreMap]
-        public ProductModel Product
-        {
-            get
-            {
-                if (WorkOrderDetails == null || !WorkOrderDetails.Any())
-                {
-                    return null;
-                }
-
-                return WorkOrderDetails.ToArray()[0].Product;
-            }
-        }
-
-        [IgnoreMap]
-        public WorkOrderDetailModel WorkOrderDetail
-        {
-            get
-            {
-                if (WorkOrderDetails == null || !WorkOrderDetails.Any())
-                {
-                    return null;
-                }
-
-                return WorkOrderDetails.ToArray()[0];
-            }
-        }
-
-        [IgnoreMap]
         public int RemainQuantity
         {
             get
             {
-                if (WorkOrderDetail == null)
-                {
-                    return 0;
-                }
-
-                return WorkOrderDetail.Quantity - ReceviedMarkQuantity;
+                return Quantity - ReceviedMarkQuantity;
             }
         }
 
@@ -136,5 +107,8 @@ namespace ShippingApp.Domain.Models
                 return Status.Equals(nameof(WorkOrderStatus.Start));
             }
         }
+
+        [IgnoreMap]
+        public List<ReceivedMarkMovementModel> ReceivedMarkMovements { get; set; }
     }
 }

@@ -31,6 +31,7 @@ export class ReceivedMarkMergeComponent implements OnInit {
       { header: 'Package Sequence', field: 'sequence', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
       { header: 'Qty/ Pkg', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
       { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Work Order', field: 'workOrder', subField: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Printed By', field: 'printingBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Printed Time', field: 'printingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];

@@ -71,7 +71,7 @@ namespace ShippingApp.Application.MovementRequest.Commands
             foreach (var item in entity.MovementRequestDetails)
             {
                 var workOrder = await _context.WorkOrders
-                    .Include(x => x.WorkOrderDetails)
+                    .Include(x => x.Product)
                     .Include(x => x.MovementRequestDetails)
                     .FirstOrDefaultAsync(i => i.Id == item.WorkOrderId);
 
@@ -118,7 +118,7 @@ namespace ShippingApp.Application.MovementRequest.Commands
                 }
 
                 var workOrder = await _context.WorkOrders
-                   .Include(x => x.WorkOrderDetails)
+                   .Include(x => x.Product)
                    .FirstOrDefaultAsync(i => i.Id == item.WorkOrderId);
 
                 var remainQuantityOfWorkOrder = GetRemainQuantityWorkOrder(workOrder);
@@ -134,12 +134,12 @@ namespace ShippingApp.Application.MovementRequest.Commands
 
         private int GetRemainQuantityWorkOrder(Entities.WorkOrder workOrder)
         {
-            if (workOrder.WorkOrderDetails == null || workOrder.MovementRequestDetails == null || !workOrder.MovementRequestDetails.Any())
+            if (workOrder.MovementRequestDetails == null || !workOrder.MovementRequestDetails.Any())
             {
-                return workOrder.WorkOrderDetails.First().Quantity;
+                return workOrder.Quantity;
             }
 
-            return workOrder.WorkOrderDetails.First().Quantity - workOrder.MovementRequestDetails.Sum(x => x.Quantity);
+            return workOrder.Quantity - workOrder.MovementRequestDetails.Sum(x => x.Quantity);
         }
     }
 }

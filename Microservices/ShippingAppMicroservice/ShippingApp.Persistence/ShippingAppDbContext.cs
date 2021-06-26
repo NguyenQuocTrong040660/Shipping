@@ -25,7 +25,6 @@ namespace ShippingApp.Persistence.DBContext
         public DbSet<MovementRequest> MovementRequests { get; set; }
         public DbSet<MovementRequestDetail> MovementRequestDetails { get; set; }
         public DbSet<WorkOrder> WorkOrders { get; set; }
-        public DbSet<WorkOrderDetail> WorkOrderDetails { get; set; }
         public DbSet<Config> Configs { get; set; }
         public DbSet<ReceivedMark> ReceivedMarks { get; set; }
 

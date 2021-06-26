@@ -5,7 +5,7 @@
     <ng-container *ngIf="stepIndex === 0">
       <p-card>
         <ng-template pTemplate="content">
-          <p-table [value]="workOrderDetails" dataKey="product.id" editMode="row">
+          <p-table [value]="workOrders" dataKey="product.id" editMode="row">
             <ng-template pTemplate="header">
               <tr>
                 <th>Product Number</th>
@@ -14,21 +14,21 @@
                 <th style="width: 10rem"></th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-workOrderDetail let-editing="editing" let-ri="rowIndex">
-              <tr [pEditableRow]="workOrderDetail">
+            <ng-template pTemplate="body" let-workOrder let-editing="editing" let-ri="rowIndex">
+              <tr [pEditableRow]="workOrder">
                 <td>
-                  {{ workOrderDetail?.product?.productNumber }}
+                  {{ workOrder?.product?.productNumber }}
                 </td>
                 <td>
-                  {{ workOrderDetail?.product?.productName }}
+                  {{ workOrder?.product?.productName }}
                 </td>
                 <td>
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                      <p-inputNumber [(ngModel)]="workOrderDetail.quantity" required></p-inputNumber>
+                      <p-inputNumber [(ngModel)]="workOrder.quantity" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
-                      {{ workOrderDetail?.quantity | number }}
+                      {{ workOrder?.quantity | number }}
                     </ng-template>
                   </p-cellEditor>
                 </td>
@@ -41,7 +41,7 @@
                     type="button"
                     pInitEditableRow
                     icon="pi pi-pencil"
-                    (click)="onRowEditInit(workOrderDetail)"
+                    (click)="onRowEditInit(workOrder)"
                     class="p-button-rounded p-button-text"
                   ></button>
 
@@ -52,8 +52,8 @@
                     type="button"
                     pSaveEditableRow
                     icon="pi pi-check"
-                    [disabled]="!workOrderDetail.quantity"
-                    (click)="onRowEditSave(workOrderDetail)"
+                    [disabled]="!workOrder.quantity"
+                    (click)="onRowEditSave(workOrder)"
                     class="p-button-rounded p-button-text p-button-success p-mr-2"
                   ></button>
                   <button
@@ -63,7 +63,7 @@
                     type="button"
                     pCancelEditableRow
                     icon="pi pi-times"
-                    (click)="onRowEditCancel(workOrderDetail, ri)"
+                    (click)="onRowEditCancel(workOrder, ri)"
                     class="p-button-rounded p-button-text p-button-danger"
                   ></button>
                 </td>
@@ -75,7 +75,7 @@
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Cancel" (onClick)="hideDialog()" icon="pi pi-times" iconPos="left"></p-button>
             <p-button
-              [disabled]="!allowMoveToCompleteStep(workOrderDetails)"
+              [disabled]="!allowMoveToCompleteStep(workOrders)"
               styleClass="p-button-text"
               label="Submit"
               (onClick)="nextPage(stepIndex)"

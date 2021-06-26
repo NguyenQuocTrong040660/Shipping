@@ -51,7 +51,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                .Where(x => !receivedMarkPrintingsGenerated.Contains(x))
                .ToListAsync(cancellationToken);
            
-            foreach (var receivedMarkMovement in request.ReceivedMark.ReceivedMarkMovements)
+            foreach (var receivedMarkMovement in request.ReceivedMark.ReceivedMarkMovements.OrderBy(x => x.WorkOrderId))
             {
                 int remainQty = receivedMarkMovement.Quantity;
                 int printedQty = receivedMarkPrintingsPrinted.Where(x => x.ProductId == receivedMarkMovement.ProductId)
@@ -87,7 +87,8 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                         Quantity = remainQty >= product.QtyPerPackage ? product.QtyPerPackage : remainQty,
                         Sequence = sequence,
                         Status = nameof(ReceivedMarkStatus.New),
-                        ReceivedMarkId = request.Id
+                        ReceivedMarkId = request.Id,
+                        WorkOrderId = receivedMarkMovement.WorkOrderId
                     });
 
                     remainQty -= product.QtyPerPackage;

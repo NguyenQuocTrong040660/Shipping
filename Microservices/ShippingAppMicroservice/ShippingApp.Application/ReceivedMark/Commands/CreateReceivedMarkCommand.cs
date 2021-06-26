@@ -37,7 +37,7 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             var receivedMarkPrintings = new List<Entities.ReceivedMarkPrinting>();
 
-            foreach (var receivedMarkMovement in request.ReceivedMark.ReceivedMarkMovements)
+            foreach (var receivedMarkMovement in request.ReceivedMark.ReceivedMarkMovements.OrderBy(x => x.WorkOrderId))
             {
                 int remainQty = receivedMarkMovement.Quantity;
                 var product = await _context.Products
@@ -53,7 +53,8 @@ namespace ShippingApp.Application.ReceivedMark.Commands
                         Quantity = remainQty >= product.QtyPerPackage ? product.QtyPerPackage : remainQty,
                         Sequence = sequence,
                         Status = nameof(ReceivedMarkStatus.New),
-                        MovementRequestId = receivedMarkMovement.MovementRequestId
+                        MovementRequestId = receivedMarkMovement.MovementRequestId,
+                        WorkOrderId = receivedMarkMovement.WorkOrderId
                     });
 
                     remainQty -= product.QtyPerPackage;

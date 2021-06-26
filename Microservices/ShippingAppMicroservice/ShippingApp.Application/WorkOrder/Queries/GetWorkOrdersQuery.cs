@@ -32,18 +32,13 @@ namespace ShippingApp.Application.WorkOrder.Queries
         public async Task<List<WorkOrderModel>> Handle(GetWorkOrdersQuery request, CancellationToken cancellationToken)
         {
             var workOrders = await _context.WorkOrders
+                .Include(x => x.Product)
                 .AsNoTracking()
                 .OrderBy(x => x.Id)
                 .ToListAsync(cancellationToken);
 
             foreach (var item in workOrders)
             {
-                item.WorkOrderDetails = await _context.WorkOrderDetails
-                    .AsNoTracking()
-                    .Include(x => x.Product)
-                    .Where(x => x.WorkOrderId == item.Id)
-                    .ToListAsync(cancellationToken);
-
                 item.MovementRequestDetails = await _context.MovementRequestDetails
                     .AsNoTracking()
                     .Where(x => x.WorkOrderId == item.Id)

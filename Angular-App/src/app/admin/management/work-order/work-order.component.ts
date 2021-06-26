@@ -1,4 +1,4 @@
-import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel, WorkOrderDetailModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
+import { ProductClients, ProductModel, WorkOrderClients, WorkOrderModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NotificationService } from 'app/shared/services/notification.service';
@@ -66,7 +66,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
       { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Description', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
-      { header: 'Order Qty', subField: 'quantity', field: 'workOrderDetail', width: WidthColumn.QuantityColumn, type: TypeColumn.SubFieldColumn },
+      { header: 'Order Qty', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
 
       { header: 'Move Qty', field: 'momentQuantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
       { header: 'Recv Qty', field: 'receviedMarkQuantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
@@ -141,7 +141,8 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
       notes: [''],
       lastModifiedBy: [''],
       lastModified: [null],
-      workOrderDetails: this.fb.array([]),
+      quantity: [0, [Validators.required, Validators.min(0)]],
+      productId: [null, [Validators.required]],
     });
   }
 
@@ -238,7 +239,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
           this.selectedWorkOrder = i;
           this.isShowDialogEdit = true;
         },
-        (_) => (this.selectedWorkOrder.workOrderDetails = [])
+        (_) => this.notificationService.error('An error occurred, please try again')
       );
   }
 
@@ -304,6 +305,6 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
   }
 }
 
-export interface WorkOrderDetail extends WorkOrderDetailModel {
+export interface WorkOrder extends WorkOrderModel {
   isEditRow?: boolean;
 }

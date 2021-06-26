@@ -36,7 +36,6 @@ namespace ShippingApp.Application.MovementRequest.Queries
                .GetDbSet()
                .Include(i => i.MovementRequestDetails)
                .ThenInclude(i => i.WorkOrder)
-               .ThenInclude(i => i.WorkOrderDetails)
                .ThenInclude(i => i.Product)
                .FirstOrDefaultAsync(i => i.Id == request.Id, cancellationToken);
 

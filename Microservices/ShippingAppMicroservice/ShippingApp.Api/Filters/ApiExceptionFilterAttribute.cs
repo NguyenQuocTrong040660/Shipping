@@ -26,7 +26,6 @@ namespace ShippingApp.Api.Filters
         public override void OnException(ExceptionContext context)
         {
             HandleException(context);
-
             base.OnException(context);
         }
 

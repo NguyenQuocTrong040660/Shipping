@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using MediatR;
-using ShippingApp.Application.Common.Results;
 using ShippingApp.Application.Interfaces;
 using ShippingApp.Domain.Models;
 using System;
@@ -86,9 +85,7 @@ namespace ShippingApp.Application.ShippingMark.Commands
                     ShippingRequest = shippingRequest,
                     TotalPackages = await _context.ShippingMarkPrintings.CountAsync(x => x.ProductId == result.ProductId && x.ShippingMarkId == result.ShippingMarkId),
                     Weight = 0,
-                    WorkOrder = _mapper.Map<WorkOrderModel>((await _context.WorkOrderDetails
-                        .Include(x => x.WorkOrder)
-                        .FirstOrDefaultAsync(x => x.ProductId == result.ProductId)).WorkOrder)
+                    WorkOrder = _mapper.Map<WorkOrderModel>((await _context.WorkOrders.FirstOrDefaultAsync(x => x.ProductId == result.ProductId)))
                 };
             }
 

@@ -31,5 +31,7 @@ namespace ShippingApp.Domain.Entities
 
         public int MovementRequestId { get; set; }
         public virtual MovementRequest MovementRequest { get; set; }
+   
+        public int WorkOrderId { get; set; }
     }
 }

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { WorkOrderModel } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { MenuItem } from 'primeng/api';
-import { WorkOrderDetail } from '../work-order.component';
+import { WorkOrder } from '../work-order.component';
 
 @Component({
   selector: 'app-work-order-edit',
@@ -18,8 +18,8 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
   @Output() submitEvent = new EventEmitter<any>(null);
   @Output() hideDialogEvent = new EventEmitter<any>();
 
-  workOrderDetails: WorkOrderDetail[] = [];
-  clonedWorkOrderDetailModels: { [s: string]: WorkOrderDetail } = {};
+  workOrders: WorkOrder[] = [];
+  clonedWorkOrderModels: { [s: string]: WorkOrder } = {};
 
   stepItems: MenuItem[];
   stepIndex = 0;
@@ -34,17 +34,23 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
     return this.workOrderForm.get('notes');
   }
 
-  get workOrderDetailsControl() {
-    return this.workOrderForm.get('workOrderDetails') as FormArray;
+  get quantityControl() {
+    return this.workOrderForm.get('quantity');
   }
 
-  constructor(private fb: FormBuilder) {}
+  get productIdControl() {
+    return this.workOrderForm.get('productId');
+  }
+
+  constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.workOrder && changes.workOrder.currentValue) {
       const workOrder = changes.workOrder.currentValue as WorkOrderModel;
-      this.workOrderDetails = workOrder.workOrderDetails;
-      this.workOrderDetails.forEach((w) => (w.isEditRow = false));
+
+      this.workOrders = [workOrder];
+      this.workOrders.forEach((w) => (w.isEditRow = false));
+
       this.workOrderForm.patchValue(workOrder);
     }
   }
@@ -54,58 +60,50 @@ export class WorkOrderEditComponent implements OnInit, OnChanges {
   }
 
   onSubmit() {
-    this.workOrderDetailsControl.clear();
-
-    this.workOrderDetails.forEach((i) => {
-      this.workOrderDetailsControl.push(this.initWorkOrderDetailForm(i));
-    });
-
     this.submitEvent.emit();
   }
 
-  initWorkOrderDetailForm(workOrderDetail: WorkOrderDetail) {
-    return this.fb.group({
-      quantity: [workOrderDetail.quantity],
-      productId: [workOrderDetail.productId],
-      workOrderId: [workOrderDetail.workOrderId],
-    });
-  }
-
   hideDialog() {
-    this.workOrderDetails = [];
+    this.workOrders = [];
     this.stepIndex = 0;
     this.workOrderForm.reset();
     this.hideDialogEvent.emit();
   }
 
-  allowMoveToCompleteStep(workOrderDetails: WorkOrderDetail[]): boolean {
-    const haveFilledDataRows = workOrderDetails.filter((i) => i.quantity === 0).length === 0;
-    const haveNotEditRows = workOrderDetails.every((d) => d.isEditRow === false);
+  allowMoveToCompleteStep(workOrders: WorkOrder[]): boolean {
+    const haveFilledDataRows = workOrders.filter((i) => i.quantity === 0).length === 0;
+    const haveNotEditRows = workOrders.every((d) => d.isEditRow === false);
 
-    return haveFilledDataRows && haveNotEditRows && this.workOrderDetails.length > 0;
+    return haveFilledDataRows && haveNotEditRows && this.workOrders.length > 0;
   }
 
-  onRowEditInit(workOrderDetail: WorkOrderDetail) {
-    workOrderDetail.isEditRow = true;
-    this.clonedWorkOrderDetailModels[workOrderDetail.productId] = { ...workOrderDetail };
+  onRowEditInit(workOrder: WorkOrder) {
+    workOrder.isEditRow = true;
+    this.clonedWorkOrderModels[workOrder.productId] = { ...workOrder };
   }
 
-  onRowEditSave(workOrderDetail: WorkOrderDetail) {
-    workOrderDetail.isEditRow = false;
-    const entity = this.workOrderDetails.find((i) => i.productId === workOrderDetail.productId);
-    entity.quantity = workOrderDetail.quantity;
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
+  onRowEditSave(workOrder: WorkOrder) {
+    workOrder.isEditRow = false;
+    const entity = this.workOrders.find((i) => i.productId === workOrder.productId);
+    entity.quantity = workOrder.quantity;
+    delete this.clonedWorkOrderModels[workOrder.productId];
   }
 
-  onRowEditCancel(workOrderDetail: WorkOrderDetail, index: number) {
-    this.workOrderDetails[index] = this.clonedWorkOrderDetailModels[workOrderDetail.productId];
-    this.workOrderDetails[index].isEditRow = false;
-    delete this.clonedWorkOrderDetailModels[workOrderDetail.productId];
+  onRowEditCancel(workOrder: WorkOrder, index: number) {
+    this.workOrders[index] = this.clonedWorkOrderModels[workOrder.productId];
+    this.workOrders[index].isEditRow = false;
+    delete this.clonedWorkOrderModels[workOrder.productId];
   }
 
   nextPage(currentIndex: number) {
     switch (currentIndex) {
       case 0: {
+        const workOrder = this.workOrders && this.workOrders.length && this.workOrders[0];
+
+        if (workOrder) {
+          this.productIdControl.setValue(workOrder.productId);
+          this.quantityControl.setValue(workOrder.quantity);
+        }
         break;
       }
       case 1: {

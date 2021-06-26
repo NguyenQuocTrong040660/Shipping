@@ -39,6 +39,11 @@ namespace ShippingApp.Domain.Models
         public int MovementRequestId { get; set; }
         public virtual MovementRequestModel MovementRequest { get; set; }
 
+        public int WorkOrderId { get; set; }
+
+        [IgnoreMap]
+        public WorkOrderModel WorkOrder { get; set; }
+
         [IgnoreMap]
         public string Identifier
         {
@@ -47,8 +52,5 @@ namespace ShippingApp.Domain.Models
                 return string.Concat(Prefix, Id);
             }
         }
-
-        [IgnoreMap]
-        public WorkOrderModel WorkOrder { get; set; }
     }
 }

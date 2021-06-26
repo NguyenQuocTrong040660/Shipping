@@ -15,7 +15,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
     public class GetReceivedMarkPrintingsByIdQuery : IRequest<List<ReceivedMarkPrintingModel>>
     {
         public int ReceivedMarkId { get; set; }
-        public int ProductId { get; set; }
+        public int WorkOrderId { get; set; }
         public int MovementRequestId { get; set; }
     }
 
@@ -34,14 +34,21 @@ namespace ShippingApp.Application.ReceivedMark.Queries
         {
             var receivedMarkPrintings = await _context.ReceivedMarkPrintings
                 .AsNoTracking()
-                .Where(x => x.ReceivedMarkId == request.ReceivedMarkId 
-                && x.MovementRequestId == request.MovementRequestId
-                && x.ProductId == request.ProductId)
+                .Where(x => x.ReceivedMarkId == request.ReceivedMarkId)
+                .Where(x => x.MovementRequestId == request.MovementRequestId)
+                .Where(x => x.WorkOrderId == request.WorkOrderId)
                 .Where(x => !x.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))
                 .OrderBy(x => x.Sequence)
                 .ToListAsync(cancellationToken);
 
-            return _mapper.Map<List<ReceivedMarkPrintingModel>>(receivedMarkPrintings);
+            var vm = _mapper.Map<List<ReceivedMarkPrintingModel>>(receivedMarkPrintings);
+
+            foreach (var item in vm)
+            {
+                item.WorkOrder = _mapper.Map<WorkOrderModel>(await _context.WorkOrders.FindAsync(item.WorkOrderId));
+            }
+
+            return vm;
         }
     }
 }

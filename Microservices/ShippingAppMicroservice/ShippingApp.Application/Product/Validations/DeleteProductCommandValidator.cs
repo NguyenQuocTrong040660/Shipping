@@ -19,7 +19,7 @@ namespace ShippingApp.Application.Product.Validations
                 .Must(NotExistInShippingPlans)
                  .WithMessage("Can't delete Product already linked with Shipping Plan")
 
-                .Must(NotExistInWorkOrderDetails)
+                .Must(NotExistInWorkOrders)
                  .WithMessage("Can't delete Product already linked with Work Order")
 
                 .Must(NotExistInMovementRequestDetails)
@@ -42,9 +42,9 @@ namespace ShippingApp.Application.Product.Validations
             return _context.ShippingPlans.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
         
-        private bool NotExistInWorkOrderDetails(int productId)
+        private bool NotExistInWorkOrders(int productId)
         {
-            return _context.WorkOrderDetails.AsNoTracking().Any(x => x.ProductId == productId) == false;
+            return _context.WorkOrders.AsNoTracking().Any(x => x.ProductId == productId) == false;
         }
 
         private bool NotExistInMovementRequestDetails(int productId)

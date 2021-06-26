@@ -91,9 +91,8 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             if (result != null)
             {
-                result.WorkOrder = _mapper.Map<WorkOrderModel>((await _context.WorkOrderDetails
-                    .Include(x => x.WorkOrder)
-                    .FirstOrDefaultAsync(x => x.ProductId == result.ProductId, cancellationToken)).WorkOrder);
+                result.WorkOrder = _mapper.Map<WorkOrderModel>(await _context.WorkOrders
+                    .FirstOrDefaultAsync(x => x.Id == result.WorkOrderId, cancellationToken));
             }
 
             return result;
