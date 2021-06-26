@@ -9,10 +9,18 @@ import { ReceivedMarkCreateComponent } from './received-mark-create/received-mar
 import { ReceivedMarkDetailsComponent } from './received-mark-details/received-mark-details.component';
 import { ReceivedMarkEditComponent } from './received-mark-edit/received-mark-edit.component';
 import { ReceivedMarkMergeComponent } from './received-mark-merge/received-mark-merge.component';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
-  declarations: [ReceivedMarkComponent, ReceivedMarkUnstuffComponent, ReceivedMarkCreateComponent, ReceivedMarkDetailsComponent, ReceivedMarkEditComponent, ReceivedMarkMergeComponent],
-  imports: [CommonModule, SharedModule, RouterModule.forChild(receivedMarkRoutes)],
+  declarations: [
+    ReceivedMarkComponent,
+    ReceivedMarkUnstuffComponent,
+    ReceivedMarkCreateComponent,
+    ReceivedMarkDetailsComponent,
+    ReceivedMarkEditComponent,
+    ReceivedMarkMergeComponent,
+  ],
+  imports: [CommonModule, SharedModule, TabViewModule, RouterModule.forChild(receivedMarkRoutes)],
   exports: [ReceivedMarkComponent, ReceivedMarkUnstuffComponent, ReceivedMarkCreateComponent, ReceivedMarkDetailsComponent, ReceivedMarkEditComponent],
 })
 export class ReceivedMarkModule {}

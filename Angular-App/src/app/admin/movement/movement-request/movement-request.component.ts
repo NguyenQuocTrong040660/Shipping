@@ -148,7 +148,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => this.notificationService.error('Create Movement Request Failed. Please try again')
+        (_) => this.notificationService.error('Create Movement Request Failed. Please try again later')
       );
   }
 
@@ -206,7 +206,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => this.notificationService.error('Edit Movement Request Failed. Please try again')
+        (_) => this.notificationService.error('Edit Movement Request Failed. Please try again later')
       );
   }
 
@@ -229,7 +229,7 @@ export class MovementRequestComponent implements OnInit, OnDestroy {
                 this.notificationService.error(result?.error);
               }
             },
-            (_) => this.notificationService.error('Delete Movement Request Failed. Please try again')
+            (_) => this.notificationService.error('Delete Movement Request Failed. Please try again later')
           );
       },
     });

@@ -84,7 +84,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
           this.notificationService.error(result?.error);
         }
       },
-      (_) => this.notificationService.error('Change password failed. Please try again')
+      (_) => this.notificationService.error('Change password failed. Please try again later')
     );
   }
 

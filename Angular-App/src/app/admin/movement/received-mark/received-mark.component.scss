@@ -14,3 +14,7 @@
     }
   }
 }
+
+:host ::ng-deep .p-tabview-panels {
+  padding: 0;
+}

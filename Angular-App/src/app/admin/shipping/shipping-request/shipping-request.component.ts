@@ -144,7 +144,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
           this.initShippingRequest();
           this.hideDialog();
         },
-        (_) => this.notificationService.error('Create Shipping Request Failed. Please try again')
+        (_) => this.notificationService.error('Create Shipping Request Failed. Please try again later')
       );
   }
 
@@ -181,7 +181,7 @@ export class ShippingRequestComponent implements OnInit, OnDestroy {
                 this.notificationService.error(result?.error);
               }
             },
-            (_) => this.notificationService.error('Delete Shipping Request Failed. Please try again')
+            (_) => this.notificationService.error('Delete Shipping Request Failed. Please try again later')
           );
       },
     });

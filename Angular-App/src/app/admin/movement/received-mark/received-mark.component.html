@@ -31,169 +31,334 @@
     </ng-template>
   </p-toolbar>
 
-  <p-table
-    #shippingRequestDataTable
-    dataKey="id"
-    columnResizeMode="expand"
-    [value]="receivedMarks"
-    [rows]="20"
-    [columns]="cols"
-    [paginator]="true"
-    [scrollable]="true"
-    [(selection)]="selectedReceivedMark"
-    [expandedRowKeys]="expandedItems"
-    [globalFilterFields]="fields"
-  >
-    <ng-template pTemplate="caption">
-      <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">{{ title | uppercase }}</h5>
-        <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
-        </span>
-      </div>
-    </ng-template>
+  <p-tabView [(activeIndex)]="activeIndex">
+    <p-tabPanel header="Normal View">
+      <p-table
+        #shippingRequestDataTable
+        dataKey="id"
+        columnResizeMode="expand"
+        [value]="receivedMarks"
+        [rows]="20"
+        [columns]="cols"
+        [paginator]="true"
+        [scrollable]="true"
+        [(selection)]="selectedReceivedMark"
+        [expandedRowKeys]="expandedItems"
+        [globalFilterFields]="fields"
+      >
+        <ng-template pTemplate="caption">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            <h5 class="p-m-0">{{ title | uppercase }}</h5>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="shippingRequestDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+            </span>
+          </div>
+        </ng-template>
 
-    <ng-template pTemplate="colgroup" let-columns>
-      <colgroup>
-        <col *ngFor="let col of columns" [style.width.px]="col.width" />
-      </colgroup>
-    </ng-template>
+        <ng-template pTemplate="colgroup" let-columns>
+          <colgroup>
+            <col *ngFor="let col of columns" [style.width.px]="col.width" />
+          </colgroup>
+        </ng-template>
 
-    <ng-template pTemplate="header" let-columns>
-      <tr>
-        <ng-container *ngFor="let col of columns">
-          <ng-container [ngSwitch]="col.type">
-            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
-              <th class="p-text-center"></th>
-            </ng-container>
-            <ng-container *ngSwitchDefault>
-              <th class="p-text-center" [pSortableColumn]="col.field">
-                {{ col.header }}
-                <ng-container *ngIf="col.field">
-                  <p-sortIcon [field]="col.field"></p-sortIcon>
-                </ng-container>
-              </th>
-            </ng-container>
-          </ng-container>
-        </ng-container>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="emptymessage" let-columns>
-      <tr>
-        <td [attr.colspan]="columns.length" class="text-center">No records found</td>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
-      <tr>
-        <ng-container *ngFor="let col of columns">
-          <ng-container [ngSwitch]="col.type">
-            <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
-              <td class="p-text-center">
-                <p-tableRadioButton [value]="item"></p-tableRadioButton>
-              </td>
-            </ng-container>
-
-            <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
-              <td>
-                {{ item[col.field] }}
-              </td>
-            </ng-container>
-            <ng-container *ngSwitchCase="TypeColumn.DateColumn">
-              <td class="p-text-center">
-                {{ item[col.field] | date: 'dd/MM/yyyy' }}
-              </td>
-            </ng-container>
-            <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
-              <td>
-                {{ item[col.field][col.subField] }}
-              </td>
-            </ng-container>
-            <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
-              <td>
-                {{ item[col.field] }}
-              </td>
-            </ng-container>
-            <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
-              <td class="p-text-center">
-                {{ item[col.field] | number }}
-              </td>
-            </ng-container>
-            <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
-              <td class="p-text-center">
-                <button
-                  type="button"
-                  pButton
-                  pRipple
-                  (click)="getReceivedMarkMovementRequestsFullInfo(item)"
-                  [pRowToggler]="item"
-                  class="p-button-text p-button-rounded p-button-plain"
-                  [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
-                ></button>
-              </td>
-            </ng-container>
-          </ng-container>
-        </ng-container>
-      </tr>
-    </ng-template>
-
-    <ng-template pTemplate="rowexpansion" let-receivedMark>
-      <tr>
-        <td colspan="6" class="received-mark__expaned">
-          <div>
-            <p-table class="received-mark__expaned-table" [value]="receivedMark.receivedMarkMovements">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th class="p-text-center">Movement Request - Work Order</th>
-                  <th class="p-text-center">Product Number</th>
-                  <th class="p-text-center">Description</th>
-                  <th class="p-text-center">Qty/ Pkg</th>
-                  <th class="p-text-center">Quantity</th>
-                  <th class="p-text-center">Total Package</th>
-                  <th class="p-text-center">Total Quantity Printed</th>
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <ng-container [ngSwitch]="col.type">
+                <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
                   <th class="p-text-center"></th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-item>
-                <tr>
-                  <td>{{ item.workOrderMomentRequest }}</td>
-                  <td>{{ item?.product?.productNumber }}</td>
-                  <td>{{ item?.product?.productName }}</td>
-                  <td class="p-text-center">{{ item?.product?.qtyPerPackage }}</td>
-                  <td class="p-text-center">{{ item?.quantity }}</td>
-                  <td class="p-text-center">{{ item?.totalPackage }}</td>
-                  <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  <th class="p-text-center" [pSortableColumn]="col.field">
+                    {{ col.header }}
+                    <ng-container *ngIf="col.field">
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </ng-container>
+                  </th>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+            <td [attr.colspan]="columns.length" class="text-center">No records found</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <ng-container [ngSwitch]="col.type">
+                <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+                  <td class="p-text-center">
+                    <p-tableRadioButton [value]="item"></p-tableRadioButton>
+                  </td>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+                  <td>
+                    {{ item[col.field] }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+                  <td class="p-text-center">
+                    {{ item[col.field] | date: 'dd/MM/yyyy' }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+                  <td>
+                    {{ item[col.field][col.subField] }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+                  <td>
+                    {{ item[col.field] }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
+                  <td class="p-text-center">
+                    {{ item[col.field] | number }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
                   <td class="p-text-center">
                     <button
+                      type="button"
                       pButton
                       pRipple
-                      pTooltip="Printing Details"
-                      tooltipPosition="left"
-                      icon="pi pi-briefcase"
-                      class="p-button-rounded p-button-text p-mr-1"
-                      (click)="showDetailReceivedMarkSummary(receivedMark, item)"
-                    ></button>
-
-                    <button
-                      pButton
-                      pRipple
-                      pTooltip="Merge Packages"
-                      tooltipPosition="left"
-                      icon="pi pi-link"
-                      class="p-button-rounded p-button-text"
-                      (click)="showMergeReceivedMark(receivedMark, item)"
+                      (click)="getReceivedMarkMovementRequestsFullInfo(item)"
+                      [pRowToggler]="item"
+                      class="p-button-text p-button-rounded p-button-plain"
+                      [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
                     ></button>
                   </td>
-                </tr>
-              </ng-template>
-            </p-table>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="rowexpansion" let-receivedMark>
+          <tr>
+            <td colspan="6" class="received-mark__expaned">
+              <div>
+                <p-table class="received-mark__expaned-table" [value]="receivedMark.receivedMarkMovements">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="p-text-center">Movement Request - Work Order</th>
+                      <th class="p-text-center">Product Number</th>
+                      <th class="p-text-center">Description</th>
+                      <th class="p-text-center">Qty/ Pkg</th>
+                      <th class="p-text-center">Quantity</th>
+                      <th class="p-text-center">Total Package</th>
+                      <th class="p-text-center">Total Quantity Printed</th>
+                      <th class="p-text-center"></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-item>
+                    <tr>
+                      <td>{{ item.workOrderMomentRequest }}</td>
+                      <td>{{ item?.product?.productNumber }}</td>
+                      <td>{{ item?.product?.productName }}</td>
+                      <td class="p-text-center">{{ item?.product?.qtyPerPackage }}</td>
+                      <td class="p-text-center">{{ item?.quantity }}</td>
+                      <td class="p-text-center">{{ item?.totalPackage }}</td>
+                      <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
+                      <td class="p-text-center">
+                        <button
+                          pButton
+                          pRipple
+                          pTooltip="Printing Details"
+                          tooltipPosition="left"
+                          icon="pi pi-briefcase"
+                          class="p-button-rounded p-button-text p-mr-1"
+                          (click)="showDetailReceivedMarkSummary(receivedMark, item)"
+                        ></button>
+
+                        <button
+                          pButton
+                          pRipple
+                          pTooltip="Merge Packages"
+                          tooltipPosition="left"
+                          icon="pi pi-link"
+                          class="p-button-rounded p-button-text"
+                          (click)="showMergeReceivedMark(receivedMark, item)"
+                        ></button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+    <p-tabPanel header="Work Order View">
+      <p-table
+        #dataTable
+        dataKey="id"
+        columnResizeMode="expand"
+        [value]="receivedMarkGroupByWorkOrders"
+        [rows]="20"
+        [columns]="colWorkOrders"
+        [paginator]="true"
+        [scrollable]="true"
+        [expandedRowKeys]="expandedItemWorkOrders"
+      >
+        <ng-template pTemplate="caption">
+          <div class="p-d-flex p-ai-center p-jc-between">
+            <h5 class="p-m-0">{{ 'Received Mark Group By Work Order' | uppercase }}</h5>
           </div>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
+        </ng-template>
+
+        <ng-template pTemplate="colgroup" let-columns>
+          <colgroup>
+            <col *ngFor="let col of columns" [style.width.px]="col.width" />
+          </colgroup>
+        </ng-template>
+
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <ng-container [ngSwitch]="col.type">
+                <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn || TypeColumn.ExpandColumn">
+                  <th class="p-text-center"></th>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                  <th class="p-text-center" [pSortableColumn]="col.field">
+                    {{ col.header }}
+                    <ng-container *ngIf="col.field">
+                      <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </ng-container>
+                  </th>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+          <tr>
+            <td [attr.colspan]="columns.length" class="text-center">No records found</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <ng-container [ngSwitch]="col.type">
+                <ng-container *ngSwitchCase="TypeColumn.CheckBoxColumn">
+                  <td class="p-text-center">
+                    <p-tableRadioButton [value]="item"></p-tableRadioButton>
+                  </td>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="TypeColumn.IdentityColumn">
+                  <td>
+                    {{ item[col.field] }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.DateColumn">
+                  <td class="p-text-center">
+                    {{ item[col.field] | date: 'dd/MM/yyyy' }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.SubFieldColumn">
+                  <td>
+                    {{ item[col.field][col.subField] }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.NormalColumn">
+                  <td>
+                    {{ item[col.field] }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.NumberColumn">
+                  <td class="p-text-center">
+                    {{ item[col.field] | number }}
+                  </td>
+                </ng-container>
+                <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
+                  <td class="p-text-center">
+                    <button
+                      type="button"
+                      pButton
+                      pRipple
+                      (click)="getReceivedMarkMovementRequestsFullInfoByWorkOrder(item)"
+                      [pRowToggler]="item"
+                      class="p-button-text p-button-rounded p-button-plain"
+                      [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
+                    ></button>
+                  </td>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="rowexpansion" let-workOrder>
+          <tr>
+            <td colspan="7" class="received-mark__expaned">
+              <div>
+                <p-table class="received-mark__expaned-table" [value]="workOrder.receivedMarkMovements">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="p-text-center">Movement Request</th>
+                      <th class="p-text-center">Received Mark</th>
+                      <th class="p-text-center">Product Number</th>
+                      <th class="p-text-center">Description</th>
+                      <th class="p-text-center">Qty/ Pkg</th>
+                      <th class="p-text-center">Quantity</th>
+                      <th class="p-text-center">Total Package</th>
+                      <th class="p-text-center">Total Quantity Printed</th>
+                      <th class="p-text-center"></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-item>
+                    <tr>
+                      <td>{{ item?.movementRequest?.identifier }}</td>
+                      <td>{{ item?.receivedMark?.identifier }}</td>
+                      <td>{{ item?.product?.productNumber }}</td>
+                      <td>{{ item?.product?.productName }}</td>
+                      <td class="p-text-center">{{ item?.product?.qtyPerPackage }}</td>
+                      <td class="p-text-center">{{ item?.quantity }}</td>
+                      <td class="p-text-center">{{ item?.totalPackage }}</td>
+                      <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
+                      <td class="p-text-center">
+                        <button
+                          pButton
+                          pRipple
+                          pTooltip="Printing Details"
+                          tooltipPosition="left"
+                          icon="pi pi-briefcase"
+                          class="p-button-rounded p-button-text p-mr-1"
+                          (click)="showDetailReceivedMarkSummary(item?.receivedMark, item)"
+                        ></button>
+
+                        <button
+                          pButton
+                          pRipple
+                          pTooltip="Merge Packages"
+                          tooltipPosition="left"
+                          icon="pi pi-link"
+                          class="p-button-rounded p-button-text"
+                          (click)="showMergeReceivedMark(item?.receivedMark, item)"
+                        ></button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+  </p-tabView>
 </div>
 
 <app-received-mark-unstuff

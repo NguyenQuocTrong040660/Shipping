@@ -208,7 +208,7 @@ export class UserManagementComponent implements OnInit {
         },
         (_) => {
           this.hideSetNewPasswordDialog();
-          this.notificationService.error('Reset Users Password Failed. Please Try Again');
+          this.notificationService.error('Reset Users Password Failed. Please try again later');
         }
       );
   }
@@ -243,7 +243,7 @@ export class UserManagementComponent implements OnInit {
                   this.notificationService.error(result?.error);
                 }
               },
-              (_) => this.notificationService.error('Lock User Failed. Please Try Again')
+              (_) => this.notificationService.error('Lock User Failed. Please try again later')
             );
         });
       },
@@ -272,7 +272,7 @@ export class UserManagementComponent implements OnInit {
                   this.notificationService.error(result?.error);
                 }
               },
-              (_) => this.notificationService.error('Unlock User Failed. Please Try Again')
+              (_) => this.notificationService.error('Unlock User Failed. Please try again later')
             );
         });
       },

@@ -130,10 +130,10 @@ export class ShippingPickingComponent implements OnInit, OnDestroy {
             this.onPrint();
             this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentShippingMarkShippingModel.productId);
           } else {
-            this.notificationService.error('Print Shipping Mark Failed. Please try again');
+            this.notificationService.error('Print Shipping Mark Failed. Please try again later');
           }
         },
-        (_) => this.notificationService.error('Print Shipping Mark Failed. Please try again')
+        (_) => this.notificationService.error('Print Shipping Mark Failed. Please try again later')
       );
   }
 
@@ -157,10 +157,10 @@ export class ShippingPickingComponent implements OnInit, OnDestroy {
             this.onPrint();
             this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentShippingMarkShippingModel.productId);
           } else {
-            this.notificationService.error('Print Shipping Mark Failed. Please try again');
+            this.notificationService.error('Print Shipping Mark Failed. Please try again later');
           }
         },
-        (_) => this.notificationService.error('Print Shipping Mark Failed. Please try again')
+        (_) => this.notificationService.error('Print Shipping Mark Failed. Please try again later')
       );
   }
 

@@ -108,7 +108,7 @@ export class ConfigurationComponent implements OnInit, OnDestroy {
           }
         },
         (_) => {
-          this.notifiactionService.error('Edit Config Falied. Please try again');
+          this.notifiactionService.error('Edit Config Falied. Please try again later');
           this.hideEditDialog();
         }
       );

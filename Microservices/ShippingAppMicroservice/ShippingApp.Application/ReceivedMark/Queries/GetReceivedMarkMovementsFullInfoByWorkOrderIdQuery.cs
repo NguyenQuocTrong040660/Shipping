@@ -31,7 +31,9 @@ namespace ShippingApp.Application.ReceivedMark.Queries
         {
             var receivedMarkMovements = _mapper.Map<List<ReceivedMarkMovementModel>>(await _context.ReceivedMarkMovements
                 .AsNoTracking()
+                .Include(x => x.ReceivedMark)
                 .Include(x => x.Product)
+                .Include(x => x.MovementRequest)
                 .Where(x => x.WorkOrderId == request.WorkOrderId)
                 .ToListAsync(cancellationToken));
 
@@ -46,7 +48,6 @@ namespace ShippingApp.Application.ReceivedMark.Queries
                   .ToListAsync(cancellationToken);
 
                 item.TotalPackage = receivedMarkPrintings.Count;
-
                 item.TotalQuantityPrinted = receivedMarkPrintings
                     .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.Storage)))
                     .Sum(x => x.Quantity);

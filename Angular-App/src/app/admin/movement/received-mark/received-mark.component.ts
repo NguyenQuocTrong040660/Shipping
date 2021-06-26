@@ -10,6 +10,7 @@ import {
   ReceivedMarkPrintingModel,
   RePrintReceivedMarkRequest,
   UnstuffReceivedMarkRequest,
+  WorkOrderModel,
 } from 'app/shared/api-clients/shipping-app/shipping-app.client';
 import { TypeColumn } from 'app/shared/configs/type-column';
 import { WidthColumn } from 'app/shared/configs/width-column';
@@ -34,10 +35,10 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   titleDialogUnstufff = '';
 
   user: ApplicationUser;
-  receivedMarks: ReceivedMarkModel[] = [];
   selectedReceivedMark: ReceivedMarkModel;
   movementRequests: MovementRequestModel[] = [];
 
+  receivedMarks: ReceivedMarkModel[] = [];
   receivedMarkMovements: ReceivedMarkMovementModel[] = [];
   receivedMarkPrintings: ReceivedMarkPrintingModel[] = [];
   selectedReceivedMarkPrinting: ReceivedMarkPrintingModel;
@@ -66,6 +67,12 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   expandedItems: any[] = [];
   printData: any;
 
+  activeIndex: number = 0;
+  colWorkOrders: any[] = [];
+  fieldWorkOrders: any[] = [];
+  expandedItemWorkOrders: any[] = [];
+  receivedMarkGroupByWorkOrders: WorkOrderModel[] = [];
+
   private destroyed$ = new Subject<void>();
 
   constructor(
@@ -76,7 +83,12 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private fb: FormBuilder,
     private movementRequestClients: MovementRequestClients
-  ) {}
+  ) {
+    this.initForm();
+    this.initReceivedMarks();
+    this.intMovementRequest();
+    this.initReceivedMarksGroupByWorkOrders();
+  }
 
   ngOnInit() {
     this.authenticationService.user$.pipe(takeUntil(this.destroyed$)).subscribe((user: ApplicationUser) => (this.user = user));
@@ -90,11 +102,20 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];
 
-    this.fields = this.cols.map((i) => i.field);
+    this.colWorkOrders = [
+      { header: '....', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
+      { header: 'Work Order Id', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
-    this.initForm();
-    this.initReceivedMarks();
-    this.intMovementRequest();
+      { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Description', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
+
+      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+    ];
+
+    this.fields = this.cols.map((i) => i.field);
+    this.fieldWorkOrders = this.colWorkOrders.map((i) => i.field);
     this.canRePrint = this.printService.canRePrint(this.user);
   }
 
@@ -120,6 +141,20 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           this.receivedMarks = i;
         },
         (_) => (this.receivedMarks = [])
+      );
+  }
+
+  initReceivedMarksGroupByWorkOrders() {
+    this.expandedItemWorkOrders = [];
+
+    this.receivedMarkClients
+      .getReceivedMarkGroupByWorkOrders()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (i) => {
+          this.receivedMarkGroupByWorkOrders = i;
+        },
+        (_) => (this.receivedMarkGroupByWorkOrders = [])
       );
   }
 
@@ -183,12 +218,13 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Edit Received Mark Successfully');
             this.initReceivedMarks();
+            this.initReceivedMarksGroupByWorkOrders();
             this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => this.notificationService.error('Edit Received Mark Failed. Please try again')
+        (_) => this.notificationService.error('Edit Received Mark Failed. Please try again later later')
       );
   }
 
@@ -204,12 +240,13 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           if (result && result.succeeded) {
             this.notificationService.success('Create Received Mark Successfully');
             this.initReceivedMarks();
+            this.initReceivedMarksGroupByWorkOrders();
             this.hideDialog();
           } else {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => this.notificationService.error('Create Received Mark Failed. Please try again')
+        (_) => this.notificationService.error('Create Received Mark Failed. Please try again later later')
       );
   }
 
@@ -261,12 +298,13 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
               if (result && result.succeeded) {
                 this.notificationService.success('Delete Received Mark Successfully');
                 this.initReceivedMarks();
+                this.initReceivedMarksGroupByWorkOrders();
                 this.selectedReceivedMark = null;
               } else {
                 this.notificationService.error(result?.error);
               }
             },
-            (_) => this.notificationService.error('Delete Received Mark Failed. Please try again')
+            (_) => this.notificationService.error('Delete Received Mark Failed. Please try again later later')
           );
       },
     });
@@ -347,10 +385,10 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
                 this.currentReceivedMarkMovementModel.movementRequestId
               );
             } else {
-              this.notificationService.error('Print Received Mark Failed. Please try again');
+              this.notificationService.error('Print Received Mark Failed. Please try again later');
             }
           },
-          (_) => this.notificationService.error('Print Received Mark Failed. Please try again')
+          (_) => this.notificationService.error('Print Received Mark Failed. Please try again later')
         );
     } else {
       this.receivedMarkClients
@@ -367,10 +405,10 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
                 this.currentReceivedMarkMovementModel.movementRequestId
               );
             } else {
-              this.notificationService.error('Print Received Mark Failed. Please try again');
+              this.notificationService.error('Print Received Mark Failed. Please try again later');
             }
           },
-          (_) => this.notificationService.error('Print Received Mark Failed. Please try again')
+          (_) => this.notificationService.error('Print Received Mark Failed. Please try again later')
         );
     }
   }
@@ -399,10 +437,10 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
               this.currentReceivedMarkMovementModel.movementRequestId
             );
           } else {
-            this.notificationService.error('RePrint Received Mark Failed. Please try again');
+            this.notificationService.error('RePrint Received Mark Failed. Please try again later');
           }
         },
-        (_) => this.notificationService.error('RePrint Received Mark Failed. Please try again')
+        (_) => this.notificationService.error('RePrint Received Mark Failed. Please try again later')
       );
   }
 
@@ -425,6 +463,22 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           });
         },
         (_) => {}
+      );
+  }
+
+  getReceivedMarkMovementRequestsFullInfoByWorkOrder(item: WorkOrderModel) {
+    const workOrder = this.receivedMarkGroupByWorkOrders.find((i) => i.id === item.id);
+
+    this.receivedMarkClients
+      .getReceivedMarkMovementsFullInfoByWorkOrder(item.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (receivedMarkMovements) => {
+          workOrder.receivedMarkMovements = receivedMarkMovements;
+        },
+        (_) => {
+          workOrder.receivedMarkMovements = [];
+        }
       );
   }
 
@@ -502,7 +556,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
             this.notificationService.error(result.error);
           }
         },
-        (_) => this.notificationService.error('Merged Received Marks Failed. Please try again')
+        (_) => this.notificationService.error('Merged Received Marks Failed. Please try again later')
       );
   }
 

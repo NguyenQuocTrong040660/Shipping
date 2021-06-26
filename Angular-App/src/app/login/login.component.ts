@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.notificationService.error(result.errorMessage);
         }
       },
-      (_) => this.notificationService.error('Please try again')
+      (_) => this.notificationService.error('Please try again later')
     );
   }
 

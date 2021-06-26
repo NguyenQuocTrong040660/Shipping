@@ -223,7 +223,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
             this.notificationService.error(result?.error);
           }
         },
-        (_) => this.notificationService.error('Create Work Order Failed. Please try again')
+        (_) => this.notificationService.error('Create Work Order Failed. Please try again later')
       );
   }
 
@@ -239,7 +239,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
           this.selectedWorkOrder = i;
           this.isShowDialogEdit = true;
         },
-        (_) => this.notificationService.error('An error occurred, please try again')
+        (_) => this.notificationService.error('An error occurred, Please try again later')
       );
   }
 
@@ -260,7 +260,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
           }
         },
         (_) => {
-          this.notificationService.error('Edit Work Order Failed. Please try again');
+          this.notificationService.error('Edit Work Order Failed. Please try again later');
           this.hideDialog();
         }
       );
@@ -285,7 +285,7 @@ export class WorkOrderComponent implements OnInit, OnDestroy {
                 this.notificationService.error(result?.error);
               }
             },
-            (_) => this.notificationService.error('Delete Work Order Failed. Please try again')
+            (_) => this.notificationService.error('Delete Work Order Failed. Please try again later')
           );
       },
     });

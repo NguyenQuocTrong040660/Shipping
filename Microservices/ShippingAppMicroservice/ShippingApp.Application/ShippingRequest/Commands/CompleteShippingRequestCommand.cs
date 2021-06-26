@@ -36,7 +36,7 @@ namespace ShippingApp.Application.ShippingRequest.Commands
 
             if (shippingMark == null || !shippingMark.ShippingMarkShippings.Any())
             {
-                return Result.Failure("Failed to complete Shipping request. Please try again");
+                return Result.Failure("Failed to complete Shipping request. Please try again later");
             }
 
             var shippingMarkShipping = shippingMark.ShippingMarkShippings.FirstOrDefault();
