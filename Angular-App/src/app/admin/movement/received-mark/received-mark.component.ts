@@ -70,7 +70,6 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   activeIndex: number = 0;
   colWorkOrders: any[] = [];
   fieldWorkOrders: any[] = [];
-  expandedItemWorkOrders: any[] = [];
   receivedMarkGroupByWorkOrders: WorkOrderModel[] = [];
 
   private destroyed$ = new Subject<void>();
@@ -97,21 +96,24 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       { header: '', field: 'checkBox', width: WidthColumn.CheckBoxColumn, type: TypeColumn.CheckBoxColumn },
       { header: '.....', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
       { header: 'Movement Request - Work Order', field: 'workOrdersMovementCollection', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
-      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
     ];
 
     this.colWorkOrders = [
-      { header: '....', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
       { header: 'Work Order Id', field: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
 
       { header: 'Product Number', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Description', field: 'productName', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Notes', field: 'notes', width: WidthColumn.DescriptionColumn, type: TypeColumn.NormalColumn },
 
-      { header: 'Updated By', field: 'lastModifiedBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Updated Time', field: 'lastModified', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
+      { header: 'Qty/ Pkg', field: 'productNumber', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Order Qty', field: 'quantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+
+      { header: 'Received Qty', field: 'receivedQuantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Total Packages', field: 'totalPackages', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+      { header: 'Printed Qty', field: 'printedQuantity', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
+
+      { header: '', field: '', width: WidthColumn.IdentityColumn, type: TypeColumn.ExpandColumn },
     ];
 
     this.fields = this.cols.map((i) => i.field);
@@ -145,14 +147,13 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   initReceivedMarksGroupByWorkOrders() {
-    this.expandedItemWorkOrders = [];
-
     this.receivedMarkClients
       .getReceivedMarkGroupByWorkOrders()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (i) => {
           this.receivedMarkGroupByWorkOrders = i;
+          this.getReceivedMarkMovementRequestsFullInfoByWorkOrder();
         },
         (_) => (this.receivedMarkGroupByWorkOrders = [])
       );
@@ -466,20 +467,23 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       );
   }
 
-  getReceivedMarkMovementRequestsFullInfoByWorkOrder(item: WorkOrderModel) {
-    const workOrder = this.receivedMarkGroupByWorkOrders.find((i) => i.id === item.id);
-
-    this.receivedMarkClients
-      .getReceivedMarkMovementsFullInfoByWorkOrder(item.id)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (receivedMarkMovements) => {
-          workOrder.receivedMarkMovements = receivedMarkMovements;
-        },
-        (_) => {
-          workOrder.receivedMarkMovements = [];
-        }
-      );
+  getReceivedMarkMovementRequestsFullInfoByWorkOrder() {
+    this.receivedMarkGroupByWorkOrders.forEach((workOrder: any) => {
+      this.receivedMarkClients
+        .getReceivedMarkMovementsFullInfoByWorkOrder(workOrder.id)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          (receivedMarkMovements) => {
+            workOrder.receivedMarkMovements = receivedMarkMovements;
+            workOrder.receivedQuantity = receivedMarkMovements.reduce((i, j) => i + j.quantity, 0);
+            workOrder.totalPackages = receivedMarkMovements.reduce((i, j) => i + j.totalPackage, 0);
+            workOrder.printedQuantity = receivedMarkMovements.reduce((i, j) => i + j.totalQuantityPrinted, 0);
+          },
+          (_) => {
+            workOrder.receivedMarkMovements = [];
+          }
+        );
+    });
   }
 
   reLoadReceivedMarkPrintings(receivedMarkId: number, workOrderId: number, movementRequestId: number) {
@@ -518,6 +522,21 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       );
   }
 
+  showDetailReceivedMarkByWorkOrder(workOrder: WorkOrderModel) {
+    this.receivedMarkPrintings = [];
+    this.receivedMarkClients
+      .getReceivedMarkPrintingsByWorkOrder(workOrder.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (receivedMarkPrintings) => {
+          this.receivedMarkPrintings = receivedMarkPrintings;
+          this.isShowDialogDetail = true;
+          this.titleDialog = `Product Number: ${workOrder.product.productNumber} - ${workOrder.product.productName}`;
+        },
+        (_) => this.notificationService.error('Failed to show detail')
+      );
+  }
+
   showMergeReceivedMark(receivedMark: ReceivedMarkModel, receivedMarkMovementModel: ReceivedMarkMovementModel) {
     if (!receivedMark || !receivedMarkMovementModel) {
       return;
@@ -535,6 +554,21 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           this.receivedMarkPrintings = receivedMarkPrintings;
           this.isShowDialogMergeDetail = true;
           this.titleDialog = `Product Number: ${receivedMarkMovementModel.product.productNumber} - ${receivedMarkMovementModel.product.productName}`;
+        },
+        (_) => this.notificationService.error('Failed to show detail')
+      );
+  }
+
+  showMergeReceivedMarkByWorkOrder(workOrder: WorkOrderModel) {
+    this.receivedMarkPrintings = [];
+    this.receivedMarkClients
+      .getReceivedMarkPrintingsByWorkOrder(workOrder.id)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(
+        (receivedMarkPrintings) => {
+          this.receivedMarkPrintings = receivedMarkPrintings;
+          this.isShowDialogMergeDetail = true;
+          this.titleDialog = `Product Number: ${workOrder.product.productNumber} - ${workOrder.product.productName}`;
         },
         (_) => this.notificationService.error('Failed to show detail')
       );

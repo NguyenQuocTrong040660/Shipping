@@ -24,7 +24,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./shipping-picking.component.scss'],
 })
 export class ShippingPickingComponent implements OnInit, OnDestroy {
-  title = 'Pickup Order';
+  title = 'Shipping Mark';
   titleDialog = '';
 
   user: ApplicationUser;

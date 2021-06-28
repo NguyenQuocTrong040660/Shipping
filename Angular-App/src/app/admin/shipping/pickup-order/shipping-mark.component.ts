@@ -27,7 +27,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./shipping-mark.component.scss'],
 })
 export class ShippingMarkComponent implements OnInit, OnDestroy {
-  title = 'Shipping Mark';
+  title = 'Pickup Order';
   titleDialog = '';
 
   shippingMarkForm: FormGroup;
@@ -128,7 +128,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
 
   openCreateDialog() {
     this.shippingMarkForm.reset();
-    this.titleDialog = 'Create Shipping Mark';
+    this.titleDialog = 'Create Pickup Order';
     this.isShowDialogCreate = true;
     this.isEdit = false;
   }
@@ -143,7 +143,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           if (result && result.succeeded) {
-            this.notificationService.success('Create Shipping Mark Successfully');
+            this.notificationService.success('Create Pickup Order successfully');
             this.initShippingMarks();
             this.hideDialog();
           } else {
@@ -151,7 +151,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           }
         },
         (_) => {
-          this.notificationService.error('Create Shipping Mark Failed. Please try again later');
+          this.notificationService.error('Create Pickup Order Failed. Please try again later');
           this.hideDialog();
         }
       );
@@ -166,7 +166,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
   }
 
   openEditDialog(shippingMark: ShippingMarkModel) {
-    this.titleDialog = 'Edit Shipping Mark';
+    this.titleDialog = 'Edit Pickup Order';
     this.isEdit = true;
 
     this.shippingMarkClients
@@ -187,7 +187,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           this.shippingMarkForm.patchValue(i);
           this.shippingMarkForm.get('shippingRequest').patchValue(shippingRequest);
         },
-        (_) => this.notificationService.error('Failed to open Edit Shipping Mark')
+        (_) => this.notificationService.error('Failed to open Edit Pickup Order')
       );
   }
 
@@ -212,7 +212,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
       .subscribe(
         (result) => {
           if (result && result.succeeded) {
-            this.notificationService.success('Edit Shipping Mark Successfully');
+            this.notificationService.success('Edit Pickup Order successfully');
             this.initShippingMarks();
             this.hideDialog();
           } else {
@@ -220,7 +220,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           }
         },
         (_) => {
-          this.notificationService.error('Edit Shipping Mark Failed. Please try again later');
+          this.notificationService.error('Edit Pickup Order failed. Please try again later');
           this.hideDialog();
         }
       );
@@ -238,7 +238,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           .subscribe(
             (result) => {
               if (result && result.succeeded) {
-                this.notificationService.success('Delete Shipping Mark Successfully');
+                this.notificationService.success('Delete Pickup Order successfully');
                 this.initShippingMarks();
                 this.selectedShippingMark = null;
               } else {
@@ -246,7 +246,7 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
               }
             },
             (_) => {
-              this.notificationService.error('Delete Shipping Mark Failed. Please try again later');
+              this.notificationService.error('Delete Pickup Order Failed. Please try again later');
             }
           );
       },
@@ -299,10 +299,10 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
             this.onPrint();
             this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentShippingMarkShippingModel.productId);
           } else {
-            this.notificationService.error('Print Shipping Mark Failed. Please try again later');
+            this.notificationService.error('Print Pickup Order failed. Please try again later');
           }
         },
-        (_) => this.notificationService.error('Print Shipping Mark Failed. Please try again later')
+        (_) => this.notificationService.error('Print Pickup Order failed. Please try again later')
       );
   }
 
@@ -326,10 +326,10 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
             this.onPrint();
             this.reLoadShippingMarkPrintings(this.currentShippingMark.id, this.currentShippingMarkShippingModel.productId);
           } else {
-            this.notificationService.error('Print Shipping Mark Failed. Please try again later');
+            this.notificationService.error('Print Pickup Order failed. Please try again later');
           }
         },
-        (_) => this.notificationService.error('Print Shipping Mark Failed. Please try again later')
+        (_) => this.notificationService.error('Print Pickup Order failed. Please try again later')
       );
   }
 
@@ -400,14 +400,14 @@ export class ShippingMarkComponent implements OnInit, OnDestroy {
           .subscribe(
             (result) => {
               if (result && result.succeeded) {
-                this.notificationService.success('Confirm Shipping Request Successfully');
+                this.notificationService.success('Confirm Pickup Order successfully');
                 this.selectedShippingMark = null;
               } else {
                 this.notificationService.error(result?.error);
               }
             },
             (_) => {
-              this.notificationService.error('Confirm Shipping Request Failed. Please try again later');
+              this.notificationService.error('Confirm Pickup Order failed. Please try again later');
             }
           );
       },

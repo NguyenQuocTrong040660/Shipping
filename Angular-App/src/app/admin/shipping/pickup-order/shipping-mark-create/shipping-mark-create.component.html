@@ -77,8 +77,8 @@
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
-                <th class="p-text-center">Quantity</th>
-                <th class="p-text-center">Quantity of Received Marks</th>
+                <th class="p-text-center">Order Qty</th>
+                <th class="p-text-center">Selected Qty</th>
                 <th style="width: 10rem"></th>
               </tr>
             </ng-template>
@@ -133,6 +133,7 @@
                     >
                       <ng-template pTemplate="header">
                         <tr>
+                          <th class="p-text-center">Work Order</th>
                           <th class="p-text-center">Package Received</th>
                           <th class="p-text-center">Quantity</th>
                           <th class="p-text-center">Status</th>
@@ -143,9 +144,10 @@
                       </ng-template>
                       <ng-template pTemplate="body" let-receivedMarkPrinting>
                         <tr>
-                          <td class="p-text-center">{{ receivedMarkPrinting.identifier }}</td>
-                          <td class="p-text-center">{{ receivedMarkPrinting.quantity }}</td>
-                          <td class="p-text-center">{{ receivedMarkPrinting.status }}</td>
+                          <td class="p-text-center">{{ receivedMarkPrinting?.workOrder?.refId }}</td>
+                          <td class="p-text-center">{{ receivedMarkPrinting?.identifier }}</td>
+                          <td class="p-text-center">{{ receivedMarkPrinting?.quantity }}</td>
+                          <td class="p-text-center">{{ receivedMarkPrinting?.status }}</td>
                           <td>
                             <p-tableCheckbox [value]="receivedMarkPrinting"></p-tableCheckbox>
                           </td>
@@ -153,7 +155,7 @@
                       </ng-template>
                       <ng-template pTemplate="emptymessage">
                         <tr>
-                          <td colspan="4" class="p-text-center">There are no recieved mark printing for this product yet.</td>
+                          <td colspan="5" class="p-text-center">There are no recieved mark printing for this product yet.</td>
                         </tr>
                       </ng-template>
                     </p-table>
@@ -167,13 +169,7 @@
         <ng-template pTemplate="footer">
           <div class="p-grid p-nogutter p-justify-between">
             <p-button styleClass="p-button-text" label="Back" (onClick)="prevPage()" iconPos="left" icon="pi pi-angle-left"></p-button>
-            <p-button
-              styleClass="p-button-text"
-              label="Next"
-              (onClick)="nextPage(stepIndex)"
-              icon="pi pi-angle-right"
-              iconPos="right"
-            ></p-button>
+            <p-button styleClass="p-button-text" label="Next" (onClick)="nextPage(stepIndex)" icon="pi pi-angle-right" iconPos="right"></p-button>
           </div>
         </ng-template>
       </p-card>
@@ -188,8 +184,8 @@
                 <th class="p-text-center">Product Number</th>
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
-                <th class="p-text-center">Quantity</th>
-                <th class="p-text-center">Total Received Marks Quantity</th>
+                <th class="p-text-center">Order Qty</th>
+                <th class="p-text-center">Selected Qty</th>
                 <th class="p-text-center">Total Shipping Marks (expect)</th>
               </tr>
             </ng-template>

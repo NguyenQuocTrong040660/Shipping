@@ -234,5 +234,13 @@ namespace ShippingApp.Api.Controllers
         {
             return await Mediator.Send(query);
         }
+
+        [HttpGet("ReceivedMarkPrintings/WorkOrder")]
+        [ProducesResponseType(typeof(List<ReceivedMarkPrintingModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<List<ReceivedMarkPrintingModel>>> GetReceivedMarkPrintingsByWorkOrderAsync([FromQuery] GetReceivedMarkPrintingsByWorkOrderQuery query)
+        {
+            return await Mediator.Send(query);
+        }
     }
 }

@@ -31,7 +31,8 @@ namespace ShippingApp.Application.ShippingMark.Queries
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<List<ShippingMarkShippingModel>> Handle(GenerateShippingMarkShippingByShippingRequestQuery request, CancellationToken cancellationToken)
+        public async Task<List<ShippingMarkShippingModel>> Handle(GenerateShippingMarkShippingByShippingRequestQuery request, 
+            CancellationToken cancellationToken)
         {
             var shippingMarkShippings = new List<ShippingMarkShippingModel>();
 
@@ -41,7 +42,7 @@ namespace ShippingApp.Application.ShippingMark.Queries
                      .Include(x => x.Product)
                      .Where(x => x.ShippingRequestId.HasValue)
                      .Where(x => x.ShippingRequestId == request.ShippingRequest.Id)
-                     .ToListAsync());
+                     .ToListAsync(cancellationToken));
 
             var shippingPlansGroupByProduct = shippingPlans
                 .GroupBy(x => x.ProductId)
@@ -56,7 +57,7 @@ namespace ShippingApp.Application.ShippingMark.Queries
 
             foreach (var item in shippingPlansGroupByProduct)
             {
-                item.Product.ReceivedMarkPrintings = await GetReceivedMarkPrintingsStorage(item.ProductId);
+                item.Product.ReceivedMarkPrintings = await GetReceivedMarkPrintingsStorage(item.ProductId, cancellationToken);
 
                 shippingMarkShippings.Add(new ShippingMarkShippingModel
                 {
@@ -72,16 +73,21 @@ namespace ShippingApp.Application.ShippingMark.Queries
             return shippingMarkShippings;
         }
 
-        private async Task<List<ReceivedMarkPrintingModel>> GetReceivedMarkPrintingsStorage(int productId)
+        private async Task<List<ReceivedMarkPrintingModel>> GetReceivedMarkPrintingsStorage(int productId, CancellationToken cancellationToken)
         {
-            var data = await _context.ReceivedMarkPrintings
+            var receivedMarkPrintings = _mapper.Map<List<ReceivedMarkPrintingModel>>(await _context.ReceivedMarkPrintings
                         .AsNoTracking()
                         .Where(x => x.ProductId == productId)
                         .Where(x => x.Status.Equals(nameof(ReceivedMarkStatus.Storage)))
                         .OrderBy(x => x.Id)
-                        .ToListAsync();
+                        .ToListAsync(cancellationToken));
 
-            return _mapper.Map<List<ReceivedMarkPrintingModel>>(data);
+            foreach (var receivedMarkPrinting in receivedMarkPrintings)
+            {
+                receivedMarkPrinting.WorkOrder = _mapper.Map<WorkOrderModel>(await _context.WorkOrders.FindAsync(receivedMarkPrinting.WorkOrderId));
+            };
+
+            return receivedMarkPrintings;
         }
     }
 }

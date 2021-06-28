@@ -39,7 +39,7 @@ namespace ShippingApp.Application.ReceivedMark.Queries
             {
                 var receivedMarkPrintings = await _context.ReceivedMarkPrintings
                   .AsNoTracking()
-                  .Where(x => x.ProductId == item.ProductId)
+                  .Where(x => x.WorkOrderId == item.WorkOrderId)
                   .Where(x => x.MovementRequestId == item.MovementRequestId)
                   .Where(x => x.ReceivedMarkId == item.ReceivedMarkId)
                   .Where(x => !x.Status.Equals(nameof(ReceivedMarkStatus.Unstuff)))

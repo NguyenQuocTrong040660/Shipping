@@ -143,7 +143,7 @@
 
         <ng-template pTemplate="rowexpansion" let-receivedMark>
           <tr>
-            <td colspan="6" class="received-mark__expaned">
+            <td [attr.colspan]="cols.length"  class="received-mark__expaned">
               <div>
                 <p-table class="received-mark__expaned-table" [value]="receivedMark.receivedMarkMovements">
                   <ng-template pTemplate="header">
@@ -160,13 +160,13 @@
                   </ng-template>
                   <ng-template pTemplate="body" let-item>
                     <tr>
-                      <td>{{ item.workOrderMomentRequest }}</td>
+                      <td>{{ item?.workOrderMomentRequest }}</td>
                       <td>{{ item?.product?.productNumber }}</td>
                       <td>{{ item?.product?.productName }}</td>
-                      <td class="p-text-center">{{ item?.product?.qtyPerPackage }}</td>
-                      <td class="p-text-center">{{ item?.quantity }}</td>
-                      <td class="p-text-center">{{ item?.totalPackage }}</td>
-                      <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
+                      <td class="p-text-center">{{ item?.product?.qtyPerPackage | number }}</td>
+                      <td class="p-text-center">{{ item?.quantity  | number}}</td>
+                      <td class="p-text-center">{{ item?.totalPackage  | number}}</td>
+                      <td class="p-text-center">{{ item?.totalQuantityPrinted  | number}}</td>
                       <td class="p-text-center">
                         <button
                           pButton
@@ -207,7 +207,6 @@
         [columns]="colWorkOrders"
         [paginator]="true"
         [scrollable]="true"
-        [expandedRowKeys]="expandedItemWorkOrders"
       >
         <ng-template pTemplate="caption">
           <div class="p-d-flex p-ai-center p-jc-between">
@@ -247,7 +246,7 @@
           </tr>
         </ng-template>
 
-        <ng-template pTemplate="body" let-item let-columns="columns" let-expanded="expanded">
+        <ng-template pTemplate="body" let-item let-columns="columns">
           <tr>
             <ng-container *ngFor="let col of columns">
               <ng-container [ngSwitch]="col.type">
@@ -285,75 +284,28 @@
                 <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
                   <td class="p-text-center">
                     <button
-                      type="button"
                       pButton
                       pRipple
-                      (click)="getReceivedMarkMovementRequestsFullInfoByWorkOrder(item)"
-                      [pRowToggler]="item"
-                      class="p-button-text p-button-rounded p-button-plain"
-                      [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
+                      pTooltip="Printing Details"
+                      tooltipPosition="left"
+                      icon="pi pi-briefcase"
+                      class="p-button-rounded p-button-text p-mr-1"
+                      (click)="showDetailReceivedMarkByWorkOrder(item)"
+                    ></button>
+
+                    <button
+                      pButton
+                      pRipple
+                      pTooltip="Merge Packages"
+                      tooltipPosition="left"
+                      icon="pi pi-link"
+                      class="p-button-rounded p-button-text"
+                      (click)="showMergeReceivedMarkByWorkOrder(item)"
                     ></button>
                   </td>
                 </ng-container>
               </ng-container>
             </ng-container>
-          </tr>
-        </ng-template>
-
-        <ng-template pTemplate="rowexpansion" let-workOrder>
-          <tr>
-            <td colspan="7" class="received-mark__expaned">
-              <div>
-                <p-table class="received-mark__expaned-table" [value]="workOrder.receivedMarkMovements">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th class="p-text-center">Movement Request</th>
-                      <th class="p-text-center">Received Mark</th>
-                      <th class="p-text-center">Product Number</th>
-                      <th class="p-text-center">Description</th>
-                      <th class="p-text-center">Qty/ Pkg</th>
-                      <th class="p-text-center">Quantity</th>
-                      <th class="p-text-center">Total Package</th>
-                      <th class="p-text-center">Total Quantity Printed</th>
-                      <th class="p-text-center"></th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-item>
-                    <tr>
-                      <td>{{ item?.movementRequest?.identifier }}</td>
-                      <td>{{ item?.receivedMark?.identifier }}</td>
-                      <td>{{ item?.product?.productNumber }}</td>
-                      <td>{{ item?.product?.productName }}</td>
-                      <td class="p-text-center">{{ item?.product?.qtyPerPackage }}</td>
-                      <td class="p-text-center">{{ item?.quantity }}</td>
-                      <td class="p-text-center">{{ item?.totalPackage }}</td>
-                      <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
-                      <td class="p-text-center">
-                        <button
-                          pButton
-                          pRipple
-                          pTooltip="Printing Details"
-                          tooltipPosition="left"
-                          icon="pi pi-briefcase"
-                          class="p-button-rounded p-button-text p-mr-1"
-                          (click)="showDetailReceivedMarkSummary(item?.receivedMark, item)"
-                        ></button>
-
-                        <button
-                          pButton
-                          pRipple
-                          pTooltip="Merge Packages"
-                          tooltipPosition="left"
-                          icon="pi pi-link"
-                          class="p-button-rounded p-button-text"
-                          (click)="showMergeReceivedMark(item?.receivedMark, item)"
-                        ></button>
-                      </td>
-                    </tr>
-                  </ng-template>
-                </p-table>
-              </div>
-            </td>
           </tr>
         </ng-template>
       </p-table>

@@ -3,16 +3,24 @@
 </div>
 
 <div class="card" [class.isPrinting]="printService.isPrinting">
-  <p-table #shippingMarkDataTable dataKey="id" [value]="shippingMarks" [rows]="20" [columns]="cols" [paginator]="true"
-    [scrollable]="true" [(selection)]="selectedShippingMark" [expandedRowKeys]="expandedItems"
-    [globalFilterFields]="fields">
+  <p-table
+    #shippingMarkDataTable
+    dataKey="id"
+    [value]="shippingMarks"
+    [rows]="20"
+    [columns]="cols"
+    [paginator]="true"
+    [scrollable]="true"
+    [(selection)]="selectedShippingMark"
+    [expandedRowKeys]="expandedItems"
+    [globalFilterFields]="fields"
+  >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
         <h5 class="p-m-0">{{ title | uppercase }}</h5>
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
-          <input pInputText type="text" (input)="shippingMarkDataTable.filterGlobal($event.target.value, 'contains')"
-            placeholder="Search..." />
+          <input pInputText type="text" (input)="shippingMarkDataTable.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
         </span>
       </div>
     </ng-template>
@@ -85,9 +93,15 @@
             </ng-container>
             <ng-container *ngSwitchCase="TypeColumn.ExpandColumn">
               <td class="p-text-center">
-                <button type="button" pButton pRipple (click)="getShippingMarkMovementRequestsFullInfo(item)"
-                  [pRowToggler]="item" class="p-button-text p-button-rounded p-button-plain"
-                  [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"></button>
+                <button
+                  type="button"
+                  pButton
+                  pRipple
+                  (click)="getShippingMarkMovementRequestsFullInfo(item)"
+                  [pRowToggler]="item"
+                  class="p-button-text p-button-rounded p-button-plain"
+                  [icon]="expanded ? 'pi pi-ellipsis-v' : 'pi pi-ellipsis-h'"
+                ></button>
               </td>
             </ng-container>
           </ng-container>
@@ -97,49 +111,62 @@
 
     <ng-template pTemplate="rowexpansion" let-shippingMark>
       <tr>
-        <td colspan="6" class="shipping-mark__expaned">
+        <td [attr.colspan]="cols.length" class="shipping-picking__expaned">
           <div>
-            <p-table class="shipping-mark__expaned-table" [value]="shippingMark.shippingMarkShippings">
+            <p-table class="shipping-picking__expaned-table" [value]="shippingMark.shippingMarkShippings">
               <ng-template pTemplate="header">
-      <tr>
-        <th class="p-text-center">Product Number</th>
-        <th class="p-text-center">Description</th>
-        <th class="p-text-center">Qty/ Pkg</th>
-        <th class="p-text-center">Total Quantity</th>
-        <th class="p-text-center">Total Package</th>
-        <th class="p-text-center">Total Quantity Printed</th>
-        <th class="p-text-center"></th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-item>
-      <tr>
-        <td>{{ item?.product?.productNumber }}</td>
-        <td>{{ item?.product?.productName }}</td>
-        <td class="p-text-center">
-          {{ item?.product?.qtyPerPackage }}
-        </td>
-        <td class="p-text-center">{{ item?.totalQuantity }}</td>
-        <td class="p-text-center">{{ item?.totalPackage }}</td>
-        <td class="p-text-center">{{ item?.totalQuantityPrinted }}</td>
-        <td class="p-text-center">
-          <button pButton pRipple pTooltip="Printing Details" tooltipPosition="left" icon="pi pi-briefcase"
-            class="p-button-rounded p-button-text" (click)="showDetailShippingMarkSummary(shippingMark, item)"></button>
+                <tr>
+                  <th class="p-text-center">Product Number</th>
+                  <th class="p-text-center">Description</th>
+                  <th class="p-text-center">Qty/ Pkg</th>
+                  <th class="p-text-center">Order Qty</th>
+                  <th class="p-text-center">Package Qty</th>
+                  <th class="p-text-center">Printed Qty</th>
+                  <th class="p-text-center"></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>{{ item?.product?.productNumber }}</td>
+                  <td>{{ item?.product?.productName }}</td>
+                  <td class="p-text-center">
+                    {{ item?.product?.qtyPerPackage | number }}
+                  </td>
+                  <td class="p-text-center">{{ item?.totalQuantity | number }}</td>
+                  <td class="p-text-center">{{ item?.totalPackage | number }}</td>
+                  <td class="p-text-center">{{ item?.totalQuantityPrinted | number }}</td>
+                  <td class="p-text-center">
+                    <button
+                      pButton
+                      pRipple
+                      pTooltip="Printing Details"
+                      tooltipPosition="left"
+                      icon="pi pi-briefcase"
+                      class="p-button-rounded p-button-text"
+                      (click)="showDetailShippingMarkSummary(shippingMark, item)"
+                    ></button>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
         </td>
       </tr>
     </ng-template>
   </p-table>
 </div>
-</td>
-</tr>
-</ng-template>
-</p-table>
-</div>
 
-<app-shipping-picking-detail [class.isPrinting]="printService.isPrinting" [titleDialog]="titleDialog"
-  [isShowDialog]="isShowDialogDetail" [user]="user" [canRePrint]="canRePrint"
-  [shippingMarkPrintings]="shippingMarkPrintings" (hideDialogEvent)="hideDialog($event)"
-  (printMarkEvent)="printShippingMark()" (rePrintMarkEvent)="handleRePrintMark($event)">
+<app-shipping-picking-detail
+  [class.isPrinting]="printService.isPrinting"
+  [titleDialog]="titleDialog"
+  [isShowDialog]="isShowDialogDetail"
+  [user]="user"
+  [canRePrint]="canRePrint"
+  [shippingMarkPrintings]="shippingMarkPrintings"
+  (hideDialogEvent)="hideDialog($event)"
+  (printMarkEvent)="printShippingMark()"
+  (rePrintMarkEvent)="handleRePrintMark($event)"
+>
 </app-shipping-picking-detail>
 
-<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingMark"
-  (hideDialogEvent)="hideDialog()"> </app-history-dialog>
+<app-history-dialog [isShowDialog]="isShowDialogHistory" [type]="HistoryDialogType.ShippingMark" (hideDialogEvent)="hideDialog()"> </app-history-dialog>

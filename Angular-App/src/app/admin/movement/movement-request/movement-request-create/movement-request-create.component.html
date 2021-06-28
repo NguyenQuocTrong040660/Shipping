@@ -55,9 +55,10 @@
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
                 <th class="p-text-center">Shipping Direct</th>
-                <th class="p-text-center">Work Order Quantity</th>
-                <th class="p-text-center">Remain Quantity</th>
-                <th class="p-text-center">Movement Quantity<span class="p-invalid"> *</span></th>
+                <th class="p-text-center">Order Qty</th>
+                <th class="p-text-center">Moved Qty</th>
+                <th class="p-text-center">Remain Qty</th>
+                <th class="p-text-center">Input Qty <span class="p-invalid"> *</span></th>
                 <th style="width: 10rem"></th>
               </tr>
             </ng-template>
@@ -81,7 +82,11 @@
                 </td>
 
                 <td class="p-text-center">
-                  {{ movementRequestDetail?.workOrder?.workOrderDetail?.quantity | number }}
+                  {{ movementRequestDetail?.workOrder?.quantity | number }}
+                </td>
+
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.workOrder?.quantity - movementRequestDetail?.workOrder?.remainQuantity | number }}
                 </td>
 
                 <td class="p-text-center">
@@ -175,15 +180,18 @@
                 <th class="p-text-center">Description</th>
                 <th class="p-text-center">Qty/ Pkg</th>
                 <th class="p-text-center">Shipping Direct</th>
-                <th class="p-text-center">Work Order Quantity</th>
-                <th class="p-text-center">Remain Quantity</th>
-                <th class="p-text-center">Movement Quantity</th>
+                <th class="p-text-center">Order Qty</th>
+                <th class="p-text-center">Moved Qty</th>
+                <th class="p-text-center">Remain Qty</th>
+                <th class="p-text-center">Input Qty</th>
               </tr>
             </ng-template>
 
             <ng-template pTemplate="body" let-movementRequestDetail>
               <tr>
-                <td>{{ movementRequestDetail?.workOrder?.refId }}</td>
+                <td>
+                  {{ movementRequestDetail?.workOrder?.refId }}
+                </td>
                 <td>
                   {{ movementRequestDetail?.product?.productNumber }}
                 </td>
@@ -199,7 +207,11 @@
                 </td>
 
                 <td class="p-text-center">
-                  {{ movementRequestDetail?.workOrder?.workOrderDetail?.quantity | number }}
+                  {{ movementRequestDetail?.workOrder?.quantity | number }}
+                </td>
+
+                <td class="p-text-center">
+                  {{ movementRequestDetail?.workOrder?.remainQuantity - movementRequestDetail?.workOrder?.remainQuantity | number }}
                 </td>
 
                 <td class="p-text-center">

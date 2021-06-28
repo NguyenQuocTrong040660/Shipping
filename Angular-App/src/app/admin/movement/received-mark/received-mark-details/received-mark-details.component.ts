@@ -31,9 +31,9 @@ export class ReceivedMarkDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.cols = [
       { header: 'Package Sequence', field: 'sequence', width: WidthColumn.IdentityColumn, type: TypeColumn.IdentityColumn },
+      { header: 'Work Order', field: 'workOrder', subField: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Qty/ Pkg', field: 'quantity', width: WidthColumn.QuantityColumn, type: TypeColumn.NormalColumn },
       { header: 'Status', field: 'status', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
-      { header: 'Work Order', field: 'workOrder', subField: 'refId', width: WidthColumn.NormalColumn, type: TypeColumn.SubFieldColumn },
       { header: 'Printed By', field: 'printingBy', width: WidthColumn.NormalColumn, type: TypeColumn.NormalColumn },
       { header: 'Printed Time', field: 'printingDate', width: WidthColumn.DateColumn, type: TypeColumn.DateColumn },
       { header: '', field: 'actions', width: WidthColumn.NormalColumn, type: TypeColumn.ExpandColumn },

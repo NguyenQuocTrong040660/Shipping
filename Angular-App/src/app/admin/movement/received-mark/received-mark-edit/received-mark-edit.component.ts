@@ -62,6 +62,7 @@ export class ReceivedMarkEditComponent implements OnInit {
       productId: [receivedMarkMovement.productId],
       movementRequestId: [receivedMarkMovement.movementRequestId],
       receivedMarkId: [receivedMarkMovement.receivedMarkId],
+      workOrderId: [receivedMarkMovement.workOrderId],
     });
   }
 

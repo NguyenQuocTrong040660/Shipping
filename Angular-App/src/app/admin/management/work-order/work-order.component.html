@@ -128,6 +128,7 @@
                   <th>Description</th>
                   <th>Qty/ Pkg</th>
                   <th>Moved Qty</th>
+                  <th>Last Modified Date</th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-item>
@@ -137,6 +138,7 @@
                   <td>{{ item?.product?.productName }}</td>
                   <td>{{ item?.product?.qtyPerPackage | number }}</td>
                   <td>{{ item?.quantity | number }}</td>
+                  <td>{{ item?.movementRequest?.lastModified | date: 'dd/MM/yyyy' }}</td>
                 </tr>
               </ng-template>
             </p-table>

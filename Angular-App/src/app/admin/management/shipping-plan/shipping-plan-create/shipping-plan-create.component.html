@@ -25,18 +25,16 @@
 
               <div class="p-col-12">
                 <div class="p-field">
-                  <label for="salelineNumber">Saleline Number<span class="p-invalid"> *</span></label>
-
+                  <label for="salesOrder">Sales Order<span class="p-invalid"> *</span></label>
                   <input
-                    [ngClass]="{ 'ng-dirty': salelineNumberControl.invalid && (salelineNumberControl.dirty || salelineNumberControl.touched) }"
+                    [ngClass]="{ 'ng-dirty': salesOrderControl.invalid && (salesOrderControl.dirty || salesOrderControl.touched) }"
                     pInputText
-                    id="salelineNumber"
-                    [formControl]="salelineNumberControl"
+                    id="salesOrder"
+                    [formControl]="salesOrderControl"
                     type="text"
                   />
-
-                  <ng-container *ngIf="salelineNumberControl.invalid && (salelineNumberControl.dirty || salelineNumberControl.touched)">
-                    <small class="p-invalid p-error">Please specify a Saleline Number</small>
+                  <ng-container *ngIf="salesOrderControl.invalid && (salesOrderControl.dirty || salesOrderControl.touched)">
+                    <small class="p-invalid p-error">Please specify a Sales Order</small>
                   </ng-container>
                 </div>
               </div>
@@ -77,16 +75,18 @@
 
               <div class="p-col-12">
                 <div class="p-field">
-                  <label for="salesOrder">Sales Order<span class="p-invalid"> *</span></label>
+                  <label for="salelineNumber">Saleline Number<span class="p-invalid"> *</span></label>
+
                   <input
-                    [ngClass]="{ 'ng-dirty': salesOrderControl.invalid && (salesOrderControl.dirty || salesOrderControl.touched) }"
+                    [ngClass]="{ 'ng-dirty': salelineNumberControl.invalid && (salelineNumberControl.dirty || salelineNumberControl.touched) }"
                     pInputText
-                    id="salesOrder"
-                    [formControl]="salesOrderControl"
+                    id="salelineNumber"
+                    [formControl]="salelineNumberControl"
                     type="text"
                   />
-                  <ng-container *ngIf="salesOrderControl.invalid && (salesOrderControl.dirty || salesOrderControl.touched)">
-                    <small class="p-invalid p-error">Please specify a Sales Order</small>
+
+                  <ng-container *ngIf="salelineNumberControl.invalid && (salelineNumberControl.dirty || salelineNumberControl.touched)">
+                    <small class="p-invalid p-error">Please specify a Saleline Number</small>
                   </ng-container>
                 </div>
               </div>
@@ -328,7 +328,8 @@
                 <td class="p-text-center">
                   <p-cellEditor>
                     <ng-template pTemplate="input">
-                      <p-inputNumber [(ngModel)]="item.price" required mode="decimal" required></p-inputNumber>
+                      <p-inputNumber [(ngModel)]="item.price" 
+                      [minFractionDigits]="2" [maxFractionDigits]="5" mode="decimal" required></p-inputNumber>
                     </ng-template>
                     <ng-template pTemplate="output">
                       {{ item?.price | number: '1.1-5' }}

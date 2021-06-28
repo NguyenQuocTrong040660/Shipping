@@ -37,28 +37,42 @@ namespace ShippingApp.Application.ReceivedMark.Commands
 
             var receivedMarkPrintings = new List<Entities.ReceivedMarkPrinting>();
 
-            foreach (var receivedMarkMovement in request.ReceivedMark.ReceivedMarkMovements.OrderBy(x => x.WorkOrderId))
+            var groupByWorkOrder = request.ReceivedMark.ReceivedMarkMovements
+                .OrderBy(x => x.WorkOrderId)
+                .GroupBy(x => x.WorkOrderId)
+                .Select(x => new 
+                {
+                    WorkOrderId = x.Key,
+                    ReceivedMarkMovements = x.ToList()
+                })
+                .ToList();
+
+            foreach (var group in groupByWorkOrder)
             {
-                int remainQty = receivedMarkMovement.Quantity;
-                var product = await _context.Products
-                                    .AsNoTracking()
-                                    .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.ProductId, cancellationToken);
                 int sequence = 1;
 
-                while (remainQty > 0)
+                foreach (var receivedMarkMovement in group.ReceivedMarkMovements)
                 {
-                    receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
-                    {
-                        ProductId = product.Id,
-                        Quantity = remainQty >= product.QtyPerPackage ? product.QtyPerPackage : remainQty,
-                        Sequence = sequence,
-                        Status = nameof(ReceivedMarkStatus.New),
-                        MovementRequestId = receivedMarkMovement.MovementRequestId,
-                        WorkOrderId = receivedMarkMovement.WorkOrderId
-                    });
+                    int remainQty = receivedMarkMovement.Quantity;
+                    var product = await _context.Products
+                                        .AsNoTracking()
+                                        .FirstOrDefaultAsync(x => x.Id == receivedMarkMovement.ProductId, cancellationToken);
 
-                    remainQty -= product.QtyPerPackage;
-                    sequence++;
+                    while (remainQty > 0)
+                    {
+                        receivedMarkPrintings.Add(new Entities.ReceivedMarkPrinting
+                        {
+                            ProductId = product.Id,
+                            Quantity = remainQty >= product.QtyPerPackage ? product.QtyPerPackage : remainQty,
+                            Sequence = sequence,
+                            Status = nameof(ReceivedMarkStatus.New),
+                            MovementRequestId = receivedMarkMovement.MovementRequestId,
+                            WorkOrderId = receivedMarkMovement.WorkOrderId
+                        });
+
+                        remainQty -= product.QtyPerPackage;
+                        sequence++;
+                    }
                 }
             }
 
