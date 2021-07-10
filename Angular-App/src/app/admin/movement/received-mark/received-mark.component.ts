@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
   MovementRequestClients,
   MovementRequestModel,
+  PrintReceivedMarkByWorkOrderCommand,
   PrintReceivedMarkRequest,
   ReceivedMarkClients,
   ReceivedMarkModel,
@@ -44,7 +45,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   selectedReceivedMarkPrinting: ReceivedMarkPrintingModel;
   selectedReceivedMarkPrintingMerged: ReceivedMarkPrintingModel[] = [];
 
-  currentReceivedMark: ReceivedMarkModel;
+  currentWorkOrderModel: WorkOrderModel;
   currentReceivedMarkMovementModel: ReceivedMarkMovementModel;
   receivedMarkForm: FormGroup;
 
@@ -275,7 +276,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
             movementRequest = item.movementRequest;
           });
 
-          this.currentReceivedMark = i;
+          this.selectedReceivedMark = i;
           this.isShowDialogEdit = true;
 
           this.receivedMarkForm.patchValue(i);
@@ -326,7 +327,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   handleSubmitEventUnstuff(event) {
-    if (!this.currentReceivedMark || !this.currentReceivedMarkMovementModel) {
+    if (!this.selectedReceivedMark || !this.currentReceivedMarkMovementModel) {
       return;
     }
 
@@ -345,7 +346,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           if (result.succeeded) {
             this.notificationService.success('Unstuff Received Mark Successfully', '', 1000);
             this.reLoadReceivedMarkPrintings(
-              this.currentReceivedMark.id,
+              this.selectedReceivedMark.id,
               this.currentReceivedMarkMovementModel.workOrderId,
               this.currentReceivedMarkMovementModel.movementRequestId
             );
@@ -360,31 +361,25 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   }
 
   printReceivedMark($event: ReceivedMarkPrintingModel) {
-    if (!this.currentReceivedMark || !this.currentReceivedMarkMovementModel) {
-      return;
-    }
-
-    const requestPrint: PrintReceivedMarkRequest = {
-      productId: this.currentReceivedMarkMovementModel.productId,
-      receivedMarkId: this.currentReceivedMark.id,
-      printedBy: this.user.userName,
-      movementRequestId: this.currentReceivedMarkMovementModel.movementRequestId,
-    };
-
     if ($event) {
+      const { productId, receivedMarkId, movementRequestId, id, workOrderId } = $event;
+
+      const requestPrint: PrintReceivedMarkRequest = {
+        productId: productId,
+        receivedMarkId: receivedMarkId,
+        printedBy: this.user.userName,
+        movementRequestId: movementRequestId,
+      };
+
       this.receivedMarkClients
-        .printReceivedMarkWithPrintingId($event.id, requestPrint)
+        .printReceivedMarkWithPrintingId(id, requestPrint)
         .pipe(takeUntil(this.destroyed$))
         .subscribe(
           (result) => {
             if (result) {
               this.printData = result;
               this.onPrint();
-              this.reLoadReceivedMarkPrintings(
-                this.currentReceivedMark.id,
-                this.currentReceivedMarkMovementModel.workOrderId,
-                this.currentReceivedMarkMovementModel.movementRequestId
-              );
+              this.reLoadReceivedMarkPrintings(receivedMarkId, workOrderId, movementRequestId);
             } else {
               this.notificationService.error('Print Received Mark Failed. Please try again later');
             }
@@ -392,25 +387,55 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
           (_) => this.notificationService.error('Print Received Mark Failed. Please try again later')
         );
     } else {
-      this.receivedMarkClients
-        .printReceivedMark(requestPrint)
-        .pipe(takeUntil(this.destroyed$))
-        .subscribe(
-          (result) => {
-            if (result) {
-              this.printData = result;
-              this.onPrint();
-              this.reLoadReceivedMarkPrintings(
-                this.currentReceivedMark.id,
-                this.currentReceivedMarkMovementModel.workOrderId,
-                this.currentReceivedMarkMovementModel.movementRequestId
-              );
-            } else {
-              this.notificationService.error('Print Received Mark Failed. Please try again later');
-            }
-          },
-          (_) => this.notificationService.error('Print Received Mark Failed. Please try again later')
-        );
+      if (this.selectedReceivedMark && this.currentReceivedMarkMovementModel) {
+        const { productId, movementRequestId, receivedMarkId, workOrderId } = this.currentReceivedMarkMovementModel;
+
+        const requestPrint: PrintReceivedMarkRequest = {
+          productId: productId,
+          receivedMarkId: receivedMarkId,
+          printedBy: this.user.userName,
+          movementRequestId: movementRequestId,
+        };
+
+        this.receivedMarkClients
+          .printReceivedMark(requestPrint)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result) {
+                this.printData = result;
+                this.onPrint();
+                this.reLoadReceivedMarkPrintings(receivedMarkId, workOrderId, movementRequestId);
+              } else {
+                this.notificationService.error('Print Received Mark Failed. Please try again later');
+              }
+            },
+            (_) => this.notificationService.error('Print Received Mark Failed. Please try again later')
+          );
+      }
+
+      if (this.currentWorkOrderModel) {
+        const requestPrint: PrintReceivedMarkByWorkOrderCommand = {
+          printBy: this.user.userName,
+          workOrderId: this.currentWorkOrderModel.id,
+        };
+
+        this.receivedMarkClients
+          .printReceivedMarkByWorkOrder(requestPrint)
+          .pipe(takeUntil(this.destroyed$))
+          .subscribe(
+            (result) => {
+              if (result) {
+                this.printData = result;
+                this.onPrint();
+                this.reLoadReceivedMarkPrintings(null, this.currentWorkOrderModel.id, null);
+              } else {
+                this.notificationService.error('Print Received Mark Failed. Please try again later');
+              }
+            },
+            (_) => this.notificationService.error('Print Received Mark Failed. Please try again later')
+          );
+      }
     }
   }
 
@@ -433,7 +458,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
             this.printData = result;
             this.onPrint();
             this.reLoadReceivedMarkPrintings(
-              this.currentReceivedMark.id,
+              this.selectedReceivedMark.id,
               this.currentReceivedMarkMovementModel.workOrderId,
               this.currentReceivedMarkMovementModel.movementRequestId
             );
@@ -489,8 +514,20 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
   reLoadReceivedMarkPrintings(receivedMarkId: number, workOrderId: number, movementRequestId: number) {
     this.receivedMarkPrintings = [];
 
+    if (receivedMarkId && movementRequestId) {
+      this.receivedMarkClients
+        .getReceivedMarkPrintings(receivedMarkId, workOrderId, movementRequestId)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(
+          (receivedMarkPrintings) => {
+            this.receivedMarkPrintings = receivedMarkPrintings;
+          },
+          (_) => (this.receivedMarkPrintings = [])
+        );
+    }
+
     this.receivedMarkClients
-      .getReceivedMarkPrintings(receivedMarkId, workOrderId, movementRequestId)
+      .getReceivedMarkPrintingsByWorkOrder(workOrderId)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (receivedMarkPrintings) => {
@@ -505,7 +542,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.currentReceivedMark = receivedMark;
+    this.selectedReceivedMark = receivedMark;
     this.currentReceivedMarkMovementModel = receivedMarkMovementModel;
 
     this.receivedMarkPrintings = [];
@@ -529,6 +566,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
         (receivedMarkPrintings) => {
+          this.currentWorkOrderModel = workOrder;
           this.receivedMarkPrintings = receivedMarkPrintings;
           this.isShowDialogDetail = true;
           this.titleDialog = `Product Number: ${workOrder.product.productNumber} - ${workOrder.product.productName}`;
@@ -542,7 +580,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.currentReceivedMark = receivedMark;
+    this.selectedReceivedMark = receivedMark;
     this.currentReceivedMarkMovementModel = receivedMarkMovementModel;
 
     this.receivedMarkPrintings = [];
@@ -567,6 +605,7 @@ export class ReceivedMarkComponent implements OnInit, OnDestroy {
       .subscribe(
         (receivedMarkPrintings) => {
           this.receivedMarkPrintings = receivedMarkPrintings;
+          this.currentWorkOrderModel = workOrder;
           this.isShowDialogMergeDetail = true;
           this.titleDialog = `Product Number: ${workOrder.product.productNumber} - ${workOrder.product.productName}`;
         },

@@ -1,60 +1,62 @@
 <ng-container *ngIf="printData && printData.receivedMark">
-  <table>
-    <tbody>
-      <tr>
-        <td>
-          <div class="print__content">
-            <div class="print__detail">
-              <table>
-                <tr class="print__identity">
-                  <td class="print__value">Received ID</td>
-                  <td class="print__value">: {{ printData?.receivedMark?.identifier }}</td>
-                </tr>
+  <div class="container-fluid">
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <div class="print__content">
+              <div class="print__detail">
+                <table>
+                  <tr class="print__identity">
+                    <td class="print__value">Received ID</td>
+                    <td class="print__value">: {{ printData?.receivedMark?.identifier }}</td>
+                  </tr>
 
-                <tr>
-                  <td class="print__value">W/O</td>
-                  <td class="print__value">: {{ printData?.workOrder?.refId }}</td>
-                </tr>
+                  <tr>
+                    <td class="print__value">W/O</td>
+                    <td class="print__value">: {{ printData?.workOrder?.refId }}</td>
+                  </tr>
 
-                <tr>
-                  <td class="print__value">P/N</td>
-                  <td class="print__value">: {{ printData?.product?.productNumber }}</td>
-                </tr>
-                <tr>
-                  <td class="print__value">Qty</td>
-                  <td class="print__value">: {{ printData?.quantity }}</td>
-                </tr>
+                  <tr>
+                    <td class="print__value">P/N</td>
+                    <td class="print__value">: {{ printData?.product?.productNumber }}</td>
+                  </tr>
+                  <tr>
+                    <td class="print__value">Qty</td>
+                    <td class="print__value">: {{ printData?.quantity }}</td>
+                  </tr>
 
-                <tr>
-                  <td class="print__value">Carton number</td>
-                  <td class="print__value">: {{ printData?.sequence }}</td>
-                </tr>
-                <tr>
-                  <td class="print__value">Date</td>
-                  <td class="print__value">: {{ printData?.printingDate | date: 'dd/MM/yyyy' }}</td>
-                </tr>
+                  <tr>
+                    <td class="print__value">Carton number</td>
+                    <td class="print__value">: {{ printData?.sequence }}</td>
+                  </tr>
+                  <tr>
+                    <td class="print__value">Date</td>
+                    <td class="print__value">: {{ printData?.printingDate | date: 'dd/MM/yyyy' }}</td>
+                  </tr>
 
-                <tr>
-                  <td colspan="2">
-                    <ngx-barcode [bc-height]="50" [bc-value]="printData?.identifier"></ngx-barcode>
-                  </td>
-                </tr>
-              </table>
+                  <tr>
+                    <td colspan="2">
+                      <ngx-barcode [bc-height]="50" [bc-value]="printData?.identifier"></ngx-barcode>
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </div>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </ng-container>
 
 <ng-container *ngIf="printData && printData.shippingMark">
-  <main class="shipping-mark">
-    <div class="row company-name">SPARTRONICS VIETNAM</div>
+  <div class="container-fluid shipping-mark">
+    <div class="row no-gutters company-name">SPARTRONICS VIETNAM</div>
 
-    <div class="row" style="width: 550px">
+    <div class="row no-gutters" style="width: 550px">
       <div class="col-6">
-        <div class="row print-row">
+        <div class="row no-gutters">
           <div class="print-label">Barcode</div>
           <div>
             <ngx-barcode [bc-height]="40" [bc-width]="0.5" [bc-display-value]="true" [bc-value]="printData?.identifier"></ngx-barcode>
@@ -63,7 +65,7 @@
       </div>
 
       <div class="col-6">
-        <div class="row print-row">
+        <div class="row no-gutters">
           <div class="print-label">P/N</div>
           <div>
             <ngx-barcode [bc-display-value]="true" [bc-height]="40" [bc-width]="0.5" [bc-value]="printData?.product?.productNumber"></ngx-barcode>
@@ -72,7 +74,7 @@
       </div>
 
       <div class="col-6">
-        <div class="row print-row">
+        <div class="row no-gutters">
           <div class="print-label">W/O</div>
           <div>
             <ngx-barcode [bc-display-value]="true" [bc-height]="40" [bc-width]="1" [bc-value]="printData?.printInfo?.workOrder?.refId"></ngx-barcode>
@@ -81,7 +83,7 @@
       </div>
 
       <div class="col-6">
-        <div class="row print-row">
+        <div class="row no-gutters">
           <div class="print-label">Qty</div>
           <div>
             <ngx-barcode [bc-display-value]="true" [bc-height]="40" [bc-width]="1" [bc-value]="printData?.quantity"></ngx-barcode>
@@ -90,7 +92,7 @@
       </div>
 
       <div class="col-6">
-        <div class="row print-row">
+        <div class="row no-gutters">
           <div class="print-label">P/O</div>
           <div>
             <ngx-barcode [bc-display-value]="true" [bc-height]="40" [bc-width]="1" [bc-value]="printData?.printInfo?.purchaseOrder"></ngx-barcode>
@@ -99,62 +101,58 @@
       </div>
 
       <div class="col-6">
-        <div class="row print-row">
-          <div class="print-label">CartonNumber</div>
+        <div class="row no-gutters">
+          <div class="print-label">Carton Number</div>
           <div class="print-value">{{ printData?.sequence }} / {{ printData?.printInfo?.totalPackages }}</div>
         </div>
       </div>
 
       <div class="col-6">
-        <div class="row print-row">
+        <div class="row no-gutters">
           <div class="print-label">Weight</div>
           <div class="print-value">{{ printData?.printInfo?.weight }}</div>
         </div>
       </div>
 
       <div class="col-6">
-        <div class="row print-row">
-          <div class="print-label">ShippingDate</div>
+        <div class="row no-gutters">
+          <div class="print-label">Shipping Date</div>
           <div class="print-value">{{ printData?.printInfo?.shippingRequest?.shippingDate | date: 'dd/MM/yyyy' }}</div>
         </div>
       </div>
 
       <div class="col-6">
-        <div class="row print-row">
-          <div class="print-label">PartRevision</div>
+        <div class="row no-gutters">
+          <div class="print-label">Part Revision</div>
           <div class="print-value">{{ printData?.product?.partRevisionRaw }}</div>
         </div>
       </div>
 
       <div class="col-6">
-        <div class="row print-row">
-          <div class="print-label">DrawingRevision</div>
+        <div class="row no-gutters">
+          <div class="print-label">Drawing Revision</div>
           <div class="print-value">{{ printData?.product?.processRevision }}</div>
         </div>
       </div>
       <div class="col-6">
-        <div class="row print-row">
+        <div class="row no-gutters">
           <div class="print-label">Revision</div>
           <div class="print-value">{{ printData?.product?.revision }}</div>
         </div>
       </div>
       <div class="col-6">
-        <div class="row print-row">
-          <div class="print-label">MadeIn</div>
+        <div class="row no-gutters">
+          <div class="print-label">Made-in</div>
           <div class="print-value">VietNam</div>
         </div>
       </div>
 
       <div class="col-12">
-        <div class="row print-row">
+        <div class="row no-gutters">
           <div class="print-label">To</div>
-          <!-- <div class="print-value">{{ printData?.printInfo?.shippingRequest?.shipTo }}</div> -->
-          <div class="print-value">
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Accusantium provident explicabo perspiciatis dolore dolores et atque sint, ex fugit voluptates, minus ab eos
-            placeat magni ullam quas soluta qui voluptatum.
-          </div>
+          <div class="print-value">{{ printData?.printInfo?.shippingRequest?.shipTo }}</div>
         </div>
       </div>
     </div>
-  </main>
+  </div>
 </ng-container>

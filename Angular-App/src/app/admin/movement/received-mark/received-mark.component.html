@@ -143,7 +143,7 @@
 
         <ng-template pTemplate="rowexpansion" let-receivedMark>
           <tr>
-            <td [attr.colspan]="cols.length"  class="received-mark__expaned">
+            <td [attr.colspan]="cols.length" class="received-mark__expaned">
               <div>
                 <p-table class="received-mark__expaned-table" [value]="receivedMark.receivedMarkMovements">
                   <ng-template pTemplate="header">
@@ -164,9 +164,9 @@
                       <td>{{ item?.product?.productNumber }}</td>
                       <td>{{ item?.product?.productName }}</td>
                       <td class="p-text-center">{{ item?.product?.qtyPerPackage | number }}</td>
-                      <td class="p-text-center">{{ item?.quantity  | number}}</td>
-                      <td class="p-text-center">{{ item?.totalPackage  | number}}</td>
-                      <td class="p-text-center">{{ item?.totalQuantityPrinted  | number}}</td>
+                      <td class="p-text-center">{{ item?.quantity | number }}</td>
+                      <td class="p-text-center">{{ item?.totalPackage | number }}</td>
+                      <td class="p-text-center">{{ item?.totalQuantityPrinted | number }}</td>
                       <td class="p-text-center">
                         <button
                           pButton
@@ -337,7 +337,7 @@
 <app-received-mark-edit
   [receivedMarkForm]="receivedMarkForm"
   [titleDialog]="titleDialog"
-  [receivedMark]="currentReceivedMark"
+  [receivedMark]="selectedReceivedMark"
   [isShowDialog]="isShowDialogEdit"
   (submitEvent)="onSubmit()"
   (hideDialogEvent)="hideDialog($event)"

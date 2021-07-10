@@ -102,7 +102,7 @@ export class ShippingPickingComponent implements OnInit, OnDestroy {
   }
 
   onPrint() {
-    this.printService.printDocument('shipping-mark-picking');
+    this.printService.printDocument('shipping-mark');
   }
 
   openHistoryDialog() {

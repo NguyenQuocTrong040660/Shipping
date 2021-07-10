@@ -5,10 +5,11 @@ import { ReceivedMarkComponent } from './received-mark.component';
 export const receivedMarkRoutes: Routes = [
   {
     path: '',
-    component: ReceivedMarkComponent
+    component: ReceivedMarkComponent,
   },
   {
     path: 'print',
     outlet: 'print',
-    component: PrintComponent
-  }];
+    component: PrintComponent,
+  },
+];
